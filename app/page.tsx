@@ -547,9 +547,21 @@ export default function Home() {
               return (
                 <div key={job.id} className="group relative bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 p-4 md:p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-lg hover:-translate-y-1 flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center">
                   
-                  {/* Job Icon - Hidden on small mobile, visible on larger */}
-                  <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 rounded-xl bg-slate-50 dark:bg-slate-800/50 items-center justify-center border border-slate-100 dark:border-slate-700 text-xl md:text-2xl flex-shrink-0">
-                      {job.category === 'Development' ? '💻' : job.category === 'Design & UI' ? '🎨' : '💼'}
+                  {/* Job Icon - Now using Professional Lucide Icons */}
+                  <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 rounded-xl bg-slate-50 dark:bg-slate-800/50 items-center justify-center border border-slate-100 dark:border-slate-700 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      {(() => {
+                        // 1. Category ka naam match karo
+                        const categoryData = CATEGORIES[job.category as keyof typeof CATEGORIES];
+                        // 2. Agar icon mil jaye to wo lo, warna default Briefcase lo
+                        const IconComponent = categoryData ? categoryData.icon : Briefcase;
+                        
+                        return (
+                          <IconComponent 
+                            size={24} 
+                            className="text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" 
+                          />
+                        );
+                      })()}
                   </div>
 
                   <div className="flex-1 min-w-0 w-full">

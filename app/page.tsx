@@ -12,7 +12,7 @@ import {
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image'; // Logo ke liye
-
+import { motion } from 'framer-motion';
 // --- PLATFORM ICONS ---
 const getPlatformIcon = (platform: string) => {
   const p = platform || 'Web'; 
@@ -376,7 +376,7 @@ export default function Home() {
                 <div className="pl-3 pr-2 border-r border-slate-200 dark:border-slate-700 text-slate-400 flex items-center gap-2">
                     {searchType === 'jobs' ? <Briefcase size={18} /> : <Users size={18} />}
                     <span className="text-sm font-medium hidden sm:block capitalize">{searchType}</span>
-                    <ChevronDown size={14} className="hidden sm:block" />
+                  
                 </div>
 
                 <input 
@@ -394,55 +394,68 @@ export default function Home() {
             </form>
           </div>
 
-          {/* CATEGORIES (Scrollable on mobile) */}
-          <div className="flex flex-wrap justify-center gap-2 pt-2 px-2">
-            <button
+          {/* CATEGORIES (Now with Framer Motion Animation) */}
+          <div className="flex flex-wrap justify-center gap-3 pt-6 px-2 max-w-5xl mx-auto">
+            <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => { setActiveCategory('All'); setActiveSubTag(''); }}
-                className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all border ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm md:text-base font-semibold transition-colors border shadow-sm ${
                   activeCategory === 'All'
-                    ? 'bg-white dark:bg-[#151b2d] text-indigo-600 border-indigo-200 dark:border-indigo-900 shadow-sm ring-2 ring-indigo-500/10'
-                    : 'bg-transparent text-slate-500 border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-white dark:bg-[#151b2d] text-indigo-600 border-indigo-200 dark:border-indigo-900 ring-2 ring-indigo-500/20'
+                    : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-transparent hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'
                 }`}
             >
-              <Filter size={14} /> All
-            </button>
+              <Filter size={18} /> All
+            </motion.button>
             
-            {Object.entries(CATEGORIES).map(([name, data]) => {
+            {Object.entries(CATEGORIES).map(([name, data], index) => {
                 const Icon = data.icon;
                 const isActive = activeCategory === name;
                 return (
-                    <button
+                    <motion.button
                         key={name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => { setActiveCategory(name); setActiveSubTag(''); }}
-                        className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all border whitespace-nowrap ${
+                        className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm md:text-base font-medium transition-colors border whitespace-nowrap shadow-sm ${
                         isActive
-                            ? 'bg-indigo-600 text-white border-transparent shadow-md transform scale-105'
-                            : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600'
+                            ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg'
+                            : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'
                         }`}
                     >
-                        <Icon size={14} /> {name}
-                    </button>
+                        <Icon size={18} /> {name}
+                    </motion.button>
                 )
             })}
           </div>
 
-          {/* SUB TAGS */}
+          {/* SUB TAGS (Animated Entry) */}
           {activeCategory !== 'All' && (
-              <div className="flex flex-wrap justify-center gap-2 animate-fade-in-up pb-4 px-2">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-wrap justify-center gap-3 pt-6 pb-4 px-2 max-w-4xl mx-auto"
+              >
                   {CATEGORIES[activeCategory as keyof typeof CATEGORIES].sub.map((tag) => (
-                      <button
+                      <motion.button
                         key={tag}
+                        whileHover={{ scale: 1.05, backgroundColor: "rgba(99, 102, 241, 0.1)" }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => setActiveSubTag(activeSubTag === tag ? '' : tag)}
-                        className={`px-3 py-1 rounded-full text-[10px] md:text-xs font-bold transition-all border ${
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
                             activeSubTag === tag
-                                ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border-indigo-200'
-                                : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-indigo-300'
+                                ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700 shadow-sm'
+                                : 'bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-indigo-300'
                         }`}
                       >
                           {tag}
-                      </button>
+                      </motion.button>
                   ))}
-              </div>
+              </motion.div>
           )}
 
         </div>
@@ -547,7 +560,7 @@ export default function Home() {
               return (
                 <div key={job.id} className="group relative bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 p-4 md:p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-lg hover:-translate-y-1 flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center">
                   
-                  {/* Job Icon - Now using Professional Lucide Icons */}
+                 {/* Job Icon - Now using Professional Lucide Icons */}
                   <div className="hidden sm:flex h-12 w-12 md:h-14 md:w-14 rounded-xl bg-slate-50 dark:bg-slate-800/50 items-center justify-center border border-slate-100 dark:border-slate-700 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                       {(() => {
                         // 1. Category ka naam match karo

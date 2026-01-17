@@ -43,7 +43,7 @@ export default function Navbar() {
 {/* LOGO SECTION - FIXED */}
 {/* LOGO SECTION - FORCED FIX */}
 {/* LOGO SECTION - RESPONSIVE (Mobile: Small, Desktop: Big) */}
-<Link href="/" className="flex items-center gap-1 md:gap-5" onClick={() => setIsOpen(false)}>
+<Link href="/" className="flex items-center gap-5 md:gap-5" onClick={() => setIsOpen(false)}>
   
   <Image 
     src="/logo2.png" 

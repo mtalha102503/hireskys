@@ -179,7 +179,7 @@ whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
         <div className="max-w-md mx-auto w-full">
             {/* Mobile Logo - Added margin top to prevent overlap with back button */}
             <div className="lg:hidden mb-8 mt-4">
-                <Image src="/logo.png" alt="HireSkys Logo" width={50} height={50} className="mb-2" />
+                <Image src="/logo2.png" alt="HireSkys Logo" width={50} height={50} className="mb-2" />
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white">HireSkys</h2>
             </div>
 
@@ -331,7 +331,7 @@ whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
            
            <div className="relative z-10 max-w-lg text-white space-y-8">
                <div className="flex items-center gap-4 mb-6">
-                   <Image src="/logo.png" alt="HireSkys Logo" width={80} height={80} className="rounded-2xl shadow-2xl shadow-indigo-500/50" />
+                   <Image src="/logo2.png" alt="HireSkys Logo" width={80} height={80} className="rounded-2xl shadow-2xl shadow-indigo-500/50" />
                    <span className="text-4xl font-extrabold text-White-900 tracking-tight">HireSkys</span>
                </div>
                <h2 className="text-5xl font-extrabold leading-tight">Find the unseen.<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Build the future.</span></h2>
@@ -344,4 +344,5 @@ whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
       </div>
     </div>
   );
+
 }

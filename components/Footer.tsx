@@ -16,7 +16,7 @@ export default function Footer() {
           {/* COL 1: BRANDING */}
           <div className="space-y-2">
             {/* LOGO SECTION */}
-            <Link href="/" className="flex items-center gap-1 md:gap-5">
+            <Link href="/" className="flex items-center gap-5 md:gap-5">
               <Image 
                 src="/logo2.png" 
                 alt="HireSkys Logo"

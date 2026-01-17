@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react'; // useRef add kar dia
 import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation'; 
@@ -94,7 +94,7 @@ export default function Home() {
   const [searchType, setSearchType] = useState<'jobs' | 'talent'>('jobs');
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeSubTag, setActiveSubTag] = useState('');
-  
+  const jobsSectionRef = useRef<HTMLDivElement>(null);
   // Fallback State
   const [isFallback, setIsFallback] = useState(false);
 
@@ -103,7 +103,7 @@ export default function Home() {
 
   // 🔔 POPUP STATE
   const [showPopup, setShowPopup] = useState(false);
-
+  
   useEffect(() => {
     checkUser();
     fetchJobs();
@@ -114,7 +114,18 @@ export default function Home() {
         fetchSavedJobs();
     }
   }, [currentUser]);
-
+// 📜 AUTO SCROLL EFFECT (Updated: Only for SubTags)
+  useEffect(() => {
+    // Check: Agar 'activeSubTag' majood hai (matlab user ne sub-category select ki hai)
+    if (activeSubTag && jobsSectionRef.current) {
+        setTimeout(() => {
+            jobsSectionRef.current?.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }, 100);
+    }
+  }, [activeSubTag]); // 👈 Dependency array mein sirf 'activeSubTag' rakha hai
   // Debounce Search
   useEffect(() => {
     if (searchType === 'jobs') {
@@ -586,8 +597,9 @@ export default function Home() {
       )}
 
       {/* MAIN CONTENT */}
-      <main className="container mx-auto px-4 pt-12 md:pt-16 pb-24 max-w-5xl">
-        
+      <main 
+      ref={jobsSectionRef}
+      className="container mx-auto px-4 pt-12 md:pt-16 pb-24 max-w-5xl">
         {isFallback && (
             <div className="mb-8 p-4 md:p-6 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/10 dark:to-amber-900/10 border border-orange-200 dark:border-orange-800/50 flex flex-col md:flex-row items-start gap-4 shadow-sm">
                 <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-full">

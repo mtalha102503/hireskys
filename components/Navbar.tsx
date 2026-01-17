@@ -43,28 +43,35 @@ export default function Navbar() {
 {/* LOGO SECTION - FIXED */}
 {/* LOGO SECTION - FORCED FIX */}
 {/* LOGO SECTION - RESPONSIVE (Mobile: Small, Desktop: Big) */}
-<Link href="/" className="flex items-center gap-1 md:gap-0" onClick={() => setIsOpen(false)}>
+<Link href="/" className="flex items-center gap-1 md:gap-5" onClick={() => setIsOpen(false)}>
   
   <Image 
-    src="/logo1.png" 
+    src="/logo2.png" 
     alt="HireSkys Logo"
     width={0}
     height={0}
     sizes="100vw"
     // Mobile: h-9 (chota), Desktop: h-14 (bada)
     // Mobile: -mr-2 gap fix, Desktop: -mr-3 gap fix
-    className="h-9 w-auto md:h-14 object-contain -mr-2 md:-mr-3" 
+    className="h-9 w-auto md:h-9 object-contain -mr-2 md:-mr-3" 
     priority
   />
 
-  <div className="flex flex-col -space-y-0.5">
-    <span className="text-xl md:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white z-10">
-      HireSkys
-    </span>
-    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-widest uppercase">
-      Remote Only
-    </span>
-  </div>
+  <div className="flex flex-col">
+            <span className="text-xl md:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
+              HireSkys
+            </span>
+            {/* Premium Tech Badge */}
+            <div className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 w-fit">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500"></span>
+                </span>
+                <span className="text-[8px] md:text-[9px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-widest leading-none">
+                  Remote Only
+                </span>
+            </div>
+          </div>
 
 </Link>
 

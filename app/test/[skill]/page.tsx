@@ -149,19 +149,6 @@ export default function SkillTest() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-white font-sans selection:bg-indigo-500/30 transition-colors duration-300">
-      
-      {/* ⚡ DEV CHEAT BUTTON */}
-      <button 
-        onClick={async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return alert("Login first.");
-            const { error } = await supabase.from('user_skills').upsert({ user_id: user.id, skill_name: cleanSkill, proficiency_score: 10 }, { onConflict: 'user_id, skill_name' });
-            if (!error) { setCurrentScore(10); setFeedback("Dev Pass Used 🚀"); setStage('result'); }
-        }}
-        className="fixed top-20 right-4 z-50 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg border-2 border-white animate-bounce text-xs cursor-pointer"
-      >
-        ⚡ DEV PASS
-      </button>
 
       {/* 🚨 TAB SWITCH PUNISHMENT MODAL */}
       {violation && (
@@ -424,4 +411,5 @@ function LevelCard({ title, desc, scoreReq, targetScore, currentScore, onClick, 
             </div>
         </button>
     );
+
 }

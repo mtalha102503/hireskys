@@ -14,16 +14,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           
           {/* COL 1: BRANDING */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             {/* LOGO SECTION */}
-            <Link href="/" className="flex items-center gap-1 md:gap-0">
+            <Link href="/" className="flex items-center gap-1 md:gap-5">
               <Image 
-                src="/logo1.png" 
+                src="/logo2.png" 
                 alt="HireSkys Logo"
                 width={0}
                 height={0}
                 sizes="100vw"
-                className="h-9 w-auto md:h-14 object-contain -mr-2 md:-mr-3" 
+                className="h-9 w-auto md:h-9 object-contain -mr-2 md:-mr-3" 
                 priority
               />
               <span className="text-xl md:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white z-10">

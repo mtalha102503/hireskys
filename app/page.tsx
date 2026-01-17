@@ -7,7 +7,7 @@ import {
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
   User as UserIcon, Smartphone, Cpu, Edit3, X, Zap, Facebook, Linkedin,
-  Heart, ChevronDown, Filter, Users, Trophy, Bell, Bookmark, Rocket, CheckCircle
+  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard
 } from 'lucide-react';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
@@ -308,39 +308,79 @@ export default function Home() {
         
         <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 relative z-10">
           
-          <div className="space-y-6 animate-fade-in-up">
+          {/* --- NEW HERO SECTION (No Icon - Conflict Free) --- */}
+          <div className="space-y-8 mb-14 relative z-10">
               
-              {/* --- BADGES ROW --- */}
+              {/* 1. BADGES ROW */}
               <div className="flex flex-wrap justify-center gap-3">
-                {/* Badge 1: New Jobs */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-[10px] md:text-xs font-bold text-amber-700 dark:text-amber-400">
-                  <Zap size={12} className="fill-current" />
-                  <span>1,200+ New Gigs Added</span>
-                </div>
+                
+                {/* Badge A: REMOTE ONLY */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-500/30"
+                >
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600 dark:bg-emerald-400"></span>
+                    </span>
+                    <span className="text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest">
+                        100% Remote & Freelance Only
+                    </span>
+                </motion.div>
 
-                {/* Badge 2: REMOTE ONLY (Highlighted) */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-[10px] md:text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  100% Remote & Freelance Only
-                </div>
+                {/* Badge B: New Gigs Count */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/30"
+                >
+                    <Zap size={14} className="text-amber-600 dark:text-amber-400 fill-current" />
+                    <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
+                        1,240+ Fresh Gigs Added
+                    </span>
+                </motion.div>
               </div>
 
-              {/* --- MAIN HEADING --- */}
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
-                Find High-Paying <br className="hidden md:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">
-                  Remote & Contract
-                </span> Work
-              </h1>
+              {/* 2. MAIN HEADING */}
+              <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 dark:text-white leading-[1.1]"
+              >
+                  Find High-Paying <br className="hidden md:block" />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                      Remote & Contract Work
+                  </span>
+              </motion.h1>
 
-              {/* --- DESCRIPTION --- */}
-              <p className="text-base md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed px-4">
-                The elite job radar for <strong className="text-slate-900 dark:text-white">Developers, Designers, & Marketers</strong>. 
-                Skip the office politics—get verified <span className="underline decoration-indigo-400 decoration-2 underline-offset-2">Work from Home</span> jobs and freelance contracts instantly.
-              </p>
+              {/* 3. DESCRIPTION (Clean Text Only) */}
+              <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="max-w-4xl mx-auto flex flex-col gap-5"
+              >
+                  <p className="text-xl md:text-2xl text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
+                      The elite job radar for <span className="text-slate-900 dark:text-white font-black decoration-indigo-500/30 underline decoration-4 underline-offset-4">Developers, Designers, & Marketers</span>.
+                  </p>
+                  
+                  {/* Updated Line: Just Text Chip */}
+                  <div className="text-lg md:text-xl text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-center gap-2">
+                      <span>Skip the office politics. Get verified</span>
+                      
+                      {/* Work From Home Chip (Text Only - No Icon) */}
+                      <span className="inline-flex items-center px-4 py-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300 font-bold text-base shadow-sm transform hover:scale-105 transition-transform cursor-default">
+                         Work from Home
+                      </span>
+                      
+                      <span>jobs instantly.</span>
+                  </div>
+              </motion.div>
+
           </div>
 
           {/* --- SEARCH BAR (RESPONSIVE) --- */}
@@ -461,50 +501,84 @@ export default function Home() {
         </div>
       </header>
 
-      {/* WHY JOIN SECTION */}
+      {/* WHY JOIN SECTION (Animated & Interactive) */}
       {!currentUser && (
-        <div className="bg-white dark:bg-[#111625] border-y border-slate-200 dark:border-slate-800 py-12">
+        <div className="bg-white dark:bg-[#111625] border-y border-slate-200 dark:border-slate-800 py-16">
             <div className="container mx-auto px-4 max-w-6xl">
-                <div className="text-center mb-10">
-                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
+                
+                {/* Section Header */}
+                <div className="text-center mb-12">
+                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
                         Why create an account?
                     </h2>
-                    <p className="text-slate-500 mt-2">Join elite freelancers getting hired faster.</p>
+                    <p className="text-slate-500 mt-3 text-lg">Join elite freelancers getting hired faster.</p>
                 </div>
 
+                {/* Animated Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center hover:border-indigo-500 transition group">
-                        <div className="w-12 h-12 mx-auto bg-green-100 dark:bg-green-900/30 text-green-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <Trophy size={24} className="fill-current" />
+                    
+                    {/* Card 1: Verified Badge */}
+                    <motion.div 
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 group cursor-default"
+                    >
+                        <div className="w-14 h-14 mx-auto bg-green-100 dark:bg-green-900/30 text-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                            <Award size={28} className="fill-current" />
                         </div>
-                        <h3 className="font-bold text-lg mb-2">Get Verified Badge</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Pass skill tests to earn the coveted <span className="text-green-600 font-bold">Green Badge</span>.</p>
-                    </div>
-                    <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center hover:border-indigo-500 transition group">
-                        <div className="w-12 h-12 mx-auto bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <Rocket size={24} />
+                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Get Verified Badge</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Pass skill tests to earn the coveted <span className="text-green-600 font-bold">Green Badge</span>.
+                        </p>
+                    </motion.div>
+
+                    {/* Card 2: Public Profile */}
+                    <motion.div 
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10 group cursor-default"
+                    >
+                        <div className="w-14 h-14 mx-auto bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                            <IdCard size={28} />
                         </div>
-                        <h3 className="font-bold text-lg mb-2">Public Profile</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Create a professional portfolio page to share directly with clients.</p>
-                    </div>
-                    <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center hover:border-indigo-500 transition group">
-                        <div className="w-12 h-12 mx-auto bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <Bell size={24} />
+                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Public Profile</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Create a professional portfolio page to share directly with clients.
+                        </p>
+                    </motion.div>
+
+                    {/* Card 3: Instant Alerts */}
+                    <motion.div 
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 group cursor-default"
+                    >
+                        <div className="w-14 h-14 mx-auto bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                            <Bell size={28} />
                         </div>
-                        <h3 className="font-bold text-lg mb-2">Instant Alerts</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Get notified via Email/WhatsApp the second a job drops.</p>
-                    </div>
-                    <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center hover:border-indigo-500 transition group">
-                        <div className="w-12 h-12 mx-auto bg-red-100 dark:bg-red-900/30 text-red-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <Bookmark size={24} className="fill-current" />
+                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Instant Alerts</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Get notified via Email/WhatsApp the second a job drops.
+                        </p>
+                    </motion.div>
+
+                    {/* Card 4: Save Jobs */}
+                    <motion.div 
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-500/10 group cursor-default"
+                    >
+                        <div className="w-14 h-14 mx-auto bg-red-100 dark:bg-red-900/30 text-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                            <Bookmark size={28} className="fill-current" />
                         </div>
-                        <h3 className="font-bold text-lg mb-2">Save Jobs</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Bookmark interesting roles and apply when you are ready.</p>
-                    </div>
+                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Save Jobs</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Bookmark interesting roles and apply when you are ready.
+                        </p>
+                    </motion.div>
+
                 </div>
-                <div className="text-center mt-8">
-                    <Link href="/login?view=signup" className="inline-flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full shadow-lg shadow-indigo-500/30 transition transform hover:-translate-y-1">
-                        Create Free Account <ArrowRight size={18}/>
+
+                {/* Call to Action */}
+                <div className="text-center mt-12">
+                    <Link href="/login?view=signup" className="inline-flex items-center gap-2 px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg rounded-full shadow-xl shadow-indigo-500/30 transition transform hover:-translate-y-1">
+                        Create Free Account <ArrowRight size={20}/>
                     </Link>
                 </div>
             </div>

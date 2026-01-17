@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, Loader2, ArrowLeft, User, Phone, AtSign, Globe, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 // --- COUNTRY CODES DATA (Full List) ---
 const COUNTRIES = [
@@ -79,6 +80,137 @@ const COUNTRIES = [
   { code: "+212", flag: "🇲🇦", name: "Morocco" },
   { code: "+234", flag: "🇳🇬", name: "Nigeria" },
   { code: "+27", flag: "🇿🇦", name: "South Africa" },
+
+  // ➕ Added: Rest of the World (Alphabetical)
+  { code: "+93", flag: "🇦🇫", name: "Afghanistan" },
+  { code: "+355", flag: "🇦🇱", name: "Albania" },
+  { code: "+213", flag: "🇩🇿", name: "Algeria" },
+  { code: "+376", flag: "🇦🇩", name: "Andorra" },
+  { code: "+244", flag: "🇦🇴", name: "Angola" },
+  { code: "+374", flag: "🇦🇲", name: "Armenia" },
+  { code: "+297", flag: "🇦🇼", name: "Aruba" },
+  { code: "+994", flag: "🇦🇿", name: "Azerbaijan" },
+  { code: "+1", flag: "🇧🇸", name: "Bahamas" },
+  { code: "+1", flag: "🇧🇧", name: "Barbados" },
+  { code: "+375", flag: "🇧🇾", name: "Belarus" },
+  { code: "+501", flag: "🇧🇿", name: "Belize" },
+  { code: "+229", flag: "🇧🇯", name: "Benin" },
+  { code: "+1", flag: "🇧🇲", name: "Bermuda" },
+  { code: "+975", flag: "🇧🇹", name: "Bhutan" },
+  { code: "+591", flag: "🇧🇴", name: "Bolivia" },
+  { code: "+387", flag: "🇧🇦", name: "Bosnia & Herzegovina" },
+  { code: "+267", flag: "🇧🇼", name: "Botswana" },
+  { code: "+673", flag: "🇧🇳", name: "Brunei" },
+  { code: "+226", flag: "🇧🇫", name: "Burkina Faso" },
+  { code: "+257", flag: "🇧🇮", name: "Burundi" },
+  { code: "+855", flag: "🇰🇭", name: "Cambodia" },
+  { code: "+237", flag: "🇨🇲", name: "Cameroon" },
+  { code: "+238", flag: "🇨🇻", name: "Cape Verde" },
+  { code: "+1", flag: "🇰🇾", name: "Cayman Islands" },
+  { code: "+236", flag: "🇨🇫", name: "Central African Republic" },
+  { code: "+242", flag: "🇨🇬", name: "Congo - Brazzaville" },
+  { code: "+243", flag: "🇨🇩", name: "Congo - Kinshasa" },
+  { code: "+506", flag: "🇨🇷", name: "Costa Rica" },
+  { code: "+53", flag: "🇨🇺", name: "Cuba" },
+  { code: "+357", flag: "🇨🇾", name: "Cyprus" },
+  { code: "+253", flag: "🇩🇯", name: "Djibouti" },
+  { code: "+1", flag: "🇩🇲", name: "Dominica" },
+  { code: "+1", flag: "🇩🇴", name: "Dominican Republic" },
+  { code: "+593", flag: "🇪🇨", name: "Ecuador" },
+  { code: "+503", flag: "🇸🇻", name: "El Salvador" },
+  { code: "+240", flag: "🇬🇶", name: "Equatorial Guinea" },
+  { code: "+291", flag: "🇪🇷", name: "Eritrea" },
+  { code: "+372", flag: "🇪🇪", name: "Estonia" },
+  { code: "+251", flag: "🇪🇹", name: "Ethiopia" },
+  { code: "+298", flag: "🇫🇴", name: "Faroe Islands" },
+  { code: "+679", flag: "🇫🇯", name: "Fiji" },
+  { code: "+241", flag: "🇬🇦", name: "Gabon" },
+  { code: "+220", flag: "🇬🇲", name: "Gambia" },
+  { code: "+995", flag: "🇬🇪", name: "Georgia" },
+  { code: "+233", flag: "🇬🇭", name: "Ghana" },
+  { code: "+350", flag: "🇬🇮", name: "Gibraltar" },
+  { code: "+299", flag: "🇬🇱", name: "Greenland" },
+  { code: "+1", flag: "🇬🇩", name: "Grenada" },
+  { code: "+590", flag: "🇬🇵", name: "Guadeloupe" },
+  { code: "+1", flag: "🇬🇺", name: "Guam" },
+  { code: "+502", flag: "🇬🇹", name: "Guatemala" },
+  { code: "+224", flag: "🇬🇳", name: "Guinea" },
+  { code: "+245", flag: "🇬🇼", name: "Guinea-Bissau" },
+  { code: "+592", flag: "🇬🇾", name: "Guyana" },
+  { code: "+509", flag: "🇭🇹", name: "Haiti" },
+  { code: "+504", flag: "🇭🇳", name: "Honduras" },
+  { code: "+852", flag: "🇭🇰", name: "Hong Kong" },
+  { code: "+354", flag: "🇮🇸", name: "Iceland" },
+  { code: "+98", flag: "🇮🇷", name: "Iran" },
+  { code: "+964", flag: "🇮🇶", name: "Iraq" },
+  { code: "+972", flag: "🇮🇱", name: "Israel" },
+  { code: "+225", flag: "🇨🇮", name: "Ivory Coast" },
+  { code: "+1", flag: "🇯🇲", name: "Jamaica" },
+  { code: "+962", flag: "🇯🇴", name: "Jordan" },
+  { code: "+7", flag: "🇰🇿", name: "Kazakhstan" },
+  { code: "+996", flag: "🇰🇬", name: "Kyrgyzstan" },
+  { code: "+856", flag: "🇱🇦", name: "Laos" },
+  { code: "+371", flag: "🇱🇻", name: "Latvia" },
+  { code: "+961", flag: "🇱🇧", name: "Lebanon" },
+  { code: "+266", flag: "🇱🇸", name: "Lesotho" },
+  { code: "+231", flag: "🇱🇷", name: "Liberia" },
+  { code: "+218", flag: "🇱🇾", name: "Libya" },
+  { code: "+423", flag: "🇱🇮", name: "Liechtenstein" },
+  { code: "+370", flag: "🇱🇹", name: "Lithuania" },
+  { code: "+352", flag: "🇱🇺", name: "Luxembourg" },
+  { code: "+853", flag: "🇲🇴", name: "Macau" },
+  { code: "+389", flag: "🇲🇰", name: "North Macedonia" },
+  { code: "+261", flag: "🇲🇬", name: "Madagascar" },
+  { code: "+265", flag: "🇲🇼", name: "Malawi" },
+  { code: "+960", flag: "🇲🇻", name: "Maldives" },
+  { code: "+223", flag: "🇲🇱", name: "Mali" },
+  { code: "+356", flag: "🇲🇹", name: "Malta" },
+  { code: "+222", flag: "🇲🇷", name: "Mauritania" },
+  { code: "+230", flag: "🇲🇺", name: "Mauritius" },
+  { code: "+373", flag: "🇲🇩", name: "Moldova" },
+  { code: "+377", flag: "🇲🇨", name: "Monaco" },
+  { code: "+976", flag: "🇲🇳", name: "Mongolia" },
+  { code: "+382", flag: "🇲🇪", name: "Montenegro" },
+  { code: "+1", flag: "🇲🇸", name: "Montserrat" },
+  { code: "+258", flag: "🇲🇿", name: "Mozambique" },
+  { code: "+95", flag: "🇲🇲", name: "Myanmar (Burma)" },
+  { code: "+264", flag: "🇳🇦", name: "Namibia" },
+  { code: "+505", flag: "🇳🇮", name: "Nicaragua" },
+  { code: "+227", flag: "🇳🇪", name: "Niger" },
+  { code: "+507", flag: "🇵🇦", name: "Panama" },
+  { code: "+675", flag: "🇵🇬", name: "Papua New Guinea" },
+  { code: "+595", flag: "🇵🇾", name: "Paraguay" },
+  { code: "+1", flag: "🇵🇷", name: "Puerto Rico" },
+  { code: "+250", flag: "🇷🇼", name: "Rwanda" },
+  { code: "+685", flag: "🇼🇸", name: "Samoa" },
+  { code: "+378", flag: "🇸🇲", name: "San Marino" },
+  { code: "+221", flag: "🇸🇳", name: "Senegal" },
+  { code: "+381", flag: "🇷🇸", name: "Serbia" },
+  { code: "+248", flag: "🇸🇨", name: "Seychelles" },
+  { code: "+232", flag: "🇸🇱", name: "Sierra Leone" },
+  { code: "+421", flag: "🇸🇰", name: "Slovakia" },
+  { code: "+386", flag: "🇸🇮", name: "Slovenia" },
+  { code: "+252", flag: "🇸🇴", name: "Somalia" },
+  { code: "+211", flag: "🇸🇸", name: "South Sudan" },
+  { code: "+249", flag: "🇸🇩", name: "Sudan" },
+  { code: "+597", flag: "🇸🇷", name: "Suriname" },
+  { code: "+268", flag: "🇸🇿", name: "Eswatini (Swaziland)" },
+  { code: "+963", flag: "🇸🇾", name: "Syria" },
+  { code: "+886", flag: "🇹🇼", name: "Taiwan" },
+  { code: "+992", flag: "🇹🇯", name: "Tajikistan" },
+  { code: "+255", flag: "🇹🇿", name: "Tanzania" },
+  { code: "+670", flag: "🇹🇱", name: "Timor-Leste" },
+  { code: "+228", flag: "🇹🇬", name: "Togo" },
+  { code: "+1", flag: "🇹🇹", name: "Trinidad & Tobago" },
+  { code: "+216", flag: "🇹🇳", name: "Tunisia" },
+  { code: "+993", flag: "🇹🇲", name: "Turkmenistan" },
+  { code: "+256", flag: "🇺🇬", name: "Uganda" },
+  { code: "+598", flag: "🇺🇾", name: "Uruguay" },
+  { code: "+998", flag: "🇺🇿", name: "Uzbekistan" },
+  { code: "+58", flag: "🇻🇪", name: "Venezuela" },
+  { code: "+967", flag: "🇾🇪", name: "Yemen" },
+  { code: "+260", flag: "🇿🇲", name: "Zambia" },
+  { code: "+263", flag: "🇿🇼", name: "Zimbabwe" },
 ];
 
 const GoogleIcon = () => (
@@ -99,11 +231,18 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<'login' | 'signup' | 'forgot'>('login'); 
   const [msg, setMsg] = useState('');
-  
-  // --- AUTH HANDLER ---
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // --- AUTH HANDLER (UPDATED WITH CAPTCHA) ---
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); setMsg('');
+
+    // 1. Check agar Captcha solve nahi hua
+    if (!captchaToken) {
+        setMsg('⚠️ Please verify you are human (Complete Captcha).');
+        setLoading(false);
+        return;
+    }
 
     try {
       if (view === 'signup') {
@@ -111,12 +250,12 @@ export default function Login() {
             email, 
             password,
             options: { 
+                // 👇 Yahan Token bhejna zaroori hai
+                captchaToken: captchaToken,
                 data: {
                     full_name: fullName,
                     username: username.toLowerCase().replace(/\s+/g, ''),
-                    // Combine Code + Number (e.g., +92300123...)
-                    // 👇 Ye '0' bhi hatayega aur '-' (dash) ya Space bhi uda dega
-whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
+                    whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
                 }
             }
         });
@@ -127,12 +266,15 @@ whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
         const { error } = await supabase.auth.signInWithPassword({ 
             email, 
             password,
+            options: { captchaToken } // 👇 Login mein bhi token bhejo
         });
         if (error) throw error;
         router.push('/profile'); 
       }
     } catch (error: any) {
       setMsg(error.message);
+      // Token reset kar dena chahiye error ke baad (optional but good)
+      setCaptchaToken(null); 
     } finally {
       setLoading(false);
     }
@@ -255,7 +397,7 @@ whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
                                             className="h-full w-20 md:w-auto rounded-l-xl border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-3 pl-2 pr-6 md:pl-3 md:pr-8 focus:ring-2 focus:ring-indigo-600 outline-none appearance-none font-medium cursor-pointer text-sm"
                                         >
                                             {COUNTRIES.map((c) => (
-                                                <option key={c.code} value={c.code}>
+                                                <option key={c.name} value={c.code}>
                                                     {c.flag} {c.code}
                                                 </option>
                                             ))}
@@ -305,6 +447,13 @@ whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
 
                   {msg && <div className={`p-3 rounded-lg text-sm font-medium text-center ${msg.includes('created') ? 'bg-green-100 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg}</div>}
 
+                  {/* Cloudflare Widget */}
+<div className="flex justify-center my-4">
+    <Turnstile 
+        siteKey="0x4AAAAAACNCb7I9-ROyHTqU" // 👈 Step 1 wali Site Key
+        onSuccess={(token) => setCaptchaToken(token)}
+    />
+</div>
                   <button disabled={loading} className="w-full py-4 bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2">
                       {loading ? <Loader2 className="animate-spin" /> : (view === 'signup' ? 'Create Account' : 'Sign In')}
                   </button>
@@ -344,5 +493,4 @@ whatsapp: `${countryCode}${whatsapp.replace(/^0+/, '').replace(/\D/g, '')}`
       </div>
     </div>
   );
-
 }

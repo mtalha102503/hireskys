@@ -34,7 +34,7 @@ alternates: {
   },
 
   description: "Find high-paying remote jobs and freelance contracts. HireSkys is exclusively for 100% remote work in Development, Design, AI, and Marketing. No office politics, just work.",
-
+manifest: "/manifest.json",
   keywords: [
     "Remote Jobs",
     "Freelance Work",

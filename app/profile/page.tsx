@@ -8,7 +8,7 @@ import {
   Save, LogOut, Upload, Plus, Trash2, X, ChevronDown, ChevronUp,
   GraduationCap, Link as LinkIcon, User, MapPin, Briefcase, Code, 
   FolderGit, FileText, CheckCircle, Eye, DollarSign, Heart, ExternalLink,
-  Zap, Play, Trophy, AlertTriangle, Star, Award, Mail, Phone, AtSign
+  Zap, Play, Trophy, AlertTriangle, Star, Award, Mail, Phone, AtSign, Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -44,6 +44,7 @@ export default function Profile() {
     username: '',    // 👈 Added
     email: '',       // 👈 Added
     whatsapp: '',    // 👈 Added
+    birth_date: '',
     bio: '',
     location: '',
     city: '',
@@ -80,13 +81,33 @@ export default function Profile() {
     
     // 👇 SMART DATA FETCHING (Table OR Metadata)
     if (data || user) {
+      
+      // 🌟 LOGIC START: Username Auto-Generation
+      let currentUsername = data?.username || user.user_metadata?.username || '';
+
+      // Agar Username khali hai (Naya Google User), to khud banao
+      if (!currentUsername) {
+          const baseName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'user';
+          const randomNum = Math.floor(100 + Math.random() * 900); // 3 digit random
+          
+          currentUsername = baseName
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '_')       // Spaces ko underscore banao
+            .replace(/[^a-z0-9_]/g, '') // Special chars hatao
+            + '_' + randomNum;
+      }
+      // 🌟 LOGIC END
+
       setFormData({
         // Pehle Table check karo, agar khali hai to Auth Metadata se uthao
         full_name: data?.full_name || user.user_metadata?.full_name || '',
-        username: data?.username || user.user_metadata?.username || '',
-        whatsapp: data?.whatsapp || user.user_metadata?.whatsapp || '',
-        email: user.email || '', // Email hamesha Auth se aayega
         
+        username: currentUsername, // 👈 Yahan wo generated variable use kiya
+        
+        whatsapp: data?.whatsapp || user.user_metadata?.whatsapp || '',
+        email: user.email || '', 
+        birth_date: data?.birth_date || '',
         bio: data?.bio || '',
         location: data?.location || '',
         city: data?.city || '',
@@ -117,7 +138,6 @@ export default function Profile() {
     }
     setLoading(false);
   }
-
   // ... (Test Logic Functions same as before) ...
   const startTest = async (skill: string) => {
     const { error } = await supabase.from('user_skills').upsert({
@@ -211,6 +231,7 @@ export default function Profile() {
         full_name: formData.full_name,
         username: formData.username,
         whatsapp: formData.whatsapp, // Save whatsapp to DB
+        birth_date: formData.birth_date, // 👈 Ye Line Add karo
         bio: formData.bio,
         location: formData.location,
         city: formData.city,
@@ -304,6 +325,9 @@ export default function Profile() {
                                 <AtSign size={14} className="absolute left-3 top-3 text-slate-400"/>
                                 <input type="text" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} className="w-full mt-1 pl-8 p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none lowercase" placeholder="username" />
                             </div>
+                            <p className="text-[10px] text-slate-400 mt-1 pl-1">
+        We created a temporary ID. You can change it!
+    </p>
                         </div>
 
                         {/* EMAIL (Read Only usually) */}
@@ -323,7 +347,19 @@ export default function Profile() {
                                 <input type="text" value={formData.whatsapp} onChange={(e) => setFormData({...formData, whatsapp: e.target.value})} className="w-full mt-1 pl-8 p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none" placeholder="+92..." />
                             </div>
                         </div>
-
+{/* BIRTH DATE FIELD */}
+<div>
+    <label className="text-xs font-bold uppercase text-slate-400">Date of Birth</label>
+    <div className="relative">
+        <Calendar size={14} className="absolute left-3 top-3 text-slate-400"/>
+        <input 
+            type="date" 
+            value={formData.birth_date} 
+            onChange={(e) => setFormData({...formData, birth_date: e.target.value})} 
+            className="w-full mt-1 pl-8 p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none text-slate-700 dark:text-slate-300" 
+        />
+    </div>
+</div>
                         {/* HOURLY RATE */}
                         <div>
                             <label className="text-xs font-bold uppercase text-slate-400">Hourly Rate ($)</label>
@@ -339,7 +375,7 @@ export default function Profile() {
                                 <label className="text-[10px] text-slate-500">Search City (Auto-fill)</label>
                                 <LocationInput 
                                     defaultValue={formData.location}
-                                    onLocationSelect={(data: any) => {
+                                    onLocationSelect={(data) => {
                                         setFormData({
                                             ...formData,
                                             location: data.display,
@@ -663,5 +699,4 @@ export default function Profile() {
       </div>
     </div>
   );
-
 }

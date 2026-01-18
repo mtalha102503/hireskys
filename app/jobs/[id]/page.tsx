@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import ReportJob from '@/components/ReportJob';
 import Link from 'next/link';
 import { 
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
@@ -271,7 +272,7 @@ export default function JobDetails() {
                         {job.description || "No description provided."}
                     </div>
                 </div>
-
+<ReportJob jobId={job.id} />
                 {/* 🌟 RELATED JOBS SECTION */}
                 {relatedJobs.length > 0 && (
                   <div className="mt-12">
@@ -324,4 +325,5 @@ export default function JobDetails() {
       </div>
     </div>
   );
+
 }

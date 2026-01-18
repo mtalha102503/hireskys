@@ -103,7 +103,7 @@ export default function SupportPage() {
                   </div>
                   <h3 className="text-xl font-bold mb-2">Email Support</h3>
                   <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Best for detailed inquiries and account issues.</p>
-                  <a href="mailto:support@hireskys.com" className="text-blue-600 font-bold hover:underline">support@hireskys.com</a>
+                  <a href="mailto:contact@hireskys.com" className="text-blue-600 font-bold hover:underline">contact@hireskys.com</a>
               </div>
 
               {/* WhatsApp Card */}
@@ -263,4 +263,5 @@ export default function SupportPage() {
       </div>
     </div>
   );
+
 }

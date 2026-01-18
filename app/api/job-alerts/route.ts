@@ -108,7 +108,7 @@ async function sendEmail(to: string, job: any, username: string) {
 I came across your opening for the **${job.title}** position on ${job.source} and wanted to express my interest.
 
 I am a skilled professional registered on HireSkys 🚀. You can view my portfolio & skills here:
-👉 **https://hireskys.com/p/${username}**
+👉 https://hireskys.com/p/${username}
 
 I am available to discuss how my skills align with your goals.
 
@@ -198,4 +198,5 @@ export async function POST(request: Request) {
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
 }

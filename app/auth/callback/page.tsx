@@ -8,12 +8,20 @@ export default function AuthCallbackPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // 1. Supabase automatically URL hash (#access_token) detect kar lega
-    // 2. Session set hone ke baad hum user ko redirect kar denge
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        // Login successful -> Profile par bhejo
-        router.push('/profile'); 
+        // 👇 SMART CHECK START
+        const user = session.user;
+        const metadata = user.user_metadata;
+
+        // Agar WhatsApp ya Username missing hai (New Google User)
+        if (!metadata.whatsapp || !metadata.username) {
+            router.push('/profile'); 
+        } else {
+            // Agar sab kuch hai (Old User), to Home page jane do
+            router.push('/'); 
+        }
+        // 👆 SMART CHECK END
       }
     });
 
@@ -26,7 +34,7 @@ export default function AuthCallbackPage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B0F19] text-white">
       <Loader2 className="animate-spin text-indigo-500 mb-4" size={40} />
       <h2 className="text-xl font-bold">Verifying Login...</h2>
-      <p className="text-slate-400">Please wait while we set up your session.</p>
+      <p className="text-slate-400">Checking your profile status.</p>
     </div>
   );
 }

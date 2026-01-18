@@ -301,7 +301,7 @@ export default function Login() {
     try {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: `${window.location.origin}/auth/callback?next=/profile` }
+            options: { redirectTo: `${window.location.origin}/auth/callback` }
         });
         if (error) throw error;
     } catch (error: any) { alert(error.message); }
@@ -494,4 +494,5 @@ export default function Login() {
     </div>
   );
 }
+
 

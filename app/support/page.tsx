@@ -252,8 +252,8 @@ export default function SupportPage() {
                           <h4 className="font-bold text-slate-900 dark:text-white">Our Headquarters</h4>
                           <p className="text-sm text-slate-500 mt-1">
                               HireSkys Inc.<br/>
-                              101 Tech Avenue, Silicon Valley<br/>
-                              San Francisco, CA 94043
+                              10 Saman Zar Colony<br/>
+                              Gojra, Punjab, Pakistan
                           </p>
                       </div>
                   </div>
@@ -265,3 +265,4 @@ export default function SupportPage() {
   );
 
 }
+

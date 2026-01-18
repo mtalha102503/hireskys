@@ -136,7 +136,7 @@ export default function PrivacyPolicy() {
             </h2>
             <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-700 block md:inline-block md:pr-12 w-full md:w-auto">
               <p className="font-bold text-slate-900 dark:text-white text-sm">By Email:</p>
-              <a href="mailto:support@hireskys.com" className="text-indigo-600 hover:text-indigo-500 font-medium text-sm md:text-base break-all">support@hireskys.com</a>
+              <a href="mailto:contact@hireskys.com" className="text-indigo-600 hover:text-indigo-500 font-medium text-sm md:text-base break-all">contact@hireskys.com</a>
             </div>
           </section>
 
@@ -144,4 +144,5 @@ export default function PrivacyPolicy() {
       </main>
     </div>
   );
+
 }

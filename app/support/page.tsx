@@ -27,7 +27,7 @@ const FAQS = [
   },
   {
     question: "Can I post a job here?",
-    answer: "Currently, we are an invite-only platform for employers. If you want to hire talent, please contact our support team via the form below."
+    answer: "Yes you can post a job then our team will manually check it if it approved then it will show instantly on platform"
   }
 ];
 
@@ -265,4 +265,5 @@ export default function SupportPage() {
   );
 
 }
+
 

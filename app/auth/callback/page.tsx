@@ -15,31 +15,39 @@ export default function AuthCallbackPage() {
       if (session) {
         const user = session.user;
 
-        // 2. 🔍 DATABASE CHECK (Metadata par bharosa mat karo)
-        // Profiles table se data mangwao
-        const { data: profile, error } = await supabase
+        // 1. Pehle 'data' ko 'data' hi rehne do
+        const { data, error } = await supabase
           .from('profiles')
-          .select('username, whatsapp, birth_date')
+          .select('*')
           .eq('id', user.id)
           .single();
 
+        // 2. Ab 'data' ko 'profile' mein convert karo
+        const profile = data as any;
+
+        // 👇 UPDATED LOGIC HERE
         if (error || !profile) {
-          // Agar profile table mein entry hi nahi hai -> Profile Page
-          router.push('/profile');
+          // 1. Agar profile exist hi nahi karti -> Naye Setup Page par bhejo
+          router.push('/complete-profile');
         } 
-        else if (!profile.username || !profile.whatsapp || !profile.birth_date) {
-          // Agar entry hai lekin Username ya WhatsApp missing hai -> Profile Page
-          router.push('/profile');
+        // 2. Agar Profile hai lekin INCOMPLETE hai
+        else if (
+            !profile.username || 
+            !profile.whatsapp || 
+            !profile.birth_date || 
+            !profile.primary_role 
+        ) {
+          router.push('/complete-profile');
         } 
         else {
-          // Sab kuch set hai -> Home Page
+          // 3. Sab kuch set hai -> Home Page
           router.push('/');
         }
       } else {
-        // Agar session nahi mila (Login fail) -> Login Page
+        // 🛑 YE MISSING THA: Agar session nahi hai to Login par bhejo
         router.push('/login');
       }
-    };
+    }; // 👈 YE BRACKET MISSING THA
 
     handleCallback();
   }, [router]);

@@ -38,7 +38,7 @@ export default function CompleteProfile() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getSession();
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push('/login'); return; }
       
       setUser(user);
@@ -247,4 +247,5 @@ export default function CompleteProfile() {
       </div>
     </div>
   );
+
 }

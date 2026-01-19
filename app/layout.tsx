@@ -54,7 +54,7 @@ manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://hireskys.com",
+    url: "https://www.hireskys.com",
     siteName: "HireSkys",
     title: "HireSkys - Elite Remote & Freelance Jobs",
     description: "Stop scrolling, start working. Find verified 100% remote jobs and freelance gigs.",
@@ -112,8 +112,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "HireSkys",
-    "url": "https://hireskys.com",
-    "logo": "https://hireskys.com/logo.png",
+    "url": "https://www.hireskys.com",
+    "logo": "https://www.hireskys.com/logo.png",
     "sameAs": [
       "https://twitter.com/hireskys",
       "https://linkedin.com/company/hireskys"

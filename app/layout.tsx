@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 // 🚀 GLOBAL SEO SETTINGS (Remote & Freelance Optimized)
 export const metadata: Metadata = {
-  metadataBase: new URL('https://hireskys.com'),
+  metadataBase: new URL('https://www.hireskys.com'),
 
 alternates: {
     canonical: './',
@@ -54,7 +54,7 @@ alternates: {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://hireskys.com",
+    url: "https://www.hireskys.com",
     siteName: "HireSkys",
     title: "HireSkys - Elite Remote & Freelance Jobs",
     description: "Stop scrolling, start working. Find verified 100% remote jobs and freelance gigs.",

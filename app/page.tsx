@@ -223,7 +223,7 @@ export default function Home() {
 
     if (!isSearching && !isFiltering && !forceFallback) {
       const date = new Date();
-      date.setHours(date.getHours() - 96); 
+      date.setDate(date.getDate() - 7); 
       query = query.gt('date_posted', date.toISOString());
     } else {
       const date = new Date();
@@ -638,9 +638,10 @@ export default function Home() {
 
         <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
           <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
-            <Briefcase size={20} className="text-indigo-500" />
-            {isFallback ? 'Recommended' : 'Recent Job Posts'}
-          </h2>
+  <Briefcase size={20} className="text-indigo-500" />
+  {/* 👇 Agar filter nahi hai to "Fresh Arrivals" likho, warna "Recent Jobs" */}
+  {isFallback ? 'Recommended' : (activeCategory === 'All' && !searchQuery ? 'Fresh Arrivals (Last 7 Days)' : 'Recent Job Posts')}
+</h2>
           <span className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-1 md:px-3 rounded-full">
             {jobs.length} Results
           </span>

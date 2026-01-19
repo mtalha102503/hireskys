@@ -43,3 +43,16 @@ input[type="button"],
 label[for], label:has(input[type="file"]) {
   cursor: pointer;
 }
+/* --- 🌟 GLOBAL CLICK FEEDBACK (Press Effect) 🌟 --- */
+/* Har button aur link click karne par thoda sa dabega */
+button:active, 
+a:active,
+[role="button"]:active {
+  transform: scale(0.96); /* 96% size ho jayega click par */
+  transition: transform 0.1s ease-in-out; /* Smooth animation */
+}
+
+/* Mobile par blue highlight box hatane ke liye (Clean look) */
+* {
+  -webkit-tap-highlight-color: transparent;
+}

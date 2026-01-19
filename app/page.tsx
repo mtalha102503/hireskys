@@ -135,7 +135,28 @@ export default function Home() {
         return () => clearTimeout(timer);
     }
   }, [searchQuery, activeCategory, activeSubTag, searchType]);
+// 👇 Isay 'useEffect' ke baad paste karna
+  useEffect(() => {
+    const ensureProfileComplete = async () => {
+      // 1. Pehle User nikalo
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // 2. Phir Database se Skills check karo
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('skills')
+          .eq('id', user.id)
+          .single();
 
+        // 3. Agar Skills khali hain -> Redirect
+        if (!profile?.skills || profile.skills.length === 0) {
+          router.push('/complete-profile');
+        }
+      }
+    };
+    ensureProfileComplete();
+  }, []);
   async function checkUser() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {

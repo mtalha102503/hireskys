@@ -1,57 +1,43 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { Loader2 } from 'lucide-react';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const [logs, setLogs] = useState<string[]>([]);
-
-  const addLog = (msg: string) => setLogs(prev => [...prev, msg]);
 
   useEffect(() => {
     const handleCallback = async () => {
-      addLog("1. Callback Started...");
-      
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (!session) {
-        addLog("❌ No Session Found. Redirecting to Login...");
-        setTimeout(() => router.push('/login'), 2000);
-        return;
-      }
+      // 1. Check karo user session hai ya nahi
+      const { data: { session } } = await supabase.auth.getSession();
 
-      addLog(`2. User Logged In: ${session.user.email}`);
+      if (session) {
+        const user = session.user;
 
-      // Database check
-      const { data: profile, error: dbError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
+        // 2. 🔍 DATABASE CHECK (Metadata par bharosa mat karo)
+        // Profiles table se data mangwao
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('username, whatsapp, birth_date')
+          .eq('id', user.id)
+          .single();
 
-      addLog(`3. Database Result: ${JSON.stringify(profile)}`);
-
-      if (dbError) {
-         addLog(`❌ DB Error: ${dbError.message}`);
-         addLog("👉 Decision: GO TO PROFILE");
-         setTimeout(() => router.push('/profile'), 4000);
-         return;
-      }
-
-      // STRICT CHECKS
-      const isUsernameMissing = !profile?.username || profile?.username.trim() === "";
-      const isWhatsappMissing = !profile?.whatsapp || profile?.whatsapp.trim() === "";
-
-      if (isUsernameMissing || isWhatsappMissing) {
-         addLog(`⚠️ Missing Data -> Username: '${profile?.username}', WA: '${profile?.whatsapp}'`);
-         addLog("👉 Decision: GO TO PROFILE (Incomplete)");
-         // 4 second wait karo taake tum log parh sako
-         setTimeout(() => router.push('/profile'), 4000);
+        if (error || !profile) {
+          // Agar profile table mein entry hi nahi hai -> Profile Page
+          router.push('/profile');
+        } 
+        else if (!profile.username || !profile.whatsapp || !profile.birth_date) {
+          // Agar entry hai lekin Username ya WhatsApp missing hai -> Profile Page
+          router.push('/profile');
+        } 
+        else {
+          // Sab kuch set hai -> Home Page
+          router.push('/');
+        }
       } else {
-         addLog("✅ All Data Present.");
-         addLog("👉 Decision: GO TO HOME");
-         setTimeout(() => router.push('/'), 4000);
+        // Agar session nahi mila (Login fail) -> Login Page
+        router.push('/login');
       }
     };
 
@@ -59,13 +45,10 @@ export default function AuthCallbackPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-black text-green-400 p-10 font-mono text-sm">
-      <h1 className="text-xl font-bold text-white mb-4 border-b border-gray-700 pb-2">🔍 DEBUG MODE</h1>
-      <div className="space-y-2">
-        {logs.map((log, i) => (
-            <div key={i}>{log}</div>
-        ))}
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B0F19] text-white">
+      <Loader2 className="animate-spin text-indigo-500 mb-4" size={40} />
+      <h2 className="text-xl font-bold">Verifying Profile...</h2>
+      <p className="text-slate-400">Please wait while we direct you.</p>
     </div>
   );
 }

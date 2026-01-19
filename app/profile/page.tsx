@@ -325,9 +325,6 @@ export default function Profile() {
                                 <AtSign size={14} className="absolute left-3 top-3 text-slate-400"/>
                                 <input type="text" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} className="w-full mt-1 pl-8 p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none lowercase" placeholder="username" />
                             </div>
-                            <p className="text-[10px] text-slate-400 mt-1 pl-1">
-        We created a temporary ID. You can change it!
-    </p>
                         </div>
 
                         {/* EMAIL (Read Only usually) */}
@@ -700,4 +697,5 @@ export default function Profile() {
     </div>
   );
 }
+
 

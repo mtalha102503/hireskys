@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
+import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
 import { GoogleAnalytics } from '@next/third-parties/google';
@@ -137,6 +138,14 @@ export default function RootLayout({
       </head>
       
       <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>
+        <NextTopLoader 
+          color="#6366f1"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          showSpinner={false}
+          shadow="0 0 10px #6366f1,0 0 5px #6366f1"
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

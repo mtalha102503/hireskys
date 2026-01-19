@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 // 🚀 GLOBAL SEO SETTINGS (Remote & Freelance Optimized)
 export const metadata: Metadata = {
-  metadataBase: new URL('https://hireskys.com'),
+  metadataBase: new URL('https://www.hireskys.com'),
 
 alternates: {
     canonical: './',

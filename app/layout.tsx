@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 // 🌟 FONT OPTIMIZATION (Variable setup for Tailwind)
 const jost = Jost({ subsets: ["latin"] });
@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 // 🚀 GLOBAL SEO SETTINGS (Remote & Freelance Optimized)
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.hireskys.com'),
+  metadataBase: new URL('https://hireskys.com'),
 
 alternates: {
     canonical: './',
@@ -34,7 +34,7 @@ alternates: {
   },
 
   description: "Find high-paying remote jobs and freelance contracts. HireSkys is exclusively for 100% remote work in Development, Design, AI, and Marketing. No office politics, just work.",
-manifest: "/manifest.json",
+  manifest: "/manifest.json",
   keywords: [
     "Remote Jobs",
     "Freelance Work",
@@ -54,7 +54,7 @@ manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.hireskys.com",
+    url: "https://hireskys.com",
     siteName: "HireSkys",
     title: "HireSkys - Elite Remote & Freelance Jobs",
     description: "Stop scrolling, start working. Find verified 100% remote jobs and freelance gigs.",
@@ -112,8 +112,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "HireSkys",
-    "url": "https://www.hireskys.com",
-    "logo": "https://www.hireskys.com/logo.png",
+    "url": "https://hireskys.com",
+    "logo": "https://hireskys.com/logo.png",
     "sameAs": [
       "https://twitter.com/hireskys",
       "https://linkedin.com/company/hireskys"
@@ -153,6 +153,9 @@ export default function RootLayout({
           
           <ConsentBanner />
         </ThemeProvider>
+        {/* 👇 2. YE COMPONENT ADD KARO (Body close hone se theek pehle) */}
+        {/* "G-XXXXXXXXXX" ki jagah apna asli ID paste karo */}
+        <GoogleAnalytics gaId="G-PZ6099S6LJ" />
       </body>
     </html>
   );

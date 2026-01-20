@@ -18,6 +18,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'), // 👈 BAS YE LINE ADD KARNI HAI
+  ],
 };
 export default config;

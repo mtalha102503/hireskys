@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams, useRouter } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
 import Navbar from '@/components/Navbar';
 import ReportJob from '@/components/ReportJob';
 import Link from 'next/link';
@@ -267,9 +268,11 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
                 <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-indigo-500"/> Job Description</h2>
                     
-                    <div className="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
-                        {job.description || "No description provided."}
-                    </div>
+                    <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-li:marker:text-indigo-500">
+    <ReactMarkdown>
+        {job.description || "No description provided."}
+    </ReactMarkdown>
+</article>
                 </div>
 <ReportJob jobId={job.id} />
                 {/* 🌟 RELATED JOBS SECTION */}

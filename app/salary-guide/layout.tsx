@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   applicationName: "HireSkys",
   
   // 2. Authors & Ownership (Google Authority)
-  authors: [{ name: "HireSkys Data Team", url: "https://hireskys.com" }],
+  authors: [{ name: "HireSkys Data Team", url: "https://www.hireskys.com" }],
   creator: "HireSkys",
   publisher: "HireSkys",
   category: "career", // Batata hai ke ye page kis category ka hai
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
   // 4. Canonical (Duplicate Content Protection)
   alternates: {
-    canonical: "https://hireskys.com/salary-guide",
+    canonical: "https://www.hireskys.com/salary-guide",
   },
 
   // 5. Robots (Crawler Instructions - "Indexing On")
@@ -52,15 +52,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Remote Salary Guide 2025 | HireSkys",
     description: "Discover exactly what top remote companies are paying. Don't leave money on the table. Compare US vs Global rates.",
-    url: "https://hireskys.com/salary-guide",
+    url: "https://www.hireskys.com/salary-guide",
     siteName: "HireSkys",
     locale: "en_US",
     type: "website",
     images: [{
-      url: "https://hireskys.com/og-salary.png", // ⚠️ Ye image zaroor banana public folder me
+      url: "https://www.hireskys.com/og-salary.png", // ⚠️ Ye image zaroor banana public folder me
       width: 1200,
       height: 630,
-      alt: "2025 Salary Benchmark Chart - HireSkys",
+      alt: "2026 Salary Benchmark Chart - HireSkys",
     }],
   },
 
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     description: "See the latest salary trends for Developers, Designers, and Marketers.",
     creator: "@HireSkys", // Apna handle lagana
     site: "@HireSkys",
-    images: ["https://hireskys.com/og-salary.png"],
+    images: ["https://www.hireskys.com/og-salary.png"],
   },
 };
 
@@ -90,13 +90,13 @@ export default function SalaryLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://hireskys.com"
+        "item": "https://www.hireskys.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Salary Guide",
-        "item": "https://hireskys.com/salary-guide"
+        "item": "https://www.hireskys.com/salary-guide"
       }
     ]
   };
@@ -111,4 +111,5 @@ export default function SalaryLayout({
       {children}
     </>
   );
+
 }

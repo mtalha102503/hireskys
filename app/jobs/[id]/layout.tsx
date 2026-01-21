@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Smart Strings Construction
   const pageTitle = `${job.title} ${job.company ? `at ${job.company}` : ''} | HireSkys`;
   const summary = `Hiring: ${job.title}. Category: ${job.category}. ${job.location === 'Remote' ? '🌍 Remote Work' : `📍 ${job.location}`}. Salary: ${job.salary_range || 'Competitive'}. Apply securely via HireSkys.`;
-  const jobImage = "https://hireskys.com/og-job-card.png"; // Future mein dynamic image laga sakte ho
+  const jobImage = "https://www.hireskys.com/og-job-card.png"; // Future mein dynamic image laga sakte ho
 
   return {
     // Basic SEO
@@ -55,14 +55,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     
     // Canonical URL (Duplicate Content se bachne ke liye)
     alternates: {
-      canonical: `https://hireskys.com/jobs/${job.id}`,
+      canonical: `https://www.hireskys.com/jobs/${job.id}`,
     },
 
     // OpenGraph (Facebook, LinkedIn, Discord)
     openGraph: {
       title: pageTitle,
       description: summary,
-      url: `https://hireskys.com/jobs/${job.id}`,
+      url: `https://www.hireskys.com/jobs/${job.id}`,
       siteName: 'HireSkys - Elite Job Radar',
       locale: 'en_US',
       type: 'website', // JobPosting type OG mein nahi hota, website best hai
@@ -128,8 +128,8 @@ export default async function Layout({ children, params }: { children: React.Rea
     hiringOrganization: {
       '@type': 'Organization',
       name: job.company || "HireSkys Client",
-      logo: "https://hireskys.com/logo.png",
-      sameAs: "https://hireskys.com"
+      logo: "https://www.hireskys.com/logo.png",
+      sameAs: "https://www.hireskys.com"
     },
     jobLocation: {
       '@type': 'Place',
@@ -169,4 +169,5 @@ export default async function Layout({ children, params }: { children: React.Rea
       {children}
     </>
   );
+
 }

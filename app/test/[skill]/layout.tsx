@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const skillName = decodeURIComponent(rawSkill);
   const capitalizedSkill = skillName.charAt(0).toUpperCase() + skillName.slice(1);
-  const pageUrl = `https://hireskys.com/test/${rawSkill}`; // Apna domain lagana
+  const pageUrl = `https://www.hireskys.com/test/${rawSkill}`; // Apna domain lagana
 
   return {
     // 🔥 1. Title & Description (Click-Through Rate Optimized)
@@ -84,7 +84,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       images: [
         {
-          url: 'https://hireskys.com/og-test-card.png', // Ek general "Test" wali image bana kar public folder me daal dena
+          url: 'https://www.hireskys.com/og-test-card.png', // Ek general "Test" wali image bana kar public folder me daal dena
           width: 1200,
           height: 630,
           alt: `${capitalizedSkill} Assessment Badge`,
@@ -97,7 +97,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${capitalizedSkill} Assessment - Verify Your Skills`,
       description: `Earn a verified ${capitalizedSkill} badge and unlock high-paying jobs on HireSkys.`,
-      images: ['https://hireskys.com/og-test-card.png'],
+      images: ['https://www.hireskys.com/og-test-card.png'],
     },
 
     // 🔥 7. Advanced Robots Control
@@ -140,12 +140,12 @@ export default async function Layout({ children, params }: { children: React.Rea
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://hireskys.com"
+      "item": "https://www.hireskys.com"
     }, {
       "@type": "ListItem",
       "position": 2,
       "name": "Assessments",
-      "item": "https://hireskys.com/tests"
+      "item": "https://www.hireskys.com/tests"
     }, {
       "@type": "ListItem",
       "position": 3,
@@ -162,7 +162,7 @@ export default async function Layout({ children, params }: { children: React.Rea
     "provider": {
       "@type": "Organization",
       "name": "HireSkys",
-      "sameAs": "https://hireskys.com"
+      "sameAs": "https://www.hireskys.com"
     },
     "educationalCredentialAwarded": "Verified Skill Certificate",
     "isAccessibleForFree": true
@@ -184,4 +184,5 @@ export default async function Layout({ children, params }: { children: React.Rea
       {children}
     </>
   );
+
 }

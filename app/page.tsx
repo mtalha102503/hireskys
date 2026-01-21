@@ -640,7 +640,7 @@ export default function Home() {
           <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
   <Briefcase size={20} className="text-indigo-500" />
   {/* 👇 Agar filter nahi hai to "Fresh Arrivals" likho, warna "Recent Jobs" */}
-  {isFallback ? 'Recommended' : (activeCategory === 'All' && !searchQuery ? 'Fresh Arrivals (Last 7 Days)' : 'Recent Job Posts')}
+  {isFallback ? 'Recommended' : (activeCategory === 'All' && !searchQuery ? 'Last 7 Days' : 'Recent Job Posts')}
 </h2>
           <span className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-1 md:px-3 rounded-full">
             {jobs.length} Results

@@ -21,9 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   // URLs construction
-  const siteUrl = "https://hireskys.com";
+  const siteUrl = "https://www.hireskys.com";
   const pageUrl = `${siteUrl}/career-advice/${slug}`;
-  const ogImage = "https://hireskys.com/og-career.png"; // Default image
+  const ogImage = "https://www.hireskys.com/og-career.png"; // Default image
 
   return {
     // 🔥 Basic SEO
@@ -93,7 +93,7 @@ export default async function ArticleLayout({ children, params }: Props) {
 
   if (!article) return <>{children}</>;
 
-  const siteUrl = "https://hireskys.com";
+  const siteUrl = "https://www.hireskys.com";
   const pageUrl = `${siteUrl}/career-advice/${resolvedParams.slug}`;
 
   // 🧠 Schema 1: BlogPosting (Google Rich Results ke liye)
@@ -106,7 +106,7 @@ export default async function ArticleLayout({ children, params }: Props) {
     },
     "headline": article.title,
     "description": article.description,
-    "image": "https://hireskys.com/og-career.png",
+    "image": "https://www.hireskys.com/og-career.png",
     "author": {
       "@type": "Organization",
       "name": "HireSkys Editorial Team",
@@ -168,4 +168,5 @@ export default async function ArticleLayout({ children, params }: Props) {
       {children}
     </>
   );
+
 }

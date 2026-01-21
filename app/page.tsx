@@ -7,12 +7,13 @@ import {
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
   User as UserIcon, Smartphone, Cpu, Edit3, X, Zap, Facebook, Linkedin,
-  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard
+  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image'; // Logo ke liye
 import { motion } from 'framer-motion';
+const JOBS_PER_PAGE = 30;
 // --- PLATFORM ICONS ---
 const getPlatformIcon = (platform: string) => {
   const p = platform || 'Web'; 
@@ -55,11 +56,11 @@ export default function Home() {
     "@type": "WebSite",
     "name": "HireSkys",
     "alternateName": ["Hire Skys", "HireSkys Job Radar", "HireSkys Remote Jobs"], // Log ghalat spellings bhi search karte hain
-    "url": "https://hireskys.com",
+    "url": "https://www.hireskys.com",
     "description": "The elite job radar for developers and creatives. Find verified remote jobs and prove your skills.",
     "primaryImageOfPage": {
         "@type": "ImageObject",
-        "url": "https://hireskys.com/logo1.png" // Tumhara logo
+        "url": "https://www.hireskys.com/logo1.png" // Tumhara logo
     },
     "potentialAction": {
       "@type": "SearchAction",
@@ -80,7 +81,7 @@ export default function Home() {
         "name": "HireSkys",
         "logo": {
             "@type": "ImageObject",
-            "url": "https://hireskys.com/logo1.png"
+            "url": "https://www.hireskys.com/logo1.png"
         }
     },
     "inLanguage": "en-US"
@@ -97,7 +98,9 @@ export default function Home() {
   const jobsSectionRef = useRef<HTMLDivElement>(null);
   // Fallback State
   const [isFallback, setIsFallback] = useState(false);
-
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
   // ❤️ SAVED JOBS STATE
   const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
 
@@ -130,7 +133,8 @@ export default function Home() {
   useEffect(() => {
     if (searchType === 'jobs') {
         const timer = setTimeout(() => {
-          fetchJobs();
+          setPage(0);         // Page number 0 kar do
+          fetchJobs(0, true); // Nayi list mangwao (Reset = true)
         }, 500);
         return () => clearTimeout(timer);
     }
@@ -208,38 +212,39 @@ export default function Home() {
       }
   }
 
-  async function fetchJobs(forceFallback = false) {
-    setLoading(true);
-    setIsFallback(false);
+  async function fetchJobs(pageNumber = 0, reset = false) {
+    if (reset) {
+        setLoading(true);
+        setHasMore(true);
+    } else {
+        setLoadingMore(true);
+    }
+
+    // Calculation: Konsi jobs uthani hain
+    const from = pageNumber * JOBS_PER_PAGE;
+    const to = from + JOBS_PER_PAGE - 1;
 
     let query = supabase
       .from('jobs')
       .select('*')
       .eq('approved', true)
-      .order('date_posted', { ascending: false });
+      .order('date_posted', { ascending: false }) // Latest First
+      .range(from, to);
 
-    const isSearching = searchQuery.length > 0;
-    const isFiltering = activeCategory !== 'All' || activeSubTag !== '';
-
-    if (!isSearching && !isFiltering && !forceFallback) {
-      const date = new Date();
-      date.setDate(date.getDate() - 7); 
-      query = query.gt('date_posted', date.toISOString());
-    } else {
-      const date = new Date();
-      date.setDate(date.getDate() - 30);
-      query = query.gt('date_posted', date.toISOString());
-    }
-
-    if (activeCategory !== 'All' && !forceFallback) {
+    // --- FILTERS (Fixed: Removed forceFallback) ---
+    
+    // 1. Category Filter
+    if (activeCategory !== 'All') {
       query = query.ilike('category', `%${activeCategory}%`);
     }
 
-    if (activeSubTag && !forceFallback) {
+    // 2. SubTag Filter
+    if (activeSubTag) {
         query = query.or(`tags.cs.{${activeSubTag}},title.ilike.%${activeSubTag}%`);
     }
 
-    if (searchQuery && !forceFallback) {
+    // 3. Search Filter
+    if (searchQuery) {
       query = query.or(`title.ilike.%${searchQuery}%,source.ilike.%${searchQuery}%`);
     }
 
@@ -248,28 +253,37 @@ export default function Home() {
     if (error) {
       console.error(error);
       setLoading(false);
+      setLoadingMore(false);
       return;
     }
 
-    if ((!data || data.length === 0) && (isSearching || isFiltering) && !forceFallback) {
-        setIsFallback(true);
-        let fallbackQuery = supabase
-            .from('jobs')
-            .select('*')
-            .eq('approved', true)
-            .order('date_posted', { ascending: false })
-            .limit(20);
-
-        if (activeCategory !== 'All') {
-            fallbackQuery = fallbackQuery.ilike('category', `%${activeCategory}%`);
+    if (data) {
+        if (reset) {
+            setJobs(data);
+        } else {
+            setJobs(prev => {
+                // 🛡️ DUPLICATE FILTER: IDs check karke duplicate roko
+                const existingIds = new Set(prev.map(job => job.id));
+                const uniqueNewJobs = data.filter(job => !existingIds.has(job.id));
+                return [...prev, ...uniqueNewJobs];
+            });
         }
-        const { data: fallbackData } = await fallbackQuery;
-        setJobs(fallbackData || []);
-    } else {
-        setJobs(data || []);
+
+        // Agar jobs 20 se kam hain, matlab list khatam
+        if (data.length < JOBS_PER_PAGE) {
+            setHasMore(false);
+        }
     }
     setLoading(false);
+    setLoadingMore(false);
   }
+
+  // 👇 YE BHI ADD KARO (Button dabane par ye chalega)
+  const handleLoadMore = () => {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchJobs(nextPage, false);
+  };
 
   return (
     <div className="min-h-screen font-sans text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-[#0B0F19] overflow-x-hidden">
@@ -640,7 +654,7 @@ export default function Home() {
           <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
   <Briefcase size={20} className="text-indigo-500" />
   {/* 👇 Agar filter nahi hai to "Fresh Arrivals" likho, warna "Recent Jobs" */}
-  {isFallback ? 'Recommended' : (activeCategory === 'All' && !searchQuery ? 'Last 7 Days' : 'Recent Job Posts')}
+  {activeCategory === 'All' && !searchQuery ? 'Latest Remote Opportunities' : 'Search Results'}
 </h2>
           <span className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-1 md:px-3 rounded-full">
             {jobs.length} Results
@@ -656,7 +670,9 @@ export default function Home() {
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">No jobs found</h3>
               <p className="text-slate-500">Try adjusting your search filters.</p>
             </div>
+            
           ) : (
+            
             jobs.map((job) => {
               const jobDate = new Date(job.date_posted);
               const now = new Date();
@@ -745,6 +761,28 @@ export default function Home() {
               );
             })
           )}
+          {/* 👇 PREMIUM LOAD MORE BUTTON */}
+        {hasMore && !loading && jobs.length > 0 && (
+            <div className="pt-10 pb-16 flex justify-center">
+                <button 
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-base font-bold rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                    {loadingMore ? (
+                        <>
+                            <Loader2 className="animate-spin" size={20} />
+                            <span>Loading...</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>Load More Jobs</span>
+                            <ArrowRight size={20} />
+                        </>
+                    )}
+                </button>
+            </div>
+        )}
         </div>
       </main>
     </div>

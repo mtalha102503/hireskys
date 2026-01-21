@@ -7,7 +7,7 @@ const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ"; 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const BASE_URL = 'https://hireskys.com'; // Apni domain confirm kar lena
+const BASE_URL = 'https://www.hireskys.com'; // Apni domain confirm kar lena
 export const dynamic = 'force-dynamic';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
@@ -164,3 +164,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ✅ Final Merge: Static + Articles + Jobs
   return [...staticRoutes, ...articleRoutes, ...jobRoutes];
 }
+

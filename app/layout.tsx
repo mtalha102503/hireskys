@@ -47,7 +47,7 @@ alternates: {
     "Verified Remote Jobs"
   ],
 
-  authors: [{ name: "HireSkys Team", url: "https://hireskys.com" }],
+  authors: [{ name: "HireSkys Team", url: "https://www.hireskys.com" }],
   creator: "HireSkys",
   publisher: "HireSkys Inc.",
 
@@ -91,11 +91,6 @@ alternates: {
     },
   },
 
-  // Search Console Verification (Optional - Future ke liye)
-  verification: {
-    google: "yahan-google-verification-code-daal-dena",
-  },
-
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -113,8 +108,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "HireSkys",
-    "url": "https://hireskys.com",
-    "logo": "https://hireskys.com/logo.png",
+    "url": "https://www.hireskys.com",
+    "logo": "https://www.hireskys.com/logo.png",
     "sameAs": [
       "https://twitter.com/hireskys",
       "https://linkedin.com/company/hireskys"

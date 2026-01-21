@@ -18,24 +18,24 @@ export const metadata: Metadata = {
   ],
 
   // 3. Authorship
-  authors: [{ name: "HireSkys Support Team", url: "https://hireskys.com/support" }],
+  authors: [{ name: "HireSkys Support Team", url: "https://www.hireskys.com/support" }],
   category: "Support",
 
   // 4. Canonical
   alternates: {
-    canonical: "https://hireskys.com/faq",
+    canonical: "https://www.hireskys.com/faq",
   },
 
   // 5. Open Graph (Social Sharing)
   openGraph: {
     title: "HireSkys Help Center & FAQs",
     description: "Everything you need to know about finding remote jobs, skill verification, and instant alerts.",
-    url: "https://hireskys.com/faq",
+    url: "https://www.hireskys.com/faq",
     siteName: "HireSkys",
     locale: "en_US",
     type: "website",
     images: [{
-      url: "https://hireskys.com/og-faq.png", // Ek simple '?' mark ya support graphic bana lena
+      url: "https://www.hireskys.com/og-faq.png", // Ek simple '?' mark ya support graphic bana lena
       width: 1200,
       height: 630,
       alt: "HireSkys FAQ & Help Center",
@@ -118,13 +118,13 @@ export default function FAQLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://hireskys.com"
+        "item": "https://www.hireskys.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "FAQ",
-        "item": "https://hireskys.com/faq"
+        "item": "https://www.hireskys.com/faq"
       }
     ]
   };
@@ -145,4 +145,5 @@ export default function FAQLayout({
       {children}
     </>
   );
+
 }

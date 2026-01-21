@@ -19,25 +19,25 @@ export const metadata: Metadata = {
   ],
 
   // 3. Authorship & Category
-  authors: [{ name: "HireSkys Team", url: "https://hireskys.com" }],
+  authors: [{ name: "HireSkys Team", url: "https://www.hireskys.com" }],
   category: "Testimonials",
   
   // 4. Canonical URL (Duplicate Content Killer)
   alternates: {
-    canonical: "https://hireskys.com/success-stories",
+    canonical: "https://www.hireskys.com/success-stories",
   },
 
   // 5. Open Graph (Facebook/LinkedIn - Optimized Display)
   openGraph: {
     title: "Real People. Real Jobs. Real Salary Hikes.",
     description: "See how Sarah, Omar, and David skipped the queue and landed their dream remote roles in record time.",
-    url: "https://hireskys.com/success-stories",
+    url: "https://www.hireskys.com/success-stories",
     siteName: "HireSkys",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://hireskys.com/og-success.png", // Make sure this image exists!
+        url: "https://www.hireskys.com/og-success.png", // Make sure this image exists!
         width: 1200,
         height: 630,
         alt: "HireSkys User Success Stories Collage",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: "From 'Applied' to 'Hired' - HireSkys Stories",
     description: "Read verified success stories from the HireSkys community.",
     creator: "@HireSkys",
-    images: ["https://hireskys.com/og-success.png"],
+    images: ["https://www.hireskys.com/og-success.png"],
   },
 
   // 7. Advanced Robot Directives (Snippet Control)
@@ -85,13 +85,13 @@ export default function SuccessLayout({
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://hireskys.com"
+        "item": "https://www.hireskys.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Success Stories",
-        "item": "https://hireskys.com/success-stories"
+        "item": "https://www.hireskys.com/success-stories"
       }
     ]
   };
@@ -102,7 +102,7 @@ export default function SuccessLayout({
     "@type": "CollectionPage",
     "name": "HireSkys Success Stories",
     "description": "A collection of success stories from remote workers hired through HireSkys.",
-    "url": "https://hireskys.com/success-stories",
+    "url": "https://www.hireskys.com/success-stories",
     "mainEntity": {
       "@type": "ItemList",
       "itemListOrder": "https://schema.org/ItemListOrderDescending",
@@ -120,7 +120,7 @@ export default function SuccessLayout({
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "HireSkys Job Radar",
-    "image": "https://hireskys.com/logo1.png",
+    "image": "https://www.hireskys.com/logo1.png",
     "description": "Platform for finding verified remote jobs.",
     "aggregateRating": {
       "@type": "AggregateRating",
@@ -151,4 +151,5 @@ export default function SuccessLayout({
       {children}
     </>
   );
+
 }

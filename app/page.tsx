@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react'; // useRef add kar dia
 import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation'; 
+import { createSlug } from '@/lib/utils';
 import { 
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
@@ -774,7 +775,7 @@ export default function Home() {
                           <Heart size={20} className={isSaved ? "fill-current" : ""} />
                       </button>
 
-                      <Link href={`/jobs/${job.id}`} className="flex-1 md:flex-none px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-md hover:shadow-xl text-center flex items-center justify-center gap-2 text-sm md:text-base">
+                      <Link href={`/jobs/${createSlug(job.title, job.id)}`} className="flex-1 md:flex-none px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-md hover:shadow-xl text-center flex items-center justify-center gap-2 text-sm md:text-base">
                         View <ArrowRight size={18}/>
                       </Link>
                   </div>

@@ -702,43 +702,64 @@ export default function Home() {
                   </div>
 
                   <div className="flex-1 min-w-0 w-full">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
-                      <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
-  {job.title}
-</h3>
-                      {job.is_verified && (
-                        <div className="flex-shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800">
-                            <ShieldCheck size={12} className="text-blue-600 dark:text-blue-400" />
-                            <span className="text-[10px] font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wide">Verified</span>
-                        </div>
-                      )}
-                      {isJustNow && (
-                          <span className="flex-shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 uppercase animate-pulse border border-red-100 dark:border-red-900">
-                              🔥 New
-                          </span>
-                      )}
-                    </div>
-                    
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs md:text-sm text-slate-500 dark:text-slate-400">
-                      <span className="flex items-center gap-1.5 font-medium">
-                        {getPlatformIcon(job.platform || 'Web')} 
-                        {job.source}
-                      </span>
-                      <span className="flex items-center gap-2">
-                          <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                          {job.category}
-                      </span>
-                      {job.tags && job.tags.length > 0 && (
-                         <span className="flex items-center gap-2 hidden sm:flex">
-                            <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                            <span className="text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
-                                {job.tags[0]}
-                            </span>
-                         </span>
-                      )}
-                      <span className="flex items-center gap-1 ml-auto md:ml-0"><Clock size={12} className="md:w-3.5 md:h-3.5" /> {diffHrs < 1 ? 'Just now' : diffHrs < 96 ? `${diffHrs}h ago` : `${diffDays}d ago`}</span>
-                    </div>
-                  </div>
+                    {/* 👇 NAYA PROFESSIONAL MIDDLE SECTION */}
+<div className="flex-1 min-w-0 w-full space-y-3">
+    
+    {/* Top Row: Title + New Badge */}
+    <div className="flex flex-wrap items-start justify-between gap-3">
+        <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            {job.title}
+        </h3>
+
+        {/* Clean 'New' Badge (Right Side) */}
+        {isJustNow && (
+            <span className="flex-shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide whitespace-nowrap bg-gradient-to-r from-orange-400 to-red-500 text-white border border-orange-300/50 shadow-sm">
+  New Arrival
+</span>
+        )}
+    </div>
+
+    {/* Metadata Row (Company • Category • Tags • Time) */}
+    <div className="flex flex-wrap items-center gap-y-2 gap-x-3 text-sm text-slate-500 dark:text-slate-400">
+        
+        {/* 1. Source / Company Badge */}
+        <div className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700">
+            {getPlatformIcon(job.platform || 'Web')} 
+            <span>{job.source}</span>
+        </div>
+
+        {/* 2. Category Badge */}
+        <div className="flex items-center gap-1.5 font-medium text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/20 px-2.5 py-1 rounded-md border border-indigo-100 dark:border-indigo-800/50">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+            {job.category}
+        </div>
+
+        {/* 3. First Tag (FIXED: Ab Mobile par bhi dikhega) */}
+        {job.tags && job.tags.length > 0 && (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-md font-medium bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50">
+               {job.tags[0]}
+            </span>
+        )}
+
+        {/* Separator Line (Sirf Desktop par dikhega taake mobile par bheed na ho) */}
+        <div className="hidden sm:block h-4 w-[1px] bg-slate-300 dark:bg-slate-700"></div>
+
+        {/* 4. Time Display */}
+        <div className={`flex items-center gap-1.5 font-medium ${isJustNow ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
+            <Clock size={14} />
+            <span>
+                {diffHrs < 1 ? 'Just now' : diffHrs < 24 ? `${diffHrs}h ago` : `${diffDays}d ago`}
+            </span>
+        </div>
+        
+        {/* Verified Icon */}
+        {job.is_verified && (
+             <span className="flex items-center gap-1 text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
+                <ShieldCheck size={10} /> Verified
+             </span>
+        )}
+    </div>
+</div>                  </div>
                   
                   {/* Action Buttons: Full width on mobile, Auto on Desktop */}
                   <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">

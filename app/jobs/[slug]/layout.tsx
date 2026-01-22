@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from '@supabase/supabase-js';
+import { createSlug } from '@/lib/utils'; // 👈 Ye line add karo
 
 // 🛠️ CONFIGURATION
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
@@ -34,7 +35,8 @@ const { data: job } = await supabase
       robots: { index: false, follow: false }
     };
   }
-
+const correctSlug = createSlug(job.title, job.id); 
+  const seoUrl = `https://www.hireskys.com/jobs/${correctSlug}`;
   // Smart Strings Construction
   const pageTitle = `${job.title} ${job.company ? `at ${job.company}` : ''} | HireSkys`;
   const summary = `Hiring: ${job.title}. Category: ${job.category}. ${job.location === 'Remote' ? '🌍 Remote Work' : `📍 ${job.location}`}. Salary: ${job.salary_range || 'Competitive'}. Apply securely via HireSkys.`;
@@ -59,14 +61,14 @@ const { data: job } = await supabase
     
     // Canonical URL (Duplicate Content se bachne ke liye)
     alternates: {
-      canonical: `https://www.hireskys.com/jobs/${job.id}`,
+      canonical: seoUrl, 
     },
 
     // OpenGraph (Facebook, LinkedIn, Discord)
     openGraph: {
       title: pageTitle,
       description: summary,
-      url: `https://www.hireskys.com/jobs/${job.id}`,
+      url: seoUrl,
       siteName: 'HireSkys - Elite Job Radar',
       locale: 'en_US',
       type: 'website', // JobPosting type OG mein nahi hota, website best hai

@@ -703,9 +703,9 @@ export default function Home() {
 
                   <div className="flex-1 min-w-0 w-full">
                     <div className="flex items-center gap-2 md:gap-3 mb-2 flex-wrap">
-                      <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate max-w-full">
-                        {job.title}
-                      </h3>
+                      <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
+  {job.title}
+</h3>
                       {job.is_verified && (
                         <div className="flex-shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800">
                             <ShieldCheck size={12} className="text-blue-600 dark:text-blue-400" />

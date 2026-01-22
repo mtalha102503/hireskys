@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.hireskys.com'),
 
 alternates: {
-    canonical: './',
-  },
+  canonical: 'https://www.hireskys.com', 
+},
   
   title: {
     default: "HireSkys | The #1 Remote Jobs & Freelance Marketplace",
@@ -117,7 +117,7 @@ export default function RootLayout({
     "description": "A dedicated marketplace for 100% remote jobs and freelance contracts.",
     "contactPoint": {
       "@type": "ContactPoint",
-      "email": "support@hireskys.com",
+      "email": "contact@hireskys.com",
       "contactType": "customer support"
     }
   };

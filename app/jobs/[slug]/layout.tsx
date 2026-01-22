@@ -124,7 +124,30 @@ export default async function Layout({ children, params }: { children: React.Rea
     .single();
 
   if (!job) return <>{children}</>;
-
+const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'Jobs',
+        'item': 'https://www.hireskys.com/jobs'
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': job.category,
+        'item': `https://www.hireskys.com/jobs?category=${encodeURIComponent(job.category)}`
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': job.title,
+        'item': `https://www.hireskys.com/jobs/${createSlug(job.title, job.id)}`
+      }
+    ]
+  };
   // 🌟 GOOGLE JOBS SCHEMA (JSON-LD)
   // Yeh wo code hai jo Google Jobs Widget trigger karega
   const jsonLd = {
@@ -174,7 +197,10 @@ export default async function Layout({ children, params }: { children: React.Rea
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       {/* Page Content */}
       {children}
     </>

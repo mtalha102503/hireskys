@@ -634,7 +634,7 @@ export default function Home() {
       {/* MAIN CONTENT */}
       <main 
       ref={jobsSectionRef}
-      className="container mx-auto px-4 pt-12 md:pt-16 pb-24 max-w-5xl">
+      className="container mx-auto px-4 pt-12 md:pt-16 pb-8 max-w-5xl">
         {isFallback && (
             <div className="mb-8 p-4 md:p-6 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/10 dark:to-amber-900/10 border border-orange-200 dark:border-orange-800/50 flex flex-col md:flex-row items-start gap-4 shadow-sm">
                 <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-full">
@@ -763,7 +763,7 @@ export default function Home() {
           )}
           {/* 👇 PREMIUM LOAD MORE BUTTON */}
         {hasMore && !loading && jobs.length > 0 && (
-            <div className="pt-10 pb-16 flex justify-center">
+            <div className="pt-8 pb-0 flex justify-center">
                 <button 
                     onClick={handleLoadMore}
                     disabled={loadingMore}

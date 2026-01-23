@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
 import ReactMarkdown from 'react-markdown';
 import Navbar from '@/components/Navbar';
+import remarkBreaks from 'remark-breaks';
 import ReportJob from '@/components/ReportJob';
 import Link from 'next/link';
 import { 
@@ -359,4 +360,5 @@ if (jobId) {
     </div>
   );
 }
+
 

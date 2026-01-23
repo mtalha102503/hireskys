@@ -279,8 +279,26 @@ if (jobId) {
                 <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-indigo-500"/> Job Description</h2>
                     
-                    <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-li:marker:text-indigo-500">
-    <ReactMarkdown>
+<article className="prose prose-slate dark:prose-invert max-w-none">
+    <ReactMarkdown 
+        remarkPlugins={[remarkBreaks]}
+        components={{
+            // 1. Headings ko Bold aur Bada karo
+            h1: ({node, ...props}) => <h1 className="text-2xl font-extrabold mb-4 mt-6" {...props} />,
+            h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-3 mt-5" {...props} />,
+            h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2 mt-4" {...props} />,
+            
+            // 2. Lists ko proper style do
+            ul: ({node, ...props}) => <ul className="list-disc pl-5 space-y-1" {...props} />,
+            ol: ({node, ...props}) => <ol className="list-decimal pl-5 space-y-1" {...props} />,
+            
+            // 3. Bold text ko waqayi Bold karo
+            strong: ({node, ...props}) => <strong className="font-extrabold text-indigo-600" {...props} />,
+            
+            // 4. Links ko blue aur underline karo
+            a: ({node, ...props}) => <a className="text-blue-600 hover:underline" target="_blank" {...props} />
+        }}
+    >
         {job.description || "No description provided."}
     </ReactMarkdown>
 </article>
@@ -341,3 +359,4 @@ if (jobId) {
     </div>
   );
 }
+

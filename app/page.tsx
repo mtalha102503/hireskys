@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation'; 
 import { createSlug } from '@/lib/utils';
+import CategorySection from "@/components/CategorySection";
 import { 
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
@@ -805,6 +806,7 @@ export default function Home() {
                 </button>
             </div>
         )}
+          <CategorySection />
         </div>
       </main>
     </div>

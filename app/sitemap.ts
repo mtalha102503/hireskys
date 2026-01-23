@@ -96,6 +96,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { data: jobs } = await supabase
     .from('jobs')
     .select('id, title, date_posted')
+    .eq('approved', true)
     .order('date_posted', { ascending: false })
     .limit(5000);
 

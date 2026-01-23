@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
-import { createSlug } from '@/lib/utils'; // 👈 YAHAN HAI MAGIC: Same logic import kiya
+import { createSlug } from '@/lib/utils'; 
 
 // 🛠️ CONFIGURATION
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
@@ -9,6 +9,17 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const BASE_URL = 'https://www.hireskys.com'; 
 export const dynamic = 'force-dynamic';
+
+// 👇 YAHAN HUMNE CATEGORY LIST DEFINE KI HAI (Sitemap Generation ke liye)
+const CATEGORIES: Record<string, string[]> = {
+  "Development": ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"],
+  "Mobile App": ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin"],
+  "Video & Motion": ["Video Editor", "Premiere Pro", "After Effects", "3D Artist", "Thumbnail Artist", "Short Form"],
+  "Design & UI": ["UI/UX", "Figma", "Web Design", "Logo Design", "Graphic Design"],
+  "Marketing": ["SEO", "Facebook Ads", "Google Ads", "Email Marketing", "Copywriter", "Growth"],
+  "Writing": ["Ghostwriter", "Technical Writer", "Scriptwriter", "Content Writer"],
+  "New Era (AI)": ["AI Engineer", "Automation", "LLM", "Python Script"]
+};
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
@@ -50,12 +61,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // ==========================================
-  // 3️⃣ DYNAMIC JOBS (Ab 100% Same URL Banega)
+  // 3️⃣ CATEGORIES & SUBCATEGORIES (🆕 NEW ADDED)
   // ==========================================
-  
+  let categoryRoutes: MetadataRoute.Sitemap = [];
+
+  // Loop through Main Categories
+  Object.entries(CATEGORIES).forEach(([mainCat, subCats]) => {
+    // 1. Create URL for Main Category (e.g., /category/development)
+    const mainSlug = mainCat.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    
+    categoryRoutes.push({
+      url: `${BASE_URL}/category/${mainSlug}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily', // Categories update often with new jobs
+      priority: 0.9, // High priority because these are landing pages
+    });
+
+    // 2. Create URL for Subcategories (e.g., /category/development/react)
+    subCats.forEach((sub) => {
+      const subSlug = sub.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      
+      categoryRoutes.push({
+        url: `${BASE_URL}/category/${mainSlug}/${subSlug}`,
+        lastModified: new Date(),
+        changeFrequency: 'daily',
+        priority: 0.8,
+      });
+    });
+  });
+
+  // ==========================================
+  // 4️⃣ DYNAMIC JOBS
+  // ==========================================
   const { data: jobs } = await supabase
     .from('jobs')
-    .select('id, title, date_posted') // Title zaroori hai slug ke liye
+    .select('id, title, date_posted')
     .order('date_posted', { ascending: false })
     .limit(5000);
 
@@ -63,13 +103,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   if (jobs) {
     jobRoutes = jobs.map((job) => ({
-      // 👇 AB KOI TENSION NAHI: Wahi function use ho raha hai jo website par hai
       url: `${BASE_URL}/jobs/${createSlug(job.title, job.id)}`, 
       lastModified: new Date(job.date_posted),
       changeFrequency: 'weekly', 
-      priority: 0.8,
+      priority: 0.8, // Job pages are important
     }));
   }
 
-  return [...staticRoutes, ...articleRoutes, ...jobRoutes];
+  // 🔥 MERGE EVERYTHING
+  return [...staticRoutes, ...articleRoutes, ...categoryRoutes, ...jobRoutes];
 }

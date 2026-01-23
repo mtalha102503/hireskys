@@ -38,7 +38,12 @@ const jobId = slug ? slug.split('-').pop() : null; // Last wala hissa uthao
 if (jobId) {
     // 👇 Ab ID se search karo
     const { data } = await supabase.from('jobs').select('*').eq('id', jobId).single();
-        
+        // 🔒 SECURITY CHECK: Agar job Approved nahi hai, to load mat karo
+        if (data && data.approved === false) {
+            setJob(null); // Job ko null hi rakho
+            setLoading(false);
+            return; // Yahan se wapis chale jao, neeche ka code run nahi hoga
+        }
         if (data) {
             setJob(data);
 

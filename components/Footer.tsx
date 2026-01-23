@@ -76,6 +76,7 @@ export default function Footer() {
               <li><Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms of Service</Link></li>
               <li><Link href="/cookie-policy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Cookie Policy</Link></li>
               <li><Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About Us</Link></li>
+              <li><Link href="/sitemap.xml" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Sitemap</Link></li>
             </ul>
           </div>
 
@@ -95,3 +96,4 @@ export default function Footer() {
     </footer>
   );
 }
+

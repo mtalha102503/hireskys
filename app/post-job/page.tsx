@@ -13,14 +13,14 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-// 👈 CSS abhi bhi wahi use hogi, tension not
+// CSS import
 import 'react-quill-new/dist/quill.snow.css'; 
 
-// 👈 IMPORT CHANGE: 'react-quill' ki jagah 'react-quill-new'
+// Dynamic Import for React Quill
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 // --- CATEGORIES CONFIGURATION ---
-const CATEGORIES = {
+const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
   "Development": {
     icon: Code,
     sub: ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"]
@@ -56,7 +56,7 @@ const modules = {
   toolbar: [
     [{ 'header': [1, 2, 3, false] }], 
     ['bold', 'italic', 'underline', 'strike'], 
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }], // 'bullet' is valid in toolbar config, but not in formats array
     ['link', 'code-block', 'blockquote'], 
     ['clean'] 
   ],
@@ -65,7 +65,7 @@ const modules = {
 const formats = [
   'header',
   'bold', 'italic', 'underline', 'strike',
-  'list', // List hi bullets aur numbers dono ko handle karega
+  'list', // List handles both ordered and bullet
   'link', 'code-block', 'blockquote'
 ];
 
@@ -83,10 +83,11 @@ export default function PostJob() {
     salary: '',
     description: '',
     category: '',
-    tags: []
+    tags: [] as string[] // 👈 FIX 1: Type define kiya ke ye strings ka array hai
   });
 
-  const toggleTag = (tag) => {
+  // 👈 FIX 2: 'tag' ko bata diya ke wo string hai
+  const toggleTag = (tag: string) => {
     if (formData.tags.includes(tag)) {
       setFormData({ ...formData, tags: formData.tags.filter(t => t !== tag) });
     } else {
@@ -96,11 +97,11 @@ export default function PostJob() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  // 👈 FIX 3: 'e' ko bata diya ke wo Form Event hai
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Quill empty check
     const isDescriptionEmpty = formData.description.replace(/<(.|\n)*?>/g, '').trim().length === 0;
 
     if (!formData.title || !formData.company || !formData.link || !formData.category || isDescriptionEmpty) {
@@ -137,7 +138,7 @@ export default function PostJob() {
       });
       window.scrollTo(0, 0);
 
-    } catch (error) {
+    } catch (error: any) {
       alert('Error posting job: ' + error.message);
     } finally {
       setLoading(false);

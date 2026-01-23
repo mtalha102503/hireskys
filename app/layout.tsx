@@ -7,48 +7,53 @@ import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
 import { GoogleAnalytics } from '@next/third-parties/google';
 
-// 🌟 FONT OPTIMIZATION (Variable setup for Tailwind)
+// 🌟 FONT OPTIMIZATION
 const jost = Jost({ subsets: ["latin"] });
 
-// 🎨 VIEWPORT SETTINGS (Theme Colors & Mobile Scaling)
+// 🎨 VIEWPORT SETTINGS
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" }, // Slate-50
-    { media: "(prefers-color-scheme: dark)", color: "#0B0F19" }, // Dark Bg
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0F19" },
   ],
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  // 👇 Mobile friendly additions
+  userScalable: false, 
 };
 
-// 🚀 GLOBAL SEO SETTINGS (Remote & Freelance Optimized)
+// 🚀 GLOBAL SEO SETTINGS
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.hireskys.com'),
 
-alternates: {
-  canonical: 'https://www.hireskys.com', 
-},
+  alternates: {
+    canonical: '/', // Child pages khud override kar lenge
+    languages: {
+      'en-US': '/en-US',
+    },
+  },
   
   title: {
-    default: "HireSkys | The #1 Remote Jobs & Freelance Marketplace",
-    template: "%s | HireSkys Remote",
+    default: "HireSkys | #1 Remote Jobs & Freelance Marketplace",
+    template: "%s | HireSkys", // "React Jobs | HireSkys"
   },
 
-  description: "Find high-paying remote jobs and freelance contracts. HireSkys is exclusively for 100% remote work in Development, Design, AI, and Marketing. No office politics, just work.",
+  description: "Find verified high-paying remote jobs in Development, Design, AI, and Marketing. 100% Remote, No office politics.",
+  
+  // 👇 Category add kiya (Google ko help karta hai)
+  category: "Employment",
+
   manifest: "/manifest.json",
+  
   keywords: [
-    "Remote Jobs",
-    "Freelance Work",
-    "Work from Home",
-    "Remote Developer Jobs",
-    "HireSkys",
-    "Contract Jobs",
-    "Digital Nomad Jobs",
-    "Verified Remote Jobs"
+    "Remote Jobs", "Freelance Work", "Work from Home", 
+    "Developer Jobs", "HireSkys", "Contract Jobs", 
+    "Digital Nomad", "Worldwide Remote"
   ],
 
   authors: [{ name: "HireSkys Team", url: "https://www.hireskys.com" }],
-  creator: "HireSkys",
+  creator: "HireSkys Inc.",
   publisher: "HireSkys Inc.",
 
   // Social Sharing (Open Graph)
@@ -56,15 +61,15 @@ alternates: {
     type: "website",
     locale: "en_US",
     url: "https://www.hireskys.com",
-    siteName: "HireSkys",
-    title: "HireSkys - Elite Remote & Freelance Jobs",
-    description: "Stop scrolling, start working. Find verified 100% remote jobs and freelance gigs.",
+    siteName: "HireSkys - Elite Remote Jobs",
+    title: "HireSkys | The #1 Remote Jobs Marketplace",
+    description: "Stop scrolling, start working. Find verified 100% remote jobs.",
     images: [
       {
-        url: "/og-main.png", // Make sure this image exists in public folder
+        url: "/og-main.png",
         width: 1200,
         height: 630,
-        alt: "HireSkys Remote Job Platform",
+        alt: "HireSkys Platform Preview",
       },
     ],
   },
@@ -73,18 +78,21 @@ alternates: {
   twitter: {
     card: "summary_large_image",
     title: "HireSkys - Remote Jobs Only",
-    description: "The elite job radar for remote talent. Verified gigs only.",
+    description: "The elite job radar for remote talent.",
     images: ["/og-main.png"],
     creator: "@HireSkys",
+    site: "@HireSkys",
   },
 
   // Google Bot Settings
   robots: {
     index: true,
     follow: true,
+    nocache: true,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: false,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
@@ -93,7 +101,15 @@ alternates: {
 
   icons: {
     icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png", // iOS Icon
+  },
+  
+  // 👇 Apple Web App capability
+  appleWebApp: {
+    capable: true,
+    title: "HireSkys",
+    statusBarStyle: "black-translucent",
   },
 };
 
@@ -103,29 +119,48 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // 🏢 JSON-LD SCHEMA (Google ko batane ke liye ke hum kaun hain)
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "HireSkys",
-    "url": "https://www.hireskys.com",
-    "logo": "https://www.hireskys.com/logo.png",
-    "sameAs": [
-      "https://twitter.com/hireskys",
-      "https://linkedin.com/company/hireskys"
-    ],
-    "description": "A dedicated marketplace for 100% remote jobs and freelance contracts.",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "email": "contact@hireskys.com",
-      "contactType": "customer support"
+  // 🏢 JSON-LD SCHEMAS (Array bana diya taake multiple schemas daal sakein)
+  const jsonLd = [
+    // 1. Organization Schema
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "HireSkys",
+      "url": "https://www.hireskys.com",
+      "logo": "https://www.hireskys.com/logo.png",
+      "sameAs": [
+        "https://twitter.com/hireskys",
+        "https://linkedin.com/company/hireskys",
+        "https://instagram.com/hireskys"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "contact@hireskys.com",
+        "contactType": "customer support",
+        "areaServed": "Worldwide"
+      }
+    },
+    // 2. WebSite Schema (Sitelinks Search Box ke liye)
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "HireSkys",
+      "url": "https://www.hireskys.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.hireskys.com/jobs?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
     }
-  };
+  ];
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* JSON-LD Schema Injection */}
+        {/* JSON-LD Injection */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -147,18 +182,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* Main Content Wrapper to ensure Footer stays at bottom */}
           <div className="flex flex-col min-h-screen">
             <main className="flex-grow">
               {children}
             </main>
+            {/* Footer Global hai, isliye Child Layouts se hata dena agar wahan duplicate ho raha ho */}
             <Footer />
           </div>
           
           <ConsentBanner />
         </ThemeProvider>
-        {/* 👇 2. YE COMPONENT ADD KARO (Body close hone se theek pehle) */}
-        {/* "G-XXXXXXXXXX" ki jagah apna asli ID paste karo */}
+        
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />
       </body>
     </html>

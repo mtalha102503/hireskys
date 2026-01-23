@@ -3,12 +3,21 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic'; 
+
+// --- ICONS ---
 import { 
   Briefcase, Globe, Link as LinkIcon, CheckCircle, 
   Layout, Code, Video, Edit3, Smartphone, Cpu, 
-  ArrowRight, Layers, DollarSign, MapPin, Mail, FileText, Loader2
+  ArrowRight, Layers, DollarSign, MapPin, Mail, FileText, Loader2, Info
 } from 'lucide-react';
 import Link from 'next/link';
+
+// 👈 CSS abhi bhi wahi use hogi, tension not
+import 'react-quill-new/dist/quill.snow.css'; 
+
+// 👈 IMPORT CHANGE: 'react-quill' ki jagah 'react-quill-new'
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 // --- CATEGORIES CONFIGURATION ---
 const CATEGORIES = {
@@ -42,26 +51,42 @@ const CATEGORIES = {
   }
 };
 
+// --- EDITOR TOOLBAR SETTINGS ---
+const modules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, false] }], 
+    ['bold', 'italic', 'underline', 'strike'], 
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['link', 'code-block', 'blockquote'], 
+    ['clean'] 
+  ],
+};
+
+const formats = [
+  'header',
+  'bold', 'italic', 'underline', 'strike',
+  'list', // List hi bullets aur numbers dono ko handle karega
+  'link', 'code-block', 'blockquote'
+];
+
 export default function PostJob() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // --- FORM STATE ---
   const [formData, setFormData] = useState({
     title: '',
     company: '',
-    email: '', // Internal contact email
+    email: '', 
     link: '',
     location: '',
     salary: '',
     description: '',
     category: '',
-    tags: [] as string[]
+    tags: []
   });
 
-  // --- TOGGLE TAG LOGIC ---
-  const toggleTag = (tag: string) => {
+  const toggleTag = (tag) => {
     if (formData.tags.includes(tag)) {
       setFormData({ ...formData, tags: formData.tags.filter(t => t !== tag) });
     } else {
@@ -71,19 +96,20 @@ export default function PostJob() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Basic Validation
-    if (!formData.title || !formData.company || !formData.link || !formData.category || !formData.description) {
-      alert("Please fill in all required fields (Title, Company, Link, Category, Description).");
+    // Quill empty check
+    const isDescriptionEmpty = formData.description.replace(/<(.|\n)*?>/g, '').trim().length === 0;
+
+    if (!formData.title || !formData.company || !formData.link || !formData.category || isDescriptionEmpty) {
+      alert("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
     try {
-      // Insert into Supabase
       const { error } = await supabase.from('jobs').insert([
         {
           title: formData.title,
@@ -91,40 +117,18 @@ export default function PostJob() {
           link: formData.link,
           category: formData.category,
           tags: formData.tags,
-          description: formData.description, // New Field
-          location: formData.location || 'Remote', // Default to Remote
-          salary_range: formData.salary, // New Field
-          contact_email: formData.email, // New Field (Private)
+          description: formData.description,
+          location: formData.location || 'Remote',
+          salary_range: formData.salary,
+          contact_email: formData.email,
           date_posted: new Date().toISOString(),
-          approved: false,     // Requires Admin Approval
-          is_verified: true    // Direct post = Verified Badge
+          approved: false,
+          is_verified: true    
         }
       ]);
 
       if (error) throw error;
- // 👇 --- YAHAN SE COPY KARO --- 👇
 
-      // 🔔 TRIGGER ALERT: Background mein sabko notify karo
-      try {
-        await fetch('/api/job-alerts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: formData.title,
-            source: formData.company, // Manual job me Source hi Company hai
-            link: formData.link,
-            salary_range: formData.salary,
-            location: formData.location || 'Remote',
-            category: formData.category,
-            description: formData.description,
-            company: formData.company
-          })
-        });
-      } catch (alertErr) {
-        console.error("Alert Trigger Failed (User won't notice):", alertErr);
-      }
-
-      // 👆 --- YAHAN TAK COPY KARO --- 👆
       setSuccess(true);
       setFormData({ 
         title: '', company: '', email: '', link: '', 
@@ -133,7 +137,7 @@ export default function PostJob() {
       });
       window.scrollTo(0, 0);
 
-    } catch (error: any) {
+    } catch (error) {
       alert('Error posting job: ' + error.message);
     } finally {
       setLoading(false);
@@ -144,9 +148,46 @@ export default function PostJob() {
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100 pb-20">
        <Navbar />
 
+      <style jsx global>{`
+        .ql-toolbar.ql-snow {
+          border-top-left-radius: 0.75rem;
+          border-top-right-radius: 0.75rem;
+          border-color: #e2e8f0;
+          background-color: #f8fafc;
+        }
+        .ql-container.ql-snow {
+          border-bottom-left-radius: 0.75rem;
+          border-bottom-right-radius: 0.75rem;
+          border-color: #e2e8f0;
+          background-color: white;
+          font-family: inherit;
+          font-size: 1rem;
+        }
+        .ql-editor {
+          min-height: 250px;
+        }
+        .dark .ql-toolbar.ql-snow {
+          background-color: #1e293b;
+          border-color: #334155;
+        }
+        .dark .ql-container.ql-snow {
+          background-color: #0f172a;
+          border-color: #334155;
+          color: #e2e8f0;
+        }
+        .dark .ql-stroke {
+          stroke: #94a3b8 !important;
+        }
+        .dark .ql-fill {
+          fill: #94a3b8 !important;
+        }
+        .dark .ql-picker {
+          color: #94a3b8 !important;
+        }
+      `}</style>
+
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         
-        {/* HEADER SECTION */}
         {!success && (
           <div className="text-center mb-10 animate-fade-in-up">
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-indigo-600 to-purple-500 bg-clip-text text-transparent">
@@ -158,7 +199,6 @@ export default function PostJob() {
           </div>
         )}
 
-        {/* SUCCESS MESSAGE */}
         {success ? (
           <div className="bg-white dark:bg-[#111625] p-10 rounded-3xl border border-slate-200 dark:border-slate-800 text-center shadow-2xl animate-scale-in">
             <div className="h-24 w-24 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
@@ -181,8 +221,7 @@ export default function PostJob() {
             </div>
           </div>
         ) : (
-          <> {/* 👈 YE LINE ZAROORI HAI */}
-          {/* 👇 --- YE REMOTE WARNING BANNER PASTE KARO --- 👇 */}
+          <>
           <div className="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-4 mb-8 rounded-r-xl shadow-sm animate-fade-in-up">
             <div className="flex items-start">
               <div className="flex-shrink-0">
@@ -195,17 +234,15 @@ export default function PostJob() {
                 <div className="mt-1 text-sm text-amber-700 dark:text-amber-500 leading-relaxed">
                   <p>
                     HireSkys is a <strong>strictly remote</strong> platform. Please ensure your listing is for 
-                    <strong> 100% remote work</strong> or freelance contracts. Listings requiring daily office presence will be rejected.
+                    <strong> 100% remote work</strong> or freelance contracts.
                   </p>
                 </div>
               </div>
             </div>
           </div>
           
-          
           <form onSubmit={handleSubmit} className="space-y-8 animate-fade-in-up delay-100">
             
-            {/* SECTION 1: ESSENTIAL INFO */}
             <div className="bg-white dark:bg-[#111625] p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <h2 className="text-xl font-bold flex items-center gap-3 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400">
@@ -215,7 +252,6 @@ export default function PostJob() {
               </h2>
 
               <div className="space-y-5">
-                {/* Job Title */}
                 <div>
                   <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Job Title *</label>
                   <input 
@@ -229,7 +265,6 @@ export default function PostJob() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* Company */}
                   <div>
                     <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Company Name *</label>
                     <div className="relative">
@@ -245,7 +280,6 @@ export default function PostJob() {
                     </div>
                   </div>
                   
-                  {/* Apply Link */}
                   <div>
                     <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Application Link *</label>
                     <div className="relative">
@@ -263,14 +297,13 @@ export default function PostJob() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                   {/* Location */}
                    <div>
                     <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Location</label>
                     <div className="relative">
                       <MapPin className="absolute left-4 top-4 text-slate-400" size={18}/>
                       <input 
                         type="text" 
-                        placeholder="e.g. Remote (Worldwide), Remote (USA), or Anywhere"
+                        placeholder="e.g. Remote (Worldwide)"
                         className="w-full pl-12 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                         value={formData.location}
                         onChange={(e) => setFormData({...formData, location: e.target.value})}
@@ -278,7 +311,6 @@ export default function PostJob() {
                     </div>
                   </div>
 
-                  {/* Salary */}
                   <div>
                     <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Salary Range (Optional)</label>
                     <div className="relative">
@@ -294,14 +326,13 @@ export default function PostJob() {
                   </div>
                 </div>
 
-                {/* Internal Email */}
                 <div>
                   <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Your Email (Private) *</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-4 text-slate-400" size={18}/>
                     <input 
                       type="email" 
-                      placeholder="For admin use only (in case we need to contact you)" 
+                      placeholder="For admin use only" 
                       className="w-full pl-12 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -311,7 +342,7 @@ export default function PostJob() {
               </div>
             </div>
 
-            {/* SECTION 2: DESCRIPTION */}
+            {/* SECTION 2: DESCRIPTION (REACT QUILL NEW 🚀) */}
             <div className="bg-white dark:bg-[#111625] p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <h2 className="text-xl font-bold flex items-center gap-3 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg text-pink-600 dark:text-pink-400">
@@ -321,14 +352,23 @@ export default function PostJob() {
               </h2>
               <div>
                 <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Job Description *</label>
-                <textarea 
-                  rows={6}
-                  placeholder="Describe the role, responsibilities, and requirements..." 
-                  className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all leading-relaxed"
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  required
-                />
+                
+                {/* 🌟 REACT QUILL NEW EDITOR */}
+                <div className="rounded-xl overflow-hidden">
+                    <ReactQuill 
+                        theme="snow"
+                        value={formData.description}
+                        onChange={(value) => setFormData({...formData, description: value})}
+                        modules={modules}
+                        formats={formats}
+                        placeholder="Describe the role responsibilities, requirements, and benefits..."
+                    />
+                </div>
+                
+                <p className="text-xs mt-2 italic text-slate-400 flex items-center gap-1">
+                    <Info size={12}/> Pro tip: Shortcuts like Ctrl+B (Bold) and Ctrl+I (Italic) work now!
+                </p>
+
               </div>
             </div>
 
@@ -375,7 +415,7 @@ export default function PostJob() {
                       Select Tags (Max 3) <span className="text-indigo-500 font-normal">- Helps in matching</span>
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {CATEGORIES[formData.category as keyof typeof CATEGORIES].sub.map(tag => {
+                      {CATEGORIES[formData.category].sub.map(tag => {
                         const isSelected = formData.tags.includes(tag);
                         return (
                           <button
@@ -429,7 +469,7 @@ export default function PostJob() {
             </button>
 
           </form>
-          </>  // <--- Ye Fragment closing tag zaroori hai
+          </>
         )}
       </div>
     </div>

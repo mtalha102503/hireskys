@@ -103,7 +103,18 @@ if (jobId) {
       if (s.includes('upwork')) return { name: 'Upwork', color: 'bg-green-100 text-green-700', icon: <ShieldCheck size={14}/> };
       return { name: source, color: 'bg-indigo-100 text-indigo-700', icon: <Briefcase size={14}/> };
   };
-
+const getCleanHTML = (html: string) => {
+    if (!html) return "No description provided.";
+    
+    // Agar DB mein encoded hai to usay wapis normal HTML banao
+    return html
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&amp;/g, '&')
+        .replace(/&nbsp;/g, ' ');
+};
   const renderAuthorSection = () => {
       const source = job.source?.toLowerCase() || "";
 
@@ -285,7 +296,7 @@ if (jobId) {
                     
                     <div 
     className="prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white"
-    dangerouslySetInnerHTML={{ __html: job.description || "No description provided." }}
+    dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
 />
                 </div>
 <ReportJob jobId={job.id} />

@@ -49,6 +49,7 @@ type Job = {
   approved: boolean;
   tags?: string[];
   platform?: string;
+  job_type?: string;
 };
 
 export default function Home() {

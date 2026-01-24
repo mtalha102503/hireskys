@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 import { 
   Briefcase, Globe, Link as LinkIcon, CheckCircle, 
   Layout, Code, Video, Edit3, Smartphone, Cpu, 
-  ArrowRight, Layers, DollarSign, MapPin, Mail, FileText, Loader2, Info
+  ArrowRight, Layers, DollarSign, MapPin, Mail, FileText, Loader2, Info, Clock
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -50,7 +50,7 @@ const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
     sub: ["AI Engineer", "Automation", "LLM", "Python Script"]
   }
 };
-
+const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Freelance", "Internship", "Temporary"];
 // --- EDITOR TOOLBAR SETTINGS ---
 const modules = {
   toolbar: [
@@ -81,6 +81,7 @@ export default function PostJob() {
     link: '',
     location: '',
     salary: '',
+    jobType: 'Full-time',
     description: '',
     category: '',
     tags: [] as string[] // 👈 FIX 1: Type define kiya ke ye strings ka array hai
@@ -121,6 +122,7 @@ export default function PostJob() {
           description: formData.description,
           location: formData.location || 'Remote',
           salary_range: formData.salary,
+          job_type: formData.jobType,
           contact_email: formData.email,
           date_posted: new Date().toISOString(),
           approved: false,
@@ -133,7 +135,7 @@ export default function PostJob() {
       setSuccess(true);
       setFormData({ 
         title: '', company: '', email: '', link: '', 
-        location: '', salary: '', description: '', 
+        location: '', salary: '', jobType: 'Full-time', description: '', 
         category: '', tags: [] 
       });
       window.scrollTo(0, 0);
@@ -297,14 +299,17 @@ export default function PostJob() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+               {/* 👇 FIXED: 3 COLUMN GRID (Sare inputs ek hi div ke andar hain) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                   
+                   {/* 1. Location */}
                    <div>
                     <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Location</label>
                     <div className="relative">
                       <MapPin className="absolute left-4 top-4 text-slate-400" size={18}/>
                       <input 
                         type="text" 
-                        placeholder="e.g. Remote (Worldwide)"
+                        placeholder="e.g. Remote"
                         className="w-full pl-12 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                         value={formData.location}
                         onChange={(e) => setFormData({...formData, location: e.target.value})}
@@ -312,21 +317,44 @@ export default function PostJob() {
                     </div>
                   </div>
 
+                  {/* 2. Job Type Selector (Ab ye beech mein ayega) */}
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Salary Range (Optional)</label>
+                    <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Job Type</label>
+                    <div className="relative">
+                      <Clock className="absolute left-4 top-4 text-slate-400" size={18}/>
+                      <select 
+                        className="w-full pl-12 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer"
+                        value={formData.jobType}
+                        onChange={(e) => setFormData({...formData, jobType: e.target.value})}
+                      >
+                        {JOB_TYPES.map(type => (
+                            <option key={type} value={type}>{type}</option>
+                        ))}
+                      </select>
+                      {/* Custom Arrow for Styling */}
+                      <div className="absolute right-4 top-4 pointer-events-none text-slate-400">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. Salary Range */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Salary Range</label>
                     <div className="relative">
                       <DollarSign className="absolute left-4 top-4 text-slate-400" size={18}/>
                       <input 
                         type="text" 
-                        placeholder="e.g. $50k - $80k or Hourly" 
+                        placeholder="e.g. $50k - $80k" 
                         className="w-full pl-12 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                         value={formData.salary}
                         onChange={(e) => setFormData({...formData, salary: e.target.value})}
                       />
                     </div>
                   </div>
-                </div>
 
+                </div>
+                {/* 👆 Grid yahan khatam hua */}
                 <div>
                   <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Your Email (Private) *</label>
                   <div className="relative">
@@ -365,10 +393,6 @@ export default function PostJob() {
                         placeholder="Describe the role responsibilities, requirements, and benefits..."
                     />
                 </div>
-                
-                <p className="text-xs mt-2 italic text-slate-400 flex items-center gap-1">
-                    <Info size={12}/> Pro tip: Shortcuts like Ctrl+B (Bold) and Ctrl+I (Italic) work now!
-                </p>
 
               </div>
             </div>

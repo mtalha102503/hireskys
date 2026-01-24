@@ -3,9 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams, useRouter } from 'next/navigation';
 import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
-import ReactMarkdown from 'react-markdown';
 import Navbar from '@/components/Navbar';
-import remarkBreaks from 'remark-breaks';
 import ReportJob from '@/components/ReportJob';
 import Link from 'next/link';
 import { 
@@ -235,7 +233,12 @@ if (jobId) {
                                 {job.location}
                             </div>
                         )}
-
+                        {job.job_type && (
+                            <div className="flex items-center gap-2">
+                                <Briefcase size={18} className="text-blue-500"/> 
+                                {job.job_type}
+                            </div>
+                        )}
                         {job.salary_range && job.salary_range !== "N/A" && (
                             <div className="flex items-center gap-2">
                                 <DollarSign size={18} className="text-green-500"/> 
@@ -280,29 +283,10 @@ if (jobId) {
                 <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-indigo-500"/> Job Description</h2>
                     
-<article className="prose prose-slate dark:prose-invert max-w-none">
-    <ReactMarkdown 
-        remarkPlugins={[remarkBreaks]}
-        components={{
-            // 1. Headings ko Bold aur Bada karo
-            h1: ({node, ...props}) => <h1 className="text-2xl font-extrabold mb-4 mt-6" {...props} />,
-            h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-3 mt-5" {...props} />,
-            h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2 mt-4" {...props} />,
-            
-            // 2. Lists ko proper style do
-            ul: ({node, ...props}) => <ul className="list-disc pl-5 space-y-1" {...props} />,
-            ol: ({node, ...props}) => <ol className="list-decimal pl-5 space-y-1" {...props} />,
-            
-            // 3. Bold text ko waqayi Bold karo
-            strong: ({node, ...props}) => <strong className="font-extrabold text-indigo-600" {...props} />,
-            
-            // 4. Links ko blue aur underline karo
-            a: ({node, ...props}) => <a className="text-blue-600 hover:underline" target="_blank" {...props} />
-        }}
-    >
-        {job.description || "No description provided."}
-    </ReactMarkdown>
-</article>
+                    <div 
+    className="prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white"
+    dangerouslySetInnerHTML={{ __html: job.description || "No description provided." }}
+/>
                 </div>
 <ReportJob jobId={job.id} />
                 {/* 🌟 RELATED JOBS SECTION */}
@@ -360,5 +344,3 @@ if (jobId) {
     </div>
   );
 }
-
-

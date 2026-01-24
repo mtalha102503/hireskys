@@ -9,7 +9,7 @@ import {
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
   User as UserIcon, Smartphone, Cpu, Edit3, X, Zap, Facebook, Linkedin,
-  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2
+  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
@@ -92,7 +92,7 @@ export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  
+  const [userProfile, setUserProfile] = useState<any>(null);
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState<'jobs' | 'talent'>('jobs');
@@ -168,6 +168,13 @@ export default function Home() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
         setCurrentUser(session.user);
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+            
+        if (profile) setUserProfile(profile);
     } else {
         // 👇 AGAR USER LOGGED IN NAHI HAI, TO 2 SECOND BAAD POPUP DIKHAO
         setTimeout(() => {
@@ -350,13 +357,114 @@ export default function Home() {
         </div>
       )}
 
-      {/* --- PROFESSIONAL HERO HEADER --- */}
+      {currentUser ? (
+    /* ✅ MODE B: DASHBOARD (Logged In Users ke liye) */
+    <header className="relative pt-24 pb-12 px-4 bg-white dark:bg-[#0B0F19] border-b border-slate-200 dark:border-slate-800">
+            <div className="max-w-5xl mx-auto">
+                {/* Top Row: Greeting & Stats */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                    <div className="space-y-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">
+                            <Sparkles size={14} /> User Dashboard
+                        </div>
+                        <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
+                            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">{userProfile?.full_name || 'Creator'}!</span> 👋
+                        </h1>
+                    </div>
+                    <div className="flex gap-3">
+                        <div className="p-3 md:p-4 bg-slate-50 dark:bg-[#151b2d] rounded-2xl border border-slate-100 dark:border-slate-800 text-center min-w-[90px]">
+                            <div className="text-xl md:text-2xl font-black text-indigo-600 dark:text-indigo-400">{savedJobIds.length}</div>
+                            <div className="text-[10px] md:text-xs text-slate-500 font-bold uppercase">Saved</div>
+                        </div>
+                        <div className="p-3 md:p-4 bg-slate-50 dark:bg-[#151b2d] rounded-2xl border border-slate-100 dark:border-slate-800 text-center min-w-[90px]">
+                            <div className="text-xl md:text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                                {userProfile?.skills?.length || 0}
+                            </div>
+                            <div className="text-[10px] md:text-xs text-slate-500 font-bold uppercase">Skills</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 👇 SEARCH BAR */}
+                <div className="max-w-4xl mx-auto">
+                    <form onSubmit={(e) => { e.preventDefault(); fetchJobs(); }} className="relative flex items-center bg-slate-50 dark:bg-[#151b2d] p-2 rounded-full border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-sm">
+                        <div className="pl-4 text-slate-400">
+                            <Search size={22} />
+                        </div>
+                        <input 
+                            type="text" 
+                            placeholder="Search by job title, skill, or keyword..." 
+                            className="flex-1 h-12 pl-3 pr-4 bg-transparent outline-none text-lg text-slate-900 dark:text-white placeholder:text-slate-400 min-w-0" 
+                            value={searchQuery} 
+                            onChange={(e) => setSearchQuery(e.target.value)} 
+                        />
+                        <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-bold transition shadow-md flex-shrink-0">
+                            Search
+                        </button>
+                    </form>
+
+                    {/* 👇 BIG & BOLD CATEGORIES (Landing Page Style) */}
+                    <div className="flex flex-wrap justify-center gap-3 mt-8">
+                        
+                        {/* "All" Button */}
+                        <motion.button 
+                            whileHover={{ scale: 1.05 }} 
+                            whileTap={{ scale: 0.95 }} 
+                            onClick={() => { setActiveCategory('All'); setActiveSubTag(''); }} 
+                            className={`flex items-center gap-2 px-6 py-3 rounded-full text-base font-semibold transition-colors border shadow-sm ${activeCategory === 'All' ? 'bg-white dark:bg-[#151b2d] text-indigo-600 border-indigo-200 dark:border-indigo-900 ring-2 ring-indigo-500/20' : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-transparent hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'}`}
+                        >
+                            <Filter size={18} /> All
+                        </motion.button>
+
+                        {/* Category Buttons */}
+                        {Object.entries(CATEGORIES).map(([name, data], index) => {
+                            const Icon = data.icon;
+                            const isActive = activeCategory === name;
+                            return (
+                                <motion.button 
+                                    key={name} 
+                                    initial={{ opacity: 0, y: 10 }} 
+                                    animate={{ opacity: 1, y: 0 }} 
+                                    transition={{ delay: index * 0.05 }} 
+                                    whileHover={{ scale: 1.05 }} 
+                                    whileTap={{ scale: 0.95 }} 
+                                    onClick={() => { setActiveCategory(name); setActiveSubTag(''); }} 
+                                    className={`flex items-center gap-2 px-5 py-3 rounded-full text-base font-medium transition-colors border whitespace-nowrap shadow-sm ${isActive ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg' : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'}`}
+                                >
+                                    <Icon size={18} /> {name}
+                                </motion.button>
+                            )
+                        })}
+                    </div>
+
+                    {/* Subtags (Compact Row below big buttons) */}
+                    {activeCategory !== 'All' && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800"
+                        >
+                            {CATEGORIES[activeCategory as keyof typeof CATEGORIES].sub.map((tag) => (
+                                <motion.button 
+                                    key={tag} 
+                                    whileHover={{ scale: 1.05 }}
+                                    onClick={() => setActiveSubTag(activeSubTag === tag ? '' : tag)} 
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
+                                >
+                                    {tag}
+                                </motion.button>
+                            ))}
+                        </motion.div>
+                    )}
+                </div>
+            </div>
+        </header>
+) : (
       <header className="relative pt-24 pb-8 md:pt-28 md:pb-12 px-4 text-center bg-white dark:bg-[#0B0F19] overflow-hidden">
         {/* Background Gradients */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-[1000px] h-[300px] md:h-[500px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
         
         <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 relative z-10">
-          
           {/* --- NEW HERO SECTION (No Icon - Conflict Free) --- */}
           <div className="space-y-8 mb-14 relative z-10">
               
@@ -402,7 +510,7 @@ export default function Home() {
               >
                   Find High-Paying <br className="hidden md:block" />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
-                      Remote & Contract Work
+                      Remote & Freelance Work
                   </span>
               </motion.h1>
 
@@ -522,34 +630,29 @@ export default function Home() {
             })}
           </div>
 
-          {/* SUB TAGS (Animated Entry) */}
-          {activeCategory !== 'All' && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-wrap justify-center gap-3 pt-6 pb-4 px-2 max-w-4xl mx-auto"
-              >
-                  {CATEGORIES[activeCategory as keyof typeof CATEGORIES].sub.map((tag) => (
-                      <motion.button
-                        key={tag}
-                        whileHover={{ scale: 1.05, backgroundColor: "rgba(99, 102, 241, 0.1)" }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setActiveSubTag(activeSubTag === tag ? '' : tag)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
-                            activeSubTag === tag
-                                ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700 shadow-sm'
-                                : 'bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-indigo-300'
-                        }`}
-                      >
-                          {tag}
-                      </motion.button>
-                  ))}
-              </motion.div>
-          )}
-
+          {/* Subtags (Compact Row below big buttons) */}
+                    {activeCategory !== 'All' && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800"
+                        >
+                            {CATEGORIES[activeCategory as keyof typeof CATEGORIES].sub.map((tag) => (
+                                <motion.button 
+                                    key={tag} 
+                                    whileHover={{ scale: 1.05 }}
+                                    onClick={() => setActiveSubTag(activeSubTag === tag ? '' : tag)} 
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
+                                >
+                                    {tag}
+                                </motion.button>
+                            ))}
+                        </motion.div>
+                    )}
         </div>
       </header>
 
+)}
       {/* WHY JOIN SECTION (Animated & Interactive) */}
       {!currentUser && (
         <div className="bg-white dark:bg-[#111625] border-y border-slate-200 dark:border-slate-800 py-16">
@@ -812,7 +915,7 @@ export default function Home() {
                 </button>
             </div>
         )}
-          <CategorySection />
+        <CategorySection />
         </div>
       </main>
     </div>

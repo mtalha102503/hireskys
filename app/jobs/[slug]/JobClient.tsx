@@ -89,9 +89,26 @@ if (jobId) {
     }
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    alert("Link copied to clipboard!");
+  const handleShare = async () => {
+    const shareData = {
+      title: job.title,
+      text: `Check out this job: ${job.title} at ${job.company || 'Remote'}`,
+      url: window.location.href,
+    };
+
+    // Agar browser support karta hai (mostly mobile browsers)
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log("Share cancelled or failed", err);
+      }
+    } else {
+      // Desktop Fallback: Copy to clipboard with a better UI logic
+      navigator.clipboard.writeText(window.location.href);
+      // Yahan alert ki jagah tum koi Toast use kar sakte ho
+      alert("✨ Link copied! Share it with your friends.");
+    }
   };
 
   // --- 🔥 SMART RENDERERS ---
@@ -259,31 +276,44 @@ const getCleanHTML = (html: string) => {
                     </div>
                 </div>
 
-                {/* 🌟 ACTION BUTTONS ROW */}
-                <div className="flex gap-3 w-full md:w-auto mt-6 md:mt-0">
-                    
-                    {/* Save Button */}
-                    <button onClick={toggleSave} className={`flex-shrink-0 p-3 rounded-xl border transition ${saved ? 'bg-red-50 border-red-200 text-red-600' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'}`}>
-                        <Heart size={24} className={saved ? 'fill-current' : ''} />
-                    </button>
-                    
-                    {/* Share Button */}
-                    <button onClick={handleShare} className="flex-shrink-0 p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-indigo-600">
-                        <Share2 size={24} />
-                    </button>
-                    
-                    {/* Apply Button */}
-                    <a 
-                        href={job.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="flex-1 md:flex-none px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform text-sm md:text-base h-auto"
-                    >
-                        <span className="md:hidden">Apply Now</span>
-                        <span className="hidden md:inline">Apply on {sourceStyle.name}</span>
-                        <ExternalLink size={18} className="flex-shrink-0"/>
-                    </a>
-                </div>
+                {/* --- Copy this into your Action Buttons Row --- */}
+<div className="flex gap-3 w-full md:w-auto mt-6 md:mt-0 items-center">
+  
+  {/* Heart & Share Group */}
+  <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm">
+      {/* Save Button */}
+      <button 
+        onClick={toggleSave} 
+        className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+      >
+          <Heart size={22} className={saved ? 'fill-current' : ''} />
+      </button>
+
+      {/* Vertical Divider */}
+      <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
+
+      {/* Modern Share Button */}
+      <button 
+        onClick={handleShare} 
+        className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2"
+        title="Share Job"
+      >
+          <Share2 size={22} />
+          <span className="text-xs font-bold pr-1 hidden sm:inline">SHARE</span>
+      </button>
+  </div>
+
+  {/* Apply Button (Refined) */}
+  <a 
+      href={job.link} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="flex-1 md:flex-none px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-[0_10px_20px_-10px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 hover:translate-y-[-2px] active:translate-y-[0px] transition-all"
+  >
+      <span>Apply Now</span>
+      <ExternalLink size={18} />
+  </a>
+</div>
             </div>
         </div>
       </div> 

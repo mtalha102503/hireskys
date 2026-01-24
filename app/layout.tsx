@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.hireskys.com'),
 
   alternates: {
-    canonical: '/', // Child pages khud override kar lenge
+    canonical: 'https://www.hireskys.com', // Child pages khud override kar lenge
     languages: {
       'en-US': '/en-US',
     },

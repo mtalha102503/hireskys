@@ -364,7 +364,7 @@ export default function Profile() {
                                 <label className="text-[10px] text-slate-500">Search City (Auto-fill)</label>
                                 <LocationInput 
                                     defaultValue={formData.location}
-                                    onLocationSelect={(data) => {
+                                    onLocationSelect={(data: any) => {
                                         setFormData({
                                             ...formData,
                                             location: data.display,
@@ -799,3 +799,4 @@ export default function Profile() {
     </div>
   );
 }
+

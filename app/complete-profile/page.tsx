@@ -5,28 +5,24 @@ import { useRouter } from 'next/navigation';
 import { 
   User, Phone, CheckCircle, ArrowRight, Loader2, 
   LayoutGrid, Calendar, X 
-} from 'lucide-react'; // 'X' icon add kiya skills remove karne ke liye
+} from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import { CATEGORIES } from '@/lib/categories'; // 👈 1. IMPORT ADDED
 
 // 👇 TUMHARA COUNTRIES DATA (As it is)
 const COUNTRIES = [
-  // 🌟 Top Priority
   { code: "+92", flag: "🇵🇰", name: "Pakistan" },
   { code: "+1", flag: "🇺🇸", name: "USA" },
   { code: "+44", flag: "🇬🇧", name: "UK" },
   { code: "+1", flag: "🇨🇦", name: "Canada" },
   { code: "+91", flag: "🇮🇳", name: "India" },
-  
-  // 🌍 Middle East
   { code: "+971", flag: "🇦🇪", name: "UAE" },
   { code: "+966", flag: "🇸🇦", name: "Saudi Arabia" },
   { code: "+974", flag: "🇶🇦", name: "Qatar" },
   { code: "+968", flag: "🇴🇲", name: "Oman" },
   { code: "+965", flag: "🇰🇼", name: "Kuwait" },
   { code: "+973", flag: "🇧🇭", name: "Bahrain" },
-
-  // 🌏 Asia Pacific
   { code: "+61", flag: "🇦🇺", name: "Australia" },
   { code: "+880", flag: "🇧🇩", name: "Bangladesh" },
   { code: "+86", flag: "🇨🇳", name: "China" },
@@ -41,8 +37,6 @@ const COUNTRIES = [
   { code: "+94", flag: "🇱🇰", name: "Sri Lanka" },
   { code: "+66", flag: "🇹🇭", name: "Thailand" },
   { code: "+84", flag: "🇻🇳", name: "Vietnam" },
-
-  // 🇪🇺 Europe
   { code: "+43", flag: "🇦🇹", name: "Austria" },
   { code: "+32", flag: "🇧🇪", name: "Belgium" },
   { code: "+359", flag: "🇧🇬", name: "Bulgaria" },
@@ -67,23 +61,17 @@ const COUNTRIES = [
   { code: "+41", flag: "🇨🇭", name: "Switzerland" },
   { code: "+90", flag: "🇹🇷", name: "Turkey" },
   { code: "+380", flag: "🇺🇦", name: "Ukraine" },
-
-  // 🌎 Americas
   { code: "+54", flag: "🇦🇷", name: "Argentina" },
   { code: "+55", flag: "🇧🇷", name: "Brazil" },
   { code: "+56", flag: "🇨🇱", name: "Chile" },
   { code: "+57", flag: "🇨🇴", name: "Colombia" },
   { code: "+52", flag: "🇲🇽", name: "Mexico" },
   { code: "+51", flag: "🇵🇪", name: "Peru" },
-
-  // 🌍 Africa
   { code: "+20", flag: "🇪🇬", name: "Egypt" },
   { code: "+254", flag: "🇰🇪", name: "Kenya" },
   { code: "+212", flag: "🇲🇦", name: "Morocco" },
   { code: "+234", flag: "🇳🇬", name: "Nigeria" },
   { code: "+27", flag: "🇿🇦", name: "South Africa" },
-
-  // ➕ Added: Rest of the World (Alphabetical)
   { code: "+93", flag: "🇦🇫", name: "Afghanistan" },
   { code: "+355", flag: "🇦🇱", name: "Albania" },
   { code: "+213", flag: "🇩🇿", name: "Algeria" },
@@ -215,15 +203,8 @@ const COUNTRIES = [
   { code: "+263", flag: "🇿🇼", name: "Zimbabwe" },
 ];
 
-const CATEGORIES = {
-  "Development": ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"],
-  "Mobile App": ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin"],
-  "Video & Motion": ["Video Editor", "Premiere Pro", "After Effects", "3D Artist", "Thumbnail Artist", "Short Form"],
-  "Design & UI": ["UI/UX", "Figma", "Web Design", "Logo Design", "Graphic Design"],
-  "Marketing": ["SEO", "Facebook Ads", "Google Ads", "Email Marketing", "Copywriter", "Growth"],
-  "Writing": ["Ghostwriter", "Technical Writer", "Scriptwriter", "Content Writer"],
-  "New Era (AI)": ["AI Engineer", "Automation", "LLM", "Python Script"]
-};
+// ❌ 2. PURANI HARDCODED CATEGORIES REMOVED
+// const CATEGORIES = { ... } (Removed)
 
 export default function CompleteProfile() {
   const router = useRouter();
@@ -252,12 +233,11 @@ export default function CompleteProfile() {
       
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
       if (profile) {
-         // 👇 PHONE NUMBER PARSING LOGIC (Fixing the double code issue)
+         // 👇 PHONE NUMBER PARSING LOGIC
          let initialCode = "+92";
          let initialNumber = "";
          
          if (profile.whatsapp) {
-            // Find if existing whatsapp starts with any country code
             const matchedCountry = COUNTRIES.find(c => profile.whatsapp.startsWith(c.code));
             if (matchedCountry) {
                 initialCode = matchedCountry.code;
@@ -277,7 +257,6 @@ export default function CompleteProfile() {
          
          setSelectedCountryCode(initialCode);
 
-         // Agar profile mein saved skills hain to load karein (Assuming 'skills' column exists, otherwise ignore)
          if (profile.skills && Array.isArray(profile.skills)) {
             setMySkills(profile.skills);
          }
@@ -287,7 +266,7 @@ export default function CompleteProfile() {
     getUser();
   }, [router]);
 
-  // Skill add karne ka function (UNTOUCHED LOGIC)
+  // Skill add karne ka function
   const addSkill = (e: any) => {
       const selected = e.target.value;
       if (selected && !mySkills.includes(selected)) {
@@ -300,7 +279,6 @@ export default function CompleteProfile() {
       e.target.value = ""; // Dropdown wapis reset karo
   };
 
-  // Skill hatane ka function (UNTOUCHED LOGIC)
   const removeSkill = (skillToRemove: string) => {
       setMySkills(mySkills.filter(s => s !== skillToRemove));
   };
@@ -317,11 +295,11 @@ export default function CompleteProfile() {
 
     const { error } = await supabase.from('profiles').update({
         username: formData.username,
-        whatsapp: fullWhatsApp, // Saved format: +923001234567
+        whatsapp: fullWhatsApp,
         full_name: formData.full_name,
         birth_date: formData.birth_date,
         primary_role: formData.primary_role, 
-        skills: mySkills, // Uncomment if you have a skills column
+        skills: mySkills,
         updated_at: new Date().toISOString()
     }).eq('id', user.id);
 
@@ -365,20 +343,37 @@ export default function CompleteProfile() {
 
                 {/* MAIN SKILL */}
                 <div><label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">Main Skill</label>
-                <div className="relative"><LayoutGrid className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} /><select value={formData.primary_role} onChange={(e) => setFormData({...formData, primary_role: e.target.value})} className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-11 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none"><option value="" disabled>Select Skill...</option>{Object.entries(CATEGORIES).map(([cat, skills]) => (<optgroup key={cat} label={cat} className="text-black bg-slate-200">{skills.map(s => <option key={s} value={s} className="bg-white">{s}</option>)}</optgroup>))}</select></div></div>
+                <div className="relative">
+                    <LayoutGrid className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} />
+                    <select value={formData.primary_role} onChange={(e) => setFormData({...formData, primary_role: e.target.value})} className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-11 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
+                        <option value="" disabled>Select Skill...</option>
+                        {/* 👇 UPDATED MAP LOGIC FOR NEW STRUCTURE */}
+                        {Object.entries(CATEGORIES).map(([cat, data]) => (
+                            <optgroup key={cat} label={cat} className="text-black bg-slate-200">
+                                {/* 'data' ab object hai, uske andar 'sub' array hai */}
+                                {(data as any).sub.map((s: string) => (
+                                    <option key={s} value={s} className="bg-white">{s}</option>
+                                ))}
+                            </optgroup>
+                        ))}
+                    </select>
+                </div></div>
 
-                {/* 🆕 ADDED MISSING SECTION: TOP 5 SKILLS UI */}
+                {/* TOP 5 SKILLS UI */}
                 <div>
                    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">Top 5 Secondary Skills</label>
                    <div className="relative">
                       <LayoutGrid className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} />
                       <select onChange={addSkill} className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-11 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
-                         <option value="">+ Add a skill...</option>
-                         {Object.entries(CATEGORIES).map(([cat, skills]) => (
-                            <optgroup key={cat} label={cat} className="text-black bg-slate-200">
-                               {skills.map(s => <option key={s} value={s} className="bg-white">{s}</option>)}
-                            </optgroup>
-                         ))}
+                          <option value="">+ Add a skill...</option>
+                          {/* 👇 UPDATED MAP LOGIC HERE TOO */}
+                          {Object.entries(CATEGORIES).map(([cat, data]) => (
+                             <optgroup key={cat} label={cat} className="text-black bg-slate-200">
+                                {(data as any).sub.map((s: string) => (
+                                    <option key={s} value={s} className="bg-white">{s}</option>
+                                ))}
+                             </optgroup>
+                          ))}
                       </select>
                    </div>
                    {/* Selected Skills Chips */}
@@ -394,7 +389,7 @@ export default function CompleteProfile() {
                    </div>
                 </div>
 
-                {/* 🌍 COUNTRY CODE INPUT */}
+                {/* 🌍 COUNTRY CODE INPUT (Unchanged) */}
                 <div>
                     <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">WhatsApp Number</label>
                     <div className="flex gap-2">

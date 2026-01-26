@@ -4,41 +4,82 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { 
   Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, 
-  ArrowLeft, ArrowRight, Hash, Sparkles, Briefcase, Search
+  ArrowLeft, ArrowRight, Hash, Sparkles, Briefcase, Search, Speaker, Users, Headphones, DollarSign, ShieldCheck, BookOpen , BarChart,PenTool
 } from 'lucide-react';
 
-// 🛠️ TUMHARA CATEGORY DATA
 const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
-  "Development": { 
-    icon: Code, 
-    sub: ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"] 
+  // 1. Tech & Development
+  "Development": {
+    icon: Code,
+    sub: ["React", "Next.js", "Node.js", "Python", "MERN Stack", "WordPress", "Shopify", "Web3", "Frontend", "Backend", "DevOps", "Cybersecurity", "QA Tester", "Game Dev"]
   },
-  "Mobile App": { 
-    icon: Smartphone, 
-    sub: ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin"] 
+  "Mobile App": {
+    icon: Smartphone,
+    sub: ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin", "Ionic", "App Design"]
   },
-  "Video & Motion": { 
-    icon: Video, 
-    sub: ["Video Editor", "Premiere Pro", "After Effects", "3D Artist", "Thumbnail Artist", "Short Form"] 
+  "AI & Machine Learning": { 
+    icon: Cpu,
+    sub: ["AI Engineer", "Machine Learning", "NLP", "Computer Vision", "Prompt Engineering", "Chatbot Dev", "TensorFlow", "OpenAI API", "Python Scripting"]
   },
-  "Design & UI": { 
-    icon: Layout, 
-    sub: ["UI/UX", "Figma", "Web Design", "Logo Design", "Graphic Design"] 
+
+  // 2. Creative & Design
+  "Design & Creative": {
+    icon: Layout,
+    sub: ["UI/UX Design", "Graphic Design", "Logo Design", "Figma", "Adobe Photoshop", "Illustrator", "Packaging Design", "Presentation Design", "NFT Art"]
   },
-  "Marketing": { 
-    icon: Globe, 
-    sub: ["SEO", "Facebook Ads", "Google Ads", "Email Marketing", "Copywriter", "Growth"] 
+  "Video & Animation": {
+    icon: Video,
+    sub: ["Video Editor", "Premiere Pro", "After Effects", "Motion Graphics", "3D Animation", "Thumbnail Artist", "Short Form (Reels/TikTok)", "VFX"]
   },
-  "Writing": { 
-    icon: Edit3, 
-    sub: ["Ghostwriter", "Technical Writer", "Scriptwriter", "Content Writer"] 
+  "Audio & Voice": {
+    icon: Speaker,
+    sub: ["Voice Over", "Audio Engineering", "Podcast Editor", "Music Production", "Sound Design", "Mixing & Mastering"]
   },
-  "New Era (AI)": { 
-    icon: Cpu, 
-    sub: ["AI Engineer", "Automation", "LLM", "Python Script"] 
+  "Writing & Translation": {
+    icon: Edit3,
+    sub: ["Content Writer", "Copywriter", "Technical Writer", "Ghostwriter", "Proofreading", "Translation", "Scriptwriting", "Blog Writing", "Resume Writing"]
+  },
+
+  // 3. Marketing & Sales
+  "Marketing & Sales": { 
+    icon: Globe,
+    sub: ["SEO", "Social Media Manager", "Facebook Ads", "Google Ads", "Email Marketing", "Lead Generation", "Sales Representative", "Cold Calling", "Affiliate Marketing", "Influencer Marketing"]
+  },
+
+  // 4. Business & Admin
+  "Admin & Support": { 
+    icon: Users, 
+    sub: ["Virtual Assistant", "Data Entry", "Executive Assistant", "Research", "Project Management", "Transcription", "Spreadsheets (Excel/Google Sheets)"] 
+  },
+  "Customer Service": {
+    icon: Headphones,
+    sub: ["Customer Support", "Technical Support", "Community Manager", "Chat Support", "Call Center", "Zendesk"]
+  },
+
+  // 5. Professional Services
+  "Finance & Accounting": {
+    icon: DollarSign,
+    sub: ["Accountant", "Bookkeeping", "Financial Analyst", "Tax Preparation", "QuickBooks", "Xero", "CFO", "Crypto Trading"]
+  },
+  "Legal & HR": {
+    icon: ShieldCheck,
+    sub: ["Legal Consultant", "Contract Law", "Paralegal", "Recruiter", "HR Manager", "Talent Acquisition"]
+  },
+  "Education & Coaching": {
+    icon: BookOpen,
+    sub: ["Online Tutor", "Course Creator", "Language Teacher", "Math Tutor", "Coding Mentor", "Fitness Coach", "Life Coach"]
+  },
+  
+  // 6. Data & Engineering
+  "Data Science & Analytics": {
+    icon: BarChart,
+    sub: ["Data Scientist", "Data Analyst", "Business Intelligence", "Power BI", "Tableau", "SQL", "Big Data", "Data Scraping"]
+  },
+  "Engineering & Architecture": {
+    icon: PenTool,
+    sub: ["CAD Designer", "3D Modeling", "Interior Design", "Mechanical Engineering", "Electrical Engineering", "AutoCAD", "SolidWorks"]
   }
 };
-
 type Props = {
   params: Promise<{ slug: string }>;
 };

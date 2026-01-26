@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import LocationInput from '@/components/LocationInput';
+import { CATEGORIES } from '@/lib/categories';
 import { 
   Save, LogOut, Upload, Plus, Trash2, X, ChevronDown, ChevronUp,
   GraduationCap, Link as LinkIcon, User, MapPin, Briefcase, Code, 
@@ -11,18 +12,6 @@ import {
   Zap, Play, Trophy, AlertTriangle, Star, Award, Mail, Phone, AtSign, Calendar
 } from 'lucide-react';
 import Link from 'next/link';
-
-// --- CATEGORIES LIST ---
-const CATEGORIES = {
-  "Development": ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"],
-  "Mobile App": ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin"],
-  "Video & Motion": ["Video Editor", "Premiere Pro", "After Effects", "3D Artist", "Thumbnail Artist", "Short Form"],
-  "Design & UI": ["UI/UX", "Figma", "Web Design", "Logo Design", "Graphic Design"],
-  "Marketing": ["SEO", "Facebook Ads", "Google Ads", "Email Marketing", "Copywriter", "Growth"],
-  "Writing": ["Ghostwriter", "Technical Writer", "Scriptwriter", "Content Writer"],
-  "New Era (AI)": ["AI Engineer", "Automation", "LLM", "Python Script"]
-};
-
 export default function Profile() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -325,6 +314,9 @@ export default function Profile() {
                                 <AtSign size={14} className="absolute left-3 top-3 text-slate-400"/>
                                 <input type="text" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} className="w-full mt-1 pl-8 p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 outline-none lowercase" placeholder="username" />
                             </div>
+                            <p className="text-[10px] text-slate-400 mt-1 pl-1">
+        We created a temporary ID. You can change it!
+    </p>
                         </div>
 
                         {/* EMAIL (Read Only usually) */}
@@ -372,7 +364,7 @@ export default function Profile() {
                                 <label className="text-[10px] text-slate-500">Search City (Auto-fill)</label>
                                 <LocationInput 
                                     defaultValue={formData.location}
-                                    onLocationSelect={(data: any) => {
+                                    onLocationSelect={(data) => {
                                         setFormData({
                                             ...formData,
                                             location: data.display,
@@ -515,35 +507,77 @@ export default function Profile() {
                                 })}
                              </div>
 
-                             {/* --- ADD SKILLS ACCORDION --- */}
-                             <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Add More Skills</h3>
-                             <div className="space-y-2">
-                                {Object.entries(CATEGORIES).map(([catName, skills]) => (
-                                    <div key={catName} className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                                            <button onClick={() => setOpenCategory(openCategory === catName ? null : catName)} className="w-full flex justify-between p-3 text-sm font-bold bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                                                {catName} {openCategory === catName ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
-                                            </button>
-                                            {openCategory === catName && (
-                                                <div className="p-3 flex flex-wrap gap-2 bg-white dark:bg-[#111625]">
-                                                        {skills.map(skill => (
-                                                            <button 
-                                                                key={skill} 
-                                                                onClick={() => toggleSkill(skill)} 
-                                                                disabled={formData.skills.includes(skill)}
-                                                                className={`px-3 py-1 text-xs rounded-full border transition ${
-                                                                    formData.skills.includes(skill) 
-                                                                    ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed' 
-                                                                    : 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:border-indigo-300 dark:hover:border-indigo-700'
-                                                                }`}
-                                                            >
-                                                                {skill} {formData.skills.includes(skill) && "✓"}
-                                                            </button>
-                                                        ))}
-                                                </div>
-                                            )}
-                                    </div>
-                                ))}
-                             </div>
+                             {/* --- ✨ NEW: MODERN SKILLS SELECTOR --- */}
+<div className="mt-8">
+    <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">
+        Browse Skills by Category
+    </h3>
+    
+    {/* 1. Categories Row (Pills Layout) */}
+    <div className="flex flex-wrap gap-2 mb-6">
+        {Object.entries(CATEGORIES).map(([catName, data]) => {
+            const isActive = openCategory === catName;
+            // Handle Icon safely (data.icon might be undefined if using old list)
+            const Icon = (data as any).icon; 
+
+            return (
+                <button 
+                    key={catName}
+                    onClick={() => setOpenCategory(isActive ? null : catName)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border shadow-sm ${
+                        isActive 
+                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent transform scale-105' 
+                        : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:text-indigo-500'
+                    }`}
+                >
+                    {Icon && <Icon size={14} />} 
+                    {catName}
+                </button>
+            );
+        })}
+    </div>
+
+    {/* 2. Active Skills Panel (Jadoo yahan hai) */}
+    {openCategory && (
+        <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 animate-in fade-in slide-in-from-top-2">
+            <div className="flex justify-between items-center mb-4">
+                <h4 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                    <span className="text-indigo-500">Select</span> {openCategory} Skills
+                </h4>
+                <button onClick={() => setOpenCategory(null)} className="text-xs text-slate-400 hover:text-slate-600">Close</button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+                {/* Safe access to sub array */}
+                {((CATEGORIES[openCategory as keyof typeof CATEGORIES] as any).sub || []).map((skill: string) => {
+                    const isSelected = formData.skills.includes(skill);
+                    return (
+                        <button 
+                            key={skill} 
+                            onClick={() => toggleSkill(skill)}
+                            disabled={isSelected}
+                            className={`px-3 py-1.5 text-sm rounded-lg border transition-all flex items-center gap-2 ${
+                                isSelected
+                                ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800 cursor-not-allowed'
+                                : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-600 hover:shadow-md'
+                            }`}
+                        >
+                            {skill}
+                            {isSelected && <CheckCircle size={12} className="fill-current"/>}
+                        </button>
+                    )
+                })}
+            </div>
+        </div>
+    )}
+    
+    {/* Helper Text if nothing selected */}
+    {!openCategory && (
+        <div className="text-center p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 text-sm">
+            👆 Select a category above to view and add skills.
+        </div>
+    )}
+</div>
                         </div>
 
                         {/* EDUCATION */}
@@ -697,5 +731,3 @@ export default function Profile() {
     </div>
   );
 }
-
-

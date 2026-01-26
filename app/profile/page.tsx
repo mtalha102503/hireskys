@@ -507,77 +507,145 @@ export default function Profile() {
                                 })}
                              </div>
 
-                             {/* --- ✨ NEW: MODERN SKILLS SELECTOR --- */}
-<div className="mt-8">
-    <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">
-        Browse Skills by Category
-    </h3>
-    
-    {/* 1. Categories Row (Pills Layout) */}
-    <div className="flex flex-wrap gap-2 mb-6">
-        {Object.entries(CATEGORIES).map(([catName, data]) => {
-            const isActive = openCategory === catName;
-            // Handle Icon safely (data.icon might be undefined if using old list)
-            const Icon = (data as any).icon; 
+                            {/* SKILLS SECTION (NEW CARD LAYOUT) */}
+                        <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
+                             <div className="flex justify-between items-center mb-6">
+                                <h2 className="font-bold flex items-center gap-2 text-xl"><Trophy size={20} className="text-yellow-500"/> Skill Achievements</h2>
+                                <span className="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">Get Verified Badge</span>
+                             </div>
 
-            return (
-                <button 
-                    key={catName}
-                    onClick={() => setOpenCategory(isActive ? null : catName)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border shadow-sm ${
-                        isActive 
-                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent transform scale-105' 
-                        : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:text-indigo-500'
-                    }`}
-                >
-                    {Icon && <Icon size={14} />} 
-                    {catName}
-                </button>
-            );
-        })}
-    </div>
+                             {/* --- ACTIVE SKILLS GRID --- */}
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                {formData.skills.length === 0 && <p className="text-slate-400 text-sm italic col-span-2 text-center py-4">No skills added yet. Add from below to take assessments.</p>}
+                                
+                                {formData.skills.map(skill => {
+                                    const rating = skillRatings[skill] || 0;
+                                    const isResume = rating === 3;
+                                    const isCertified = rating > 3;
 
-    {/* 2. Active Skills Panel (Jadoo yahan hai) */}
-    {openCategory && (
-        <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 animate-in fade-in slide-in-from-top-2">
-            <div className="flex justify-between items-center mb-4">
-                <h4 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                    <span className="text-indigo-500">Select</span> {openCategory} Skills
-                </h4>
-                <button onClick={() => setOpenCategory(null)} className="text-xs text-slate-400 hover:text-slate-600">Close</button>
-            </div>
+                                    return (
+                                        <div key={skill} className={`relative p-5 rounded-2xl border-2 transition-all group ${
+                                            isCertified 
+                                            ? 'border-green-500/30 bg-green-50/50 dark:bg-green-900/10' 
+                                            : isResume
+                                                ? 'border-yellow-500/30 bg-yellow-50/50 dark:bg-yellow-900/10'
+                                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-[#151b2d] hover:border-indigo-500/50'
+                                        }`}>
+                                            {/* Header */}
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div>
+                                                    <h3 className="font-bold text-lg text-slate-900 dark:text-white">{skill}</h3>
+                                                    <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mt-1">
+                                                        {isCertified ? 'Verified Expert' : isResume ? 'In Progress' : 'Unverified'}
+                                                    </p>
+                                                </div>
+                                                <button onClick={() => toggleSkill(skill)} className="text-slate-300 hover:text-red-500 transition"><X size={18}/></button>
+                                            </div>
 
-            <div className="flex flex-wrap gap-2">
-                {/* Safe access to sub array */}
-                {((CATEGORIES[openCategory as keyof typeof CATEGORIES] as any).sub || []).map((skill: string) => {
-                    const isSelected = formData.skills.includes(skill);
-                    return (
-                        <button 
-                            key={skill} 
-                            onClick={() => toggleSkill(skill)}
-                            disabled={isSelected}
-                            className={`px-3 py-1.5 text-sm rounded-lg border transition-all flex items-center gap-2 ${
-                                isSelected
-                                ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800 cursor-not-allowed'
-                                : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-600 hover:shadow-md'
-                            }`}
-                        >
-                            {skill}
-                            {isSelected && <CheckCircle size={12} className="fill-current"/>}
-                        </button>
-                    )
-                })}
-            </div>
-        </div>
-    )}
-    
-    {/* Helper Text if nothing selected */}
-    {!openCategory && (
-        <div className="text-center p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 text-sm">
-            👆 Select a category above to view and add skills.
-        </div>
-    )}
+                                            {/* Action Area */}
+                                            {isCertified ? (
+                                                // CERTIFIED STATE
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex-1 bg-green-500 text-white py-2 px-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2 shadow-sm">
+                                                        <Award size={16}/> {rating}/10 Score
+                                                    </div>
+                                                    <button onClick={() => viewCertificate(skill)} className="flex-1 bg-white dark:bg-black border border-green-200 dark:border-green-900 text-green-700 dark:text-green-400 py-2 px-3 rounded-lg text-sm font-bold hover:bg-green-50 dark:hover:bg-green-900/30 transition flex items-center justify-center gap-2">
+                                                        <Eye size={16}/> Certificate
+                                                    </button>
+                                                </div>
+                                            ) : isResume ? (
+                                                // RESUME STATE
+                                                <button 
+                                                    onClick={() => startTest(skill)}
+                                                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2.5 rounded-lg text-sm font-bold shadow-sm transition flex items-center justify-center gap-2"
+                                                >
+                                                    <Play size={16} fill="currentColor" /> Resume Assessment
+                                                </button>
+                                            ) : (
+                                                // START STATE
+                                                <button 
+                                                    onClick={() => startTest(skill)}
+                                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-sm font-bold shadow-md shadow-indigo-500/20 transition flex items-center justify-center gap-2 group-hover:scale-[1.02]"
+                                                >
+                                                    <Zap size={16} fill="currentColor" /> Take Assessment
+                                                </button>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                             </div>
+
+                            {/* --- ✨ NEW: MODERN SKILLS SELECTOR --- */}
+                            <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+                                <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">
+                                    Browse Skills by Category
+                                </h3>
+                                
+                                {/* 1. Categories Row */}
+<div className="flex flex-wrap gap-2 mb-6">
+    {/* 👇 FIX: Use Object.entries to map over Key-Value pairs */}
+    {Object.entries(CATEGORIES).map(([catName, catData]: [string, any]) => {
+        const isActive = openCategory === catName;
+        const Icon = catData.icon;
+
+        return (
+            <button 
+                key={catName}
+                onClick={() => setOpenCategory(isActive ? null : catName)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all border shadow-sm ${
+                    isActive 
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent transform scale-105' 
+                    : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:text-indigo-500'
+                }`}
+            >
+                {Icon && <Icon size={14} />} 
+                {catName}
+            </button>
+        );
+    })}
 </div>
+
+                                {/* 2. Active Skills Panel */}
+                                {openCategory && (
+                                    <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 animate-in fade-in slide-in-from-top-2">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h4 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                                <span className="text-indigo-500">Select</span> {openCategory} Skills
+                                            </h4>
+                                            <button onClick={() => setOpenCategory(null)} className="text-xs text-slate-400 hover:text-slate-600">Close</button>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-2">
+            {/* 👇 FIX: Access 'sub' from the CATEGORIES object instead of SKILL_DATA */}
+            {((CATEGORIES as any)[openCategory]?.sub || []).map((skill: string) => {
+                const isSelected = formData.skills.includes(skill);
+                return (
+                    <button 
+                        key={skill} 
+                        onClick={() => toggleSkill(skill)}
+                        disabled={isSelected}
+                        className={`px-3 py-1.5 text-sm rounded-lg border transition-all flex items-center gap-2 ${
+                            isSelected
+                            ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800 cursor-not-allowed'
+                            : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-600 hover:shadow-md'
+                        }`}
+                    >
+                        {skill}
+                        {isSelected && <CheckCircle size={12} className="fill-current"/>}
+                    </button>
+                )
+            })}
+        </div>
+                                    </div>
+                                )}
+                                
+                                {!openCategory && (
+                                    <div className="text-center p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 text-sm">
+                                        👆 Select a category above to view and add skills.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                         </div>
 
                         {/* EDUCATION */}

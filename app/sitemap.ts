@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import { createSlug } from '@/lib/utils'; 
+import { CATEGORIES } from '@/lib/categories'; // 👈 1. IMPORT FROM CENTRAL FILE
 
 // 🛠️ CONFIGURATION
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
@@ -9,17 +10,6 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const BASE_URL = 'https://www.hireskys.com'; 
 export const dynamic = 'force-dynamic';
-
-// 👇 YAHAN HUMNE CATEGORY LIST DEFINE KI HAI (Sitemap Generation ke liye)
-const CATEGORIES: Record<string, string[]> = {
-  "Development": ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"],
-  "Mobile App": ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin"],
-  "Video & Motion": ["Video Editor", "Premiere Pro", "After Effects", "3D Artist", "Thumbnail Artist", "Short Form"],
-  "Design & UI": ["UI/UX", "Figma", "Web Design", "Logo Design", "Graphic Design"],
-  "Marketing": ["SEO", "Facebook Ads", "Google Ads", "Email Marketing", "Copywriter", "Growth"],
-  "Writing": ["Ghostwriter", "Technical Writer", "Scriptwriter", "Content Writer"],
-  "New Era (AI)": ["AI Engineer", "Automation", "LLM", "Python Script"]
-};
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
@@ -61,24 +51,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // ==========================================
-  // 3️⃣ CATEGORIES & SUBCATEGORIES (🆕 NEW ADDED)
+  // 3️⃣ CATEGORIES & SUBCATEGORIES (UPDATED LOGIC)
   // ==========================================
   let categoryRoutes: MetadataRoute.Sitemap = [];
 
-  // Loop through Main Categories
-  Object.entries(CATEGORIES).forEach(([mainCat, subCats]) => {
-    // 1. Create URL for Main Category (e.g., /category/development)
+  // Loop through Main Categories (Now using imported Data)
+  Object.entries(CATEGORIES).forEach(([mainCat, data]) => {
+    // 1. Create URL for Main Category (e.g., /category/design-creative)
     const mainSlug = mainCat.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     
     categoryRoutes.push({
       url: `${BASE_URL}/category/${mainSlug}`,
       lastModified: new Date(),
-      changeFrequency: 'daily', // Categories update often with new jobs
-      priority: 0.9, // High priority because these are landing pages
+      changeFrequency: 'daily', 
+      priority: 0.9, 
     });
 
-    // 2. Create URL for Subcategories (e.g., /category/development/react)
-    subCats.forEach((sub) => {
+    // 2. Create URL for Subcategories (Using .sub array)
+    // TypeScript safe casting
+    const subCategories = (data as any).sub || [];
+
+    subCategories.forEach((sub: string) => {
       const subSlug = sub.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       
       categoryRoutes.push({
@@ -107,7 +100,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${BASE_URL}/jobs/${createSlug(job.title, job.id)}`, 
       lastModified: new Date(job.date_posted),
       changeFrequency: 'weekly', 
-      priority: 0.8, // Job pages are important
+      priority: 0.8,
     }));
   }
 

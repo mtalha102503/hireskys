@@ -1,16 +1,36 @@
 import Link from 'next/link';
 import { 
-  Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, ArrowRight 
+  Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, ArrowRight, Speaker, Users, Headphones, DollarSign,
+  ShieldCheck, BookOpen, BarChart, PenTool
 } from 'lucide-react';
 
 const CATEGORIES = [
+  // 1. Tech & Development
   { name: "Development", icon: Code },
   { name: "Mobile App", icon: Smartphone },
-  { name: "Video & Motion", icon: Video },
-  { name: "Design & UI", icon: Layout },
-  { name: "Marketing", icon: Globe },
-  { name: "Writing", icon: Edit3 },
-  { name: "New Era (AI)", icon: Cpu },
+  { name: "AI & Machine Learning", icon: Cpu },
+
+  // 2. Creative & Design
+  { name: "Design & Creative", icon: Layout },
+  { name: "Video & Animation", icon: Video },
+  { name: "Audio & Voice", icon: Speaker },
+  { name: "Writing & Translation", icon: Edit3 },
+
+  // 3. Marketing & Sales
+  { name: "Marketing & Sales", icon: Globe },
+
+  // 4. Business & Admin
+  { name: "Admin & Support", icon: Users },
+  { name: "Customer Service", icon: Headphones },
+
+  // 5. Professional Services
+  { name: "Finance & Accounting", icon: DollarSign },
+  { name: "Legal & HR", icon: ShieldCheck },
+  { name: "Education & Coaching", icon: BookOpen },
+
+  // 6. Data & Engineering
+  { name: "Data Science & Analytics", icon: BarChart },
+  { name: "Engineering & Architecture", icon: PenTool },
 ];
 
 export default function CategorySection() {
@@ -50,14 +70,6 @@ export default function CategorySection() {
               </Link>
             );
           })}
-          
-          {/* Last Card: "View All" */}
-          <Link href="/" className="flex flex-col items-center justify-center p-6 bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-all shadow-lg hover:-translate-y-1 group">
-             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white mb-3">
-                  <ArrowRight size={20} />
-             </div>
-             <h3 className="font-semibold text-white text-sm text-center">View All Categories</h3>
-          </Link>
         </div>
 
       </div>

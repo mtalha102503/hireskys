@@ -5,11 +5,12 @@ import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation'; 
 import { createSlug } from '@/lib/utils';
 import CategorySection from "@/components/CategorySection";
+import { CATEGORIES } from '@/lib/categories'; // 👈 Ab sab kuch yahan se ayega
 import { 
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
   User as UserIcon, Smartphone, Cpu, Edit3, X, Zap, Facebook, Linkedin,
-  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp
+  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp, ChevronUp
 } from 'lucide-react';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
@@ -25,17 +26,6 @@ const getPlatformIcon = (platform: string) => {
     case 'LinkedIn': return <Linkedin size={14} className="text-blue-700" />;
     default: return <Globe size={14} className="text-slate-400" />;
   }
-};
-
-// --- DATA: CATEGORIES ---
-const CATEGORIES = {
-  "Development": { icon: Code, sub: ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"] },
-  "Mobile App": { icon: Smartphone, sub: ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin"] },
-  "Video & Motion": { icon: Video, sub: ["Video Editor", "Premiere Pro", "After Effects", "3D Artist", "Thumbnail Artist", "Short Form"] },
-  "Design & UI": { icon: Layout, sub: ["UI/UX", "Figma", "Web Design", "Logo Design", "Graphic Design"] },
-  "Marketing": { icon: Globe, sub: ["SEO", "Facebook Ads", "Google Ads", "Email Marketing", "Copywriter", "Growth"] },
-  "Writing": { icon: Edit3, sub: ["Ghostwriter", "Technical Writer", "Scriptwriter", "Content Writer"] },
-  "New Era (AI)": { icon: Cpu, sub: ["AI Engineer", "Automation", "LLM", "Python Script"] }
 };
 
 type Job = {
@@ -90,6 +80,7 @@ export default function Home() {
     "inLanguage": "en-US"
   };
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [showAll, setShowAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -109,6 +100,9 @@ export default function Home() {
 
   // 🔔 POPUP STATE
   const [showPopup, setShowPopup] = useState(false);
+  const categoryEntries = Object.entries(CATEGORIES);
+const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); // Sirf 10 dikhao
+
   
   useEffect(() => {
     checkUser();
@@ -403,41 +397,57 @@ export default function Home() {
                         </button>
                     </form>
 
-                    {/* 👇 BIG & BOLD CATEGORIES (Landing Page Style) */}
-                    <div className="flex flex-wrap justify-center gap-3 mt-8">
+                    {/* 👇 BIG & BOLD CATEGORIES (Updated with Show More Logic) */}
+                    <div className="flex flex-col items-center mt-8">
                         
-                        {/* "All" Button */}
-                        <motion.button 
-                            whileHover={{ scale: 1.05 }} 
-                            whileTap={{ scale: 0.95 }} 
-                            onClick={() => { setActiveCategory('All'); setActiveSubTag(''); }} 
-                            className={`flex items-center gap-2 px-6 py-3 rounded-full text-base font-semibold transition-colors border shadow-sm ${activeCategory === 'All' ? 'bg-white dark:bg-[#151b2d] text-indigo-600 border-indigo-200 dark:border-indigo-900 ring-2 ring-indigo-500/20' : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-transparent hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'}`}
-                        >
-                            <Filter size={18} /> All
-                        </motion.button>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            
+                            {/* "All" Button */}
+                            <motion.button 
+                                whileHover={{ scale: 1.05 }} 
+                                whileTap={{ scale: 0.95 }} 
+                                onClick={() => { setActiveCategory('All'); setActiveSubTag(''); }} 
+                                className={`flex items-center gap-2 px-6 py-3 rounded-full text-base font-semibold transition-colors border shadow-sm ${activeCategory === 'All' ? 'bg-white dark:bg-[#151b2d] text-indigo-600 border-indigo-200 dark:border-indigo-900 ring-2 ring-indigo-500/20' : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-transparent hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'}`}
+                            >
+                                <Filter size={18} /> All
+                            </motion.button>
 
-                        {/* Category Buttons */}
-                        {Object.entries(CATEGORIES).map(([name, data], index) => {
-                            const Icon = data.icon;
-                            const isActive = activeCategory === name;
-                            return (
-                                <motion.button 
-                                    key={name} 
-                                    initial={{ opacity: 0, y: 10 }} 
-                                    animate={{ opacity: 1, y: 0 }} 
-                                    transition={{ delay: index * 0.05 }} 
-                                    whileHover={{ scale: 1.05 }} 
-                                    whileTap={{ scale: 0.95 }} 
-                                    onClick={() => { setActiveCategory(name); setActiveSubTag(''); }} 
-                                    className={`flex items-center gap-2 px-5 py-3 rounded-full text-base font-medium transition-colors border whitespace-nowrap shadow-sm ${isActive ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg' : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'}`}
-                                >
-                                    <Icon size={18} /> {name}
-                                </motion.button>
-                            )
-                        })}
-                    </div>
+                            {/* Category Buttons (Mapped from visibleCategories) */}
+                            {visibleCategories.map(([name, data], index) => {
+                                const Icon = data.icon;
+                                const isActive = activeCategory === name;
+                                return (
+                                    <motion.button 
+                                        key={name} 
+                                        initial={{ opacity: 0, y: 10 }} 
+                                        animate={{ opacity: 1, y: 0 }} 
+                                        transition={{ delay: index * 0.05 }} 
+                                        whileHover={{ scale: 1.05 }} 
+                                        whileTap={{ scale: 0.95 }} 
+                                        onClick={() => { setActiveCategory(name); setActiveSubTag(''); }} 
+                                        className={`flex items-center gap-2 px-5 py-3 rounded-full text-base font-medium transition-colors border whitespace-nowrap shadow-sm ${isActive ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg' : 'bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'}`}
+                                    >
+                                        <Icon size={18} /> {name}
+                                    </motion.button>
+                                )
+                            })}
+                        </div>
 
-                    {/* Subtags (Compact Row below big buttons) */}
+                        {/* Show More / Show Less Button */}
+                        {categoryEntries.length > 10 && (
+                            <button 
+                                onClick={() => setShowAll(!showAll)}
+                                className="mt-6 text-sm font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 hover:underline transition-all"
+                            >
+                                {showAll ? (
+                                    <>Show Less <ChevronUp size={16}/></>
+                                ) : (
+                                    <>View All Categories  <ChevronDown size={16}/></>
+                                )}
+                            </button>
+                        )}
+
+                        
                     {activeCategory !== 'All' && (
                         <motion.div 
                             initial={{ opacity: 0, y: 10 }}
@@ -456,6 +466,7 @@ export default function Home() {
                             ))}
                         </motion.div>
                     )}
+                </div>
                 </div>
             </div>
         </header>

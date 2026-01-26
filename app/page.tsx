@@ -602,44 +602,63 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
             </form>
           </div>
 
-          {/* CATEGORIES (Now with Framer Motion Animation) */}
-          <div className="flex flex-wrap justify-center gap-3 pt-6 px-2 max-w-5xl mx-auto">
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => { setActiveCategory('All'); setActiveSubTag(''); }}
-                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm md:text-base font-semibold transition-colors border shadow-sm ${
-                  activeCategory === 'All'
-                    ? 'bg-white dark:bg-[#151b2d] text-indigo-600 border-indigo-200 dark:border-indigo-900 ring-2 ring-indigo-500/20'
-                    : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-transparent hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'
-                }`}
-            >
-              <Filter size={18} /> All
-            </motion.button>
-            
-            {Object.entries(CATEGORIES).map(([name, data], index) => {
-                const Icon = data.icon;
-                const isActive = activeCategory === name;
-                return (
-                    <motion.button
-                        key={name}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => { setActiveCategory(name); setActiveSubTag(''); }}
-                        className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm md:text-base font-medium transition-colors border whitespace-nowrap shadow-sm ${
-                        isActive
-                            ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg'
-                            : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'
-                        }`}
-                    >
-                        <Icon size={18} /> {name}
-                    </motion.button>
-                )
-            })}
-          </div>
+          {/* CATEGORIES (Now with Framer Motion Animation) - LOGGED OUT SECTION */}
+<div className="flex flex-col items-center pt-6 px-2 max-w-5xl mx-auto">
+    <div className="flex flex-wrap justify-center gap-3">
+    
+        {/* "All" Button */}
+        <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => { setActiveCategory('All'); setActiveSubTag(''); }}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm md:text-base font-semibold transition-colors border shadow-sm ${
+                activeCategory === 'All'
+                ? 'bg-white dark:bg-[#151b2d] text-indigo-600 border-indigo-200 dark:border-indigo-900 ring-2 ring-indigo-500/20'
+                : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-transparent hover:bg-white dark:hover:bg-slate-800 hover:shadow-md'
+            }`}
+        >
+            <Filter size={18} /> All
+        </motion.button>
+        
+        {/* 👇 FIX: Yahan 'Object.entries' hata kar 'visibleCategories' lagaya */}
+        {visibleCategories.map(([name, data], index) => {
+            const Icon = data.icon;
+            const isActive = activeCategory === name;
+            return (
+                <motion.button
+                    key={name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => { setActiveCategory(name); setActiveSubTag(''); }}
+                    className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm md:text-base font-medium transition-colors border whitespace-nowrap shadow-sm ${
+                    isActive
+                        ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg'
+                        : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'
+                    }`}
+                >
+                    <Icon size={18} /> {name}
+                </motion.button>
+            )
+        })}
+    </div>
+
+    {/* 👇 FIX: Show More / Show Less Button Add kar diya */}
+    {categoryEntries.length > 5 && (
+        <button 
+            onClick={() => setShowAll(!showAll)}
+            className="mt-6 text-sm font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 hover:underline transition-all"
+        >
+            {showAll ? (
+                <>Show Less <ChevronUp size={16}/></>
+            ) : (
+                <>View All Categories  <ChevronDown size={16}/></>
+            )}
+        </button>
+    )}
+</div>
 
           {/* Subtags (Compact Row below big buttons) */}
                     {activeCategory !== 'All' && (
@@ -767,13 +786,23 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
             </div>
         )}
 
-        <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
-  <Briefcase size={20} className="text-indigo-500" />
-  {/* 👇 Agar filter nahi hai to "Fresh Arrivals" likho, warna "Recent Jobs" */}
-  {activeCategory === 'All' && !searchQuery ? 'Latest Remote Opportunities' : 'Search Results'}
-</h2>
-          <span className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-1 md:px-3 rounded-full">
+        <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 gap-3">
+          <h2 className="flex-1 min-w-0 text-base md:text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+            <Briefcase size={20} className="text-indigo-500 flex-shrink-0" />
+            
+            {/* 👇 TRICK: Mobile par "Latest Jobs" dikhega, Desktop par poora text. Ek line me rahega hamesha. */}
+            <span className="truncate">
+               {activeCategory === 'All' && !searchQuery ? (
+                  <>
+                    <span className="sm:hidden">Latest Opportunities</span> {/* Mobile Text */}
+                    <span className="hidden sm:inline">Latest Remote Opportunities</span> {/* Desktop Text */}
+                  </>
+               ) : 'Search Results'}
+            </span>
+          </h2>
+
+          {/* Badge: Ab shrink nahi hoga */}
+          <span className="flex-shrink-0 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-1 md:px-3 rounded-full whitespace-nowrap">
             {jobs.length} Results
           </span>
         </div>

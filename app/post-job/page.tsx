@@ -410,7 +410,7 @@ export default function PostJob() {
                       Select Tags (Max 3) <span className="text-indigo-500 font-normal">- Helps in matching</span>
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {CATEGORIES[formData.category].sub.map(tag => {
+                      {(CATEGORIES as any)[formData.category]?.sub?.map((tag: string) => {
                         const isSelected = formData.tags.includes(tag);
                         return (
                           <button
@@ -470,3 +470,4 @@ export default function PostJob() {
     </div>
   );
 }
+

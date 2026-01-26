@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic'; 
+import { CATEGORIES } from '@/lib/categories'; // 👈 Ab sab kuch yahan se ayega
 
 // --- ICONS ---
 import { 
@@ -19,37 +20,6 @@ import 'react-quill-new/dist/quill.snow.css';
 // Dynamic Import for React Quill
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
-// --- CATEGORIES CONFIGURATION ---
-const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
-  "Development": {
-    icon: Code,
-    sub: ["React", "Next.js", "Node.js", "Python", "Shopify", "WordPress", "Web3", "Frontend", "Backend"]
-  },
-  "Mobile App": {
-    icon: Smartphone,
-    sub: ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin"]
-  },
-  "Video & Motion": {
-    icon: Video,
-    sub: ["Video Editor", "Premiere Pro", "After Effects", "3D Artist", "Thumbnail Artist", "Short Form"]
-  },
-  "Design & UI": {
-    icon: Layout,
-    sub: ["UI/UX", "Figma", "Web Design", "Logo Design", "Graphic Design"]
-  },
-  "Marketing": {
-    icon: Globe,
-    sub: ["SEO", "Facebook Ads", "Google Ads", "Email Marketing", "Copywriter", "Growth"]
-  },
-  "Writing": {
-    icon: Edit3,
-    sub: ["Ghostwriter", "Technical Writer", "Scriptwriter", "Content Writer"]
-  },
-  "New Era (AI)": {
-    icon: Cpu,
-    sub: ["AI Engineer", "Automation", "LLM", "Python Script"]
-  }
-};
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Freelance", "Internship", "Temporary"];
 // --- EDITOR TOOLBAR SETTINGS ---
 const modules = {

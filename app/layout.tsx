@@ -19,16 +19,17 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  // 👇 Mobile friendly additions
   userScalable: false, 
 };
 
 // 🚀 GLOBAL SEO SETTINGS
 export const metadata: Metadata = {
+  // 👇 Ye Base URL zaroori hai relative links ke liye
   metadataBase: new URL('https://www.hireskys.com'),
 
   alternates: {
-    canonical: 'https://www.hireskys.com', // Child pages khud override kar lenge
+    // 👇 FIX: Isay './' kar do. Ye automatic current page ka URL utha lega.
+    canonical: './', 
     languages: {
       'en-US': '/en-US',
     },
@@ -36,14 +37,12 @@ export const metadata: Metadata = {
   
   title: {
     default: "HireSkys | #1 Remote Jobs & Freelance Marketplace",
-    template: "%s | HireSkys", // "React Jobs | HireSkys"
+    template: "%s | HireSkys", 
   },
 
   description: "Find verified high-paying remote jobs in Development, Design, AI, and Marketing. 100% Remote, No office politics.",
   
-  // 👇 Category add kiya (Google ko help karta hai)
   category: "Employment",
-
   manifest: "/manifest.json",
   
   keywords: [
@@ -102,10 +101,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png", // iOS Icon
+    apple: "/apple-touch-icon.png", 
   },
   
-  // 👇 Apple Web App capability
   appleWebApp: {
     capable: true,
     title: "HireSkys",
@@ -119,9 +117,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // 🏢 JSON-LD SCHEMAS (Array bana diya taake multiple schemas daal sakein)
+  // 🏢 JSON-LD SCHEMAS
   const jsonLd = [
-    // 1. Organization Schema
     {
       "@context": "https://schema.org",
       "@type": "Organization",
@@ -140,7 +137,6 @@ export default function RootLayout({
         "areaServed": "Worldwide"
       }
     },
-    // 2. WebSite Schema (Sitelinks Search Box ke liye)
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -160,7 +156,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* JSON-LD Injection */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -186,7 +181,6 @@ export default function RootLayout({
             <main className="flex-grow">
               {children}
             </main>
-            {/* Footer Global hai, isliye Child Layouts se hata dena agar wahan duplicate ho raha ho */}
             <Footer />
           </div>
           

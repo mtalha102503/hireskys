@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
+import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
 
 // 🌟 FONT OPTIMIZATION
@@ -18,8 +19,8 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false, 
+  maximumScale: 5, // Thora margin de do taake zoom ho sake
+  userScalable: true, // ✅ ISAY TRUE KAR DO
 };
 
 // 🚀 GLOBAL SEO SETTINGS
@@ -116,7 +117,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   // 🏢 JSON-LD SCHEMAS
   const jsonLd = [
     {
@@ -155,14 +155,11 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
+      <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      
-      <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>
         <NextTopLoader 
           color="#6366f1"
           initialPosition={0.08}
@@ -186,7 +183,7 @@ export default function RootLayout({
           
           <ConsentBanner />
         </ThemeProvider>
-        
+        <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />
       </body>
     </html>

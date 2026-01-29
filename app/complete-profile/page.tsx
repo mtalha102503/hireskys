@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { 
   User, Phone, CheckCircle, ArrowRight, Loader2, 
-  LayoutGrid, Calendar, X 
+  LayoutGrid, Calendar, X ,MapPin, Building2, Hash,ChevronDown,Briefcase
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -13,8 +13,8 @@ import { CATEGORIES } from '@/lib/categories'; // 👈 1. IMPORT ADDED
 // 👇 TUMHARA COUNTRIES DATA (As it is)
 const COUNTRIES = [
   { code: "+92", flag: "🇵🇰", name: "Pakistan" },
-  { code: "+1", flag: "🇺🇸", name: "USA" },
-  { code: "+44", flag: "🇬🇧", name: "UK" },
+  { code: "+1", flag: "🇺🇸", name: "United States" },
+  { code: "+44", flag: "🇬🇧", name: "United Kingdom" },
   { code: "+1", flag: "🇨🇦", name: "Canada" },
   { code: "+91", flag: "🇮🇳", name: "India" },
   { code: "+971", flag: "🇦🇪", name: "UAE" },
@@ -201,7 +201,7 @@ const COUNTRIES = [
   { code: "+967", flag: "🇾🇪", name: "Yemen" },
   { code: "+260", flag: "🇿🇲", name: "Zambia" },
   { code: "+263", flag: "🇿🇼", name: "Zimbabwe" },
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 // ❌ 2. PURANI HARDCODED CATEGORIES REMOVED
 // const CATEGORIES = { ... } (Removed)
@@ -213,16 +213,20 @@ export default function CompleteProfile() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [mySkills, setMySkills] = useState<string[]>([]);
   const [user, setUser] = useState<any>(null);
-  
+  const [isCountryOpen, setIsCountryOpen] = useState(false);
+const [countrySearch, setCountrySearch] = useState("");
   // New State for Country Code (Default Pakistan)
   const [selectedCountryCode, setSelectedCountryCode] = useState("+92");
-  
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [formData, setFormData] = useState({
     full_name: '',
     username: '',
     whatsapp: '', // Stores only number part
     birth_date: '',
-    primary_role: '' 
+    primary_role: '',
+    country: 'Pakistan', 
+    city: '',
+    postal_code: '' 
   });
 
   useEffect(() => {
@@ -252,7 +256,10 @@ export default function CompleteProfile() {
             username: profile.username || user.user_metadata.full_name?.toLowerCase().replace(/\s/g, '_').replace(/[^a-z0-9_]/g, '') || '',
             whatsapp: initialNumber, // Only the number part
             birth_date: profile.birth_date || '',
-            primary_role: profile.primary_role || '' 
+            primary_role: profile.primary_role || '' ,
+            country: profile.country || 'Pakistan',
+    city: profile.city || '',
+    postal_code: profile.postal_code || ''
          });
          
          setSelectedCountryCode(initialCode);
@@ -260,18 +267,31 @@ export default function CompleteProfile() {
          if (profile.skills && Array.isArray(profile.skills)) {
             setMySkills(profile.skills);
          }
+         if (profile.primary_role) {
+             const foundCategory = Object.keys(CATEGORIES).find(cat => 
+                 (CATEGORIES as any)[cat].sub.includes(profile.primary_role)
+             );
+             if (foundCategory) setSelectedCategory(foundCategory);
+         }
       }
       setLoading(false);
     };
     getUser();
   }, [router]);
+  const handleCategoryChange = (e: any) => {
+      const newCategory = e.target.value;
+      setSelectedCategory(newCategory);
+      // Reset roles because old roles might not belong to new category
+      setFormData({ ...formData, primary_role: '' });
+      setMySkills([]);
+  };
 
   // Skill add karne ka function
   const addSkill = (e: any) => {
       const selected = e.target.value;
       if (selected && !mySkills.includes(selected)) {
           if (mySkills.length >= 5) {
-              alert("Bas bhai! 5 Skills kaafi hain."); 
+              alert("You can add only 5 Skills"); 
               return;
           }
           setMySkills([...mySkills, selected]);
@@ -300,6 +320,9 @@ export default function CompleteProfile() {
         birth_date: formData.birth_date,
         primary_role: formData.primary_role, 
         skills: mySkills,
+        country: formData.country,
+    city: formData.city,
+    postal_code: formData.postal_code,
         updated_at: new Date().toISOString()
     }).eq('id', user.id);
 
@@ -341,90 +364,225 @@ export default function CompleteProfile() {
                 <div><label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">Username</label>
                 <div className="relative"><span className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500 font-bold">@</span><input type="text" value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value.toLowerCase().replace(/\s/g, '_')})} className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-10 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"/></div></div>
 
-                {/* MAIN SKILL */}
-                <div><label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">Main Skill</label>
-                <div className="relative">
-                    <LayoutGrid className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} />
-                    <select value={formData.primary_role} onChange={(e) => setFormData({...formData, primary_role: e.target.value})} className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-11 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
-                        <option value="" disabled>Select Skill...</option>
-                        {/* 👇 UPDATED MAP LOGIC FOR NEW STRUCTURE */}
-                        {Object.entries(CATEGORIES).map(([cat, data]) => (
-                            <optgroup key={cat} label={cat} className="text-black bg-slate-200">
-                                {/* 'data' ab object hai, uske andar 'sub' array hai */}
-                                {(data as any).sub.map((s: string) => (
-                                    <option key={s} value={s} className="bg-white">{s}</option>
-                                ))}
-                            </optgroup>
-                        ))}
-                    </select>
-                </div></div>
+                {/* 🚀 STEP 1: SELECT INDUSTRY (CATEGORY) - Ye missing tha */}
+<div className="group">
+    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">
+        Select Your Industry
+    </label>
+    <div className="relative">
+        <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" size={20} />
+        <select 
+            value={selectedCategory} 
+            onChange={handleCategoryChange} 
+            className="w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white pl-12 pr-10 rounded-2xl outline-none appearance-none font-medium transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-700 focus:border-indigo-600 dark:focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+        >
+            <option value="" disabled>Choose an industry...</option>
+            {Object.keys(CATEGORIES).map((cat) => (
+                <option key={cat} value={cat} className="text-gray-900 bg-white py-2">{cat}</option>
+            ))}
+        </select>
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" size={20} />
+    </div>
+</div>
 
-                {/* TOP 5 SKILLS UI */}
-                <div>
-                   <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">Top 5 Secondary Skills</label>
-                   <div className="relative">
-                      <LayoutGrid className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} />
-                      <select onChange={addSkill} className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-11 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
-                          <option value="">+ Add a skill...</option>
-                          {/* 👇 UPDATED MAP LOGIC HERE TOO */}
-                          {Object.entries(CATEGORIES).map(([cat, data]) => (
-                             <optgroup key={cat} label={cat} className="text-black bg-slate-200">
-                                {(data as any).sub.map((s: string) => (
-                                    <option key={s} value={s} className="bg-white">{s}</option>
-                                ))}
-                             </optgroup>
-                          ))}
-                      </select>
-                   </div>
-                   {/* Selected Skills Chips */}
-                   <div className="flex flex-wrap gap-2 mt-3">
-                      {mySkills.map((skill, index) => (
-                         <div key={index} className="flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg text-sm font-medium">
-                            {skill}
-                            <button onClick={() => removeSkill(skill)} className="hover:text-red-500 transition-colors">
-                               <X size={14} />
-                            </button>
-                         </div>
-                      ))}
-                   </div>
-                </div>
+{/* 🚀 STEP 2: MAIN SKILL (Ab ye Selected Category par depend karega) */}
+<div className={`group mt-5 transition-all duration-500 ${!selectedCategory ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
+    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">
+        Main Expertise
+    </label>
+    <div className="relative">
+        <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" size={20} />
+        <select 
+            value={formData.primary_role} 
+            onChange={(e) => setFormData({...formData, primary_role: e.target.value})} 
+            disabled={!selectedCategory}
+            className="w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white pl-12 pr-10 rounded-2xl outline-none appearance-none font-medium transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-700 focus:border-indigo-600 dark:focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:bg-gray-100 dark:disabled:bg-white/5"
+        >
+            <option value="" disabled>Select specific role...</option>
+            {/* 👇 SIRF SELECTED CATEGORY KI SKILLS SHOW HONGI */}
+            {selectedCategory && (CATEGORIES as any)[selectedCategory]?.sub.map((skill: string) => (
+                <option key={skill} value={skill} className="text-gray-900 bg-white py-2">{skill}</option>
+            ))}
+        </select>
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" size={20} />
+    </div>
+</div>
+
+{/* 🚀 STEP 3: SECONDARY SKILLS (Ye bhi filter hongi) */}
+<div className={`mt-5 transition-all duration-500 ${!selectedCategory ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
+    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">Top 5 Secondary Skills</label>
+    <div className="relative">
+        <LayoutGrid className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} />
+        <select 
+        onChange={addSkill} 
+        disabled={!selectedCategory}
+        className="w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white pl-12 pr-10 rounded-2xl outline-none appearance-none font-medium transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-700 focus:border-indigo-600 dark:focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:bg-gray-100 dark:disabled:bg-white/5"
+        >
+            <option value="">+ Add a skill...</option>
+            {selectedCategory && (CATEGORIES as any)[selectedCategory]?.sub
+            .filter((s: string) => s !== formData.primary_role)
+            .map((skill: string) => (
+                <option key={skill} value={skill} className="text-gray-900 bg-white py-2">{skill}</option>
+            ))}
+        </select>
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" size={20} />
+    </div>
+
+    {/* Selected Skills Chips */}
+    <div className="flex flex-wrap gap-2 mt-3 min-h-[30px]">
+        {mySkills.map((skill, index) => (
+            <div key={index} className="flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg text-sm font-medium animate-in zoom-in">
+            {skill}
+            <button onClick={() => removeSkill(skill)} className="hover:text-red-500 transition-colors">
+                <X size={14} />
+            </button>
+            </div>
+        ))}
+    </div>
+</div>
 
                 {/* 🌍 COUNTRY CODE INPUT (Unchanged) */}
-                <div>
-                    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">WhatsApp Number</label>
-                    <div className="flex gap-2">
-                        {/* Country Select */}
-                        <div className="relative w-32 flex-none">
-                            <select 
-                                value={selectedCountryCode}
-                                onChange={(e) => setSelectedCountryCode(e.target.value)}
-                                className="w-full h-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-2 pr-1 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none text-sm"
-                            >
-                                {COUNTRIES.map((country, index) => (
-                                    <option key={index} value={country.code} className="text-black">
-                                        {country.flag} {country.code}
-                                    </option>
-                                ))}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center text-gray-400">
-                                <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
-                            </div>
-                        </div>
+                {/* PREMIUM PHONE INPUT GROUP */}
+<div>
+    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">
+        WhatsApp Number
+    </label>
+    
+    {/* Unified Container */}
+    <div className="flex items-center w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all duration-200 hover:border-gray-300">
+        
+        {/* Country Code Selection (No Borders styling) */}
+        <div className="relative h-full bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-gray-700 min-w-[110px]">
+             <select 
+                value={selectedCountryCode}
+                onChange={(e) => setSelectedCountryCode(e.target.value)}
+                className="w-full h-full bg-transparent text-gray-900 dark:text-white pl-3 pr-6 text-sm font-bold outline-none appearance-none cursor-pointer"
+            >
+                {COUNTRIES.sort((a, b) => a.name === "Pakistan" ? -1 : a.name.localeCompare(b.name)).map((country, index) => (
+                    <option key={index} value={country.code} className="text-black">
+                        {country.flag} {country.code}
+                    </option>
+                ))}
+            </select>
+            {/* Tiny Chevron for Code */}
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                <ChevronDown size={14} />
+            </div>
+        </div>
 
-                        {/* Number Input */}
-                        <div className="relative flex-grow">
-                            <Phone className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} />
-                            <input 
-                                type="tel" 
-                                value={formData.whatsapp}
-                                onChange={(e) => setFormData({...formData, whatsapp: e.target.value.replace(/[^0-9]/g, '')})}
-                                className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-11 p-3 rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
-                                placeholder="300 1234567"
-                            />
-                        </div>
-                    </div>
+        {/* Number Input (Clean, No borders) */}
+        <div className="relative flex-grow h-full">
+            <input 
+                type="tel" 
+                value={formData.whatsapp}
+                onChange={(e) => setFormData({...formData, whatsapp: e.target.value.replace(/[^0-9]/g, '')})}
+                className="w-full h-full bg-transparent text-gray-900 dark:text-white px-4 font-medium text-lg outline-none placeholder:text-gray-300"
+                placeholder="300 1234567"
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <Phone size={18} />
+            </div>
+        </div>
+    </div>
+</div>
+{/* 📍 PROFESSIONAL LOCATION BLOCK (UPDATED) */}
+<div className="bg-gray-50 dark:bg-white/5 p-5 rounded-3xl border border-gray-200 dark:border-gray-800 space-y-5">
+    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase flex items-center gap-2 px-1">
+        <MapPin size={14} /> Location Details
+    </label>
+
+    {/* 👇 CUSTOM COUNTRY DROPDOWN (No more ugly native select) */}
+    <div className="relative">
+        {/* Trigger Button (Dikhta Input jesa hai) */}
+        <button 
+            type="button" // Zaroori hai taake form submit na ho
+            onClick={() => setIsCountryOpen(!isCountryOpen)}
+            className="w-full h-14 bg-white dark:bg-black/40 border-2 border-gray-100 dark:border-gray-800 text-left pl-12 pr-4 rounded-2xl flex items-center justify-between transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-700 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10"
+        >
+            <span className={`font-medium ${formData.country ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                {formData.country || "Select Country"}
+            </span>
+            <ChevronDown size={18} className={`text-gray-400 transition-transform ${isCountryOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {/* Floating Icon */}
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-lg">
+            {COUNTRIES.find(c => c.name === formData.country)?.flag || "🌍"}
+        </div>
+
+        {/* 👇 THE DROPDOWN MENU (Ye 'Native' nahi hai, Fully Custom Hai) */}
+        {isCountryOpen && (
+            <div className="absolute z-50 w-full mt-2 bg-white dark:bg-[#151B2B] border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
+                
+                {/* Search Bar Inside Dropdown */}
+                <div className="p-2 border-b border-gray-100 dark:border-gray-700 sticky top-0 bg-white dark:bg-[#151B2B]">
+                    <input 
+                        type="text" 
+                        placeholder="Search country..." 
+                        autoFocus
+                        className="w-full p-2 bg-gray-50 dark:bg-black/40 rounded-lg text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500"
+                        onChange={(e) => setCountrySearch(e.target.value)}
+                    />
                 </div>
 
+                {/* Country List */}
+                <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                    {COUNTRIES
+                        .filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase()))
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((c, i) => (
+                            <div 
+                                key={i} 
+                                onClick={() => {
+                                    setFormData({...formData, country: c.name});
+                                    setIsCountryOpen(false);
+                                    setCountrySearch(""); // Reset search
+                                }}
+                                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
+                                    formData.country === c.name 
+                                    ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 font-bold' 
+                                    : 'hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-200'
+                                }`}
+                            >
+                                <span className="text-xl">{c.flag}</span>
+                                <span className="text-sm">{c.name}</span>
+                                {formData.country === c.name && <CheckCircle size={14} className="ml-auto" />}
+                            </div>
+                    ))}
+                    {/* No Result State */}
+                    {COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).length === 0 && (
+                        <div className="p-4 text-center text-gray-400 text-sm">No country found</div>
+                    )}
+                </div>
+            </div>
+        )}
+    </div>
+
+    {/* City & Postal Code (Same as before) */}
+    <div className="grid grid-cols-2 gap-4">
+        <div className="relative group">
+            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
+            <input 
+                type="text" 
+                placeholder="City"
+                value={formData.city} 
+                onChange={(e) => setFormData({...formData, city: e.target.value})} 
+                className="w-full h-14 bg-white dark:bg-black/40 border-2 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white pl-12 pr-4 rounded-2xl outline-none transition-all hover:border-gray-300 dark:hover:border-gray-700 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10"
+            />
+        </div>
+
+        <div className="relative group">
+            <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
+            <input 
+                type="text" 
+                placeholder="Post Code"
+                value={formData.postal_code} 
+                onChange={(e) => setFormData({...formData, postal_code: e.target.value})} 
+                className="w-full h-14 bg-white dark:bg-black/40 border-2 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white pl-12 pr-4 rounded-2xl outline-none transition-all hover:border-gray-300 dark:hover:border-gray-700 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10"
+            />
+        </div>
+    </div>
+</div>
                 <div className="grid grid-cols-1">
                     <div><label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2">Birth Date</label><div className="relative"><Calendar className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} /><input type="date" value={formData.birth_date} onChange={(e) => setFormData({...formData, birth_date: e.target.value})} className="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white pl-11 p-3 rounded-xl outline-none [color-scheme:light] dark:[color-scheme:dark]"/></div></div>
                 </div>

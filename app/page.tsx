@@ -50,7 +50,7 @@ export default function Home() {
     "name": "HireSkys",
     "alternateName": ["Hire Skys", "HireSkys Job Radar", "HireSkys Remote Jobs"], // Log ghalat spellings bhi search karte hain
     "url": "https://www.hireskys.com",
-    "description": "The elite job radar for developers and creatives. Find verified remote jobs and prove your skills.",
+    "description": "HireSkys elite job radar for developers and creatives. Find verified remote jobs and prove your skills.",
     "primaryImageOfPage": {
         "@type": "ImageObject",
         "url": "https://www.hireskys.com/logo1.png" // Tumhara logo
@@ -59,7 +59,7 @@ export default function Home() {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://hireskys.com/?search={search_term_string}"
+        "urlTemplate": "https://www.hireskys.com/?search={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     },
@@ -291,6 +291,10 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
 
   return (
     <div className="min-h-screen font-sans text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-[#0B0F19] overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+    />
       <Navbar />
 
       {/* --- 🚀 SIGNUP POPUP (MODAL) --- */}
@@ -533,8 +537,9 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
                   className="max-w-4xl mx-auto flex flex-col gap-5"
               >
                   <p className="text-xl md:text-2xl text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
-                      The elite job radar for <span className="text-slate-900 dark:text-white font-black decoration-indigo-500/30 underline decoration-4 underline-offset-4">Developers, Designers, & Marketers</span>.
-                  </p>
+    {/* 👇 Yahan 'text-indigo-600' se color highlight hoga */}
+    <span className="font-extrabold text-indigo-600 dark:text-indigo-400">HireSkys</span> is the elite job radar for <span className="text-slate-900 dark:text-white font-black decoration-indigo-500/30 underline decoration-4 underline-offset-4">Developers, Designers, & Marketers</span>.
+</p>
                   
                   {/* Updated Line: Just Text Chip */}
                   <div className="text-lg md:text-xl text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-center gap-2">

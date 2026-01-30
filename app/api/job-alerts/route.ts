@@ -32,13 +32,14 @@ function formatPhoneNumber(phone: string) {
     return cleanNumber;
 }
 
-// --- SENDERS ---
-async function sendWhatsApp(to: string, job: any, username: string, jobLink: string) {
+async function sendWhatsApp(to: string, job: any, username: string, jobLink: string, matchedTag: string) {
     const formattedNumber = formatPhoneNumber(to);
     if (!formattedNumber) return;
 
-    // 👇 Upgrade: Clean "Card" Style with Separators
-    const msg = `🔥 *HIRESKYS ALERT: ${job.tags?.[0]?.toUpperCase() || "NEW JOB"}*
+    // 👇 CHANGE 2: Use 'matchedTag' in Header instead of job.tags[0]
+    const alertHeader = matchedTag ? matchedTag.toUpperCase() : (job.tags?.[0]?.toUpperCase() || "NEW JOB");
+
+    const msg = `🔥 *HIRESKYS ALERT: ${alertHeader}*
 
 *${job.title}*
 ────────────────────
@@ -74,8 +75,7 @@ _Reply STOP to unsubscribe_`;
         console.error("❌ WhatsApp Error:", error.message);
     }
 }
-async function sendEmail(to: string, job: any, username: string, jobLink: string) {
-    // 👇 Proposal Text Generate (Dynamic)
+async function sendEmail(to: string, job: any, username: string, jobLink: string, matchedTag: string) {
     const proposalText = `Hi Hiring Team,
 I came across your opening for the **${job.title}** position and wanted to express my interest.
 
@@ -86,12 +86,12 @@ I am available to discuss how my skills align with your goals.
 
 Best regards,
 ${username}`;
-
+const headerText = matchedTag ? matchedTag.toUpperCase() : "VERIFIED JOB";
     try {
         const mailOptions = {
             from: `"HireSkys Job Radar" <${EMAIL_USER}>`,
             to: to,
-            subject: `🔥 Verified Job: ${job.title}`,
+            subject: `🔥 Job Alert: ${job.title} (${headerText})`,
             html: `
             <!DOCTYPE html>
             <html>
@@ -211,8 +211,8 @@ export async function POST(request: Request) {
                 console.log(`✅ Alerting: ${user.username} (Matched: ${matchedSkill})`);
                 alertsSent++;
                 
-                await sendWhatsApp(user.whatsapp, job, user.username, internalLink);
-                if (user.email) await sendEmail(user.email, job, user.username, internalLink);
+                await sendWhatsApp(user.whatsapp, job, user.username, internalLink, matchedSkill);
+                if (user.email) await sendEmail(user.email, job, user.username, internalLink, matchedSkill);
             }
         }
         

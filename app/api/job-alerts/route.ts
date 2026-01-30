@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 import nodemailer from 'nodemailer';
-import { createSlug } from '@/lib/utils'; // 👈 IMPORT FROM UTILS (Same as Frontend)
+import { createSlug } from '@/lib/utils'; 
 
 // --- CONFIGURATION ---
 const INSTANCE_ID = "instance157066";
 const TOKEN = "kb3sifnes2k91g0b";
-
-// --- EMAIL SETUP ---
 const EMAIL_USER = "realonlinejobs56@gmail.com";
 const EMAIL_PASS = "gntwovruriemixbh";
 
@@ -15,64 +13,58 @@ const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
-    auth: {
-        user: EMAIL_USER,
-        pass: EMAIL_PASS,
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
+    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+    tls: { rejectUnauthorized: false }
 });
 
-// --- HELPER: SMART NUMBER FORMATTER ---
+// --- HELPERS ---
+function createJobLink(title: string, id: any) {
+    if (!title || !id) return "https://www.hireskys.com";
+    const slug = createSlug(title, id);
+    return `https://www.hireskys.com/jobs/${slug}`;
+}
+
 function formatPhoneNumber(phone: string) {
     if (!phone) return null;
     let cleanNumber = phone.replace(/\D/g, ''); 
-    if (cleanNumber.startsWith('00')) {
-        cleanNumber = cleanNumber.substring(2);
-    }
-    if (cleanNumber.startsWith('03') && cleanNumber.length === 11) {
-        cleanNumber = '92' + cleanNumber.substring(1);
-    }
+    if (cleanNumber.startsWith('00')) cleanNumber = cleanNumber.substring(2);
+    if (cleanNumber.startsWith('03') && cleanNumber.length === 11) cleanNumber = '92' + cleanNumber.substring(1);
     return cleanNumber;
 }
 
-// --- 📱 WHATSAPP SENDER ---
+// --- SENDERS ---
 async function sendWhatsApp(to: string, job: any, username: string, jobLink: string) {
     const formattedNumber = formatPhoneNumber(to);
     if (!formattedNumber) return;
 
-    const proposalText = `Hi Hiring Team,
+    // 👇 Upgrade: Clean "Card" Style with Separators
+    const msg = `🔥 *HIRESKYS ALERT: ${job.tags?.[0]?.toUpperCase() || "NEW JOB"}*
 
-I came across your opening for the *${job.title}* position on ${job.source} and wanted to express my interest.
+*${job.title}*
+────────────────────
+💰 *Pay:* ${job.salary_range || "Competitive / Not Disclosed"}
+🌍 *Loc:* ${job.location || "Remote"}
+⚡ *Source:* ${job.source || "Direct Client"}
+────────────────────
+👇 Copy This Proposal:
+---------------------
+Hi Hiring Team,
+I came across your opening for the **${job.title}** position and wanted to express my interest.
 
 I am a skilled professional registered on HireSkys 🚀. You can view my portfolio & skills here:
 👉 https://hireskys.com/p/${username}
 
 I am available to discuss how my skills align with your goals.
+────────────────────
 
-Best regards,
-[Your Name]`;
+👇 *TAP TO APPLY:*
+${jobLink}
 
-    const msg = `🚀 *HireSkys New Job Alert!*
-    
-💼 *Role:* ${job.title}
-💰 *Pay:* ${job.salary_range || "Not specified"}
-📍 *Location:* ${job.location || "Remote"}
-🏢 *Source:* ${job.source}
-
-👇 *COPY & PASTE THIS PROPOSAL:*
----------------------------------
-${proposalText}
----------------------------------
-
-🔗 *VIEW & APPLY HERE:* ${jobLink} 
-    
+💡 _Tip: Apply within 2 hours to increase chances._
 _Reply STOP to unsubscribe_`;
 
     try {
-        const url = `https://api.ultramsg.com/${INSTANCE_ID}/messages/chat`;
-        await fetch(url, {
+        await fetch(`https://api.ultramsg.com/${INSTANCE_ID}/messages/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: TOKEN, to: formattedNumber, body: msg })
@@ -82,15 +74,10 @@ _Reply STOP to unsubscribe_`;
         console.error("❌ WhatsApp Error:", error.message);
     }
 }
-
-// --- 📧 EMAIL SENDER ---
 async function sendEmail(to: string, job: any, username: string, jobLink: string) {
-    try {
-        console.log(`📧 Sending Email to ${to}...`);
-        
-        const proposalBody = `Hi Hiring Team,
-
-I came across your opening for the **${job.title}** position on ${job.source} and wanted to express my interest.
+    // 👇 Proposal Text Generate (Dynamic)
+    const proposalText = `Hi Hiring Team,
+I came across your opening for the **${job.title}** position and wanted to express my interest.
 
 I am a skilled professional registered on HireSkys 🚀. You can view my portfolio & skills here:
 👉 https://hireskys.com/p/${username}
@@ -98,38 +85,61 @@ I am a skilled professional registered on HireSkys 🚀. You can view my portfol
 I am available to discuss how my skills align with your goals.
 
 Best regards,
-[Your Name]`;
+${username}`;
 
+    try {
         const mailOptions = {
             from: `"HireSkys Job Radar" <${EMAIL_USER}>`,
             to: to,
-            subject: `🔥 Match Found: ${job.title}`,
+            subject: `🔥 Verified Job: ${job.title}`,
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden;">
-                    <div style="background-color: #4f46e5; padding: 20px; text-align: center; color: white;">
-                        <h2 style="margin: 0;">🚀 Verified Job Alert</h2>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: 'Arial', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 20px auto; background-color: #111827; color: #ffffff; border-radius: 12px; overflow: hidden; }
+                    .header { background-color: #4f46e5; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; color: white; }
+                    .content { padding: 30px; }
+                    .job-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #ffffff; }
+                    .details { color: #d1d5db; font-size: 14px; margin-bottom: 20px; }
+                    .proposal-box { background-color: #1f2937; border: 2px dashed #6366f1; padding: 20px; border-radius: 8px; margin: 20px 0; color: #9ca3af; font-family: monospace; white-space: pre-wrap; font-size: 12px; }
+                    .label { color: #fbbf24; font-weight: bold; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; display: block; }
+                    .btn { display: block; width: 100%; background-color: #10b981; color: white; text-align: center; padding: 15px 0; text-decoration: none; font-weight: bold; border-radius: 8px; margin-top: 20px; }
+                    .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        🚀 Verified Job Alert
                     </div>
-                    <div style="padding: 20px;">
-                        <h3 style="color: #1e293b;">${job.title}</h3>
-                        <p><strong>Source:</strong> ${job.source} | <strong>Pay:</strong> ${job.salary_range || 'N/A'}</p>
-                        
-                        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-                        <p style="color: #4f46e5; font-weight: bold;">👇 COPY THIS PROPOSAL:</p>
-                        <div style="background-color: #f8fafc; border: 1px dashed #4f46e5; padding: 15px; border-radius: 8px; color: #333; white-space: pre-wrap;">${proposalBody}</div>
-
-                        <br>
-                        <div style="text-align: center;">
-                            <a href="${jobLink}" style="background-color: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Job Details</a>
+                    <div class="content">
+                        <div class="job-title">${job.title}</div>
+                        <div class="details">
+                            <strong>Source:</strong> ${job.source || "Direct Client"} <br>
+                            <strong>Pay:</strong> ${job.salary_range || "Competitive / Not Disclosed"}
                         </div>
+
+                        <hr style="border-color: #374151;">
+
+                        <span class="label">👇 Copy This Proposal:</span>
+                        <div class="proposal-box">${proposalText}</div>
+
+                        <a href="${jobLink}" class="btn">Apply Now</a>
+                    </div>
+                    
+                    <div class="footer">
+                        Sent by HireSkys Remote Radar • <a href="#" style="color: #6b7280;">Unsubscribe</a>
                     </div>
                 </div>
+            </body>
+            </html>
             `
         };
-
         await transporter.sendMail(mailOptions);
-        console.log("✅ Email Sent Successfully!");
-
+        console.log("✅ Rich Email Sent!");
     } catch (error: any) {
         console.error("❌ Email Error:", error.message);
     }
@@ -141,14 +151,24 @@ export async function POST(request: Request) {
         const job = await request.json();
         const jobTitle = job.title;
         
-        // 👇 1. GENERATE LINK (Using Same Utility as Frontend)
-        // Ab ye 100% match karega kyunki function same hai.
-        const slug = createSlug(job.title, job.id);
-        const internalLink = `https://www.hireskys.com/jobs/${slug}`;
+        // 👇 1. Top 4 Tags Nikalo (Array banaya)
+        const targetTags = job.tags && Array.isArray(job.tags) 
+            ? job.tags.slice(0, 4).map((t: string) => t.toLowerCase()) 
+            : [];
 
         console.log(`\n🔎 Processing Job: "${jobTitle}"`);
-        console.log(`🔗 Generated Link: ${internalLink}`);
+        console.log(`🎯 Target Skills (Top 4):`, targetTags);
 
+        // Link Generate
+        const internalLink = createJobLink(job.title, job.id);
+
+        // Array empty check
+        if (targetTags.length === 0) {
+            console.log("⚠️ No tags found on job. Skipping alerts.");
+            return NextResponse.json({ success: false, message: "No tags on job" });
+        }
+
+        // Fetch Candidates
         const { data: candidates, error } = await supabase
             .from('profiles')
             .select('*, user_skills(*)')
@@ -159,15 +179,39 @@ export async function POST(request: Request) {
         let alertsSent = 0;
         
         for (const user of candidates) {
-            const hasTag = user.skills?.some((s: string) => jobTitle.toLowerCase().includes(s.toLowerCase()));
-            const hasRatedSkill = user.user_skills?.some((s: any) => jobTitle.toLowerCase().includes(s.skill_name.toLowerCase()));
+            
+            // 👇 2. SKILL MATCHING LOGIC (Fixed for Array)
+            let isMatch = false;
+            let matchedSkill = ""; 
 
-            if (hasTag || hasRatedSkill) {
+            // A. Check in Simple Skills Array
+            if (user.skills && Array.isArray(user.skills)) {
+                // Hum check karenge ke user ka skill, targetTags ki list mein hai ya nahi
+                for (const skill of user.skills) {
+                    if (targetTags.includes(skill.toLowerCase())) {
+                        isMatch = true;
+                        matchedSkill = skill;
+                        break; // Match mil gaya
+                    }
+                }
+            }
+
+            // B. Check in Rated Skills (agar upar match nahi mila)
+            if (!isMatch && user.user_skills && Array.isArray(user.user_skills)) {
+                for (const s of user.user_skills) {
+                    if (s.skill_name && targetTags.includes(s.skill_name.toLowerCase())) {
+                        isMatch = true;
+                        matchedSkill = s.skill_name;
+                        break;
+                    }
+                }
+            }
+
+            if (isMatch) {
+                console.log(`✅ Alerting: ${user.username} (Matched: ${matchedSkill})`);
                 alertsSent++;
                 
-                // 👇 2. Passing Exact Link
                 await sendWhatsApp(user.whatsapp, job, user.username, internalLink);
-                
                 if (user.email) await sendEmail(user.email, job, user.username, internalLink);
             }
         }
@@ -175,6 +219,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, alerts: alertsSent });
 
     } catch (error: any) {
+        console.error("Server Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

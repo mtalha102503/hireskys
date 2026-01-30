@@ -117,42 +117,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // 🏢 JSON-LD SCHEMAS
-  const jsonLd = [
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "HireSkys",
-      "url": "https://www.hireskys.com",
-      "logo": "https://www.hireskys.com/logo.png",
-      "sameAs": [
-        "https://twitter.com/hireskys",
-        "https://linkedin.com/company/hireskys",
-        "https://instagram.com/hireskys"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "email": "contact@hireskys.com",
-        "contactType": "customer support",
-        "areaServed": "Worldwide"
-      }
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "HireSkys",
-      "url": "https://www.hireskys.com",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://www.hireskys.com/jobs?search={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      }
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "HireSkys",
+    "url": "https://www.hireskys.com",
+    "logo": "https://www.hireskys.com/logo.png",
+    "sameAs": [
+      "https://twitter.com/hireskys",
+      "https://linkedin.com/company/hireskys",
+      "https://instagram.com/hireskys"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "contact@hireskys.com",
+      "contactType": "customer support",
+      "areaServed": "Worldwide"
     }
-  ];
-
+  };
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>

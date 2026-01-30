@@ -148,6 +148,11 @@ const breadcrumbLd = {
       }
     ]
   };
+
+  const salaryNumbers = job.salary_range?.match(/\d+/g)?.map(Number);
+  const minSalary = salaryNumbers ? salaryNumbers[0] : null;
+  const maxSalary = salaryNumbers && salaryNumbers[1] ? salaryNumbers[1] : null;
+
   // 🌟 GOOGLE JOBS SCHEMA (JSON-LD)
   // Yeh wo code hai jo Google Jobs Widget trigger karega
   const jsonLd = {
@@ -172,24 +177,25 @@ const breadcrumbLd = {
         addressCountry: 'Worldwide' // Default for remote
       }
     },
-    baseSalary: {
-      '@type': 'MonetaryAmount',
-      currency: 'USD',
-      value: {
-        '@type': 'QuantitativeValue',
-        // Agar salary number nahi hai to 'value' mat bhejo, sirf 'unitText' bhejo
-        // Ya fir 0 bhej do taake error na aaye
-        value: parseInt(job.salary_range) || undefined, 
-        unitText: 'YEAR'
+    ...(minSalary && {
+      baseSalary: {
+        '@type': 'MonetaryAmount',
+        currency: 'USD',
+        value: {
+          '@type': 'QuantitativeValue',
+          value: minSalary,      // Single value ya Min value
+          minValue: minSalary,   // Range support ke liye
+          maxValue: maxSalary || minSalary, 
+          unitText: 'YEAR'
+        }
       }
-    },
+    }),
     applicantLocationRequirements: {
       '@type': 'Country',
       name: 'Worldwide'
     },
     jobLocationType: job.location?.toLowerCase().includes('remote') ? 'TELECOMMUTE' : undefined
   };
-
   return (
     <>
       {/* Schema Injection */}

@@ -10,6 +10,7 @@ import {
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
   Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck
 } from 'lucide-react';
+
 export default function JobClient({ initialJob }: { initialJob: any }) { 
   const params = useParams();
   const router = useRouter();
@@ -20,33 +21,67 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [saved, setSaved] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [relatedJobs, setRelatedJobs] = useState<any[]>([]); 
+  const [companyDetails, setCompanyDetails] = useState<any>(null);
 
   useEffect(() => {
     fetchJobDetails();
   }, []);
+
+  // 👇 Helper functions ko yahan define kiya taake wo fetchJobDetails ke andar bhi milein
+  const getCompanySlug = (name: string) => {
+    if (!name) return '#';
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-') // Special chars ko dash bana do
+        .replace(/^-+|-+$/g, '');    // Start/End se dash hata do
+  };
 
   async function fetchJobDetails() {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
 
     // 👇 URL se ID nikalo (slug ka last part)
-// Example: "senior-react-dev-692" -> "692"
-const slug = params.slug as string; 
-const jobId = slug ? slug.split('-').pop() : null; // Last wala hissa uthao
+    // Example: "senior-react-dev-692" -> "692"
+    const slug = params.slug as string; 
+    const jobId = slug ? slug.split('-').pop() : null; // Last wala hissa uthao
 
-if (jobId) {
-    // 👇 Ab ID se search karo
-    const { data } = await supabase.from('jobs').select('*').eq('id', jobId).single();
+    if (jobId) {
+        // 👇 Ab ID se search karo
+        const { data } = await supabase.from('jobs').select('*').eq('id', jobId).single();
+        
         // 🔒 SECURITY CHECK: Agar job Approved nahi hai, to load mat karo
         if (data && data.approved === false) {
             setJob(null); // Job ko null hi rakho
             setLoading(false);
             return; // Yahan se wapis chale jao, neeche ka code run nahi hoga
         }
+        
+        // 👇 Purana "if (data)" block replace karo is naye block se:
         if (data) {
             setJob(data);
 
-            // Related Jobs Fetch
+            // 🌟 NEW: Company Data Fetch Logic
+            // Logic: Job ka company name uthao, usay slug banao, aur companies table mein dhoondo
+            const companyNameForSearch = data.company || 
+                (!['reddit', 'hacker news', 'yc', 'upwork'].some(s => data.source?.toLowerCase().includes(s)) ? data.source : null);
+
+            if (companyNameForSearch) {
+                const slugToFind = getCompanySlug(companyNameForSearch);
+                
+                // Supabase se company data mangwao
+                const { data: companyInfo } = await supabase
+                    .from('companies')
+                    .select('*')
+                    .eq('slug', slugToFind)
+                    .single();
+                    
+                if (companyInfo) {
+                    setCompanyDetails(companyInfo); // ✅ State mein save kar liya
+                }
+            }
+
+            // Related Jobs Fetch (Ye waisa hi rahega)
             const { data: related } = await supabase
                 .from('jobs')
                 .select('id, title, company, location, salary_range, date_posted, category')
@@ -58,15 +93,14 @@ if (jobId) {
             
             if (related) setRelatedJobs(related);
 
-            // 2. Saved Status Check
+            // Saved check (Waisa hi rahega)
             if (user) {
                 const { data: savedJob } = await supabase.from('saved_jobs').select('*').match({ user_id: user.id, job_id: data.id }).single();
                 if (savedJob) setSaved(true);
             }
         }
-    }
-    setLoading(false);
-  }
+    } // FIX: Closing brace for if (jobId)
+  } // FIX: Closing brace for fetchJobDetails function
 
   function getRelativeTime(dateString: string) {
     const jobDate = new Date(dateString);
@@ -120,7 +154,8 @@ if (jobId) {
       if (s.includes('upwork')) return { name: 'Upwork', color: 'bg-green-100 text-green-700', icon: <ShieldCheck size={14}/> };
       return { name: source, color: 'bg-indigo-100 text-indigo-700', icon: <Briefcase size={14}/> };
   };
-const getCleanHTML = (html: string) => {
+
+  const getCleanHTML = (html: string) => {
     if (!html) return "No description provided.";
     
     // Agar DB mein encoded hai to usay wapis normal HTML banao
@@ -131,7 +166,8 @@ const getCleanHTML = (html: string) => {
         .replace(/&#039;/g, "'")
         .replace(/&amp;/g, '&')
         .replace(/&nbsp;/g, ' ');
-};
+  };
+
   const renderAuthorSection = () => {
       const source = job.source?.toLowerCase() || "";
 
@@ -169,13 +205,28 @@ const getCleanHTML = (html: string) => {
                         <p className="font-bold text-slate-900 dark:text-white">YC Backed Startup 🚀</p>
                     </div>
                 </div>
-                {job.company && (
-                    <div className="mt-4 pt-4 border-t border-orange-200 dark:border-orange-800">
-                        <p className="text-sm text-slate-600 dark:text-slate-300">
-                            <strong>Hiring:</strong> {job.company}
-                        </p>
-                    </div>
-                )}
+                {(job.company || companyDetails) && (
+                <Link 
+                    href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`}
+                    className="flex items-center gap-2 group/company transition-all"
+                >
+                    {/* Agar Asli Logo hai to wo dikhao, nahi to Icon */}
+                    {companyDetails?.logo_url ? (
+                        <img 
+                            src={companyDetails.logo_url} 
+                            alt={companyDetails.name} 
+                            className="w-8 h-8 object-contain rounded-md bg-white border border-slate-200 p-0.5"
+                        />
+                    ) : (
+                        <Building size={18} className="text-indigo-500 group-hover/company:text-indigo-600"/> 
+                    )}
+                    
+                    <span className="font-bold text-slate-700 dark:text-slate-200 group-hover/company:text-indigo-600 group-hover/company:underline">
+                        {job.company || companyDetails?.name}
+                    </span>
+                    <ExternalLink size={12} className="opacity-0 group-hover/company:opacity-100 transition-opacity text-indigo-500"/>
+                </Link>
+            )}
             </div>
           );
       }
@@ -248,11 +299,28 @@ const getCleanHTML = (html: string) => {
                     <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight break-words">{job.title}</h1>
                     
                     <div className="flex flex-wrap gap-4 text-sm font-medium text-slate-500 dark:text-slate-400">
-                        {job.company && (
-                            <div className="flex items-center gap-2">
-                                <Building size={18} className="text-indigo-500"/> 
-                                {job.company}
-                            </div>
+                        {/* 👇 UPDATED HEADER: Asli Logo aur Link ke sath */}
+                        {(job.company || companyDetails) && (
+                            <Link 
+                                href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`}
+                                className="flex items-center gap-2 group/company transition-all"
+                            >
+                                {/* Agar DB se Logo mila to wo dikhao, nahi to Icon */}
+                                {companyDetails?.logo_url ? (
+                                    <img 
+                                        src={companyDetails.logo_url} 
+                                        alt={companyDetails.name} 
+                                        className="w-8 h-8 object-contain rounded-md bg-white border border-slate-200 p-0.5"
+                                    />
+                                ) : (
+                                    <Building size={18} className="text-indigo-500 group-hover/company:text-indigo-600"/> 
+                                )}
+                                
+                                <span className="font-bold text-slate-700 dark:text-slate-200 group-hover/company:text-indigo-600 group-hover/company:underline">
+                                    {job.company || companyDetails?.name}
+                                </span>
+                                <ExternalLink size={12} className="opacity-0 group-hover/company:opacity-100 transition-opacity text-indigo-500"/>
+                            </Link>
                         )}
 
                         {job.location && (
@@ -277,43 +345,43 @@ const getCleanHTML = (html: string) => {
                 </div>
 
                 {/* --- Copy this into your Action Buttons Row --- */}
-<div className="flex gap-3 w-full md:w-auto mt-6 md:mt-0 items-center">
-  
-  {/* Heart & Share Group */}
-  <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm">
-      {/* Save Button */}
-      <button 
-        onClick={toggleSave} 
-        className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
-      >
-          <Heart size={22} className={saved ? 'fill-current' : ''} />
-      </button>
+                <div className="flex gap-3 w-full md:w-auto mt-6 md:mt-0 items-center">
+                  
+                  {/* Heart & Share Group */}
+                  <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm">
+                      {/* Save Button */}
+                      <button 
+                        onClick={toggleSave} 
+                        className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                      >
+                          <Heart size={22} className={saved ? 'fill-current' : ''} />
+                      </button>
 
-      {/* Vertical Divider */}
-      <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
+                      {/* Vertical Divider */}
+                      <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
 
-      {/* Modern Share Button */}
-      <button 
-        onClick={handleShare} 
-        className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2"
-        title="Share Job"
-      >
-          <Share2 size={22} />
-          <span className="text-xs font-bold pr-1 hidden sm:inline">SHARE</span>
-      </button>
-  </div>
+                      {/* Modern Share Button */}
+                      <button 
+                        onClick={handleShare} 
+                        className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2"
+                        title="Share Job"
+                      >
+                          <Share2 size={22} />
+                          <span className="text-xs font-bold pr-1 hidden sm:inline">SHARE</span>
+                      </button>
+                  </div>
 
-  {/* Apply Button (Refined) */}
-  <a 
-      href={job.link} 
-      target="_blank" 
-      rel="noopener noreferrer" 
-      className="flex-1 md:flex-none px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-[0_10px_20px_-10px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 hover:translate-y-[-2px] active:translate-y-[0px] transition-all"
-  >
-      <span>Apply Now</span>
-      <ExternalLink size={18} />
-  </a>
-</div>
+                  {/* Apply Button (Refined) */}
+                  <a 
+                      href={job.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="flex-1 md:flex-none px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-[0_10px_20px_-10px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 hover:translate-y-[-2px] active:translate-y-[0px] transition-all"
+                  >
+                      <span>Apply Now</span>
+                      <ExternalLink size={18} />
+                  </a>
+                </div>
             </div>
         </div>
       </div> 
@@ -325,11 +393,13 @@ const getCleanHTML = (html: string) => {
                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-indigo-500"/> Job Description</h2>
                     
                     <div 
-    className="prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white"
-    dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
-/>
+                        className="prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white"
+                        dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
+                    />
                 </div>
-<ReportJob jobId={job.id} />
+                
+                <ReportJob jobId={job.id} />
+                
                 {/* 🌟 RELATED JOBS SECTION */}
                 {relatedJobs.length > 0 && (
                   <div className="mt-12">
@@ -365,13 +435,47 @@ const getCleanHTML = (html: string) => {
                 )}
             </div>
 
-            
-
             <div className="space-y-6">
                 
                 {/* SMART AUTHOR SECTION */}
                 {renderAuthorSection()}
+                
+                {/* 🏢 COMPANY PROFILE CARD (Updated) */}
+                {(job.company || companyDetails) && (
+                    <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 relative overflow-hidden">
+                        
+                        {/* Banner Background (Agar hai to) */}
+                        {companyDetails?.banner_url && (
+                            <div className="absolute top-0 left-0 w-full h-16 bg-slate-100">
+                                <img src={companyDetails.banner_url} className="w-full h-full object-cover opacity-50" alt="banner" />
+                            </div>
+                        )}
 
+                        <div className={`relative flex items-center gap-4 mb-4 ${companyDetails?.banner_url ? 'mt-8' : ''}`}>
+                            <div className="h-16 w-16 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                                {companyDetails?.logo_url ? (
+                                    <img src={companyDetails.logo_url} alt="logo" className="w-full h-full object-contain p-1" />
+                                ) : (
+                                    (job.company || "C").charAt(0).toUpperCase()
+                                )}
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-lg text-slate-900 dark:text-white leading-tight">
+                                    {companyDetails?.name || job.company}
+                                </h3>
+                                <Link href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`} className="text-xs text-indigo-600 font-medium hover:underline flex items-center gap-1">
+                                    View Company Profile <ArrowRight size={12}/>
+                                </Link>
+                            </div>
+                        </div>
+                        
+                        {/* Description from DB or Generic */}
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3">
+                            {companyDetails?.description || `See all active remote openings and hiring details for ${job.company}.`}
+                        </p>
+                    </div>
+                )}
+                
                 <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <h3 className="font-bold mb-4 text-sm uppercase text-slate-400 tracking-wider">Safety First</h3>
                     <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">

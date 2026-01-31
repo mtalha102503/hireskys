@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import { createSlug } from '@/lib/utils'; 
-import { CATEGORIES } from '@/lib/categories'; // 👈 1. IMPORT FROM CENTRAL FILE
+import { CATEGORIES } from '@/lib/categories'; 
 
 // 🛠️ CONFIGURATION
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
@@ -51,13 +51,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // ==========================================
-  // 3️⃣ CATEGORIES & SUBCATEGORIES (UPDATED LOGIC)
+  // 3️⃣ CATEGORIES & SUBCATEGORIES
   // ==========================================
   let categoryRoutes: MetadataRoute.Sitemap = [];
 
-  // Loop through Main Categories (Now using imported Data)
   Object.entries(CATEGORIES).forEach(([mainCat, data]) => {
-    // 1. Create URL for Main Category (e.g., /category/design-creative)
     const mainSlug = mainCat.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     
     categoryRoutes.push({
@@ -67,13 +65,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9, 
     });
 
-    // 2. Create URL for Subcategories (Using .sub array)
-    // TypeScript safe casting
     const subCategories = (data as any).sub || [];
 
     subCategories.forEach((sub: string) => {
       const subSlug = sub.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      
       categoryRoutes.push({
         url: `${BASE_URL}/category/${mainSlug}/${subSlug}`,
         lastModified: new Date(),
@@ -104,6 +99,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
   }
 
-  // 🔥 MERGE EVERYTHING
-  return [...staticRoutes, ...articleRoutes, ...categoryRoutes, ...jobRoutes];
+  // ==========================================
+  // 5️⃣ DYNAMIC COMPANIES (🆕 NEW SECTION)
+  // ==========================================
+  // Yahan hum companies fetch kar rahe hain
+  const { data: companies } = await supabase
+    .from('companies')
+    .select('slug, created_at'); // Agar 'updated_at' hai to wo use karna better hai
+
+  let companyRoutes: MetadataRoute.Sitemap = [];
+
+  if (companies) {
+    companyRoutes = companies.map((company) => ({
+      // URL format wahi hona chahiye jo tumhare page ka hai (e.g. /companies/google)
+      url: `${BASE_URL}/companies/${company.slug}`, 
+      lastModified: new Date(company.created_at || new Date()),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }));
+  }
+
+  // 🔥 MERGE EVERYTHING (companyRoutes ko end mein add kiya)
+  return [
+    ...staticRoutes, 
+    ...articleRoutes, 
+    ...categoryRoutes, 
+    ...jobRoutes, 
+    ...companyRoutes // 👈 Added here
+  ];
 }

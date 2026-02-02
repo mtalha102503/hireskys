@@ -8,7 +8,23 @@ export const CATEGORIES = {
   // 1. Tech & Development
   "Development": {
     icon: Code,
-    sub: ["React", "Next.js", "Node.js", "Python", "MERN Stack", "WordPress", "Shopify", "Web3", "Frontend", "Backend", "DevOps", "Cybersecurity", "QA Tester", "Game Dev"]
+    sub: [
+      "React", 
+      "Next.js", 
+      "Node.js", 
+      "Python", 
+      "MERN Stack", 
+      "WordPress", 
+      "Shopify", 
+      "Web3", 
+      "Frontend", 
+      "Backend", 
+      "DevOps", 
+      "Cybersecurity", 
+      "QA Engineer",       // For professionals like Mesbahul
+      "Automation Engineer", // Specific for coding testers
+      "Game Dev"
+    ]
   },
   "Mobile App": {
     icon: Smartphone,

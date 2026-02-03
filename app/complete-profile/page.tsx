@@ -4,7 +4,8 @@ import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { 
   User, Phone, CheckCircle, ArrowRight, Loader2, 
-  LayoutGrid, Calendar, X ,MapPin, Building2, Hash,ChevronDown,Briefcase
+  LayoutGrid, Calendar, X ,MapPin, Building2, Hash, ChevronDown, Briefcase,
+  BellRing, Lock // 👈 Ye 2 naye icons add kar lo
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -215,6 +216,10 @@ export default function CompleteProfile() {
   const [user, setUser] = useState<any>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
 const [countrySearch, setCountrySearch] = useState("");
+const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [inputCode, setInputCode] = useState("");
+  const [isConfirmed, setIsConfirmed] = useState(false);
   // New State for Country Code (Default Pakistan)
   const [selectedCountryCode, setSelectedCountryCode] = useState("+92");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -327,8 +332,23 @@ const [countrySearch, setCountrySearch] = useState("");
     }).eq('id', user.id);
 
     setSaving(false);
-    if (!error) setShowSuccess(true);
+    if (!error) setShowWhatsAppModal(true);
     else alert("Error: " + error.message);
+  };
+const handleActivateClick = () => {
+    setIsVerifying(true);
+  };
+
+ const handleVerifyCode = () => {
+    if (inputCode.trim() === "786") {
+        // 1. Browser mein save kar lo
+        localStorage.setItem('alert_dismissed', 'true');
+        
+        // 2. Redirect ki jagah ab hum SUCCESS Screen dikhayenge
+        setIsConfirmed(true); 
+    } else {
+        alert("Wrong Code! Check WhatsApp reply.");
+    }
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0B0F19]"><Loader2 className="animate-spin text-indigo-600 dark:text-indigo-400" size={40}/></div>;
@@ -337,16 +357,95 @@ const [countrySearch, setCountrySearch] = useState("");
     <div className="min-h-screen bg-gray-50 dark:bg-[#0B0F19] transition-colors duration-300">
       <div className="fixed top-0 w-full z-50"><Navbar /></div>
 
-      {showSuccess && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
-            <div className="bg-white dark:bg-[#151B2B] p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl animate-in zoom-in-95">
-                <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle size={40} className="text-green-600 dark:text-green-400" />
-                </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">You're All Set! 🚀</h2>
-                <p className="text-gray-500 dark:text-slate-400 mb-8 text-sm">Job alerts active for <b className="text-black dark:text-white">{selectedCountryCode} {formData.whatsapp}</b></p>
-                <Link href="/" replace className="block w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all">Go to Jobs Feed <ArrowRight className="inline" size={20} /></Link>
+      {/* 👇 NAYA WHATSAPP TRAP MODAL (Purane Success Modal ki jagah paste karo) */}
+      {showWhatsAppModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
+          
+          <div className="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative border-4 border-indigo-100 animate-in zoom-in-95 duration-300">
+            
+            {/* 🚫 NO CLOSE BUTTON (User Fans Gaya) */}
+
+            {/* Icon & Heading */}
+            <div className="flex flex-col items-center text-center mb-8">
+               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
+                  <BellRing size={40} className="text-green-600" />
+               </div>
+               <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">
+                 Last Step!
+               </h2>
+               <p className="text-slate-500 font-medium mt-3 leading-relaxed">
+                 To activate your account and view jobs, you <b className="text-red-600">MUST</b> connect your WhatsApp.
+               </p>
             </div>
+
+            {/* ACTION AREA */}
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+              
+              {isConfirmed ? (
+                /* 🚀 STEP 3: SUCCESS SCREEN (Naya Wala) */
+                <div className="flex flex-col items-center gap-4 animate-in zoom-in duration-300">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                        <CheckCircle size={40} className="text-green-600" />
+                    </div>
+                    <div className="text-center">
+                        <h3 className="text-xl font-black text-slate-900">ALERTS CONFIRMED!</h3>
+                        <p className="text-sm text-slate-500 mt-1">
+                            Your WhatsApp is successfully connected.
+                        </p>
+                    </div>
+                    <button 
+                        onClick={() => router.push('/')} // 👈 Ab yahan se Dashboard jayega
+                        className="w-full bg-slate-900 hover:bg-black text-white py-3.5 rounded-xl font-bold text-lg shadow-lg transition-all mt-2 flex items-center justify-center gap-2"
+                    >
+                        Go to Dashboard <ArrowRight size={20} />
+                    </button>
+                </div>
+
+              ) : !isVerifying ? (
+                /* STEP 1: ACTIVATE BUTTON (Waisa hi rahega) */
+                <div className="flex flex-col gap-4">
+                   <a 
+                      href={`https://wa.me/923021668060?text=START_ALERTS_PROFILE_COMPLETED_UID_${user?.id?.slice(0,5)}`} 
+                      target="_blank"
+                      onClick={handleActivateClick}
+                      className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 shadow-xl shadow-green-500/30 transition-transform hover:scale-[1.02] text-lg"
+                   >
+                      Verify WhatsApp <ArrowRight size={24} />
+                   </a>
+                   <p className="text-xs text-center text-slate-400 font-medium">
+                     *Verification is mandatory to access the dashboard.
+                   </p>
+                </div>
+
+              ) : (
+                /* STEP 2: CODE INPUT (Waisa hi rahega) */
+                <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-2">
+                   <div className="flex items-center gap-2 mb-1 justify-center">
+                      <Lock size={16} className="text-indigo-500" />
+                      <span className="text-sm font-bold text-indigo-600 uppercase tracking-wider">
+                        Confirmation Code
+                      </span>
+                   </div>
+                   
+                   <input 
+                      type="text" 
+                      placeholder="Enter Code" 
+                      className="w-full bg-white border-2 border-slate-300 text-slate-900 px-4 py-4 rounded-xl font-black text-2xl text-center focus:border-indigo-600 focus:ring-0 outline-none tracking-[0.5em]"
+                      value={inputCode}
+                      onChange={(e) => setInputCode(e.target.value)}
+                      autoFocus
+                   />
+                   
+                   <button 
+                      onClick={handleVerifyCode}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all"
+                   >
+                      Complete Registration <CheckCircle size={22} />
+                   </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 

@@ -22,7 +22,7 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [user, setUser] = useState<any>(null);
   const [relatedJobs, setRelatedJobs] = useState<any[]>([]); 
   const [companyDetails, setCompanyDetails] = useState<any>(null);
-const [applyCount, setApplyCount] = useState(job.application_count || 0);
+const [applyCount, setApplyCount] = useState<number>(initialJob?.application_count || 0);
   useEffect(() => {
     fetchJobDetails();
   }, []);
@@ -206,7 +206,7 @@ const handleApply = async () => {
     // --- 2. COUNT INCREMENT (Ye ab sirf tab chalega agar User naya hai ya Guest hai) ---
     
     // UI Update (Foran number badha do)
-    setApplyCount(prev => prev + 1);
+    setApplyCount((prev: number) => prev + 1);
 
     // Database Counter Update
     const { error: countError } = await supabase
@@ -579,3 +579,4 @@ const handleApply = async () => {
     </div>
   );
 }
+

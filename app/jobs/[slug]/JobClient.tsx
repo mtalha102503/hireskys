@@ -22,7 +22,7 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [user, setUser] = useState<any>(null);
   const [relatedJobs, setRelatedJobs] = useState<any[]>([]); 
   const [companyDetails, setCompanyDetails] = useState<any>(null);
-
+const [applyCount, setApplyCount] = useState(job.application_count || 0);
   useEffect(() => {
     fetchJobDetails();
   }, []);
@@ -80,7 +80,6 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
                     setCompanyDetails(companyInfo); // ✅ State mein save kar liya
                 }
             }
-
             // Related Jobs Fetch (Ye waisa hi rahega)
             const { data: related } = await supabase
                 .from('jobs')
@@ -98,6 +97,12 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
                 const { data: savedJob } = await supabase.from('saved_jobs').select('*').match({ user_id: user.id, job_id: data.id }).single();
                 if (savedJob) setSaved(true);
             }
+        }
+        if (data) {
+        setJob(data);
+        if (data.application_count) {
+            setApplyCount(data.application_count);
+        }
         }
     } // FIX: Closing brace for if (jobId)
   } // FIX: Closing brace for fetchJobDetails function
@@ -129,7 +134,6 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
       text: `Check out this job: ${job.title} at ${job.company || 'Remote'}`,
       url: window.location.href,
     };
-
     // Agar browser support karta hai (mostly mobile browsers)
     if (navigator.share) {
       try {
@@ -144,7 +148,84 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
       alert("✨ Link copied! Share it with your friends.");
     }
   };
+  const ApplicantStatus = ({ count }: { count: number }) => {
+  if (count === 0) {
+    return (
+      <div className="mt-2 flex items-center justify-center md:justify-end gap-2 text-xs font-medium text-slate-500 dark:text-slate-300 animate-pulse">
+        <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+        Be the first applicant! 🚀
+      </div>
+    );
+  }
 
+  return (
+    <div className="mt-2 flex items-center justify-center md:justify-end gap-3 animate-in fade-in slide-in-from-top-1">
+      {/* Avatar Stack */}
+      <div className="flex -space-x-2 overflow-hidden">
+        {[...Array(Math.min(count, 3))].map((_, i) => (
+          <img 
+            key={i}
+            className="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-[#111625]"
+            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${count + i}`} 
+            alt="applicant"
+          />
+        ))}
+        {count > 3 && (
+          <div className="flex items-center justify-center h-6 w-6 rounded-full ring-2 ring-white dark:ring-[#111625] bg-slate-100 dark:bg-slate-700 text-[9px] font-bold text-slate-500 dark:text-slate-300">
+            +{count > 99 ? '99' : count - 3}
+          </div>
+        )}
+      </div>
+
+      {/* Text - Added dark:text-slate-300 for visibility */}
+      <div className="text-xs text-slate-600 dark:text-slate-300">
+        <span className="font-bold text-slate-900 dark:text-white">{count} people</span> applied
+      </div>
+    </div>
+  );
+};
+const handleApply = async () => {
+    // --- 1. USER CHECK (Logic: Agar login hai to duplicate roko) ---
+    if (user) {
+        // Database se pucho: "Kya is user ne is job id par pehle apply kiya?"
+        const { data: existingApplication } = await supabase
+            .from('application_history')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('job_id', job.id)
+            .single();
+
+        // Agar Entry mil gayi, to yahi se wapis bhag jao!
+        // Na counter badhega, na history duplicate hogi.
+        if (existingApplication) {
+            console.log("Already applied! Skipping counter increment.");
+            return; 
+        }
+    }
+
+    // --- 2. COUNT INCREMENT (Ye ab sirf tab chalega agar User naya hai ya Guest hai) ---
+    
+    // UI Update (Foran number badha do)
+    setApplyCount(prev => prev + 1);
+
+    // Database Counter Update
+    const { error: countError } = await supabase
+      .rpc('increment_job_applications', { job_id_input: job.id.toString() });
+
+    if (countError) console.error("Counter Error:", countError);
+
+    // --- 3. HISTORY SAVE (Sirf Logged-in Users ke liye) ---
+    if (user) {
+        await supabase.from('application_history').insert({
+            user_id: user.id,
+            job_id: job.id,
+            job_title: job.title,
+            // Source Logic wahi purani wali
+            company_name: job.company || companyDetails?.name || job.source || 'Unknown Company'
+        });
+        console.log("User History Saved!");
+    }
+  };
   // --- 🔥 SMART RENDERERS ---
 
   const getSourceStyle = (source: string) => {
@@ -344,49 +425,58 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
                     </div>
                 </div>
 
-                {/* --- Copy this into your Action Buttons Row --- */}
-                <div className="flex gap-3 w-full md:w-auto mt-6 md:mt-0 items-center">
-                  
-                  {/* Heart & Share Group */}
-                  <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm">
-                      {/* Save Button */}
-                      <button 
-                        onClick={toggleSave} 
-                        className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
-                      >
-                          <Heart size={22} className={saved ? 'fill-current' : ''} />
-                      </button>
+                {/* --- ACTION BUTTONS ROW START --- */}
+<div className="flex gap-4 w-full md:w-auto mt-6 md:mt-0 items-start justify-end">
+  
+  {/* 1. Share & Save Group (Left Side) */}
+  {/* Isko h-[54px] diya taake ye Apply button ki height ke barabar centered rahe */}
+  <div className="h-[54px] flex items-center">
+    <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm h-fit">
+      {/* Save Button */}
+      <button 
+        onClick={toggleSave} 
+        className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+      >
+          <Heart size={22} className={saved ? 'fill-current' : ''} />
+      </button>
 
-                      {/* Vertical Divider */}
-                      <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
+      {/* Divider */}
+      <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
 
-                      {/* Modern Share Button */}
-                      <button 
-                        onClick={handleShare} 
-                        className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2"
-                        title="Share Job"
-                      >
-                          <Share2 size={22} />
-                          <span className="text-xs font-bold pr-1 hidden sm:inline">SHARE</span>
-                      </button>
-                  </div>
+      {/* Share Button */}
+      <button 
+        onClick={handleShare} 
+        className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2"
+      >
+          <Share2 size={22} />
+      </button>
+    </div>
+  </div>
 
-                  {/* Apply Button (Refined) */}
-                  <a 
-                      href={job.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="flex-1 md:flex-none px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-[0_10px_20px_-10px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2 hover:translate-y-[-2px] active:translate-y-[0px] transition-all"
-                  >
-                      <span>Apply Now</span>
-                      <ExternalLink size={18} />
-                  </a>
-                </div>
+  {/* 2. Apply Button & Counter (Right Side) */}
+  <div className="flex flex-col w-full md:w-auto">
+      {/* Apply Button */}
+      <a 
+    href={job.link} 
+    onClick={handleApply}
+    target="_blank" 
+    rel="noopener noreferrer" 
+    // "w-full md:w-auto" ki jagah "w-fit" use karein aur padding "px-6" kar dein
+    className="w-fit md:w-auto px-6 h-[54px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
+>
+    <span>Apply Now</span>
+    <ExternalLink size={18} className="flex-shrink-0" /> {/* flex-shrink-0 icon ko dabne nahi dega */}
+</a>
+
+      {/* 👇 Counter Button ke neeche perfectly align hoga */}
+      <ApplicantStatus count={applyCount} />
+  </div>
+
+</div>
+{/* --- ACTION BUTTONS ROW END --- */}
             </div>
         </div>
       </div> 
-      {/* 🌟 FIX 2: Added these closing tags to close the Header section properly before starting the Grid */}
-
       <div className="container mx-auto max-w-5xl px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
                 <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">

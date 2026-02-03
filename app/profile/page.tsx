@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import LocationInput from '@/components/LocationInput';
 import { CATEGORIES } from '@/lib/categories';
@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 export default function Profile() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState<any>(null);
@@ -54,7 +55,15 @@ export default function Profile() {
   useEffect(() => {
     getProfile();
   }, []);
+useEffect(() => {
+    // URL se 'tab' parameter nikalo (e.g. "saved" ya "details")
+    const tabFromUrl = searchParams.get('tab');
 
+    // Agar URL mein tab hai, to activeTab state update kar do
+    if (tabFromUrl && ['details', 'portfolio', 'experience', 'saved'].includes(tabFromUrl)) {
+        setActiveTab(tabFromUrl as any);
+    }
+  }, [searchParams]);
   useEffect(() => {
     if (activeTab === 'saved' && user) {
         fetchSavedJobs();
@@ -799,4 +808,3 @@ export default function Profile() {
     </div>
   );
 }
-

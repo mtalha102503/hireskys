@@ -370,17 +370,52 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
                         </h1>
                     </div>
                     <div className="flex gap-3">
-                        <div className="p-3 md:p-4 bg-slate-50 dark:bg-[#151b2d] rounded-2xl border border-slate-100 dark:border-slate-800 text-center min-w-[90px]">
-                            <div className="text-xl md:text-2xl font-black text-indigo-600 dark:text-indigo-400">{savedJobIds.length}</div>
-                            <div className="text-[10px] md:text-xs text-slate-500 font-bold uppercase">Saved</div>
-                        </div>
-                        <div className="p-3 md:p-4 bg-slate-50 dark:bg-[#151b2d] rounded-2xl border border-slate-100 dark:border-slate-800 text-center min-w-[90px]">
-                            <div className="text-xl md:text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                                {userProfile?.skills?.length || 0}
-                            </div>
-                            <div className="text-[10px] md:text-xs text-slate-500 font-bold uppercase">Skills</div>
-                        </div>
-                    </div>
+    
+    {/* 1. SAVED JOBS BUTTON (Mobile Optimized) */}
+    <Link 
+        href="/profile?tab=saved" 
+        className="group relative p-3 bg-white dark:bg-[#151b2d] rounded-xl border border-slate-200 dark:border-slate-800 min-w-[90px] text-center cursor-pointer transition-all duration-200 
+        
+        /* Desktop Hover */
+        hover:bg-indigo-600 hover:border-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-1 
+        
+        /* Mobile Touch (Active) - Ye line jadoo karegi 👇 */
+        active:scale-95 active:bg-indigo-700 active:border-indigo-700"
+    >
+        {/* Number */}
+        <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white group-active:text-white transition-colors leading-none mb-1">
+            {savedJobIds.length}
+        </div>
+        
+        {/* Label */}
+        <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-indigo-100 group-active:text-indigo-100 transition-colors tracking-wide">
+            Saved
+        </div>
+    </Link>
+
+    {/* 2. SKILLS BUTTON (Mobile Optimized) */}
+    <Link 
+        href="/profile?tab=details" 
+        className="group relative p-3 bg-white dark:bg-[#151b2d] rounded-xl border border-slate-200 dark:border-slate-800 min-w-[90px] text-center cursor-pointer transition-all duration-200 
+        
+        /* Desktop Hover */
+        hover:bg-emerald-600 hover:border-emerald-600 hover:shadow-lg hover:shadow-emerald-500/20 hover:-translate-y-1
+        
+        /* Mobile Touch (Active) 👇 */
+        active:scale-95 active:bg-emerald-700 active:border-emerald-700"
+    >
+        {/* Number */}
+        <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 group-hover:text-white group-active:text-white transition-colors leading-none mb-1">
+            {userProfile?.skills?.length || 0}
+        </div>
+
+        {/* Label */}
+        <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-emerald-100 group-active:text-emerald-100 transition-colors tracking-wide">
+            Skills
+        </div>
+    </Link>
+
+</div>
                 </div>
 
                 {/* 👇 SEARCH BAR */}

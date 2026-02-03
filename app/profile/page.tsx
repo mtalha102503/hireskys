@@ -12,7 +12,8 @@ import {
   Zap, Play, Trophy, AlertTriangle, Star, Award, Mail, Phone, AtSign, Calendar
 } from 'lucide-react';
 import Link from 'next/link';
-export default function Profile() {
+import { Suspense } from 'react';
+function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -808,3 +809,11 @@ useEffect(() => {
     </div>
   );
 }
+export default function Profile() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0B0F19]">Loading Profile...</div>}>
+       <ProfileContent />
+    </Suspense>
+  );
+}
+

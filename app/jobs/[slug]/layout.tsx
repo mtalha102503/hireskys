@@ -124,6 +124,108 @@ export default async function Layout({ children, params }: { children: React.Rea
     .single();
 
   if (!job) return <>{children}</>;
+  let googleEmploymentType = "FULL_TIME"; // Default
+  if (job.employment_type) { // Maan lo DB column ka naam employment_type hai
+      const type = job.employment_type.toLowerCase();
+      if (type.includes('part')) googleEmploymentType = "PART-TIME";
+      else if (type.includes('contract') || type.includes('freelance')) googleEmploymentType = "CONTRACTOR";
+      else if (type.includes('temp')) googleEmploymentType = "TEMPORARY";
+      else if (type.includes('intern')) googleEmploymentType = "INTERNSHIP";
+      // Agar 'Full Time' hai to default FULL_TIME hi rahega
+  }
+
+  // 👇 2. COUNTRY EXTRACTION LOGIC (Expanded for 50+ Countries)
+  // Maqsad: "Remote (Pakistan)" se "PK" nikalna Google ke liye
+  
+  let targetCountry = "Worldwide"; // Default
+  
+  if (job.location) {
+      const loc = job.location.toUpperCase(); // Case insensitive check
+      
+      // 🗺️ Country Mapping (Name -> ISO Code)
+      const countries: Record<string, string> = {
+          // 🇵🇰 South Asia
+          "PAKISTAN": "PK", "PK": "PK",
+          "INDIA": "IN", "IN": "IN",
+          "BANGLADESH": "BD",
+          "SRI LANKA": "LK",
+          "NEPAL": "NP",
+          
+          // 🇺🇸 North America
+          "USA": "US", "UNITED STATES": "US", "US": "US",
+          "CANADA": "CA", "MEXICO": "MX",
+          
+          // 🇬🇧 Europe (Major)
+          "UK": "GB", "UNITED KINGDOM": "GB", "LONDON": "GB",
+          "GERMANY": "DE", "DEUTSCHLAND": "DE",
+          "FRANCE": "FR",
+          "ITALY": "IT",
+          "SPAIN": "ES",
+          "NETHERLANDS": "NL", "HOLLAND": "NL",
+          "SWEDEN": "SE",
+          "NORWAY": "NO",
+          "DENMARK": "DK",
+          "FINLAND": "FI",
+          "IRELAND": "IE",
+          "POLAND": "PL",
+          "PORTUGAL": "PT",
+          "SWITZERLAND": "CH",
+          "AUSTRIA": "AT",
+          "BELGIUM": "BE",
+          "CZECH REPUBLIC": "CZ", "CZECHIA": "CZ",
+          "GREECE": "GR",
+          "HUNGARY": "HU",
+          "ROMANIA": "RO",
+          "UKRAINE": "UA",
+          "RUSSIA": "RU",
+          "TURKEY": "TR", "TURKIYE": "TR",
+          "BULGARIA": "BG",
+          "CROATIA": "HR",
+
+          // 🇦🇪 Middle East
+          "UAE": "AE", "UNITED ARAB EMIRATES": "AE", "DUBAI": "AE",
+          "SAUDI ARABIA": "SA", "KSA": "SA",
+          "QATAR": "QA",
+          "OMAN": "OM",
+          "KUWAIT": "KW",
+          "BAHRAIN": "BH",
+          "EGYPT": "EG",
+
+          // 🌏 Asia Pacific
+          "AUSTRALIA": "AU",
+          "NEW ZEALAND": "NZ",
+          "CHINA": "CN",
+          "JAPAN": "JP",
+          "SOUTH KOREA": "KR",
+          "SINGAPORE": "SG",
+          "MALAYSIA": "MY",
+          "INDONESIA": "ID",
+          "PHILIPPINES": "PH",
+          "THAILAND": "TH",
+          "VIETNAM": "VN",
+
+          // 🌎 South America
+          "BRAZIL": "BR",
+          "ARGENTINA": "AR",
+          "COLOMBIA": "CO",
+          "CHILE": "CL",
+          "PERU": "PE",
+
+          // 🌍 Africa
+          "SOUTH AFRICA": "ZA",
+          "NIGERIA": "NG",
+          "KENYA": "KE",
+          "MOROCCO": "MA"
+      };
+
+      // 🔍 Loop chalao aur check karo k konsi country string mein hai
+      for (const [name, code] of Object.entries(countries)) {
+          if (loc.includes(name)) {
+              targetCountry = code;
+              break; // Pehli match milte hi ruk jao (Performance)
+          }
+      }
+  }
 const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -162,11 +264,11 @@ const breadcrumbLd = {
     description: job.description, // HTML description supported here
     datePosted: job.date_posted,
     validThrough: new Date(new Date(job.date_posted).getTime() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 3 Months expiry
-    employmentType: "FULL_TIME", // Default, logic se change kar sakte ho
+    employmentType: googleEmploymentType,
     hiringOrganization: {
       '@type': 'Organization',
       name: job.company || "HireSkys Client",
-      logo: "https://www.hireskys.com/logo.png",
+      logo: "https://www.hireskys.com/logo2.png",
       sameAs: "https://www.hireskys.com"
     },
     jobLocation: {
@@ -174,7 +276,7 @@ const breadcrumbLd = {
       address: {
         '@type': 'PostalAddress',
         addressLocality: job.location === 'Remote' ? 'Remote' : job.location,
-        addressCountry: 'Worldwide' // Default for remote
+        ...(targetCountry !== "Worldwide" && { addressCountry: targetCountry })
       }
     },
     ...(minSalary && {
@@ -192,7 +294,7 @@ const breadcrumbLd = {
     }),
     applicantLocationRequirements: {
       '@type': 'Country',
-      name: 'Worldwide'
+      name: targetCountry
     },
     jobLocationType: job.location?.toLowerCase().includes('remote') ? 'TELECOMMUTE' : undefined
   };

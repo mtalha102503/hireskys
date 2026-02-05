@@ -56,3 +56,56 @@ a:active,
 * {
   -webkit-tap-highlight-color: transparent;
 }
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+/* --- 📝 JOB DESCRIPTION FORMATTING FIX (ZABARDASTI WALI CSS) --- */
+/* Ye code description ko wapis normal format mein layega */
+
+.job-content h1, 
+.job-content h2, 
+.job-content h3, 
+.job-content h4 {
+  margin-top: 2rem !important;    /* Heading ke upar gap */
+  margin-bottom: 1rem !important; /* Heading ke neeche gap */
+  font-weight: 800 !important;    /* Full Bold */
+  line-height: 1.3 !important;
+  color: inherit !important;      /* Dark mode friendly */
+}
+
+.job-content p {
+  margin-bottom: 1.25rem !important; /* Paragraphs ke beech gap */
+  line-height: 1.75 !important;      /* Lines khuli khuli dikhein */
+  color: inherit !important;
+}
+
+.job-content ul {
+  list-style-type: disc !important;   /* ● Dots wapis lao */
+  padding-left: 1.5rem !important;    /* Left side space do */
+  margin-bottom: 1.5rem !important;
+}
+
+.job-content ol {
+  list-style-type: decimal !important; /* 1. 2. 3. wapis lao */
+  padding-left: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.job-content li {
+  margin-bottom: 0.5rem !important;   /* List items ke beech gap */
+  padding-left: 0.5rem !important;
+}
+
+.job-content strong, .job-content b {
+  font-weight: 700 !important;
+  color: inherit !important;
+}
+
+.job-content a {
+  color: #6366f1 !important; /* Links ko Indigo color do */
+  text-decoration: underline !important;
+}

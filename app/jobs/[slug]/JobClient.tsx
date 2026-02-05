@@ -483,9 +483,9 @@ const handleApply = async () => {
                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-indigo-500"/> Job Description</h2>
                     
                     <div 
-                        className="prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white"
-                        dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
-                    />
+    className="job-content prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white"
+    dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
+/>
                 </div>
                 
                 <ReportJob jobId={job.id} />
@@ -579,4 +579,5 @@ const handleApply = async () => {
     </div>
   );
 }
+
 

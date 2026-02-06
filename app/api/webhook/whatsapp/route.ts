@@ -1,13 +1,20 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
-import { GoogleGenerativeAI } from "@google/generative-ai"; 
+import { createClient } from '@supabase/supabase-js'; // 👈 Direct Import for Admin Access
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// ✅ Gemini Configuration (Optimized for Logic)
+// ✅ 1. Supabase Admin Setup (RLS Bypass)
+// Ye zaroori hai taake bina login ke data fetch ho sake
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+// Koshish karo SERVICE_ROLE_KEY use karne ki, warna ANON KEY chalegi
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+
+// ✅ Gemini Config
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash", // 2.5 abhi unstable ho skta hai, 1.5-flash production ready hai
+    model: "gemini-1.5-flash",
     generationConfig: {
-        temperature: 0.3, // Low temp = More logical/strict, Less creative
+        temperature: 0.3,
         maxOutputTokens: 500,
     }
 });
@@ -33,98 +40,102 @@ export async function POST(request: Request) {
         }
 
         const incomingMsg = body.data.body.trim(); 
-        const userPhone = body.data.from.replace('@c.us', ''); 
+        const rawPhone = body.data.from.replace('@c.us', ''); 
 
         // 👇 Command Check
         if (incomingMsg.toUpperCase().startsWith('CHECK ')) {
             
             const jobId = incomingMsg.split(' ')[1];
 
-            await sendReply(userPhone, "🔍 *HireSkys ATS* is analyzing your profile against industry standards... Please wait.");
+            await sendReply(rawPhone, "🔍 *HireSkys ATS* is analyzing your profile... Please wait.");
 
-            // 2️⃣ Fetch Data
-            // Tip: Agr user table me 'bio' ya 'experience' ka column hai to wo bhi select kro for better results
-            const { data: user } = await supabase
+            // ⚡ 2. SMART USER FETCH (Fix for +92 issue)
+            let user = null;
+            
+            // Try 1: Direct Number (e.g., 92300...)
+            let { data: userRaw } = await supabaseAdmin
                 .from('profiles')
-                .select('username, skills, bio') // Added bio if available
-                .eq('whatsapp', userPhone)
+                .select('username, skills, bio')
+                .eq('whatsapp', rawPhone)
                 .single();
+            
+            if (userRaw) {
+                user = userRaw;
+            } else {
+                // Try 2: With Plus (e.g., +92300...)
+                let { data: userPlus } = await supabaseAdmin
+                    .from('profiles')
+                    .select('username, skills, bio')
+                    .eq('whatsapp', '+' + rawPhone)
+                    .single();
+                user = userPlus;
+            }
 
-            const { data: job } = await supabase
+            // 🛑 Agar dono tareeqon se nahi mila
+            if (!user) {
+                await sendReply(rawPhone, `❌ Error: Profile not found for ${rawPhone}. Please check your number in DB.`);
+                return NextResponse.json({ success: true });
+            }
+
+            // 3️⃣ Fetch Job
+            const { data: job } = await supabaseAdmin
                 .from('jobs')
                 .select('title, description, requirements') 
                 .eq('id', jobId)
                 .single();
 
-            if (!user || !job) {
-                await sendReply(userPhone, "❌ Error: Job ID or User Profile not found.");
+            if (!job) {
+                await sendReply(rawPhone, "❌ Error: Job ID not found.");
                 return NextResponse.json({ success: true });
             }
 
             // Data Preparation
             const userProfile = `
             - Skills: ${user.skills ? user.skills.join(', ') : "None listed"}
-            - Bio/Summary: ${user.bio || "Not provided"}
+            - Bio: ${user.bio || "Not provided"}
             `;
             
-            // ⚠️ BIG CHANGE: Limit removed/increased significantly
             const jobContext = `
             - Role: ${job.title}
-            - Full Description: ${job.description ? job.description.substring(0, 10000) : "N/A"}
+            - Description: ${job.description ? job.description.substring(0, 8000) : "N/A"}
             `;
 
-            // 3️⃣ PROFFESIONAL ATS PROMPT 🧠
+            // 4️⃣ Gemini Prompt
             const prompt = `
-            You are "HireSkys ATS," an elite Technical Recruiter and Resume Scanner. 
-            Your goal is to evaluate a candidate strictly based on the provided Job Description (JD).
+            You are "HireSkys ATS," an elite Technical Recruiter. 
+            Evaluate candidate vs Job Description (JD).
 
-            🏆 **SCORING RUBRIC (Mental Sandbox):**
-            - **90-100%:** Perfect match (All Must-Haves + Good-to-Haves).
-            - **70-89%:** Strong match (Missing only minor tools/soft skills).
-            - **50-69%:** Average (Has core skills but lacks specific framework/experience).
-            - **<50%:** Weak match (Fundamental mismatch in tech stack or role).
-
-            ⬇️ **INPUT DATA:**
+            ⬇️ **JOB:**
             ${jobContext}
             
-            👤 **CANDIDATE PROFILE:**
+            👤 **CANDIDATE:**
             ${userProfile}
 
-            -----------------------------
-            
-            **YOUR TASK:**
-            1. Analyze the semantic relevance of the candidate's skills vs. the JD.
-            2. Identify the most critical "Hard Skills" missing from the candidate.
-            3. Generate a strict score based on the Rubric above.
-            4. Provide one specific, high-impact tip to increase their score.
+            **TASK:**
+            1. Match Score (0-100%).
+            2. Critical Missing Skills (Max 3).
+            3. One high-impact tip.
 
-            **OUTPUT FORMAT (Strictly for WhatsApp):**
-            Don't use markdown headers (###). Use Bold (*) and Emojis.
-            
-            Example Output:
+            **OUTPUT FORMAT (For WhatsApp):**
+            Use *Bold* and Emojis. No Markdown headers.
+            Example:
             📊 *Match Score:* 78%
-            
-            🛑 *Critical Missing:* Docker, AWS, GraphQL
-            
-            💡 *Recruiter Tip:* Your profile lists "Web Dev" but the job specifically demands "Next.js 14". Update your skills to be specific.
-            
-            (Now generate the response for the actual data above)
+            🛑 *Missing:* Docker, AWS
+            💡 *Tip:* Learn Docker basics.
             `;
 
-            // 4️⃣ Ask Gemini
             const result = await model.generateContent(prompt);
             const response = await result.response;
             const analysis = response.text();
 
-            // 5️⃣ Send Result
             const finalMsg = `🤖 *HireSkys Professional Analysis*
             
 ${analysis}
 
 ────────────────────
-📝 _Tip: Update your profile using *UPDATE SKILLS* command to improve score._`;
+📝 _Tip: Update your profile to improve score._`;
 
-            await sendReply(userPhone, finalMsg);
+            await sendReply(rawPhone, finalMsg);
             
             return NextResponse.json({ success: true });
         }
@@ -135,5 +146,4 @@ ${analysis}
         console.error("Webhook Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
-
 }

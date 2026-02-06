@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // ✅ Gemini Configuration (Optimized for Logic)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash", // 2.5 abhi unstable ho skta hai, 1.5-flash production ready hai
+    model: "gemini-2.5-flash", // 2.5 abhi unstable ho skta hai, 1.5-flash production ready hai
     generationConfig: {
         temperature: 0.3, // Low temp = More logical/strict, Less creative
         maxOutputTokens: 500,
@@ -135,4 +135,5 @@ ${analysis}
         console.error("Webhook Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
 }

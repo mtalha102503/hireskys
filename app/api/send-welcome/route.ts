@@ -5,10 +5,7 @@ const INSTANCE_ID = "instance157066";
 const TOKEN = "kb3sifnes2k91g0b";
 
 async function sendWhatsApp(to: string, username: string) {
-    // Number format clean karo (space ya dash hatao)
     let cleanNumber = to.replace(/\D/g, ''); 
-    
-    // Message Content
     const msg = `👋 *Welcome to HireSkys, ${username}!*
 
 Thanks for joining. 🚀
@@ -27,17 +24,20 @@ Reply "Complete" once saved! ✅`;
     });
 }
 
+// ✅ Ye Naya Hissa Hai (Browser Test ke liye)
+export async function GET() {
+    return NextResponse.json({ message: "System is Active & Running! 🚀" });
+}
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
 
-        // 🔒 Security Check (Koi aur ye link na use kare)
         const secret = request.headers.get('x-secret-key');
         if (secret !== process.env.SUPABASE_WEBHOOK_SECRET) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        // Supabase Naya Data 'record' field me bhejta hai
         const newUser = body.record; 
 
         if (newUser && newUser.whatsapp) {
@@ -51,5 +51,4 @@ export async function POST(request: Request) {
         console.error("Welcome Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
-
 }

@@ -218,11 +218,15 @@ export default async function Layout({ children, params }: { children: React.Rea
           "MOROCCO": "MA"
       };
 
-      // 🔍 Loop chalao aur check karo k konsi country string mein hai
+      // 🔍 Loop chalao (Regex Update)
       for (const [name, code] of Object.entries(countries)) {
-          if (loc.includes(name)) {
+          // ✨ FIX: Hum RegExp use karenge taake "Australia" me "US" match na ho
+          // \b ka matlab hai "Whole Word" (Pura lafz)
+          const regex = new RegExp(`\\b${name}\\b`, 'i'); 
+          
+          if (regex.test(loc)) {
               targetCountry = code;
-              break; // Pehli match milte hi ruk jao (Performance)
+              break; 
           }
       }
   }

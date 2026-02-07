@@ -18,7 +18,7 @@ Checking your profile for jobs...
 Please *SAVE this number* in your contacts right now.
 If you don't save it, you won't receive Job Alerts and Links.
 
-Reply "YES" once saved! ✅`;
+Reply "Complete" once saved! ✅`;
 
     await fetch(`https://api.ultramsg.com/${INSTANCE_ID}/messages/chat`, {
         method: 'POST',
@@ -51,4 +51,5 @@ export async function POST(request: Request) {
         console.error("Welcome Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
 }

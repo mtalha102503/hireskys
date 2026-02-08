@@ -671,8 +671,8 @@ const COUNTRIES = [
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    function handleClickOutside(event: any) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowJobTypeDropdown(false);
             setShowDateDropdown(false);
             setShowCountryDropdown(false); 
@@ -1992,6 +1992,7 @@ const COUNTRIES = [
     </div>
   );
 }
+
 
 
 

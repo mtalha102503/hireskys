@@ -621,7 +621,7 @@ const COUNTRIES = [
 ]
   const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
   const [showDateDropdown, setShowDateDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -671,13 +671,14 @@ const COUNTRIES = [
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(event: any) {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+function handleClickOutside(event: any) {
+    // 'as Node' add kar diya hai taake Typescript confuse na ho
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowJobTypeDropdown(false);
-            setShowDateDropdown(false);
-            setShowCountryDropdown(false); 
-        }
+        setShowDateDropdown(false);
+        setShowCountryDropdown(false);
     }
+}
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -1992,6 +1993,7 @@ const COUNTRIES = [
     </div>
   );
 }
+
 
 
 

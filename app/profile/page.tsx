@@ -902,7 +902,7 @@ function handleClickOutside(event: any) {
         } else {
             setJobs(prev => {
                 const existingIds = new Set(prev.map(job => job.id));
-                const uniqueNewJobs = data.filter(job => !existingIds.has(job.id));
+                const uniqueNewJobs = data.filter((job: any) => !existingIds.has(job.id));
                 return [...prev, ...uniqueNewJobs];
             });
         }
@@ -1993,6 +1993,7 @@ function handleClickOutside(event: any) {
     </div>
   );
 }
+
 
 
 

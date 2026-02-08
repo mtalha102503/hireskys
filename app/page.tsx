@@ -1646,7 +1646,7 @@ function handleClickOutside(event: any) {
                               animate={{ opacity: 1, y: 0 }}
                               className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10"
                           >
-                              {CATEGORIES[activeCategory].sub.map((tag) => (
+                              {(CATEGORIES as any)[activeCategory]?.sub.map((tag: any) => (
                                   <motion.button 
                                       key={tag} 
                                       whileHover={{ scale: 1.05 }}

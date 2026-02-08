@@ -1060,7 +1060,7 @@ function handleClickOutside(event: any) {
                                             transition={{ duration: 0.2 }}
                                             className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1 min-w-[200px]"
                                         >
-                                            {["Full-time", "Contract", "Part-time"].map((type) => (
+                                            {["Full-time", "Contract", "Part-time", "Freelance", "Internship"].map((type) => (
                                                 <button
                                                     key={type}
                                                     onClick={() => { setFilterJobType(type); setShowJobTypeDropdown(false); }}
@@ -1420,7 +1420,7 @@ function handleClickOutside(event: any) {
                                       transition={{ duration: 0.2 }}
                                       className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1"
                                   >
-                                      {["Full-time", "Contract", "Part-time"].map((type) => (
+                                      {["Full-time", "Contract", "Part-time", "Freelance", "Internship"].map((type) => (
                                           <button
                                               key={type}
                                               onClick={() => { setFilterJobType(type); setShowJobTypeDropdown(false); }}

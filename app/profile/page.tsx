@@ -478,21 +478,21 @@ function ProfileContent() {
                             placeholder="+1 234 567 890" 
                         />
                         
-                        <div className="grid grid-cols-2 gap-4">
-                            <PremiumInput 
-                                label="Date of Birth" 
-                                type="date"
-                                value={formData.birth_date} 
-                                onChange={(e: any) => setFormData({...formData, birth_date: e.target.value})} 
-                            />
-                            <PremiumInput 
-                                label="Hourly ($)" 
-                                icon={DollarSign}
-                                value={formData.hourly_rate} 
-                                onChange={(e: any) => setFormData({...formData, hourly_rate: e.target.value})} 
-                                placeholder="50" 
-                            />
-                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"> 
+    <PremiumInput 
+        label="Date of Birth" 
+        type="date"
+        value={formData.birth_date} 
+        onChange={(e: any) => setFormData({...formData, birth_date: e.target.value})} 
+    />
+    <PremiumInput 
+        label="Hourly ($)" 
+        icon={DollarSign}
+        value={formData.hourly_rate} 
+        onChange={(e: any) => setFormData({...formData, hourly_rate: e.target.value})} 
+        placeholder="50" 
+    />
+</div>
                     </div>
 
                     {/* ADDRESS SECTION */}
@@ -517,10 +517,10 @@ function ProfileContent() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <PremiumInput value={formData.city} placeholder="City" onChange={(e: any) => setFormData({...formData, city: e.target.value})} />
-                            <PremiumInput value={formData.country} placeholder="Country" onChange={(e: any) => setFormData({...formData, country: e.target.value})} />
-                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <PremiumInput value={formData.city} placeholder="City" onChange={(e: any) => setFormData({...formData, city: e.target.value})} />
+    <PremiumInput value={formData.country} placeholder="Country" onChange={(e: any) => setFormData({...formData, country: e.target.value})} />
+</div>
                     </div>
                 </div>
 
@@ -888,21 +888,21 @@ function ProfileContent() {
                                                 className="w-full bg-white dark:bg-[#151b2d] p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-indigo-500 transition-colors" 
                                             />
                                             
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <PremiumInput 
-                                                    label="Your Role" 
-                                                    icon={User}
-                                                    value={proj.role} 
-                                                    onChange={(e: any) => updateItem('projects', i, 'role', e.target.value)}
-                                                    className="bg-white dark:bg-black"
-                                                />
-                                                <PremiumInput 
-                                                    label="Project Link" 
-                                                    icon={LinkIcon}
-                                                    value={proj.link} 
-                                                    onChange={(e: any) => updateItem('projects', i, 'link', e.target.value)}
-                                                />
-                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <PremiumInput 
+        label="Your Role" 
+        icon={User}
+        value={proj.role} 
+        onChange={(e: any) => updateItem('projects', i, 'role', e.target.value)}
+        className="bg-white dark:bg-black"
+    />
+    <PremiumInput 
+        label="Project Link" 
+        icon={LinkIcon}
+        value={proj.link} 
+        onChange={(e: any) => updateItem('projects', i, 'link', e.target.value)}
+    />
+</div>
                                         </div>
                                     </div>
                                 ))}
@@ -943,21 +943,23 @@ function ProfileContent() {
                                                     onChange={(e: any) => updateItem('experience', i, 'company', e.target.value)}
                                                     className="font-bold"
                                                 />
-                                                <div className="flex gap-2">
-                                                    <PremiumInput 
-                                                        label="Job Title" 
-                                                        value={exp.role} 
-                                                        onChange={(e: any) => updateItem('experience', i, 'role', e.target.value)}
-                                                        className="flex-1"
-                                                    />
-                                                    <div className="w-32">
-                                                        <PremiumInput 
-                                                            label="Year(s)" 
-                                                            value={exp.year} 
-                                                            onChange={(e: any) => updateItem('experience', i, 'year', e.target.value)}
-                                                        />
-                                                    </div>
-                                                </div>
+                                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-2">
+    <div className="w-full sm:flex-1">
+        <PremiumInput 
+            label="Job Title" 
+            value={exp.role} 
+            onChange={(e: any) => updateItem('experience', i, 'role', e.target.value)}
+            className="w-full"
+        />
+    </div>
+    <div className="w-full sm:w-32">
+        <PremiumInput 
+            label="Year(s)" 
+            value={exp.year} 
+            onChange={(e: any) => updateItem('experience', i, 'year', e.target.value)}
+        />
+    </div>
+</div>
                                             </div>
                                             <textarea 
                                                 rows={3} 
@@ -983,15 +985,19 @@ function ProfileContent() {
                              />
                              <div className="space-y-4">
                                 {formData.custom_links.map((link, i) => (
-                                    <div key={i} className="flex gap-3 items-end">
-                                        <div className="w-1/3">
-                                            <PremiumInput value={link.label} placeholder="Label (e.g. GitHub)" onChange={(e: any) => updateItem('custom_links', i, 'label', e.target.value)} />
-                                        </div>
-                                        <div className="w-2/3">
-                                            <PremiumInput value={link.url} placeholder="https://..." icon={LinkIcon} onChange={(e: any) => updateItem('custom_links', i, 'url', e.target.value)} />
-                                        </div>
-                                        <button onClick={() => removeItem('custom_links', i)} className="mb-2 p-2 text-slate-400 hover:text-red-500 transition bg-slate-100 dark:bg-slate-800 rounded-lg"><Trash2 size={18}/></button>
-                                    </div>
+                                    <div key={i} className="flex flex-col sm:flex-row gap-3 items-end bg-slate-50 dark:bg-[#0F1218] p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+    <div className="w-full sm:w-1/3">
+        <PremiumInput value={link.label} placeholder="Label (e.g. GitHub)" onChange={(e: any) => updateItem('custom_links', i, 'label', e.target.value)} />
+    </div>
+    <div className="w-full sm:w-2/3 flex gap-2 items-end">
+        <div className="flex-1">
+            <PremiumInput value={link.url} placeholder="https://..." icon={LinkIcon} onChange={(e: any) => updateItem('custom_links', i, 'url', e.target.value)} />
+        </div>
+        <button onClick={() => removeItem('custom_links', i)} className="mb-[3px] p-3 text-slate-400 hover:text-red-500 transition bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
+            <Trash2 size={18}/>
+        </button>
+    </div>
+</div>
                                 ))}
                              </div>
                          </div>

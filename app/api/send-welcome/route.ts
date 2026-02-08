@@ -24,28 +24,45 @@ Reply "Complete" once saved! ✅`;
     });
 }
 
-// ✅ Ye Naya Hissa Hai (Browser Test ke liye)
-export async function GET() {
-    return NextResponse.json({ message: "System is Active & Running! 🚀" });
-}
-
 export async function POST(request: Request) {
     try {
         const body = await request.json();
 
+        // Security Check
         const secret = request.headers.get('x-secret-key');
         if (secret !== process.env.SUPABASE_WEBHOOK_SECRET) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        const newUser = body.record; 
+        const { type, record, old_record } = body;
+        
+        // 🕵️ LOGIC: Message kab bhejna hai?
+        let shouldSend = false;
 
-        if (newUser && newUser.whatsapp) {
-            console.log(`🚀 New User Detected: ${newUser.username}`);
-            await sendWhatsApp(newUser.whatsapp, newUser.username || "User");
+        // Case 1: Agar Insert hua aur direct number ke sath aaya (Rare case)
+        if (type === 'INSERT' && record.whatsapp) {
+            shouldSend = true;
+        }
+        
+        // Case 2: Agar Update hua (Matlab user ne profile complete ki)
+        // Hum check karenge: Pehle number nahi tha (null/empty), aur AB hai.
+        else if (type === 'UPDATE') {
+            const oldPhone = old_record?.whatsapp;
+            const newPhone = record?.whatsapp;
+
+            // Agar pehle phone nahi tha, aur ab aa gaya hai -> WELCOME BHEJO!
+            if (!oldPhone && newPhone) {
+                shouldSend = true;
+            }
         }
 
-        return NextResponse.json({ success: true });
+        if (shouldSend) {
+            console.log(`🚀 Sending Welcome to: ${record.username}`);
+            await sendWhatsApp(record.whatsapp, record.username || "User");
+            return NextResponse.json({ success: true, message: "Welcome Sent" });
+        } else {
+            return NextResponse.json({ success: false, message: "No Condition Met (Maybe already had phone or no phone provided)" });
+        }
 
     } catch (error: any) {
         console.error("Welcome Error:", error);

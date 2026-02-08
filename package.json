@@ -20,6 +20,7 @@
     "@tensorflow/tfjs": "^4.22.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.26",
+    "googleapis": "^171.4.0",
     "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.4",

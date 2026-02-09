@@ -12,10 +12,10 @@ Thanks for joining. 🚀
 Checking your profile for jobs...
 
 ⚠️ *IMPORTANT:*
-Please *SAVE this number* in your contacts right now.
-If you don't save it, you won't receive Job Alerts and Links.
+Please *SAVE this number* in your contacts as *Hireskys* right now.
+If you don't save it, you won't receive Job Alerts.
 
-Reply "Complete" once saved! ✅`;
+Reply *Complete* once saved! ✅`;
 
     await fetch(`https://api.ultramsg.com/${INSTANCE_ID}/messages/chat`, {
         method: 'POST',
@@ -69,3 +69,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+

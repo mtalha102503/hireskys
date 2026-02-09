@@ -1,14 +1,13 @@
 "use client";
 
 /**
- * 💎 PREMIUM PROFILE EDITING SUITE
+ * 💎 PREMIUM PROFILE EDITING SUITE (FINAL V2)
  * ------------------------------------------------
- * This component handles user profile management with a 
- * High-Fidelity UI inspired by top-tier SaaS platforms.
- * * Logic preserved explicitly for:
- * - Supabase Data Flow
- * - State Management
- * - Array/Object Manipulation
+ * Includes critical fixes for:
+ * - Unique Username Handling
+ * - Storage Cleanup
+ * - Date Parsing
+ * - Skill Filtering
  */
 
 import { useEffect, useState, useRef, Suspense } from 'react';
@@ -23,7 +22,7 @@ import {
   GraduationCap, Link as LinkIcon, User, MapPin, Briefcase, Code, 
   FolderGit, FileText, CheckCircle, Eye, DollarSign, Heart, ExternalLink,
   Zap, Play, Trophy, AlertTriangle, Star, Award, Mail, Phone, AtSign, 
-  Calendar, Globe, Shield, Sparkles, Layout, Layers
+  Calendar, Globe, Shield, Sparkles, Layout, Layers, Search
 } from 'lucide-react';
 
 // --- HELPER COMPONENT: PREMIUM INPUT FIELD ---
@@ -88,13 +87,14 @@ function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // --- STATE MANAGEMENT (LOGIC PRESERVED) ---
+  // --- STATE MANAGEMENT ---
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [msg, setMsg] = useState('');
   const [uploading, setUploading] = useState(false);
   const [resumeUploading, setResumeUploading] = useState(false);
+  const [skillSearch, setSkillSearch] = useState(''); // 🔍 Added for search
 
   // --- UI STATES ---
   const [activeTab, setActiveTab] = useState<'details' | 'portfolio' | 'experience' | 'saved'>('details');
@@ -102,7 +102,7 @@ function ProfileContent() {
   const [savedJobs, setSavedJobs] = useState<any[]>([]);
   const [skillRatings, setSkillRatings] = useState<Record<string, number>>({}); 
 
-  // --- FORM DATA (STRUCTURE PRESERVED) ---
+  // --- FORM DATA ---
   const [formData, setFormData] = useState({
     full_name: '',
     username: '',
@@ -126,7 +126,7 @@ function ProfileContent() {
     experience: [] as { company: string; role: string; year: string; desc: string }[]
   });
 
-  // --- EFFECTS (LOGIC PRESERVED) ---
+  // --- EFFECTS ---
   useEffect(() => {
     getProfile();
   }, []);
@@ -144,7 +144,7 @@ function ProfileContent() {
     }
   }, [activeTab]);
 
-  // --- CORE FUNCTIONS (LOGIC PRESERVED) ---
+  // --- CORE FUNCTIONS ---
   async function getProfile() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push('/login'); return; }
@@ -237,12 +237,25 @@ function ProfileContent() {
     try {
       setUploading(true);
       if (!event.target.files || event.target.files.length === 0) return;
+      
       const file = event.target.files[0];
+      
+      // 🛠️ FIX: Delete old avatar first
+      if (formData.avatar_url) {
+          const oldFileName = formData.avatar_url.split('/').pop(); 
+          if (oldFileName) {
+              await supabase.storage.from('avatars').remove([oldFileName]);
+          }
+      }
+
       const fileName = `${user.id}-${Math.random()}.${file.name.split('.').pop()}`;
       const { error } = await supabase.storage.from('avatars').upload(fileName, file);
+      
       if (error) throw error;
+      
       const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
       setFormData({ ...formData, avatar_url: data.publicUrl });
+      
     } catch (error) {
       alert('Error uploading image!');
     } finally {
@@ -254,10 +267,13 @@ function ProfileContent() {
     try {
         setResumeUploading(true);
         if (!event.target.files || event.target.files.length === 0) return;
+        
         const file = event.target.files[0];
         const fileName = `resume-${user.id}-${Math.random()}.pdf`;
+        
         const { error } = await supabase.storage.from('avatars').upload(fileName, file); 
         if (error) throw error;
+        
         const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
         setFormData({ ...formData, resume_url: data.publicUrl });
     } catch (error) {
@@ -314,12 +330,18 @@ function ProfileContent() {
         experience: formData.experience,
         updated_at: new Date().toISOString(),
     }).eq('id', user.id);
+    
     setSaving(false);
-    if (!error) {
+    if (error) {
+      // 🛠️ FIX: Handle Unique Username Error
+      if (error.code === '23505') { 
+         alert("⚠️ Username already taken! Please choose a different one.");
+      } else {
+         alert(`Error: ${error.message}`);
+      }
+    } else {
       setMsg('Profile Updated Successfully!');
       setTimeout(() => setMsg(''), 3000);
-    } else {
-      alert(`Error: ${error.message}`);
     }
   };
 
@@ -358,7 +380,7 @@ function ProfileContent() {
             </div>
             <div className="flex flex-wrap gap-3">
                 <Link 
-                    href={`/profile/${user.id}`} 
+                    href={`/p/${formData.username}`} 
                     className="
                         group relative overflow-hidden px-6 py-3 bg-white dark:bg-[#151b2d] 
                         border border-slate-200 dark:border-slate-700 rounded-xl 
@@ -482,7 +504,8 @@ function ProfileContent() {
     <PremiumInput 
         label="Date of Birth" 
         type="date"
-        value={formData.birth_date} 
+        // 🛠️ FIX: Proper Date Format for Input
+        value={formData.birth_date ? formData.birth_date.split('T')[0] : ''}
         onChange={(e: any) => setFormData({...formData, birth_date: e.target.value})} 
     />
     <PremiumInput 
@@ -638,6 +661,7 @@ function ProfileContent() {
                             <div className="relative">
                                 <textarea 
                                     rows={6} 
+                                    maxLength={500} // 🛠️ FIX: Added Max Length
                                     value={formData.bio} 
                                     onChange={(e) => setFormData({...formData, bio: e.target.value})} 
                                     className="
@@ -649,8 +673,12 @@ function ProfileContent() {
                                     "
                                     placeholder="I am a passionate developer with 5+ years of experience in..." 
                                 />
-                                <div className="absolute bottom-4 right-4 text-xs font-medium text-slate-400 bg-white/50 dark:bg-black/20 px-2 py-1 rounded-md backdrop-blur">
-                                    {formData.bio.length} chars
+                                {/* 🛠️ FIX: Character Counter Logic */}
+                                <div className={`
+                                    absolute bottom-4 right-4 text-xs font-medium px-2 py-1 rounded-md backdrop-blur
+                                    ${formData.bio.length > 450 ? 'text-red-500 bg-red-100 dark:bg-red-900/30' : 'text-slate-400 bg-white/50 dark:bg-black/20'}
+                                `}>
+                                    {formData.bio.length} / 500
                                 </div>
                             </div>
                         </div>
@@ -786,31 +814,53 @@ function ProfileContent() {
                                 })}
                              </div>
 
-                             {/* CATEGORY SELECTOR (Modern) */}
+                             {/* CATEGORY SELECTOR (Updated with Search & Filter) */}
                              <div className="border-t border-slate-100 dark:border-slate-800 pt-8">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-5">Browse Skills Directory</h4>
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+                                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Browse Skills Directory</h4>
+                                    
+                                    {/* 👇 SEARCH INPUT */}
+                                    <div className="relative group w-full sm:w-auto">
+                                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"/>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Find a category..." 
+                                            value={skillSearch}
+                                            onChange={(e) => setSkillSearch(e.target.value)}
+                                            className="bg-slate-100 dark:bg-[#0F1218] border border-transparent focus:border-indigo-500 text-xs font-medium px-3 pl-9 py-2 rounded-lg outline-none w-full sm:w-48 transition-all"
+                                        />
+                                    </div>
+                                </div>
                                 
                                 <div className="flex flex-wrap gap-2.5 mb-6">
-                                    {Object.entries(CATEGORIES).map(([catName, catData]: [string, any]) => {
-                                        const isActive = openCategory === catName;
-                                        const Icon = catData.icon;
-                                        return (
-                                            <button 
-                                                key={catName}
-                                                onClick={() => setOpenCategory(isActive ? null : catName)}
-                                                className={`
-                                                    flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all border
-                                                    ${isActive 
-                                                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent shadow-lg transform scale-105' 
-                                                        : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:text-indigo-500'
-                                                    }
-                                                `}
-                                            >
-                                                {Icon && <Icon size={14} />} 
-                                                {catName}
-                                            </button>
-                                        );
-                                    })}
+                                    {Object.entries(CATEGORIES)
+                                        // 👇 FILTER LOGIC
+                                        .filter(([catName]) => catName.toLowerCase().includes(skillSearch.toLowerCase()))
+                                        .map(([catName, catData]: [string, any]) => {
+                                            const isActive = openCategory === catName;
+                                            const Icon = catData.icon;
+                                            return (
+                                                <button 
+                                                    key={catName} 
+                                                    onClick={() => setOpenCategory(isActive ? null : catName)}
+                                                    className={`
+                                                        flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all border
+                                                        ${isActive 
+                                                            ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent shadow-lg transform scale-105' 
+                                                            : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:text-indigo-500'
+                                                        }
+                                                    `}
+                                                >
+                                                    {Icon && <Icon size={14} />} 
+                                                    {catName}
+                                                </button>
+                                            );
+                                        })
+                                    }
+                                    {/* Empty State */}
+                                    {Object.entries(CATEGORIES).filter(([catName]) => catName.toLowerCase().includes(skillSearch.toLowerCase())).length === 0 && (
+                                        <p className="text-sm text-slate-400 italic">No categories found matching "{skillSearch}"</p>
+                                    )}
                                 </div>
 
                                 {openCategory && (
@@ -1000,7 +1050,7 @@ function ProfileContent() {
 </div>
                                 ))}
                              </div>
-                         </div>
+                          </div>
                     </div>
                 )}
 

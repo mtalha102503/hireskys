@@ -471,25 +471,36 @@ const handleApply = async () => {
   <div className="flex flex-col w-full md:w-auto">
       {/* Apply Button */}
       {/* 👇 STEP 3: Apply Button Logic */}
+{/* Apply Button */}
 <a 
-    href={isExpired ? '#' : job.link} // Agar expired hai to link block
+    href={isExpired ? '#' : (job.link.includes('@') && !job.link.startsWith('mailto:') ? `mailto:${job.link}` : job.link)} 
     onClick={(e) => {
+      // 1. Agar Job Expired hai to click mat hone do
       if (isExpired) {
-        e.preventDefault(); // Click hone se roko
+        e.preventDefault();
         return;
       }
-      handleApply(); // Agar active hai to purana function chale
+      
+      // 2. Count badhao (Outlook khulne se pehle)
+      handleApply();
     }}
-    target={isExpired ? '_self' : "_blank"} // Expired hai to new tab nahi khulega
+    // Logic: Agar Email hai to same tab (_self), agar Website hai to New Tab (_blank)
+    target={isExpired || job.link.includes('@') ? '_self' : "_blank"} 
     rel="noopener noreferrer" 
     className={`w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] flex items-center justify-center gap-2 transition-all whitespace-nowrap
       ${isExpired 
-        ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" // 🔴 Expired Style (Grey)
-        : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]" // 🟢 Active Style (Blue)
+        ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
+        : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]"
       }`}
 >
-    <span>{isExpired ? "Applications Closed" : "Apply Now"}</span>
-    {!isExpired && <ExternalLink size={18} className="flex-shrink-0" />} 
+    {/* Text Logic: User ko bata do ke ye Email hai */}
+    <span>
+        {isExpired ? "Applications Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}
+    </span>
+    
+    {!isExpired && (
+        job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />
+    )} 
 </a>
 
       {/* 👇 Counter Button ke neeche perfectly align hoga */}
@@ -603,3 +614,4 @@ const handleApply = async () => {
     </div>
   );
 }
+

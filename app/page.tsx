@@ -39,6 +39,7 @@ type Job = {
   date_posted: string;
   is_verified: boolean;
   approved: boolean;
+  active: boolean;
   tags?: string[];
   platform?: string;
   job_type?: string;
@@ -689,21 +690,33 @@ function handleClickOutside(event: any) {
   }, []);
 
   useEffect(() => {
-    const channel = supabase
-      .channel('realtime-jobs-count')
-      .on(
+    const channel = supabase
+      .channel('realtime-jobs-count')
+      
+      // 1. Agar nayi job aayi (INSERT) -> Count +1
+      .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'jobs', filter: 'approved=eq.true' },
+        { event: 'UPDATE', schema: 'public', table: 'jobs' },
         (payload) => {
-          setTotalCount((prevCount) => prevCount + 1);
+          const newJob = payload.new;
+          const oldJob = payload.old; // Ab purana data bhi milega
+
+          // ✅ PERFECT LOGIC:
+          // Sirf tab count kam karo jab job PEHLE Active thi aur AB Inactive hui hai.
+          if (oldJob.active === true && newJob.active === false) {
+            setTotalCount((prevCount) => Math.max(0, prevCount - 1)); 
+            
+            // Job list se bhi hata do (Smooth animation ke liye)
+            setJobs((prevJobs) => prevJobs.filter((job) => job.id !== newJob.id));
+          }
         }
       )
-      .subscribe();
+      .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []); 
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []); 
     
   useEffect(() => {
     if (currentUser) {
@@ -860,7 +873,7 @@ function handleClickOutside(event: any) {
         query = query.ilike('location', `%${filterCountry}%`); 
     }
 
-    query = query.eq('approved', true).range(from, to);
+    query = query.eq('approved', true).eq('active', true).range(from, to);
 
     if (activeCategory !== 'All') {
       query = query.ilike('category', `%${activeCategory}%`);

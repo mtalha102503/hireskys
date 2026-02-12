@@ -206,7 +206,7 @@ const handleApply = async () => {
     // --- 2. COUNT INCREMENT (Ye ab sirf tab chalega agar User naya hai ya Guest hai) ---
     
     // UI Update (Foran number badha do)
-    setApplyCount(prev => prev + 1);
+    setApplyCount((prev: number) => prev + 1);
 
     // Database Counter Update
     const { error: countError } = await supabase

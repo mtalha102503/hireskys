@@ -22,7 +22,7 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [user, setUser] = useState<any>(null);
   const [relatedJobs, setRelatedJobs] = useState<any[]>([]); 
   const [companyDetails, setCompanyDetails] = useState<any>(null);
-const [applyCount, setApplyCount] = useState<number>(initialJob?.application_count || 0);
+const [applyCount, setApplyCount] = useState(job.application_count || 0);
   useEffect(() => {
     fetchJobDetails();
   }, []);
@@ -206,7 +206,7 @@ const handleApply = async () => {
     // --- 2. COUNT INCREMENT (Ye ab sirf tab chalega agar User naya hai ya Guest hai) ---
     
     // UI Update (Foran number badha do)
-    setApplyCount((prev: number) => prev + 1);
+    setApplyCount(prev => prev + 1);
 
     // Database Counter Update
     const { error: countError } = await supabase
@@ -349,6 +349,10 @@ const handleApply = async () => {
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0B0F19] text-slate-500">Loading details...</div>;
   if (!job) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0B0F19] text-slate-500">Job not found.</div>;
 
+  const jobDate = new Date(job.date_posted); // Tumhare code mein 'date_posted' use ho raha hai
+  const today = new Date();
+  const diffDays = Math.ceil(Math.abs(today.getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
+  const isExpired = diffDays > 60;
   const sourceStyle = getSourceStyle(job.source);
 
   return (
@@ -376,7 +380,17 @@ const handleApply = async () => {
                             <Clock size={14}/> {getRelativeTime(job.date_posted)}
                         </span>
                     </div>
-
+                    {isExpired && (
+  <div className="mb-6 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
+       <Briefcase size={18} className="text-red-600 dark:text-red-400" />
+    </div>
+    <div>
+      <strong className="font-bold block">Applications Closed</strong>
+      <span className="text-sm opacity-90">This job is no longer accepting applications.</span>
+    </div>
+  </div>
+)}     
                     <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight break-words">{job.title}</h1>
                     
                     <div className="flex flex-wrap gap-4 text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -456,16 +470,26 @@ const handleApply = async () => {
   {/* 2. Apply Button & Counter (Right Side) */}
   <div className="flex flex-col w-full md:w-auto">
       {/* Apply Button */}
-      <a 
-    href={job.link} 
-    onClick={handleApply}
-    target="_blank" 
+      {/* 👇 STEP 3: Apply Button Logic */}
+<a 
+    href={isExpired ? '#' : job.link} // Agar expired hai to link block
+    onClick={(e) => {
+      if (isExpired) {
+        e.preventDefault(); // Click hone se roko
+        return;
+      }
+      handleApply(); // Agar active hai to purana function chale
+    }}
+    target={isExpired ? '_self' : "_blank"} // Expired hai to new tab nahi khulega
     rel="noopener noreferrer" 
-    // "w-full md:w-auto" ki jagah "w-fit" use karein aur padding "px-6" kar dein
-    className="w-fit md:w-auto px-6 h-[54px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
+    className={`w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] flex items-center justify-center gap-2 transition-all whitespace-nowrap
+      ${isExpired 
+        ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" // 🔴 Expired Style (Grey)
+        : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]" // 🟢 Active Style (Blue)
+      }`}
 >
-    <span>Apply Now</span>
-    <ExternalLink size={18} className="flex-shrink-0" /> {/* flex-shrink-0 icon ko dabne nahi dega */}
+    <span>{isExpired ? "Applications Closed" : "Apply Now"}</span>
+    {!isExpired && <ExternalLink size={18} className="flex-shrink-0" />} 
 </a>
 
       {/* 👇 Counter Button ke neeche perfectly align hoga */}
@@ -579,5 +603,3 @@ const handleApply = async () => {
     </div>
   );
 }
-
-

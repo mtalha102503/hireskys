@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Sparkles, Loader2, Bot, X, Zap, Cpu } from 'lucide-react';
 
-export default function MagicButton({ jobDescription, jobTitle }: any) {
+export default function MagicButton({ jobDescription, jobTitle, userProfile }: any) {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +18,13 @@ export default function MagicButton({ jobDescription, jobTitle }: any) {
       const [res, _] = await Promise.all([
         fetch('/api/ai-summary', {
           method: 'POST',
-          body: JSON.stringify({ jobDescription, jobTitle }),
+          body: JSON.stringify({ 
+  jobDescription, 
+  jobTitle,
+  // 👇 Ye 2 cheezein nayi hain (Plan B)
+  userProfile, 
+  userStatus: userProfile ? "FULL" : "GUEST" 
+}),
         }),
         new Promise(resolve => setTimeout(resolve, 300)) 
       ]);

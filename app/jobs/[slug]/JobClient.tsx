@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams, useRouter } from 'next/navigation';
-import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori
+import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
 import Navbar from '@/components/Navbar';
 import ReportJob from '@/components/ReportJob';
 import MagicButton from '@/components/MagicButton';
@@ -24,6 +24,7 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [user, setUser] = useState<any>(null);
   const [relatedJobs, setRelatedJobs] = useState<any[]>([]); 
   const [companyDetails, setCompanyDetails] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
 const [applyCount, setApplyCount] = useState(job.application_count || 0);
   useEffect(() => {
     fetchJobDetails();
@@ -42,7 +43,15 @@ const [applyCount, setApplyCount] = useState(job.application_count || 0);
   async function fetchJobDetails() {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
-
+if (user) {
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, bio, skills, projects, experience')
+            .eq('id', user.id)
+            .maybeSingle();
+            
+        if (profile) setUserProfile(profile);
+    }
     // 👇 URL se ID nikalo (slug ka last part)
     // Example: "senior-react-dev-692" -> "692"
     const slug = params.slug as string; 
@@ -208,7 +217,7 @@ const handleApply = async () => {
     // --- 2. COUNT INCREMENT (Ye ab sirf tab chalega agar User naya hai ya Guest hai) ---
     
     // UI Update (Foran number badha do)
-setApplyCount((prev: number) => prev + 1);
+    setApplyCount((prev: number) => prev + 1);
 
     // Database Counter Update
     const { error: countError } = await supabase
@@ -532,7 +541,11 @@ setApplyCount((prev: number) => prev + 1);
             </h2>
             
             {/* 🔥🔥🔥 AI BUTTON YAHAN LAGA DIYA 🔥🔥🔥 */}
-            <MagicButton jobDescription={job.description} jobTitle={job.title} />
+            <MagicButton 
+    jobDescription={job.description} 
+    jobTitle={job.title} 
+    userProfile={userProfile} // 👈 Ye naya prop add karo
+/>
 
             {/* 👇 Original Description Text */}
             <div 
@@ -652,4 +665,3 @@ setApplyCount((prev: number) => prev + 1);
     </div>
   );
 }
-

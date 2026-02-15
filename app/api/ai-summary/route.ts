@@ -17,49 +17,48 @@ export async function POST(req: Request) {
     // 1. User Session Check
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    console.log("🔍 API Check - User ID:", user?.id); // Debugging ke liye
+    // 🕵️‍♂️ DEBUG: User ID print karo terminal me
+    console.log("🔍 API User Check:", user ? `Found (${user.id})` : "No User");
 
     let userProfile: any = null;
     let userStatus = "GUEST"; // Default
 
-    // 2. Fetch Profile (Fixed Logic)
+    // 2. Fetch Profile
     if (user) {
-      // Step A: Maan lo ke banda login hai, par data shayed khali ho
-      userStatus = "EMPTY"; 
+      userStatus = "EMPTY"; // Login hai, assume empty first
 
-      // Step B: Database se data mangwao (Sahi columns ke saath)
-      // Note: Maine 'username' hata kar 'full_name' daal diya hai jo tumhari DB me hai
+      // 👇 IMPORTANT: 'maybeSingle' use karo taake error na phate agar row na mile
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('full_name, bio, skills, projects, experience') 
         .eq('id', user.id)
-        .single();
+        .maybeSingle(); 
       
       if (profileError) {
-          console.error("⚠️ Profile Fetch Error:", profileError.message);
+          console.error("⚠️ Database Error:", profileError.message);
       }
 
       if (profile) {
         userProfile = profile;
-        console.log("✅ Profile Found for:", profile.full_name);
+        console.log("✅ Profile Loaded:", profile.full_name);
 
-        // Check karo ke data kitna bhara hua hai
+        // Data Validation Logic
         const hasBio = profile.bio && profile.bio.length > 5;
-        // Tumhare screenshot me projects [] empty array hai, isliye length check zaroori hai
-        const hasProjects = profile.projects && Array.isArray(profile.projects) && profile.projects.length > 0;
-        const hasSkills = profile.skills && Array.isArray(profile.skills) && profile.skills.length > 0;
+        // Screenshot me projects/skills text array ya jsonb ho skte hain. Array check safe hai.
+        const hasProjects = profile.projects && (Array.isArray(profile.projects) ? profile.projects.length > 0 : Object.keys(profile.projects || {}).length > 0);
+        const hasSkills = profile.skills && (Array.isArray(profile.skills) ? profile.skills.length > 0 : JSON.stringify(profile.skills).length > 2);
 
         if (hasBio && hasProjects && hasSkills) {
           userStatus = "FULL";
         } else if (hasProjects || hasSkills || hasBio) {
           userStatus = "PARTIAL";
-        } else {
-          userStatus = "EMPTY";
         }
+      } else {
+         console.warn("⚠️ User logged in but NO PROFILE ROW found in DB");
       }
     }
 
-    console.log("📊 Sending to AI as:", userStatus);
+    console.log("📊 Final AI Context Status:", userStatus);
 
     // 3. THE SUPER TRAINED PROMPT 🧠🔥
     const systemPrompt = `
@@ -111,11 +110,10 @@ export async function POST(req: Request) {
       temperature: 0.5,
     });
 
-
     return NextResponse.json({ analysis: completion.choices[0].message.content });
 
   } catch (error: any) {
-    console.error("❌ AI Error:", error);
-    return NextResponse.json({ error: 'AI Error: ' + error.message }, { status: 500 });
+    console.error("❌ Critical AI Error:", error);
+    return NextResponse.json({ error: 'AI Brain Freeze: ' + error.message }, { status: 500 });
   }
 }

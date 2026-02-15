@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams, useRouter } from 'next/navigation';
-import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
+import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori
 import Navbar from '@/components/Navbar';
 import ReportJob from '@/components/ReportJob';
 import MagicButton from '@/components/MagicButton';
@@ -652,3 +652,4 @@ setApplyCount((prev: number) => prev + 1);
     </div>
   );
 }
+

@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
 
+
 const JOBS_PER_PAGE = 80;
 
 // --- PLATFORM ICONS ---
@@ -392,7 +393,7 @@ const extractCountry = (locationString: string) => {
 };
 export default function Home() {
   const router = useRouter();
-  
+
   // SEO Schema
   const websiteSchema = {
     "@context": "https://schema.org",
@@ -648,7 +649,9 @@ const COUNTRIES = [
   const subTagsRef = useRef<HTMLDivElement>(null);
   const [filterCountry, setFilterCountry] = useState("");
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  
+   const hyrizonUrl = searchQuery.trim() 
+    ? `/hyrizon?q=${encodeURIComponent(searchQuery)}` 
+    : '/hyrizon';
   // 🏢 COMPANY LOGOS STATE
   const [companyLogos, setCompanyLogos] = useState<Record<string, string>>({});
 
@@ -1057,23 +1060,19 @@ const COUNTRIES = [
                   />
 
                   {/* --- 🔥 NEW: HYRIZON AI BUTTON (Google Style) --- */}
-                  {/* --- ✨ ULTRA-PREMIUM HYRIZON AI BUTTON (Spinning Border) ✨ --- */}
+                  {/* --- ✨ HYRIZON AI BUTTON (With Blue Loading Bar Fix) ✨ --- */}
 <div className="hidden sm:flex items-center pl-2 pr-2 relative z-20">
-    <button
-        type="button"
-        onClick={handleAISearch}
-        // Button Outer Container (Responsible for the glowing border shape)
+    <Link
+        href={hyrizonUrl} // 👈 Ab ye router.push ki jagah Link use kar raha hai
         className="group relative p-[1.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
         title="Ask Hyrizon AI"
     >
-        {/* 🔥 THE SPINNING GRADIENT ANIMATION (The Magic) 🔥 */}
-        {/* Ye element button ke peeche bohot tez ghoom rha hai */}
+        {/* 🔥 SPINNING ANIMATION (Same as before) */}
         <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7c3aed_0%,#d946ef_50%,#06b6d4_100%)]" />
 
-        {/* 🌑 THE SOLID INNER BUTTON (Covers the center of the spin) */}
+        {/* 🌑 INNER CONTENT */}
         <div className="relative flex items-center gap-2 px-3 py-2 rounded-[10px] z-10 bg-white dark:bg-[#151b2d] transition-colors group-hover:bg-violet-50 dark:group-hover:bg-[#1e2538]">
             
-            {/* Icon Container with subtle pulse */}
             <div className="relative">
                 <Sparkles 
                     size={16} 
@@ -1091,9 +1090,8 @@ const COUNTRIES = [
                 </span>
             </div>
         </div>
-    </button>
+    </Link>
 </div>
-
                   {/* Mobile Only AI Button (Small Icon) */}
                   <button 
                     type="button"

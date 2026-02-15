@@ -61,6 +61,7 @@ export default function Footer() {
             <h3 className="font-bold text-slate-900 dark:text-white mb-4">Resources</h3>
             <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
               <li><Link href="/success-stories" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Success Stories</Link></li>
+              <li><Link href="/blog" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Blog</Link></li>
               <li><Link href="/career-advice" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Career Advice</Link></li>
               <li><Link href="/salary-guide" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Salary Guide</Link></li>
               <li><Link href="/support" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Help & Support</Link></li>
@@ -96,4 +97,5 @@ export default function Footer() {
     </footer>
   );
 }
+
 

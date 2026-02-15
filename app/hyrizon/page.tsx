@@ -1,23 +1,21 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+
+// 1. Suspense ko yahan import kiya hai
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ReactMarkdown from 'react-markdown';
 import { Send, Bot, Sparkles, User, ArrowLeft, Globe, Loader2, ExternalLink, ArrowRight } from 'lucide-react';
 
-// Imports ke foran baad ye paste karo
 const markdownComponents = {
-  // Agar wo Link hai to usay tod do (break-all)
   a: (props: any) => (
     <a {...props} target="_blank" className="text-violet-500 underline break-all" />
   ),
-  // Agar wo simple Text/Paragraph hai to words tod do
   p: (props: any) => (
     <p {...props} className="break-words" />
   )
 };
 
-// --- 🖼️ SOURCE CARD COMPONENT ---
 const SourceCard = ({ src }: { src: { title: string; url: string } }) => {
   const getDomain = (url: string) => {
     try {
@@ -62,7 +60,6 @@ const SourceCard = ({ src }: { src: { title: string; url: string } }) => {
   );
 };
 
-// --- ✨ TYPEWRITER COMPONENT ---
 const Typewriter = ({ content }: { content: string }) => {
   const [displayedContent, setDisplayedContent] = useState('');
   
@@ -80,7 +77,8 @@ const Typewriter = ({ content }: { content: string }) => {
   return <ReactMarkdown components={markdownComponents}>{displayedContent}</ReactMarkdown>;
 };
 
-export default function HyrizonPage() {
+// 2. Main Logic ko ek alag component 'HyrizonContent' bana diya
+function HyrizonContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get('q');
@@ -90,7 +88,6 @@ export default function HyrizonPage() {
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // --- 💡 QUICK SUGGESTIONS DATA ---
   const suggestions = [
     "💰 Python Developer Salary Trends 2026",
     "🌍 Find Remote React Jobs in USA",
@@ -104,7 +101,6 @@ export default function HyrizonPage() {
     }
   }, [initialQuery]);
 
-  // 🔥 FIX: Sirf tab scroll karega jab messages honge ya loading ho raha hoga
   useEffect(() => {
     if (messages.length > 0 || loading) {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -162,7 +158,7 @@ export default function HyrizonPage() {
 
       <Navbar />
 
-      {/* --- ✨ MODIFIED PREMIUM HEADER START ✨ --- */}
+      {/* Header */}
       <div className="pt-24 pb-2 px-4 sticky top-0 z-30 pointer-events-none">
         <div className="max-w-4xl mx-auto flex items-center justify-between pointer-events-auto">
             <button 
@@ -180,7 +176,6 @@ export default function HyrizonPage() {
             <div className="hidden sm:block"></div>
         </div>
       </div>
-      {/* --- ✨ HEADER END ✨ --- */}
 
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar relative z-10 scroll-smooth">
@@ -205,7 +200,6 @@ export default function HyrizonPage() {
                         </p>
                     </div>
 
-                    {/* 🔥 QUICK STARTERS GRID */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto pt-4 px-2">
                         {suggestions.map((suggestion, idx) => (
                             <button 
@@ -312,7 +306,6 @@ export default function HyrizonPage() {
                 </button>
             </div>
             
-            {/* 🛑 DISCLAIMER FOOTER ADDED HERE */}
             <p className="text-center text-[10px] text-slate-400 dark:text-slate-600 mt-3 font-medium select-none">
                 Hyrizon can make mistakes. Please verify important information.
             </p>
@@ -320,5 +313,18 @@ export default function HyrizonPage() {
       </div>
 
     </div>
+  );
+}
+
+// 3. Main Export ko Wrapper bana diya jo Suspense provide karega
+export default function HyrizonPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-[#0B0F19]">
+        <Loader2 className="w-10 h-10 text-violet-600 animate-spin" />
+      </div>
+    }>
+      <HyrizonContent />
+    </Suspense>
   );
 }

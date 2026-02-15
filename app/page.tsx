@@ -672,7 +672,7 @@ const COUNTRIES = [
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(event) {
+    function handleClickOutside(event: any) {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
             setShowJobTypeDropdown(false);
             setShowDateDropdown(false);

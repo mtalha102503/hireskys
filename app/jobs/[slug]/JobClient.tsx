@@ -5,10 +5,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
 import Navbar from '@/components/Navbar';
 import ReportJob from '@/components/ReportJob';
+import MagicButton from '@/components/MagicButton';
+import VerifyMagicButton from '@/components/VerifyMagicButton';
 import Link from 'next/link';
 import { 
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
-  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck
+  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck,ScanSearch
 } from 'lucide-react';
 
 export default function JobClient({ initialJob }: { initialJob: any }) { 
@@ -206,7 +208,7 @@ const handleApply = async () => {
     // --- 2. COUNT INCREMENT (Ye ab sirf tab chalega agar User naya hai ya Guest hai) ---
     
     // UI Update (Foran number badha do)
-    setApplyCount((prev: number) => prev + 1);
+setApplyCount((prev: number) => prev + 1);
 
     // Database Counter Update
     const { error: countError } = await supabase
@@ -394,8 +396,9 @@ const handleApply = async () => {
                     <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight break-words">{job.title}</h1>
                     
                     <div className="flex flex-wrap gap-4 text-sm font-medium text-slate-500 dark:text-slate-400">
-                        {/* 👇 UPDATED HEADER: Asli Logo aur Link ke sath */}
+                        
                         {(job.company || companyDetails) && (
+                            <> {/* 👈 Ye add karna zaroori hai agar error aye */}
                             <Link 
                                 href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`}
                                 className="flex items-center gap-2 group/company transition-all"
@@ -416,6 +419,12 @@ const handleApply = async () => {
                                 </span>
                                 <ExternalLink size={12} className="opacity-0 group-hover/company:opacity-100 transition-opacity text-indigo-500"/>
                             </Link>
+                           <div className="md:hidden ml-2">
+    <VerifyMagicButton 
+        companyName={job.company || companyDetails?.name || job.source || "the company"} 
+    />
+</div>
+        </>
                         )}
 
                         {job.location && (
@@ -483,6 +492,7 @@ const handleApply = async () => {
       
       // 2. Count badhao (Outlook khulne se pehle)
       handleApply();
+      
     }}
     // Logic: Agar Email hai to same tab (_self), agar Website hai to New Tab (_blank)
     target={isExpired || job.link.includes('@') ? '_self' : "_blank"} 
@@ -513,17 +523,25 @@ const handleApply = async () => {
         </div>
       </div> 
       <div className="container mx-auto max-w-5xl px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-                <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-indigo-500"/> Job Description</h2>
-                    
-                    <div 
-    className="job-content prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white"
-    dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
-/>
-                </div>
-                
-                <ReportJob jobId={job.id} />
+    <div className="lg:col-span-2 space-y-8">
+        <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            
+            {/* 👇 Description Heading */}
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                <Briefcase className="text-indigo-500"/> Job Description
+            </h2>
+            
+            {/* 🔥🔥🔥 AI BUTTON YAHAN LAGA DIYA 🔥🔥🔥 */}
+            <MagicButton jobDescription={job.description} jobTitle={job.title} />
+
+            {/* 👇 Original Description Text */}
+            <div 
+                className="job-content prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white mt-6"
+                dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
+            />
+        </div>
+        
+        <ReportJob jobId={job.id} />
                 
                 {/* 🌟 RELATED JOBS SECTION */}
                 {relatedJobs.length > 0 && (
@@ -600,7 +618,27 @@ const handleApply = async () => {
                         </p>
                     </div>
                 )}
-                
+                {/* 👇 DESKTOP VERIFY CARD (Only shows on desktop) */}
+<div className="hidden md:block p-4 rounded-2xl bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-[#151b2d] dark:to-[#1e2433] border border-violet-100 dark:border-white/5 mb-6">
+    <div className="flex items-start gap-3">
+        <div className="p-2 bg-white dark:bg-white/5 rounded-lg shadow-sm text-violet-600 dark:text-violet-400">
+            <ShieldCheck size={20} />
+        </div>
+        <div className="flex-1">
+    <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+        Is this company safe?
+    </h3>
+    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">
+        Ask Hyrizon AI to scan {job.company || 'this company'} for potential red flags.
+    </p>
+    
+    {/* ✨ UPDATED DESKTOP BUTTON (Same Neon Look) */}
+    <VerifyMagicButton 
+    companyName={job.company || companyDetails?.name || job.source || "the company"} 
+/>
+</div>
+    </div>
+</div>
                 <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <h3 className="font-bold mb-4 text-sm uppercase text-slate-400 tracking-wider">Safety First</h3>
                     <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
@@ -614,4 +652,3 @@ const handleApply = async () => {
     </div>
   );
 }
-

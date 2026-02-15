@@ -1327,7 +1327,7 @@ const COUNTRIES = [
                          
                          {activeCategory !== 'All' && (
                             <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 w-full relative z-10">
-                                {CATEGORIES[activeCategory].sub.map((tag) => (
+                                {(CATEGORIES as any)[activeCategory].sub.map((tag: any) => (
                                     <motion.button key={tag} whileHover={{ scale: 1.05 }} onClick={() => setActiveSubTag(activeSubTag === tag ? '' : tag)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}>
                                         {tag}
                                     </motion.button>
@@ -1776,7 +1776,7 @@ const COUNTRIES = [
                               animate={{ opacity: 1, y: 0 }}
                               className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10"
                           >
-                              {CATEGORIES[activeCategory].sub.map((tag) => (
+                              {(CATEGORIES as any)[activeCategory].sub.map((tag: any) => (
                                   <motion.button 
                                       key={tag} 
                                       whileHover={{ scale: 1.05 }}

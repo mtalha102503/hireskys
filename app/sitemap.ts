@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import { createSlug } from '@/lib/utils'; 
 import { CATEGORIES } from '@/lib/categories'; 
-
+import { BLOG_POSTS } from '@/lib/blogData';
 // 🛠️ CONFIGURATION
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ"; 
@@ -33,6 +33,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${BASE_URL}/cookie-policy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${BASE_URL}/hyrizon`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
   ];
 
   // ==========================================
@@ -118,13 +120,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
   }
-
+// ==========================================
+  // 6️⃣ DYNAMIC BLOG POSTS (Ye Naya Code Hai)
+  // ==========================================
+  const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly', 
+    priority: 0.8, 
+  }));
   // 🔥 MERGE EVERYTHING (companyRoutes ko end mein add kiya)
+  // 🔥 MERGE EVERYTHING
   return [
     ...staticRoutes, 
     ...articleRoutes, 
     ...categoryRoutes, 
     ...jobRoutes, 
-    ...companyRoutes // 👈 Added here
+    ...companyRoutes,
+    ...blogRoutes // 👈 Ye line add karni hai
   ];
 }

@@ -673,12 +673,13 @@ const COUNTRIES = [
 
   useEffect(() => {
     function handleClickOutside(event: any) {
-        if (dropdownRef.current && !(dropdownRef.current as any).contains(event.target)) { {
-            setShowJobTypeDropdown(false);
-            setShowDateDropdown(false);
-            setShowCountryDropdown(false); 
-        }
+      if (dropdownRef.current && !(dropdownRef.current as any).contains(event.target)) {
+        setShowJobTypeDropdown(false);
+        setShowDateDropdown(false);
+        setShowCountryDropdown(false);
+      }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);

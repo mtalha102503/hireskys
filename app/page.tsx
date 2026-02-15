@@ -688,8 +688,71 @@ const COUNTRIES = [
   }, []);
 
   useEffect(() => {
-    checkUser();
     fetchJobs();
+  }, []);
+  useEffect(() => {
+    // 🧠 Profile Fetcher: Agar data na mile to 3 baar try karega
+    const fetchProfile = async (userId: string, retryCount = 0) => {
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single();
+            
+            if (data) {
+                setUserProfile(data);
+            } else if (retryCount < 3) {
+                // ⏳ Agar DB slow hai, to 1 sec baad dobara try karo (Magic Fix)
+                console.log(`Profile syncing... Attempt ${retryCount + 1}`);
+                setTimeout(() => fetchProfile(userId, retryCount + 1), 1000);
+            }
+        } catch (error) {
+            console.error("Profile error:", error);
+        }
+    };
+
+    // 🚀 Session Setup & Listener
+    const setupAuth = async () => {
+        // A. Page Load Check
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+            setCurrentUser(session.user);
+            fetchProfile(session.user.id);
+        } else {
+            // Popup logic for new users
+            setTimeout(() => {
+                if (!sessionStorage.getItem('popup_seen')) {
+                    setShowPopup(true);
+                    sessionStorage.setItem('popup_seen', 'true');
+                }
+            }, 5000);
+        }
+
+        // B. Real-time Listener (Login/Logout detect karega)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                setCurrentUser(session.user);
+                // 🔥 Login hote hi profile dhoondo
+                fetchProfile(session.user.id); 
+            } else {
+                // Logout hote hi sab safaya
+                setCurrentUser(null);
+                setUserProfile(null);
+                setSavedJobIds([]); 
+            }
+            router.refresh(); // UI ko taaza karo
+        });
+
+        return subscription;
+    };
+
+    let authSub: any;
+    setupAuth().then(sub => authSub = sub);
+
+    return () => {
+        if (authSub) authSub.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -776,32 +839,6 @@ const COUNTRIES = [
     };
     ensureProfileComplete();
   }, []);
-
-  async function checkUser() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-        setCurrentUser(session.user);
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-            
-        if (profile) setUserProfile(profile);
-    } else {
-        setTimeout(() => {
-            const hasSeenPopup = sessionStorage.getItem('popup_seen');
-            if (!hasSeenPopup) {
-                setShowPopup(true);
-                sessionStorage.setItem('popup_seen', 'true');
-            }
-        }, 10000);
-    }
-    
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user ?? null);
-    });
-  }
 
   const handleManualSearch = (e: React.FormEvent) => {
       e.preventDefault();

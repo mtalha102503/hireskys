@@ -622,7 +622,7 @@ const COUNTRIES = [
 ]
   const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
   const [showDateDropdown, setShowDateDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -672,14 +672,13 @@ const COUNTRIES = [
   }, []);
 
   useEffect(() => {
-function handleClickOutside(event: any) {
-    // 'as Node' add kar diya hai taake Typescript confuse na ho
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowJobTypeDropdown(false);
-        setShowDateDropdown(false);
-        setShowCountryDropdown(false);
+    function handleClickOutside(event) {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setShowJobTypeDropdown(false);
+            setShowDateDropdown(false);
+            setShowCountryDropdown(false); 
+        }
     }
-}
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -716,7 +715,7 @@ function handleClickOutside(event: any) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []); 
+  }, []);
     
   useEffect(() => {
     if (currentUser) {
@@ -808,7 +807,15 @@ function handleClickOutside(event: any) {
           fetchJobs();
       }
   }
-
+// 👇 Ye naya function add karo
+  const handleAISearch = () => {
+    // Agar user ne kuch likha hai, to wo query saath le jao
+    if (searchQuery.trim()) {
+        router.push(`/hyrizon?q=${encodeURIComponent(searchQuery)}`);
+    } else {
+        router.push('/hyrizon'); // Khali page kholo
+    }
+  };
   async function fetchSavedJobs() {
       if (!currentUser) return;
       const { data } = await supabase.from('saved_jobs').select('job_id').eq('user_id', currentUser.id);
@@ -915,7 +922,7 @@ function handleClickOutside(event: any) {
         } else {
             setJobs(prev => {
                 const existingIds = new Set(prev.map(job => job.id));
-                const uniqueNewJobs = data.filter((job: any) => !existingIds.has(job.id));
+                const uniqueNewJobs = data.filter(job => !existingIds.has(job.id));
                 return [...prev, ...uniqueNewJobs];
             });
         }
@@ -1030,21 +1037,77 @@ function handleClickOutside(event: any) {
                 </div>
 
                 <div className="max-w-5xl mx-auto w-full mt-10 space-y-8 relative z-40">
-                    <form onSubmit={(e) => { e.preventDefault(); fetchJobs(); }} className="relative flex items-center bg-white dark:bg-[#151b2d] p-2 rounded-full border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all shadow-lg shadow-indigo-500/5 z-10">
-                        <div className="pl-4 text-slate-400">
-                            <Search size={22} />
-                        </div>
-                        <input 
-                            type="text" 
-                            placeholder="Search by job title, skill, or keyword..." 
-                            className="flex-1 h-12 pl-3 pr-4 bg-transparent outline-none text-lg text-slate-900 dark:text-white placeholder:text-slate-400 min-w-0" 
-                            value={searchQuery} 
-                            onChange={(e) => setSearchQuery(e.target.value)} 
-                        />
-                        <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-bold transition shadow-md flex-shrink-0">
-                            Search
-                        </button>
-                    </form>
+                    {/* --- SEARCH BAR WITH HYRIZON AI --- */}
+              <form onSubmit={handleManualSearch} className="relative group flex items-center bg-white dark:bg-[#151b2d] p-1.5 md:p-2 rounded-full shadow-2xl shadow-indigo-500/10 border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 transition-all transform md:hover:scale-[1.01]">
+                  
+                  {/* Left Icon (Briefcase/Users) */}
+                  <div className="pl-3 pr-2 border-r border-slate-200 dark:border-slate-700 text-slate-400 flex items-center gap-2">
+                      {searchType === 'jobs' ? <Briefcase size={18} /> : <Users size={18} />}
+                      <span className="text-sm font-medium hidden sm:block capitalize">{searchType}</span>
+                  </div>
+
+                  {/* Input Field */}
+                  <input 
+                      type="text" 
+                      placeholder={searchType === 'jobs' ? "Search roles (e.g. React Developer)..." : "Search talent..."} 
+                      className="flex-1 h-10 md:h-12 pl-3 pr-2 bg-transparent outline-none text-base md:text-lg text-slate-800 dark:text-white placeholder:text-slate-400 min-w-0"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+
+                  {/* --- 🔥 NEW: HYRIZON AI BUTTON (Google Style) --- */}
+                  {/* --- ✨ ULTRA-PREMIUM HYRIZON AI BUTTON (Spinning Border) ✨ --- */}
+<div className="hidden sm:flex items-center pl-2 pr-2 relative z-20">
+    <button
+        type="button"
+        onClick={handleAISearch}
+        // Button Outer Container (Responsible for the glowing border shape)
+        className="group relative p-[1.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+        title="Ask Hyrizon AI"
+    >
+        {/* 🔥 THE SPINNING GRADIENT ANIMATION (The Magic) 🔥 */}
+        {/* Ye element button ke peeche bohot tez ghoom rha hai */}
+        <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7c3aed_0%,#d946ef_50%,#06b6d4_100%)]" />
+
+        {/* 🌑 THE SOLID INNER BUTTON (Covers the center of the spin) */}
+        <div className="relative flex items-center gap-2 px-3 py-2 rounded-[10px] z-10 bg-white dark:bg-[#151b2d] transition-colors group-hover:bg-violet-50 dark:group-hover:bg-[#1e2538]">
+            
+            {/* Icon Container with subtle pulse */}
+            <div className="relative">
+                <Sparkles 
+                    size={16} 
+                    className="text-violet-600 dark:text-violet-300 relative z-10" 
+                />
+                 <div className="absolute inset-0 bg-violet-400/30 dark:bg-violet-400/20 rounded-full blur-md animate-pulse z-0"></div>
+            </div>
+            
+            <div className="flex flex-col items-start leading-none">
+                <span className="text-[9px] font-extrabold uppercase bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400 mb-0.5">
+                    HYRIZON
+                </span>
+                <span className="text-xs font-black tracking-wide text-slate-800 dark:text-white">
+                    Ask AI
+                </span>
+            </div>
+        </div>
+    </button>
+</div>
+
+                  {/* Mobile Only AI Button (Small Icon) */}
+                  <button 
+                    type="button"
+                    onClick={handleAISearch}
+                    className="sm:hidden mr-2 p-2 text-violet-500 bg-violet-50 dark:bg-violet-900/20 rounded-full"
+                  >
+                    <Sparkles size={18} />
+                  </button>
+
+                  {/* Main Search Button */}
+                  <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 md:px-8 md:py-3 rounded-full font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-500/20 flex-shrink-0">
+                      <Search size={18} className="md:w-5 md:h-5" />
+                      <span className="hidden md:inline">Search</span>
+                  </button>
+              </form>
 
                     <div ref={dropdownRef} className="mt-6 md:mt-8 relative z-50">
                         <div className="grid grid-cols-2 md:flex md:justify-center md:items-center gap-3">
@@ -1073,7 +1136,7 @@ function handleClickOutside(event: any) {
                                             transition={{ duration: 0.2 }}
                                             className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1 min-w-[200px]"
                                         >
-                                            {["Full-time", "Contract", "Part-time", "Freelance", "Internship"].map((type) => (
+                                            {["Full-time", "Contract", "Part-time"].map((type) => (
                                                 <button
                                                     key={type}
                                                     onClick={() => { setFilterJobType(type); setShowJobTypeDropdown(false); }}
@@ -1263,7 +1326,7 @@ function handleClickOutside(event: any) {
                          
                          {activeCategory !== 'All' && (
                             <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 w-full relative z-10">
-                                {(CATEGORIES as any)[activeCategory]?.sub.map((tag: any) => (
+                                {CATEGORIES[activeCategory].sub.map((tag) => (
                                     <motion.button key={tag} whileHover={{ scale: 1.05 }} onClick={() => setActiveSubTag(activeSubTag === tag ? '' : tag)} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}>
                                         {tag}
                                     </motion.button>
@@ -1377,11 +1440,16 @@ function handleClickOutside(event: any) {
               </div>
 
               {/* Input */}
+              {/* --- SEARCH BAR WITH HYRIZON AI --- */}
               <form onSubmit={handleManualSearch} className="relative group flex items-center bg-white dark:bg-[#151b2d] p-1.5 md:p-2 rounded-full shadow-2xl shadow-indigo-500/10 border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 transition-all transform md:hover:scale-[1.01]">
+                  
+                  {/* Left Icon (Briefcase/Users) */}
                   <div className="pl-3 pr-2 border-r border-slate-200 dark:border-slate-700 text-slate-400 flex items-center gap-2">
                       {searchType === 'jobs' ? <Briefcase size={18} /> : <Users size={18} />}
                       <span className="text-sm font-medium hidden sm:block capitalize">{searchType}</span>
                   </div>
+
+                  {/* Input Field */}
                   <input 
                       type="text" 
                       placeholder={searchType === 'jobs' ? "Search roles (e.g. React Developer)..." : "Search talent..."} 
@@ -1389,6 +1457,54 @@ function handleClickOutside(event: any) {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                   />
+
+                  {/* --- 🔥 HYRIZON: HYRIZON AI BUTTON (Google Style) --- */}
+                  <div className="hidden sm:flex items-center pl-2 pr-2 relative z-20">
+    <button
+        type="button"
+        onClick={handleAISearch}
+        // Button Outer Container (Responsible for the glowing border shape)
+        className="group relative p-[1.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+        title="Ask Hyrizon AI"
+    >
+        {/* 🔥 THE SPINNING GRADIENT ANIMATION (The Magic) 🔥 */}
+        {/* Ye element button ke peeche bohot tez ghoom rha hai */}
+        <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7c3aed_0%,#d946ef_50%,#06b6d4_100%)]" />
+
+        {/* 🌑 THE SOLID INNER BUTTON (Covers the center of the spin) */}
+        <div className="relative flex items-center gap-2 px-3 py-2 rounded-[10px] z-10 bg-white dark:bg-[#151b2d] transition-colors group-hover:bg-violet-50 dark:group-hover:bg-[#1e2538]">
+            
+            {/* Icon Container with subtle pulse */}
+            <div className="relative">
+                <Sparkles 
+                    size={16} 
+                    className="text-violet-600 dark:text-violet-300 relative z-10" 
+                />
+                 <div className="absolute inset-0 bg-violet-400/30 dark:bg-violet-400/20 rounded-full blur-md animate-pulse z-0"></div>
+            </div>
+            
+            <div className="flex flex-col items-start leading-none">
+                <span className="text-[9px] font-extrabold uppercase bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400 mb-0.5">
+                    HYRIZON
+                </span>
+                <span className="text-xs font-black tracking-wide text-slate-800 dark:text-white">
+                    Ask AI
+                </span>
+            </div>
+        </div>
+    </button>
+</div>
+
+                  {/* Mobile Only AI Button (Small Icon) */}
+                  <button 
+                    type="button"
+                    onClick={handleAISearch}
+                    className="sm:hidden mr-2 p-2 text-violet-500 bg-violet-50 dark:bg-violet-900/20 rounded-full"
+                  >
+                    <Sparkles size={18} />
+                  </button>
+
+                  {/* Main Search Button */}
                   <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 md:px-8 md:py-3 rounded-full font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-500/20 flex-shrink-0">
                       <Search size={18} className="md:w-5 md:h-5" />
                       <span className="hidden md:inline">Search</span>
@@ -1433,7 +1549,7 @@ function handleClickOutside(event: any) {
                                       transition={{ duration: 0.2 }}
                                       className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1"
                                   >
-                                      {["Full-time", "Contract", "Part-time", "Freelance", "Internship"].map((type) => (
+                                      {["Full-time", "Contract", "Part-time"].map((type) => (
                                           <button
                                               key={type}
                                               onClick={() => { setFilterJobType(type); setShowJobTypeDropdown(false); }}
@@ -1659,7 +1775,7 @@ function handleClickOutside(event: any) {
                               animate={{ opacity: 1, y: 0 }}
                               className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10"
                           >
-                              {(CATEGORIES as any)[activeCategory]?.sub.map((tag: any) => (
+                              {CATEGORIES[activeCategory].sub.map((tag) => (
                                   <motion.button 
                                       key={tag} 
                                       whileHover={{ scale: 1.05 }}
@@ -2006,10 +2122,3 @@ function handleClickOutside(event: any) {
     </div>
   );
 }
-
-
-
-
-
-
-

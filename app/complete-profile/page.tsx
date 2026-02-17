@@ -340,40 +340,51 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
     <div className="min-h-screen bg-gray-50 dark:bg-[#0B0F19] transition-colors duration-300">
       <div className="fixed top-0 w-full z-50"><Navbar /></div>
 
-{/* 🟢 FINAL SUCCESS MODAL (Automatic Flow) */}
-      {showWhatsAppModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-          
-          <div className="bg-white dark:bg-[#0f141f] w-full max-w-sm rounded-3xl p-8 shadow-2xl relative border border-gray-100 dark:border-gray-800 animate-in zoom-in-95 duration-300 text-center">
-            
-            {/* Success Icon */}
-            <div className="w-24 h-24 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
-              <CheckCircle size={48} className="text-green-600 dark:text-green-400" />
-            </div>
+{/* 🟢 FINAL SUCCESS MODAL (Updated with 2 Buttons) */}
+{showWhatsAppModal && (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+    
+    <div className="bg-white dark:bg-[#0f141f] w-full max-w-sm rounded-3xl p-8 shadow-2xl relative border border-gray-100 dark:border-gray-800 animate-in zoom-in-95 duration-300 text-center">
+      
+      {/* Success Icon */}
+      <div className="w-24 h-24 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+        <CheckCircle size={48} className="text-green-600 dark:text-green-400" />
+      </div>
 
-            {/* Heading */}
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">
-              You're All Set! 🚀
-            </h2>
+      {/* Heading */}
+      <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">
+        You're All Set! 🚀
+      </h2>
 
-            {/* Message */}
-            <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8">
-              Your profile has been updated successfully. 
-              <br />
-              Check your WhatsApp for the welcome message!
-            </p>
+      {/* Message */}
+      <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8">
+        Your basic details are saved. Now, build your professional identity to get hired fast.
+      </p>
 
-            {/* Action Button */}
-            <button 
-              onClick={() => router.push('/')} 
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/20 transition-transform hover:scale-[1.05] flex items-center justify-center gap-2"
-            >
-              Go to Dashboard <ArrowRight size={22} />
-            </button>
+      {/* 👇 YAHAN CHANGES HAIN (2 BUTTONS) */}
+      <div className="flex flex-col gap-3">
+        
+        {/* Button 1: Complete Full Profile (Primary) */}
+        <button 
+          onClick={() => router.push('/onboarding')} 
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/20 transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
+        >
+          <Briefcase size={20} /> Complete Full Profile
+        </button>
 
-          </div>
-        </div>
-      )}
+        {/* Button 2: Go to Dashboard (Secondary) */}
+        <button 
+          onClick={() => router.push('/')} 
+          className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-3.5 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2"
+        >
+          Skip to Dashboard
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+)}
 
       <div className="flex items-center justify-center min-h-screen pt-24 pb-12 px-4 relative">
         <div className="max-w-xl w-full relative z-10">

@@ -980,7 +980,27 @@ const COUNTRIES = [
       setPage(nextPage);
       fetchJobs(nextPage, false);
   };
+// --- 📊 ONBOARDING PROGRESS LOGIC ---
+const calculateProgress = () => {
+    if (!userProfile) return 1; // Default 1 (Signup done)
+    
+    const steps = [
+        userProfile.experience_level,       // Step 2 part
+        userProfile.resume_url,             // Step 3 part
+        userProfile.bio,                    // Step 2 part
+        userProfile.projects?.length > 0,   // Step 3 part
+        userProfile.experience?.length > 0, // Step 4 part
+        userProfile.education?.length > 0   // Step 4 part
+    ];
+    
+    // Jitne fields null nahi hain unhe count karo + 1 (for basic signup)
+    const completed = steps.filter(Boolean).length + 1;
+    return completed > 4 ? 4 : completed;
+};
 
+const completedSteps = calculateProgress();
+const totalSteps = 4;
+const progressPercentage = (completedSteps / totalSteps) * 100;
   return (
     
     <div className="min-h-screen font-sans text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-[#0B0F19] overflow-x-hidden">
@@ -1172,7 +1192,7 @@ const COUNTRIES = [
                                             transition={{ duration: 0.2 }}
                                             className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1 min-w-[200px]"
                                         >
-                                            {["Full-time", "Contract", "Part-time", "Internship", "Freelance"].map((type) => (
+                                            {["Full-time", "Contract", "Part-time"].map((type) => (
                                                 <button
                                                     key={type}
                                                     onClick={() => { setFilterJobType(type); setShowJobTypeDropdown(false); }}
@@ -1585,7 +1605,7 @@ const COUNTRIES = [
                                       transition={{ duration: 0.2 }}
                                       className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1"
                                   >
-                                      {["Full-time", "Contract", "Part-time", "Internship", "Freelance"].map((type) => (
+                                      {["Full-time", "Contract", "Part-time"].map((type) => (
                                           <button
                                               key={type}
                                               onClick={() => { setFilterJobType(type); setShowJobTypeDropdown(false); }}
@@ -1827,7 +1847,58 @@ const COUNTRIES = [
         </header>
 
       )}
+      {/* --- 🚀 ONBOARDING PROGRESS CARD --- */}
+{currentUser && (!userProfile?.is_onboarded || completedSteps < totalSteps) && (
+  <div className="container mx-auto px-4 mt-8 max-w-5xl">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative overflow-hidden bg-white dark:bg-[#111625] border border-indigo-100 dark:border-indigo-900/30 rounded-3xl p-6 md:p-8 shadow-xl shadow-indigo-500/5"
+    >
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
       
+      <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+        
+        {/* Left: Progress Circle */}
+        <div className="relative flex-shrink-0 w-24 h-24">
+          <svg className="w-full h-full" viewBox="0 0 36 36">
+            <path className="text-slate-100 dark:text-slate-800 stroke-current" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path className="text-indigo-600 stroke-current transition-all duration-1000 ease-out" strokeWidth="3" strokeDasharray={`${progressPercentage}, 100`} strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-xl font-black text-slate-900 dark:text-white leading-none">{completedSteps}/{totalSteps}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase">Steps</span>
+          </div>
+        </div>
+
+        {/* Middle: Content */}
+        <div className="flex-1 text-center md:text-left">
+          <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white mb-2">
+             {completedSteps === 1 ? "Start your professional journey! 🚀" : "Almost there, " + (userProfile?.full_name?.split(' ')[0] || 'User') + "! 🔥"}
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 font-medium">
+  Complete your profile to <strong>boost your visibility by 5x</strong> and get matched with top remote jobs.
+</p>
+          
+          {/* Mobile Progress Bar (Optional) */}
+          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-4 overflow-hidden md:hidden">
+             <div className="bg-indigo-600 h-full" style={{ width: `${progressPercentage}%` }}></div>
+          </div>
+        </div>
+
+        {/* Right: Action Button */}
+        <Link 
+          href="/onboarding"
+          className="group flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/25 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+        >
+          {completedSteps === 1 ? "Setup Profile" : "Continue Setup"}
+          <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </div>
+    </motion.div>
+  </div>
+)}
       {/* WHY JOIN SECTION (Animated & Interactive) */}
       {!currentUser && (
         <div className="bg-white dark:bg-[#111625] border-y border-slate-200 dark:border-slate-800 py-16">

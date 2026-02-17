@@ -10,7 +10,7 @@ import VerifyMagicButton from '@/components/VerifyMagicButton';
 import Link from 'next/link';
 import { 
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
-  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck,ScanSearch
+  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck,ScanSearch,AlertTriangle, X
 } from 'lucide-react';
 
 export default function JobClient({ initialJob }: { initialJob: any }) { 
@@ -26,6 +26,31 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [companyDetails, setCompanyDetails] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
 const [applyCount, setApplyCount] = useState(job.application_count || 0);
+// 🌍 GEO-LOCATION STATES
+  const [userCountry, setUserCountry] = useState<string | null>(null);
+  const [showGeoWarning, setShowGeoWarning] = useState(false);
+
+  // 👇 LOCATION DETECTION LOGIC (Auto Run)
+  useEffect(() => {
+    const detectLocation = async () => {
+      // 1. Agar user Login hai to Profile se Country lo
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('country').eq('id', user.id).single();
+        if (profile?.country) {
+          setUserCountry(profile.country);
+          return;
+        }
+      }
+      // 2. Agar Guest hai to IP se Country lo
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        if (data.country_name) setUserCountry(data.country_name);
+      } catch (e) { console.error("IP Error", e); setUserCountry("Unknown"); }
+    };
+    detectLocation();
+  }, []);
   useEffect(() => {
     fetchJobDetails();
   }, []);
@@ -196,6 +221,8 @@ if (user) {
   );
 };
 const handleApply = async () => {
+    // 🚀 SMART APPLY LOGIC
+  
     // --- 1. USER CHECK (Logic: Agar login hai to duplicate roko) ---
     if (user) {
         // Database se pucho: "Kya is user ne is job id par pehle apply kiya?"
@@ -236,6 +263,57 @@ const handleApply = async () => {
         });
         console.log("User History Saved!");
     }
+  };
+  const handleCheckAndApply = (e: any) => {
+    e.preventDefault(); 
+
+    // 1. Agar Job Expired hai (Ye sab ke liye check hoga)
+    const jobDate = new Date(job.date_posted);
+    const diffDays = Math.ceil(Math.abs(new Date().getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays > 60) return;
+
+    // 🟢 NEW LOGIC: GUEST BYPASS
+    // Agar User login nahi hai -> To Geo-Check mat karo, seedha jane do.
+    if (!user) {
+        proceedToApply();
+        return; 
+    }
+
+    // --- 🌍 GEO LOGIC START (Sirf Logged-in Users ke liye) ---
+    
+    // Sab kuch lowercase mein convert karo
+    const jobLoc = job.location ? job.location.toLowerCase().trim() : "";
+    const userLoc = userCountry ? userCountry.toLowerCase().trim() : "";
+
+    // CASE 1: Direct Country Match
+    if (userLoc && jobLoc.includes(userLoc)) {
+        proceedToApply();
+        return;
+    }
+
+    // CASE 2: Truly Global Keywords
+    const globalKeywords = ["worldwide", "global", "anywhere", "distributed", "everywhere"];
+    const isTrulyGlobal = globalKeywords.some(w => jobLoc.includes(w));
+
+    // CASE 3: Pure "Remote"
+    const isPureRemote = jobLoc === "remote" || jobLoc === "remote only";
+
+    // 🛑 DECISION TIME
+    if (isTrulyGlobal || isPureRemote || !userCountry || userCountry === "Unknown") {
+       proceedToApply();
+    } else {
+       // Match Fail hua -> Popup dikhao
+       console.log("⚠️ Geo Mismatch detected for Logged-in User!");
+       setShowGeoWarning(true); 
+    }
+  };
+  // Asli Apply Function (Jo link kholega aur Count badhayega)
+  const proceedToApply = () => {
+     handleApply(); // Database count badhao
+     // Link open karo
+     const link = job.link.includes('@') && !job.link.startsWith('mailto:') ? `mailto:${job.link}` : job.link;
+     window.open(link, job.link.includes('@') ? '_self' : '_blank');
+     setShowGeoWarning(false); // Popup band
   };
   // --- 🔥 SMART RENDERERS ---
 
@@ -390,6 +468,48 @@ const handleApply = async () => {
                         <span className="text-slate-400 text-sm flex items-center gap-1">
                             <Clock size={14}/> {getRelativeTime(job.date_posted)}
                         </span>
+                        {/* 🛑 GEO-WARNING POPUP */}
+      {showGeoWarning && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200">
+           <div className="bg-white dark:bg-[#151B2B] w-full max-w-md rounded-3xl p-6 shadow-2xl border border-red-100 dark:border-red-900/30 animate-in zoom-in-95 relative">
+              
+              <button onClick={() => setShowGeoWarning(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2">
+                 <X size={20} />
+              </button>
+
+              <div className="flex flex-col items-center text-center">
+                 <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4 text-red-500">
+                    <AlertTriangle size={32} />
+                 </div>
+
+                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                    Location Mismatch 🌍
+                 </h3>
+
+                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 leading-relaxed">
+                    You are in <strong>{userCountry}</strong>, but this job is in <strong>{job.location}</strong>. 
+                    <br/> Employers often reject applications from outside their target region.
+                 </p>
+
+                 <div className="flex flex-col w-full gap-3">
+                    <button 
+                       onClick={() => setShowGeoWarning(false)}
+                       className="w-full py-3.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    >
+                       Cancel & Find Local Jobs
+                    </button>
+
+                    <button 
+                       onClick={proceedToApply} // 👈 Zabardasti apply karne ke liye
+                       className="w-full py-3 text-red-500 hover:text-red-600 dark:text-red-400 font-semibold text-sm flex items-center justify-center gap-2"
+                    >
+                       I understand, Apply Anyway <ExternalLink size={14} />
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
                     </div>
                     {isExpired && (
   <div className="mb-6 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
@@ -490,37 +610,26 @@ const handleApply = async () => {
       {/* Apply Button */}
       {/* 👇 STEP 3: Apply Button Logic */}
 {/* Apply Button */}
-<a 
-    href={isExpired ? '#' : (job.link.includes('@') && !job.link.startsWith('mailto:') ? `mailto:${job.link}` : job.link)} 
-    onClick={(e) => {
-      // 1. Agar Job Expired hai to click mat hone do
-      if (isExpired) {
-        e.preventDefault();
-        return;
-      }
-      
-      // 2. Count badhao (Outlook khulne se pehle)
-      handleApply();
-      
-    }}
-    // Logic: Agar Email hai to same tab (_self), agar Website hai to New Tab (_blank)
-    target={isExpired || job.link.includes('@') ? '_self' : "_blank"} 
-    rel="noopener noreferrer" 
+{/* 👇 UPDATED APPLY BUTTON (With Geo-Check Logic) */}
+<button 
+    onClick={handleCheckAndApply} // 👈 Ye naya function call karega
+    disabled={isExpired}
     className={`w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] flex items-center justify-center gap-2 transition-all whitespace-nowrap
       ${isExpired 
         ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
         : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]"
       }`}
 >
-    {/* Text Logic: User ko bata do ke ye Email hai */}
+    {/* Text Logic */}
     <span>
         {isExpired ? "Applications Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}
     </span>
     
+    {/* Icon Logic */}
     {!isExpired && (
         job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />
     )} 
-</a>
+</button>
 
       {/* 👇 Counter Button ke neeche perfectly align hoga */}
       <ApplicantStatus count={applyCount} />

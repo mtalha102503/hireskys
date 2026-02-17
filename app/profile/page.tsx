@@ -22,7 +22,7 @@ import {
   GraduationCap, Link as LinkIcon, User, MapPin, Briefcase, Code, 
   FolderGit, FileText, CheckCircle, Eye, DollarSign, Heart, ExternalLink,
   Zap, Play, Trophy, AlertTriangle, Star, Award, Mail, Phone, AtSign, 
-  Calendar, Globe, Shield, Sparkles, Layout, Layers, Search
+  Calendar, Globe, Shield, Sparkles, Layout, Layers, Search, Loader2
 } from 'lucide-react';
 
 // --- HELPER COMPONENT: PREMIUM INPUT FIELD ---
@@ -344,16 +344,35 @@ function ProfileContent() {
       setTimeout(() => setMsg(''), 3000);
     }
   };
+useEffect(() => {
+  const checkOnboardingStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+       router.push('/login');
+       return;
+    }
+    
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*') // 👈 Ab sirf 'is_onboarded' nahi, saara data chahiye check karne ke liye
+      .eq('id', user.id)
+      .single();
 
-  // --- RENDER: LOADING STATE ---
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] dark:bg-[#0B0F19]">
-        <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-500 font-medium animate-pulse">Loading Your Studio...</p>
-        </div>
-    </div>
-  );
+    // 🛑 LOGIC CHECK: Flag False hai YA Zaroori data missing hai?
+    const isProfileIncomplete = 
+        !profile?.is_onboarded || 
+        !profile?.resume_url || 
+        !profile?.experience_level ||
+        !profile?.bio; 
+
+    if (isProfileIncomplete) {
+      router.push('/onboarding');
+    } else {
+      setLoading(false);
+    }
+  };
+  checkOnboardingStatus();
+}, []);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-600">

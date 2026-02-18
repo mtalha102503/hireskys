@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 // 👇 Ye hai wo MAGIC CODE jo Google ko rokega
 export const metadata: Metadata = {
-  title: "Complete Your Profile | StealthGigs",
+  title: "Complete Your Profile | HireSkys",
   description: "Finish setting up your profile to join the elite network.",
   
   // 🚫 Robots ko mana kar rahe hain

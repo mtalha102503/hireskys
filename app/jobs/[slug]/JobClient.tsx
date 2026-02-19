@@ -267,10 +267,10 @@ const handleApply = async () => {
   const handleCheckAndApply = (e: any) => {
     e.preventDefault(); 
 
-    // 1. Agar Job Expired hai (Ye sab ke liye check hoga)
     const jobDate = new Date(job.date_posted);
-    const diffDays = Math.ceil(Math.abs(new Date().getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays > 60) return;
+  const diffDays = Math.ceil(Math.abs(new Date().getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
+  // 🟢 NAYA: job.active ko false check kar rahe hain
+  if (diffDays > 60 || job.active === false) return;
 
     // 🟢 NEW LOGIC: GUEST BYPASS
     // Agar User login nahi hai -> To Geo-Check mat karo, seedha jane do.
@@ -438,10 +438,13 @@ const handleApply = async () => {
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0B0F19] text-slate-500">Loading details...</div>;
   if (!job) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0B0F19] text-slate-500">Job not found.</div>;
 
-  const jobDate = new Date(job.date_posted); // Tumhare code mein 'date_posted' use ho raha hai
+  const jobDate = new Date(job.date_posted);
   const today = new Date();
   const diffDays = Math.ceil(Math.abs(today.getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
-  const isExpired = diffDays > 60;
+  
+  // 🟢 NAYA: isExpired ab dono cheezein dekhega (Date OR Database Status)
+  const isExpired = diffDays > 60 || job.active === false; 
+  
   const sourceStyle = getSourceStyle(job.source);
 
   return (
@@ -774,3 +777,4 @@ const handleApply = async () => {
     </div>
   );
 }
+

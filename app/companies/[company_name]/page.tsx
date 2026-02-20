@@ -94,6 +94,7 @@ export default async function CompanyPage({ params }: Props) {
     .select('*')
     .ilike('source', `%${jobSearchName}%`)
     .eq('approved', true)
+    .eq('active', true)
     .order('date_posted', { ascending: false });
 
   const jobList = jobs || [];
@@ -315,4 +316,5 @@ export default async function CompanyPage({ params }: Props) {
       </div>
     </div>
   );
+
 }

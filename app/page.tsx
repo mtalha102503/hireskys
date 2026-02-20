@@ -11,7 +11,7 @@ import {
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
   User as UserIcon, Smartphone, Cpu, Edit3, X, Zap, Facebook, Linkedin,
-  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp, ChevronUp, Check, MapPin
+  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp, ChevronUp, Check, MapPin, Eye
 } from 'lucide-react';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
@@ -654,7 +654,17 @@ const COUNTRIES = [
     : '/hyrizon';
   // 🏢 COMPANY LOGOS STATE
   const [companyLogos, setCompanyLogos] = useState<Record<string, string>>({});
+// 🟢 NAYA: Seen aur Applied Jobs ke states
+  const [seenJobs, setSeenJobs] = useState<number[]>([]);
+  const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
 
+  // 🟢 NAYA: Page load hote hi browser se purana data uthayega
+  useEffect(() => {
+    const storedSeen = JSON.parse(localStorage.getItem('seenJobs') || '[]');
+    const storedApplied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+    setSeenJobs(storedSeen);
+    setAppliedJobs(storedApplied);
+  }, []);
   useEffect(() => {
     const fetchCompanies = async () => {
         const { data } = await supabase
@@ -888,16 +898,21 @@ const COUNTRIES = [
 
     const from = pageNumber * JOBS_PER_PAGE;
     const to = from + JOBS_PER_PAGE - 1;
-    let query;
+   // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
+    let query = supabase
+      .from('jobs')
+      .select('*', { count: 'exact' })
+      .order('date_posted', { ascending: false }); 
 
+    // 🟢 2. POWERFUL SEARCH LOGIC
     if (searchQuery && searchQuery.length > 2) {
-       query = supabase
-         .rpc('search_jobs_fuzzy', { search_text: searchQuery });
-    } else {
-       query = supabase
-         .from('jobs')
-         .select('*', { count: 'exact' })
-         .order('date_posted', { ascending: false }); 
+       // Search input ko words mein todo (Taa ke "Senior Google" alag alag search ho)
+       const searchWords = searchQuery.trim().split(/\s+/);
+       
+       // Har word ko Title, Company (source), Experience, aur Category mein dhoondo
+       searchWords.forEach(word => {
+           query = query.or(`title.ilike.%${word}%,source.ilike.%${word}%,experience_level.ilike.%${word}%,category.ilike.%${word}%`);
+       });
     }
     
     if (filterJobType) {
@@ -2053,6 +2068,8 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
   const diffDays = Math.floor(diffHrs / 96);
   const isJustNow = diffHrs <= 4;
   const isSaved = savedJobIds.includes(job.id);
+  const isSeen = seenJobs.includes(job.id);
+  const isApplied = appliedJobs.includes(job.id);
   const companyLogoUrl = companyLogos[job.source] || null; 
 
   // 2️⃣ RETURN CARD
@@ -2095,12 +2112,22 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
             </div>
         </div>
 
-        {/* New Badge */}
-        {isJustNow && (
-            <span className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md tracking-wider">
-                New Arrival
-            </span> 
-        )}
+        {/* 🟢 NAYA: Smart Badges (Applied > Seen > New) */}
+        <div className="flex gap-2 items-center">
+            {isApplied ? (
+                <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-green-100 text-green-700 border border-green-200 shadow-sm tracking-wider flex items-center gap-1">
+                    <CheckCircle size={12} /> Applied
+                </span>
+            ) : isSeen ? (
+                <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-slate-200 text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 shadow-sm tracking-wider flex items-center gap-1">
+                    <Eye size={12} /> Seen
+                </span>
+            ) : isJustNow ? (
+                <span className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md tracking-wider">
+                    New Arrival
+                </span> 
+            ) : null}
+        </div>
       </div>
 
       {/* 🟠 MIDDLE ROW: Logo & Title */}
@@ -2190,9 +2217,20 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
                 <Heart size={18} className={isSaved ? "fill-current" : ""} />
             </button>
 
-                        <Link href={`/jobs/${createSlug(job.title, job.id)}`} className="flex-1 sm:flex-none px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-lg shadow-indigo-500/10 text-center">
-                            View Details
-                        </Link>
+                        <Link 
+        href={`/jobs/${createSlug(job.title, job.id)}`} 
+        onClick={() => {
+            // 🟢 NAYA: Click karte hi Seen mein save kar do
+            if (!isSeen) {
+                const newSeen = [...seenJobs, job.id];
+                setSeenJobs(newSeen);
+                localStorage.setItem('seenJobs', JSON.stringify(newSeen));
+            }
+        }}
+        className="flex-1 sm:flex-none px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-lg shadow-indigo-500/10 text-center"
+    >
+        View Details
+    </Link>
                     </div>
                   </div>
 

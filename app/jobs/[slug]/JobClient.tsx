@@ -54,7 +54,17 @@ const [applyCount, setApplyCount] = useState(job.application_count || 0);
   useEffect(() => {
     fetchJobDetails();
   }, []);
-
+// 🟢 NAYA: Job page khulte hi isko 'Seen' mark kar do
+  useEffect(() => {
+    // Check karo ke job load ho chuki hai
+    if (job && job.id) {
+       const seen = JSON.parse(localStorage.getItem('seenJobs') || '[]');
+       // Agar is job ki ID pehle se list mein nahi hai, to add kar do
+       if (!seen.includes(job.id)) {
+           localStorage.setItem('seenJobs', JSON.stringify([...seen, job.id]));
+       }
+    }
+  }, [job]);
   // 👇 Helper functions ko yahan define kiya taake wo fetchJobDetails ke andar bhi milein
   const getCompanySlug = (name: string) => {
     if (!name) return '#';
@@ -309,6 +319,12 @@ const handleApply = async () => {
   };
   // Asli Apply Function (Jo link kholega aur Count badhayega)
   const proceedToApply = () => {
+     // 🟢 NAYA: Button dabte hi isko 'Applied' mark kar do
+     const applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+     if (!applied.includes(job.id)) {
+         localStorage.setItem('appliedJobs', JSON.stringify([...applied, job.id]));
+     }
+
      handleApply(); // Database count badhao
      // Link open karo
      const link = job.link.includes('@') && !job.link.startsWith('mailto:') ? `mailto:${job.link}` : job.link;
@@ -777,4 +793,3 @@ const handleApply = async () => {
     </div>
   );
 }
-

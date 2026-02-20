@@ -117,7 +117,7 @@ export default async function SubCategoryJobsPage({ params }: Props) {
   const searchTag = exactTag || decodeURIComponent(resolvedParams.subcategory).replace(/-/g, ' ');
 
   // Query Logic
-  let query = supabase.from('jobs').select('*').order('date_posted', { ascending: false });
+  let query = supabase.from('jobs').select('*').eq('active', true).order('date_posted', { ascending: false });
 
   if (exactTag) {
     query = query.contains('tags', [exactTag]);
@@ -263,3 +263,4 @@ export default async function SubCategoryJobsPage({ params }: Props) {
     </div>
   );
 }
+

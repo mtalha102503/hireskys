@@ -597,65 +597,46 @@ const handleApply = async () => {
                 </div>
 
                 {/* --- ACTION BUTTONS ROW START --- */}
-<div className="flex gap-4 w-full md:w-auto mt-6 md:mt-0 items-start justify-end">
-  
-  {/* 1. Share & Save Group (Left Side) */}
-  {/* Isko h-[54px] diya taake ye Apply button ki height ke barabar centered rahe */}
-  <div className="h-[54px] flex items-center">
-    <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm h-fit">
-      {/* Save Button */}
-      <button 
-        onClick={toggleSave} 
-        className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
-      >
-          <Heart size={22} className={saved ? 'fill-current' : ''} />
-      </button>
+                <div className="flex justify-between md:justify-end items-center md:items-start gap-4 w-full md:w-auto mt-8 md:mt-0">
+                  
+                  {/* 1. Share & Save Group (Left Side on Mobile) */}
+                  <div className="h-[54px] flex items-center">
+                    <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm h-fit">
+                      <button onClick={toggleSave} className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
+                          <Heart size={22} className={saved ? 'fill-current' : ''} />
+                      </button>
+                      <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
+                      <button onClick={handleShare} className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2">
+                          <Share2 size={22} />
+                      </button>
+                    </div>
+                  </div>
 
-      {/* Divider */}
-      <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
+                  {/* 2. Apply Button & Counter (Right Side on Mobile) */}
+                  <div className="flex flex-col items-end justify-center w-auto">
+                      
+                      {/* 👇 Desktop Apply Button (Mobile pe hidden hai) */}
+                      <button 
+                        onClick={handleCheckAndApply} 
+                        disabled={isExpired}
+                        className={`hidden md:flex w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] items-center justify-center gap-2 transition-all whitespace-nowrap
+                          ${isExpired 
+                            ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
+                            : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]"
+                          }`}
+                      >
+                        <span>{isExpired ? "Applications Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}</span>
+                        {!isExpired && (job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />)} 
+                      </button>
 
-      {/* Share Button */}
-      <button 
-        onClick={handleShare} 
-        className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2"
-      >
-          <Share2 size={22} />
-      </button>
-    </div>
-  </div>
+                      {/* 👇 Counter (Mobile par Save/Share ke saamne, Desktop par Button ke neechay) */}
+                      <div className="mt-0 md:mt-2">
+                         <ApplicantStatus count={applyCount} />
+                      </div>
+                  </div>
 
-  {/* 2. Apply Button & Counter (Right Side) */}
-  <div className="flex flex-col w-full md:w-auto">
-      {/* Apply Button */}
-      {/* 👇 STEP 3: Apply Button Logic */}
-{/* Apply Button */}
-{/* 👇 UPDATED APPLY BUTTON (With Geo-Check Logic) */}
-<button 
-    onClick={handleCheckAndApply} // 👈 Ye naya function call karega
-    disabled={isExpired}
-    className={`hidden md:flex w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] items-center justify-center gap-2 transition-all whitespace-nowrap
-      ${isExpired
-        ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
-        : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]"
-      }`}
->
-    {/* Text Logic */}
-    <span>
-        {isExpired ? "Applications Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}
-    </span>
-    
-    {/* Icon Logic */}
-    {!isExpired && (
-        job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />
-    )} 
-</button>
-
-      {/* 👇 Counter Button ke neeche perfectly align hoga */}
-      <ApplicantStatus count={applyCount} />
-  </div>
-
-</div>
-{/* --- ACTION BUTTONS ROW END --- */}
+                </div>
+                {/* --- ACTION BUTTONS ROW END --- */}
             </div>
         </div>
       </div> 

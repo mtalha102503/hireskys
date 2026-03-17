@@ -464,7 +464,7 @@ const handleApply = async () => {
   const sourceStyle = getSourceStyle(job.source);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans">
+    <div className="min-h-screen pb-24 md:pb-0 bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans">
       <Navbar />
 
       <div className="bg-white dark:bg-[#111625] border-b border-slate-200 dark:border-slate-800 pb-12 pt-24 px-4">
@@ -633,8 +633,8 @@ const handleApply = async () => {
 <button 
     onClick={handleCheckAndApply} // 👈 Ye naya function call karega
     disabled={isExpired}
-    className={`w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] flex items-center justify-center gap-2 transition-all whitespace-nowrap
-      ${isExpired 
+    className={`hidden md:flex w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] items-center justify-center gap-2 transition-all whitespace-nowrap
+      ${isExpired
         ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
         : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]"
       }`}
@@ -790,7 +790,34 @@ const handleApply = async () => {
                 </div>
             </div>
       </div>
+      {/* 📱 STICKY MOBILE APPLY FOOTER (Sirf Mobile par dikhega) */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 dark:bg-[#0b0f19]/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 p-4 z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+        <div className="flex items-center gap-3 max-w-md mx-auto">
+          
+          {/* 🔖 Save Button */}
+          <button 
+            onClick={toggleSave} 
+            className={`p-3.5 rounded-xl border transition-all flex items-center justify-center ${saved ? 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-900/30 text-red-500' : 'bg-slate-100 dark:bg-[#1a2333] border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}`}
+          >
+            <Heart size={22} className={saved ? 'fill-current' : ''} />
+          </button>
+
+          {/* 🚀 Main Apply Button (Uses same exact logic as desktop) */}
+          <button 
+            onClick={handleCheckAndApply} 
+            disabled={isExpired}
+            className={`flex-1 py-3.5 text-[15px] text-center font-extrabold rounded-xl transition-all flex justify-center items-center gap-2
+              ${isExpired 
+                ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
+                : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/25 active:scale-95"
+              }`}
+          >
+            {isExpired ? "Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}
+            {!isExpired && (job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />)}
+          </button>
+          
+        </div>
+      </div>
     </div>
   );
 }
-

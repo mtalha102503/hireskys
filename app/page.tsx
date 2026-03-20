@@ -1,7 +1,7 @@
 // app/page.tsx (Server Component)
 import { Metadata } from 'next';
 import HomePageClient from './HomePageClient'; 
-
+import { Suspense } from 'react';
 // Next.js 15 Strict Types
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -108,7 +108,11 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
-      <HomePageClient />
+      
+      {/* 🚀 THE FIX: Suspense Boundary lag gayi (with a cool spinner) */}
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>}>
+        <HomePageClient />
+      </Suspense>
     </>
   );
 }

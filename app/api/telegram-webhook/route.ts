@@ -25,7 +25,7 @@ export async function POST(request: Request) {
                 if (!error) {
                     // 4. User ko pyara sa Welcome Message bhej do
                     const botToken = process.env.TELEGRAM_BOT_TOKEN;
-                    const welcomeMsg = "🎉 *Account Connected Successfully!*\n\n🚀 Ab aapko aapki skills ke mutabiq instant remote jobs yahan milengi. Stay tuned!";
+                    const welcomeMsg = "✅ *Account Successfully Linked!*\n\nWelcome to HireSkys Alerts! 🚀 \n\nYou will now receive instant, personalized remote job notifications directly in this chat. Get ready to land your dream role. Stay tuned!";
                     
                     await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                         method: 'POST',

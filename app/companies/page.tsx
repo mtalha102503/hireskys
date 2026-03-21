@@ -112,7 +112,7 @@ export default function CompaniesPage() {
           if (job.salary_range && !job.salary_range.toLowerCase().includes('not disclosed')) {
             const nums = job.salary_range.match(/\d+(?:,\d+)*/g);
             if (nums) {
-              const parsedNums = nums.map(n => parseInt(n.replace(/,/g, ''), 10)).filter(n => n > 1000); // Saal/Mahina ignore karne ke liye >1000
+              const parsedNums = nums.map((n: string) => parseInt(n.replace(/,/g, ''), 10)).filter((n: number) => n > 1000); // Saal/Mahina ignore karne ke liye >1000
               if (parsedNums.length > 0) {
                 const avg = parsedNums.reduce((a, b) => a + b, 0) / parsedNums.length;
                 totalSalary += avg;

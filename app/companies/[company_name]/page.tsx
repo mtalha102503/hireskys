@@ -135,7 +135,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
     const nums = job.salary_range.match(/\d+(?:,\d+)*/g);
     let min = 0, max = 0;
     if (nums) {
-      const parsedNums = nums.map(n => parseInt(n.replace(/,/g, ''), 10)).map(n => n < 1000 ? n * 1000 : n);
+      const parsedNums = nums.map((n: string) => parseInt(n.replace(/,/g, ''), 10)).map((n: number) => n < 1000 ? n * 1000 : n);
       min = Math.min(...parsedNums);
       max = Math.max(...parsedNums);
     }

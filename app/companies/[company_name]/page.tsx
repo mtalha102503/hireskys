@@ -8,14 +8,15 @@ import type { Metadata } from 'next';
 import { 
   Globe, MapPin, Users, Calendar, 
   CheckCircle, Briefcase, Building2, ArrowUpRight,
-  ExternalLink
+  ExternalLink, DollarSign, Share2
 } from 'lucide-react';
 
 // 👇 FIX: Faster Page Load (Server Response Time improve karega)
 export const revalidate = 3600; 
 
 type Props = {
-  params: Promise<{ company_name: string }>
+  params: Promise<{ company_name: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }
 
 // --- 1. SEO METADATA (🔥 UPGRADED 8x) ---
@@ -71,9 +72,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // --- 2. MAIN PAGE ---
-export default async function CompanyPage({ params }: Props) {
+export default async function CompanyPage({ params, searchParams }: Props) {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  
   const slug = decodeURIComponent(resolvedParams.company_name); 
+  const currentTab = resolvedSearchParams?.tab || 'overview'; // 🚨 Default tab "overview" hoga
 
   // 🛑 STEP 1: Fetch Company Data (LOGIC UNTOUCHED)
   const { data: manualData } = await supabase
@@ -82,13 +86,10 @@ export default async function CompanyPage({ params }: Props) {
     .eq('slug', slug)
     .single();
 
-  if (!manualData) {
-    return notFound();
-  }
+  if (!manualData) return notFound();
 
   // ✅ STEP 2: Fetch Related Jobs (LOGIC UNTOUCHED)
   const jobSearchName = slug.replace(/-/g, ' '); 
-
   const { data: jobs } = await supabase
     .from('jobs')
     .select('*')
@@ -98,8 +99,7 @@ export default async function CompanyPage({ params }: Props) {
     .order('date_posted', { ascending: false });
 
   const jobList = jobs || [];
-
-  // Data Clean-up
+// Data Clean-up
   const companyName = manualData.name;
   const companyLogo = manualData.logo_url || '/default-company-icon.png';
   const description = manualData.description || `We connect top-tier professionals with flexible opportunities.`;
@@ -109,6 +109,54 @@ export default async function CompanyPage({ params }: Props) {
   const hasCustomBanner = !!manualData.banner_url;
   const industry = manualData.industry || manualData.category || "Technology";
 
+  // 🧠 THE SMART BENEFITS EXTRACTOR ENGINE
+  const combinedDescriptions = jobList.map(job => job.description || '').join(' ').toLowerCase();
+  const potentialBenefits = [
+    { id: 'health', icon: '🏥', title: 'Health & Medical', desc: 'Comprehensive medical, dental, and vision coverage for you and your dependents.', keywords: ['health insurance', 'medical', 'dental', 'vision', 'healthcare'] },
+    { id: 'pto', icon: '✈️', title: 'Paid Time Off', desc: 'Generous paid time off, holidays, and sick days to help you rest and recharge.', keywords: ['pto', 'paid time off', 'unlimited vacation', 'paid holidays'] },
+    { id: 'financial', icon: '📈', title: 'Equity & Retirement', desc: 'Competitive retirement matching and equity options to build your future wealth.', keywords: ['401k', 'equity', 'stock options', 'retirement matching', 'pension'] },
+    { id: 'flexibility', icon: '🏡', title: 'Flexible Working', desc: 'Work from anywhere with flexible hours that fit your personal lifestyle.', keywords: ['flexible hours', 'work from anywhere', 'flexible schedule', 'remote first'] },
+    { id: 'learning', icon: '📚', title: 'Learning & Development', desc: 'Dedicated budget for courses, conferences, and continuous skill building.', keywords: ['learning stipend', 'education budget', 'tuition reimbursement', 'conference budget'] },
+    { id: 'equipment', icon: '💻', title: 'Home Office Setup', desc: 'Generous stipend to set up a comfortable and productive remote workspace.', keywords: ['home office stipend', 'equipment allowance', 'macbook', 'hardware'] },
+    { id: 'wellness', icon: '🧘', title: 'Wellness Perks', desc: 'Allowances for gym memberships, mental health apps, and overall wellbeing.', keywords: ['gym membership', 'wellness stipend', 'mental health', 'therapy', 'wellness'] }
+  ];
+  const extractedBenefits = potentialBenefits.filter(benefit =>
+    benefit.keywords.some(keyword => combinedDescriptions.includes(keyword))
+  );
+// 💰 THE SMART SALARY ENGINE (With Graph Data Processing)
+  const rawJobsWithSalary = jobList.filter(job => 
+    job.salary_range && 
+    !job.salary_range.toLowerCase().includes('not disclosed') && 
+    !job.salary_range.toLowerCase().includes('not mentioned')
+  );
+
+  // 1. Min aur Max numbers extract karo har job ke liye
+  const jobsWithSalary = rawJobsWithSalary.map(job => {
+    const nums = job.salary_range.match(/\d+(?:,\d+)*/g);
+    let min = 0, max = 0;
+    if (nums) {
+      const parsedNums = nums.map(n => parseInt(n.replace(/,/g, ''), 10)).map(n => n < 1000 ? n * 1000 : n);
+      min = Math.min(...parsedNums);
+      max = Math.max(...parsedNums);
+    }
+    return { ...job, parsedMin: min, parsedMax: max };
+  }).filter(job => job.parsedMax > 0);
+
+  // 2. Graph ki scale banane ke liye Global Min/Max dhoondo
+  let highestSalaryNum = 0;
+  let globalMax = 0;
+
+  jobsWithSalary.forEach(j => {
+    if (j.parsedMax > highestSalaryNum) highestSalaryNum = j.parsedMax;
+    if (j.parsedMax > globalMax) globalMax = j.parsedMax;
+  });
+
+  // Agar scale choti hai toh thori padding add kardo taake graph end tak na chipkay
+  const chartMaxScale = globalMax * 1.1; 
+
+  const highestSalaryFormatted = highestSalaryNum > 0 
+    ? `$${(highestSalaryNum / 1000).toFixed(0)}k/yr` 
+    : 'Competitive';
   // 🌟 NEW: COMPREHENSIVE SCHEMA (Google Knowledge Graph + Structure)
   const organizationSchema = {
     "@context": "https://schema.org",
@@ -156,165 +204,353 @@ export default async function CompanyPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans pb-20">
       
-      {/* 👇 Combined SEO Injection (Clean & Fast) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([organizationSchema, faqSchema, breadcrumbSchema]) }}
-      />
-      
+      {/* 🚀 THE CRITICAL SEO FIX: INJECTING SCHEMAS FOR GOOGLE */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
       <Navbar />
 
-      {/* --- HERO BANNER (Optimized with Next/Image) --- */}
-      <div className="relative h-56 md:h-72 w-full overflow-hidden bg-slate-900 group">
-        {hasCustomBanner ? (
-           <Image 
-             src={manualData.banner_url} 
-             alt={`${companyName} remote careers banner`}
-             fill
-             priority // ⚡ LCP improvement
-             className="object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
-             sizes="100vw"
-           />
-        ) : (
-           <div className="w-full h-full bg-gradient-to-br from-indigo-900 via-[#0B0F19] to-black relative">
-             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-             <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] to-transparent"></div>
-           </div>
-        )}
-      </div>
+      {/* 🌟 VVIP HEADER SECTION (Logo + Info + Tabs) */}
+      <div className="bg-white dark:bg-[#131b2b] border-b border-gray-200 dark:border-gray-800">
+        
+        {/* Banner */}
+        <div className="relative h-48 md:h-64 w-full overflow-hidden bg-slate-900 group">
+          {hasCustomBanner ? (
+             <Image src={manualData.banner_url} alt={`${companyName} banner`} fill priority className="object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" sizes="100vw"/>
+          ) : (
+             <div className="w-full h-full bg-gradient-to-r from-indigo-900 via-purple-900 to-[#0B0F19]"></div>
+          )}
+        </div>
 
-      <div className="container mx-auto px-4 max-w-7xl -mt-24 relative z-10 pb-20">
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          
-          {/* --- SIDEBAR --- */}
-          <aside className="w-full lg:w-[350px] flex-shrink-0 lg:sticky lg:top-24 space-y-6">
+        {/* Company Info Header */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 sm:-mt-20">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5 pb-6">
             
-            <div className="bg-white dark:bg-[#151b2e] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl backdrop-blur-sm">
-              <div className="relative -mt-16 mb-5 inline-block h-28 w-28">
-                {/* ⚡ Optimized Logo Rendering */}
-                <Image 
-                  src={companyLogo} 
-                  alt={`${companyName} Logo`} 
-                  fill
-                  className="rounded-2xl bg-white object-contain border-[5px] border-white dark:border-[#151b2e] shadow-lg"
-                  sizes="(max-width: 768px) 100vw, 300px"
-                />
-                {isVerified && (
-                  <div className="absolute bottom-2 -right-2 bg-blue-500 text-white p-1.5 rounded-full z-10 border-[4px] border-white dark:border-[#151b2e] shadow-sm">
-                    <CheckCircle size={14} fill="currentColor" className="text-white"/>
-                  </div>
-                )}
+            {/* Big Logo Overlap */}
+            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-white dark:bg-[#0B0F19] border-4 border-white dark:border-[#131b2b] shadow-xl p-3 flex-shrink-0 relative overflow-hidden">
+              <div className="relative w-full h-full rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center">
+                <Image src={companyLogo} alt={`${companyName} Logo`} fill className="object-contain p-2" sizes="160px" />
               </div>
-
-              <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-2 leading-tight">
-                {companyName}
-              </h1>
-              
-              <div className="flex items-center gap-2 mb-6">
-                <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-wide flex items-center gap-1">
-    <Building2 size={12}/> {industry}
-  </span>
-                {jobList.length > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold uppercase tracking-wide">
-                    Hiring Now
-                    </span>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-3">
-                {website !== "#" && (
-                  <a href={website} target="_blank" rel="noopener noreferrer" className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-95">
-                    Visit Website <ExternalLink size={16} />
-                  </a>
-                )}
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700/50 space-y-4">
-                <div className="flex items-center justify-between text-sm group cursor-default">
-                  <span className="text-slate-500 flex items-center gap-2 group-hover:text-indigo-500 transition-colors"><MapPin size={16}/> Headquarters</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-200 text-right">{location}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm group cursor-default">
-                  <span className="text-slate-500 flex items-center gap-2 group-hover:text-indigo-500 transition-colors"><Briefcase size={16}/> Active Jobs</span>
-                  <span className="font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{jobList.length}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-[#151b2e] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-              <h3 className="font-bold text-slate-900 dark:text-white mb-4 text-lg border-b border-slate-100 dark:border-slate-800 pb-2">About Company</h3>
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-justify whitespace-pre-line">
-                  {description}
-                </p>
-              </div>
-            </div>
-          </aside>
-
-          {/* --- JOBS LIST --- */}
-          <main className="flex-1 w-full pt-4 lg:pt-0">
-            <div className="flex items-center justify-between mb-6 bg-white dark:bg-[#151b2e] p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                Open Positions at {companyName}
-              </h2>
-              <span className="bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-3 py-1 rounded-full">
-                {jobList.length} Available
-              </span>
-            </div>
-
-            <div className="space-y-4">
-              {jobList.map((job) => (
-                <Link key={job.id} href={`/jobs/${createSlug(job.title, job.id)}`} className="block group">
-                  <div className="relative bg-white dark:bg-[#151b2e] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all shadow-sm hover:shadow-xl hover:-translate-y-1 group-hover:bg-slate-50/50 dark:group-hover:bg-[#1a2035]">
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
-                          {job.title}
-                        </h3>
-                        <div className="flex flex-wrap gap-2 mt-3 text-xs md:text-sm font-medium">
-                          <span className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2.5 py-1.5 rounded-lg">
-                            <MapPin size={13} className="text-slate-400"/> {job.location || 'Remote'}
-                          </span>
-                          <span className="flex items-center gap-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-900/30 px-2.5 py-1.5 rounded-lg">
-                            💰 {job.salary_range ? `${job.salary_range}` : 'Competitive Pay'}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="hidden sm:block">
-                        <span className="inline-flex items-center gap-1 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shadow-lg shadow-indigo-500/30">
-                          Apply Now <ArrowUpRight size={16} />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/50 flex justify-between items-center text-xs text-slate-400 font-medium">
-                      <span className="flex items-center gap-1.5">
-                        {/* 👇 FIX: Hydration Mismatch Avoidance (ISO String safe hota hai) */}
-                        <Calendar size={12}/> Posted {new Date(job.date_posted).toISOString().split('T')[0]}
-                      </span>
-                      <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500">
-                        {job.job_type || 'Full Time'}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-              
-              {jobList.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-16 bg-white dark:bg-[#151b2e] rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center">
-                  <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                    <Briefcase size={24} className="text-slate-400"/>
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">No active jobs found</h3>
-                  <p className="text-slate-500 text-sm mt-1">This company has no open positions listed on HireSkys right now.</p>
+              {isVerified && (
+                <div className="absolute -bottom-1 -right-1 bg-white dark:bg-[#0B0F19] rounded-full p-1.5 z-10">
+                  <CheckCircle size={24} className="text-indigo-500 fill-indigo-500/20" />
                 </div>
               )}
             </div>
-          </main>
+
+            {/* Title & Details */}
+            <div className="flex-1 w-full pt-2">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-2 leading-tight">
+                {companyName}
+              </h1>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                <span className="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg text-gray-700 dark:text-gray-300">
+                  <Building2 size={16}/> {industry}
+                </span>
+                <span className="flex items-center gap-1.5"><MapPin size={16}/> {location}</span>
+              </div>
+            </div>
+
+            {/* Visit Website Button (Mobile pe hidden) */}
+            <div className="hidden sm:block w-full sm:w-auto mt-2 sm:mt-0">
+               {website !== "#" && (
+                <a href={website} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/25 active:scale-95">
+                  Visit Website <ArrowUpRight size={18} />
+                </a>
+              )}
+            </div>
+
+          </div>
+
+          {/* 🎯 THE NAVIGATION TABS (Premium Pill Buttons) */}
+          <div className="flex overflow-x-auto hide-scrollbar gap-3 border-t border-gray-100 dark:border-gray-800/60 pt-6 mt-4 pb-2">
+            
+            <Link href="?tab=overview" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${currentTab === 'overview' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+              Overview
+            </Link>
+            
+            <Link href="?tab=jobs" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center gap-2 ${currentTab === 'jobs' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+              Jobs 
+              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${currentTab === 'jobs' ? 'bg-white/20 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}>
+                {jobList.length}
+              </span>
+            </Link>
+            
+            {extractedBenefits.length > 0 && (
+              <Link href="?tab=benefits" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${currentTab === 'benefits' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                Benefits
+              </Link>
+            )}
+
+            <Link href="?tab=salaries" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${currentTab === 'salaries' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+              Salaries
+            </Link>
+
+          </div>
+        </div>
+      </div>
+
+      {/* 🌟 DYNAMIC CONTENT AREA (Neechay sirf wahi aayega jo Tab open hai) */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        
+        {/* TAB 1: OVERVIEW */}
+        {currentTab === 'overview' && (
+          <div className="bg-white dark:bg-[#131b2b] rounded-3xl p-8 border border-gray-200 dark:border-gray-800 shadow-sm max-w-4xl">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">About {companyName}</h2>
+            <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-justify whitespace-pre-line">
+                {description}
+              </p>
+            </div>
+            
+            <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-gray-100 dark:border-gray-800">
+              <div>
+                <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Founded In</span>
+                {/* 🚀 AI SE AYA HUA SAL YAHAN AYEGA */}
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {manualData.founded_year || "Not Disclosed"}
+                </span>
+              </div>
+              <div>
+                <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Company Size</span>
+                {/* 🚀 AI SE AYA HUA SIZE YAHAN AYEGA */}
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {manualData.company_size ? `${manualData.company_size}` : "Growing Fast"}
+                </span>
+              </div>
+              <div>
+                <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Industry</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{industry}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: JOBS */}
+        {currentTab === 'jobs' && (
+          <div className="max-w-4xl space-y-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center justify-between">
+              Open Positions
+              <span className="text-sm font-medium text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg">
+                {jobList.length} Roles
+              </span>
+            </h2>
+
+            {jobList.length > 0 ? jobList.map((job) => (
+              <Link key={job.id} href={`/jobs/${createSlug(job.title, job.id)}`} className="block group">
+                <div className="relative bg-white dark:bg-[#131b2b] p-6 sm:p-7 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-indigo-500/50 hover:shadow-xl dark:hover:shadow-[0_8px_30px_rgba(79,70,229,0.12)] hover:-translate-y-1 transition-all duration-300">
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug mb-4">
+                        {job.title}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-800">
+                          <MapPin size={14} className="text-gray-500 dark:text-gray-400"/>
+                          <span className="text-[13px] font-bold text-gray-700 dark:text-gray-300">{job.location || 'Remote'}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg border border-emerald-100 dark:border-emerald-500/20">
+                          <DollarSign size={14} className="text-emerald-600 dark:text-emerald-400"/>
+                          <span className="text-[13px] font-bold text-emerald-900 dark:text-emerald-200">
+                            {job.salary_range && !job.salary_range.toLowerCase().includes('not disclosed') ? job.salary_range : 'Salary Not Disclosed'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-full sm:w-auto mt-4 sm:mt-0 flex justify-end">
+                      <span className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300">
+                        View Role <ArrowUpRight size={16} />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            )) : (
+               <div className="py-16 bg-white dark:bg-[#131b2b] rounded-2xl text-center border border-dashed border-gray-300 dark:border-gray-700">
+                  <Briefcase size={40} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">No active roles right now</h3>
+               </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: BENEFITS */}
+        {currentTab === 'benefits' && extractedBenefits.length > 0 && (
+          <div className="max-w-4xl">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                Benefits and perks at {companyName}
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400 text-[15px]">
+                Learn about the {extractedBenefits.length} benefits and perks {companyName} offers its remote employees.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 bg-white dark:bg-[#131b2b] p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm">
+              {extractedBenefits.map(b => (
+                <div key={b.id} className="flex flex-col group">
+                  <span className="text-3xl mb-4 group-hover:scale-110 transition-transform origin-left">{b.icon}</span>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                    {b.title}
+                  </h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {b.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: SALARIES (Premium Graphical Dashboard) */}
+        {currentTab === 'salaries' && (
+          <div className="max-w-4xl space-y-8 animate-in fade-in duration-500">
+            
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                Salary ranges at {companyName}
+              </h2>
+              <p className="text-slate-600 dark:text-slate-400 text-[15px]">
+                Estimated compensation ranges based on {jobsWithSalary.length} active job postings.
+              </p>
+            </div>
+
+            {jobsWithSalary.length > 0 ? (
+              <>
+                {/* 🌟 Top Stats */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                  {/* Highest Salary Box (Job name removed) */}
+                  <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center items-center text-center">
+                    <span className="block text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                      Highest Compensation
+                    </span>
+                    <h3 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white mb-1 drop-shadow-sm">
+                      {highestSalaryFormatted}
+                    </h3>
+                  </div>
+
+                  {/* Transparency Box */}
+                  <div className="bg-white dark:bg-[#131b2b] border border-gray-200 dark:border-gray-800 rounded-3xl p-6 flex flex-col justify-center items-center text-center shadow-sm">
+                    <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                      Data Availability
+                    </span>
+                    <h3 className="text-4xl sm:text-5xl font-black text-emerald-500 mb-1">
+                      {Math.round((jobsWithSalary.length / jobList.length) * 100)}%
+                    </h3>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      of open roles have disclosed salaries.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 📊 THE VISUAL BAR GRAPH */}
+                <div className="bg-white dark:bg-[#131b2b] rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden p-6 sm:p-8">
+                  <div className="flex justify-between items-end mb-8 border-b border-gray-100 dark:border-gray-800/60 pb-4">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                      Salary ranges by position
+                    </h3>
+                    {/* Legend */}
+                    <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-200 dark:bg-indigo-900"></span> Min</span>
+                      <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Max</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-8">
+                    {jobsWithSalary.map(job => {
+                      // Calculate positions for the CSS graph
+                      const leftPercent = (job.parsedMin / chartMaxScale) * 100;
+                      // Ensure a minimum width of 2% so even exact salaries (min=max) show up as a dot
+                      const widthPercent = Math.max(2, ((job.parsedMax - job.parsedMin) / chartMaxScale) * 100);
+
+                      return (
+                        <div key={job.id} className="group relative">
+                          <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+                            {/* Job Title */}
+                            <div className="w-full md:w-1/3 flex-shrink-0">
+                              <Link href={`/jobs/${createSlug(job.title, job.id)}`} className="text-[15px] font-bold text-gray-900 dark:text-white hover:text-indigo-500 transition-colors line-clamp-1">
+                                {job.title}
+                              </Link>
+                            </div>
+                            
+                            {/* Visual Bar Track */}
+                            <div className="flex-1 h-6 bg-gray-50 dark:bg-gray-800/50 rounded-full relative w-full overflow-hidden border border-gray-100 dark:border-gray-800 hidden md:block">
+                              {/* The actual colored bar representing the range */}
+                              <div 
+                                className="absolute h-full bg-gradient-to-r from-indigo-300 to-indigo-500 dark:from-indigo-600 dark:to-indigo-400 rounded-full transition-all duration-700 ease-out group-hover:opacity-80"
+                                style={{ left: `${leftPercent}%`, width: `${widthPercent}%` }}
+                              ></div>
+                            </div>
+
+                            {/* Salary Text */}
+                            <div className="w-full md:w-1/4 flex-shrink-0 text-right">
+                              <span className="font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 rounded-lg text-sm">
+                                {job.salary_range}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {/* Mobile Bar Track (Shows only on small screens) */}
+                          <div className="w-full h-4 bg-gray-50 dark:bg-gray-800/50 rounded-full relative overflow-hidden border border-gray-100 dark:border-gray-800 block md:hidden mt-2">
+                              <div 
+                                className="absolute h-full bg-gradient-to-r from-indigo-300 to-indigo-500 dark:from-indigo-600 dark:to-indigo-400 rounded-full"
+                                style={{ left: `${leftPercent}%`, width: `${widthPercent}%` }}
+                              ></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Graph X-Axis Label */}
+                  <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800/60 flex justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <span>$0</span>
+                    <span>${(globalMax / 1000).toFixed(0)}k+</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Fallback: Agar koi salary na ho */
+              <div className="py-20 bg-white dark:bg-[#131b2b] rounded-3xl text-center border border-dashed border-gray-300 dark:border-gray-700 shadow-sm">
+                 <div className="text-5xl mb-4 opacity-40">💸</div>
+                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No salary data available</h3>
+                 <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto text-[15px] leading-relaxed">
+                   {companyName} hasn't disclosed salaries for their current open roles. We'll update this section automatically as soon as data becomes available.
+                 </p>
+              </div>
+            )}
+          </div>
+        )}
+
+      </div>
+      {/* 📱 STICKY MOBILE CTA (Company Page) - Cleaned Up */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 w-full bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800 p-4 z-[9999] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+        <div className="flex items-center justify-center max-w-md mx-auto">
+          
+          {/* 🚀 Main Action: Visit Website ya Jobs Tab (Sirf Akela Button) */}
+          {website !== "#" ? (
+            <a 
+              href={website} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[15px] text-center font-extrabold rounded-xl shadow-lg shadow-indigo-500/25 active:scale-95 transition-all flex justify-center items-center gap-2"
+            >
+              Visit Website <ArrowUpRight size={18} />
+            </a>
+          ) : (
+            <Link 
+              href="?tab=jobs"
+              className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[15px] text-center font-extrabold rounded-xl shadow-lg shadow-indigo-500/25 active:scale-95 transition-all flex justify-center items-center gap-2"
+            >
+              View {jobList.length} Jobs
+            </Link>
+          )}
+          
         </div>
       </div>
     </div>
   );
-
 }

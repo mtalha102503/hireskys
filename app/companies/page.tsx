@@ -71,7 +71,7 @@ export default function CompaniesPage() {
           if (j.source && j.salary_range && !j.salary_range.toLowerCase().includes('not disclosed')) {
             const nums = j.salary_range.match(/\d+(?:,\d+)*/g);
             if (nums) {
-              const maxVal = Math.max(...nums.map(n => parseInt(n.replace(/,/g, ''), 10)));
+              const maxVal = Math.max(...nums.map((n: string) => parseInt(n.replace(/,/g, ''), 10)));
               if (maxVal > (maxSals[j.source] || 0)) maxSals[j.source] = maxVal;
             }
           }

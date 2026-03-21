@@ -3,14 +3,16 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTheme } from "next-themes";
 import { supabase } from '@/lib/supabaseClient';
+import { usePathname } from 'next/navigation';
 import { 
   Menu, X, Sun, Moon, LogOut, User as UserIcon, 
-  ArrowRight, ShieldAlert, BellRing, History, Search 
+  ArrowRight, ShieldAlert, BellRing, History, Search , Building2
 } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false); // Mobile Menu State
   const [user, setUser] = useState<User | null>(null);
   const { theme, setTheme } = useTheme();
@@ -79,14 +81,24 @@ export default function Navbar() {
               Post a Job <ArrowRight size={16} />
             </Link>
           )}
+          {/* 👇 COMPANIES BUTTON (Balanced & Premium) */}
+          {pathname !== '/onboarding' && (
+            <Link 
+              href="/companies" 
+              className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/20 dark:hover:text-indigo-400 px-4 py-2.5 rounded-xl transition-all duration-200 border border-transparent dark:hover:border-indigo-500/30"
+            >
+                <Building2 size={18} />
+                <span>Companies</span>
+            </Link>
+          )}
 
-          {/* 👇 HISTORY BUTTON (Ab ye Solid Blue Search Button jesa hai) */}
+          {/* 👇 HISTORY BUTTON (Balanced & Premium) */}
           {user && (
             <Link 
               href="/history" 
-              className="flex items-center gap-2 text-sm font-bold text-white bg-[#4F46E5] hover:bg-[#4338ca] px-6 py-2.5 rounded-full transition-all shadow-md shadow-indigo-500/20 hover:scale-[1.02]"
+              className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/20 dark:hover:text-indigo-400 px-4 py-2.5 rounded-xl transition-all duration-200 border border-transparent dark:hover:border-indigo-500/30"
             >
-                <History size={18} className="text-white" />
+                <History size={18} />
                 <span>History</span>
             </Link>
           )}
@@ -148,8 +160,14 @@ export default function Navbar() {
                     Post a Job <ArrowRight size={18} />
                 </Link>
             )}
+            
             {user ? (
                 <>
+                  {pathname !== '/onboarding' && (
+                        <Link href="/companies" onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-500">
+                            <Building2 size={18} /> Top Companies
+                        </Link>
+                    )}
                     <Link href="/history" onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-500">
                         <History size={18} /> Job History
                     </Link>

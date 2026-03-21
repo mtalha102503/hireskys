@@ -33,7 +33,7 @@ export default function CompaniesPage() {
     fetchTotalCount();
   }, []);
   // Har option ke liye text aur icon ka map
-  const sortOptionsData: Record<string, { text: string; icon: JSX.Element }> = {
+  const sortOptionsData: Record<string, { text: string; icon: React.ReactNode }> = {
     'a-z': { text: 'Alphabetical (A-Z)', icon: <ArrowDownAZ className="w-4 h-4 text-gray-500" /> },
     'z-a': { text: 'Alphabetical (Z-A)', icon: <ArrowUpZA className="w-4 h-4 text-gray-500" /> },
     'newest': { text: 'Newest Arrivals', icon: <Rocket className="w-4 h-4 text-gray-500" /> },

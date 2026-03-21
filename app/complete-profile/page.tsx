@@ -501,49 +501,81 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
     </div>
 </div>
 
-                {/* 🌍 COUNTRY CODE INPUT (Unchanged) */}
-                {/* PREMIUM PHONE INPUT GROUP */}
+                {/* 🚀 SMART ALERT PREFERENCE TOGGLE */}
 <div>
     <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">
-        WhatsApp Number
+        How should we send you Job Alerts?
     </label>
-    
-    {/* Unified Container */}
-    <div className="flex items-center w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all duration-200 hover:border-gray-300">
-        
-        {/* Country Code Selection (No Borders styling) */}
-        <div className="relative h-full bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-gray-700 min-w-[110px]">
-             <select 
-                value={selectedCountryCode}
-                onChange={(e) => setSelectedCountryCode(e.target.value)}
-                className="w-full h-full bg-transparent text-gray-900 dark:text-white pl-3 pr-6 text-sm font-bold outline-none appearance-none cursor-pointer"
-            >
-                {COUNTRIES.sort((a, b) => a.name === "Pakistan" ? -1 : a.name.localeCompare(b.name)).map((country, index) => (
-                    <option key={index} value={country.code} className="text-black">
-                        {country.flag} {country.code}
-                    </option>
-                ))}
-            </select>
-            {/* Tiny Chevron for Code */}
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                <ChevronDown size={14} />
-            </div>
-        </div>
 
-        {/* Number Input (Clean, No borders) */}
-        <div className="relative flex-grow h-full">
-            <input 
-                type="tel" 
-                value={formData.whatsapp}
-                onChange={(e) => setFormData({...formData, whatsapp: e.target.value.replace(/[^0-9]/g, '')})}
-                className="w-full h-full bg-transparent text-gray-900 dark:text-white px-4 font-medium text-lg outline-none placeholder:text-gray-300"
-                placeholder="300 1234567"
-            />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                <Phone size={18} />
+    {/* The Toggle Buttons */}
+    <div className="flex p-1.5 bg-gray-100 dark:bg-white/5 rounded-2xl mb-4 border border-gray-200 dark:border-gray-800">
+        <button 
+            type="button"
+            onClick={() => setAlertPreference('whatsapp')} 
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${alertPreference === 'whatsapp' ? 'bg-white dark:bg-[#151b2d] text-green-600 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+        >
+            <Phone size={18}/> WhatsApp
+        </button>
+        <button 
+            type="button"
+            onClick={() => setAlertPreference('telegram')} 
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${alertPreference === 'telegram' ? 'bg-white dark:bg-[#151b2d] text-blue-500 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+        >
+            <Send size={18}/> Telegram
+        </button>
+    </div>
+
+    {/* Conditionally Render Inputs based on Choice */}
+    {alertPreference === 'whatsapp' ? (
+        /* Unified Container for WhatsApp */
+        <div className="flex items-center w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all duration-200 hover:border-gray-300 animate-in fade-in slide-in-from-top-2">
+            
+            {/* Country Code Selection */}
+            <div className="relative h-full bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-gray-700 min-w-[110px]">
+                 <select 
+                    value={selectedCountryCode}
+                    onChange={(e) => setSelectedCountryCode(e.target.value)}
+                    className="w-full h-full bg-transparent text-gray-900 dark:text-white pl-3 pr-6 text-sm font-bold outline-none appearance-none cursor-pointer"
+                >
+                    {COUNTRIES.sort((a, b) => a.name === "Pakistan" ? -1 : a.name.localeCompare(b.name)).map((country, index) => (
+                        <option key={index} value={country.code} className="text-black">
+                            {country.flag} {country.code}
+                        </option>
+                    ))}
+                </select>
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <ChevronDown size={14} />
+                </div>
+            </div>
+
+            {/* Number Input */}
+            <div className="relative flex-grow h-full">
+                <input 
+                    type="tel" 
+                    value={formData.whatsapp}
+                    onChange={(e) => setFormData({...formData, whatsapp: e.target.value.replace(/[^0-9]/g, '')})}
+                    className="w-full h-full bg-transparent text-gray-900 dark:text-white px-4 font-medium text-lg outline-none placeholder:text-gray-300"
+                    placeholder="300 1234567"
+                />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <Phone size={18} />
+                </div>
             </div>
         </div>
-    </div>
+    ) : (
+        /* Telegram Info Box */
+        <div className="w-full p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+            <div className="bg-blue-100 dark:bg-blue-800/50 p-2 rounded-full text-blue-600 dark:text-blue-400">
+                <Send size={20} />
+            </div>
+            <div>
+                <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300">Smart Choice! 🚀</h4>
+                <p className="text-xs text-blue-700 dark:text-blue-400 mt-1 leading-relaxed">
+                    You will connect your Telegram account in the very next step after saving. Get ready for lightning-fast job alerts!
+                </p>
+            </div>
+        </div>
+    )}
 </div>
 {/* 📍 PROFESSIONAL LOCATION BLOCK (UPDATED) */}
 <div className="bg-gray-50 dark:bg-white/5 p-5 rounded-3xl border border-gray-200 dark:border-gray-800 space-y-5">

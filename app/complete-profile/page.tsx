@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { 
   User, Phone, CheckCircle, ArrowRight, Loader2, 
   LayoutGrid, Calendar, X ,MapPin, Building2, Hash, ChevronDown, Briefcase,
-  BellRing, Lock // 👈 Ye 2 naye icons add kar lo
+  BellRing, Lock, Send // 👈 Ye 2 naye icons add kar lo
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -210,7 +210,9 @@ const COUNTRIES = [
 export default function CompleteProfile() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+const [alertPreference, setAlertPreference] = useState<'whatsapp' | 'telegram'>('whatsapp'); // 🚀 YEH NAYI STATE HAI
   const [saving, setSaving] = useState(false);
+const [telegramClicked, setTelegramClicked] = useState(false); // 🚀 YEH NAYI STATE ADD KARO
   const [showSuccess, setShowSuccess] = useState(false);
   const [mySkills, setMySkills] = useState<string[]>([]);
   const [user, setUser] = useState<any>(null);
@@ -306,14 +308,19 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   };
 
   const handleSave = async () => {
-    if (!formData.username || !formData.whatsapp || !formData.primary_role || !formData.birth_date) {
-        alert("Please fill all fields.");
+    // 🚀 FIX: Agar WhatsApp select kiya hai, tabhi number mango, warna chhor do
+    if (!formData.username || !formData.primary_role || !formData.birth_date) {
+        alert("Please fill all required fields.");
+        return;
+    }
+    if (alertPreference === 'whatsapp' && !formData.whatsapp) {
+        alert("Please enter your WhatsApp number.");
         return;
     }
     setSaving(true);
     
     // 🔗 Merge Country Code + Number
-    const fullWhatsApp = `${selectedCountryCode}${formData.whatsapp}`;
+    const fullWhatsApp = alertPreference === 'whatsapp' ? `${selectedCountryCode}${formData.whatsapp}` : null;
 
     const { error } = await supabase.from('profiles').update({
         username: formData.username,
@@ -340,47 +347,64 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
     <div className="min-h-screen bg-gray-50 dark:bg-[#0B0F19] transition-colors duration-300">
       <div className="fixed top-0 w-full z-50"><Navbar /></div>
 
-{/* 🟢 FINAL SUCCESS MODAL (Updated with 2 Buttons) */}
+{/* 🟢 FINAL SUCCESS MODAL (WITH MAGIC TIMER LOGIC) */}
 {showWhatsAppModal && (
   <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-    
     <div className="bg-white dark:bg-[#0f141f] w-full max-w-sm rounded-3xl p-8 shadow-2xl relative border border-gray-100 dark:border-gray-800 animate-in zoom-in-95 duration-300 text-center">
       
-      {/* Success Icon */}
-      <div className="w-24 h-24 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
-        <CheckCircle size={48} className="text-green-600 dark:text-green-400" />
-      </div>
-
-      {/* Heading */}
-      <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">
-        You're All Set! 🚀
-      </h2>
-
-      {/* Message */}
-      <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8">
-        Your basic details are saved. Now, build your professional identity to get hired fast.
-      </p>
-
-      {/* 👇 YAHAN CHANGES HAIN (2 BUTTONS) */}
-      <div className="flex flex-col gap-3">
-        
-        {/* Button 1: Complete Full Profile (Primary) */}
-        <button 
-          onClick={() => router.push('/onboarding')} 
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/20 transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
-        >
-          <Briefcase size={20} /> Complete Full Profile
-        </button>
-
-        {/* Button 2: Go to Dashboard (Secondary) */}
-        <button 
-          onClick={() => router.push('/')} 
-          className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-3.5 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2"
-        >
-          Skip to Dashboard
-        </button>
-
-      </div>
+      {/* 🤖 SCENARIO 1: TELEGRAM CHUNA HAI AUR ABHI CLICK NAHI KIYA */}
+      {alertPreference === 'telegram' && !telegramClicked ? (
+        <>
+          <div className="w-24 h-24 bg-blue-100 dark:bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+            <Send size={48} className="text-blue-600 dark:text-blue-400 ml-2" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">Almost Done! 🤖</h2>
+          <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8">
+            Click below to activate your Telegram alerts. Once connected, come back to this tab!
+          </p>
+          <div className="flex flex-col gap-3">
+            <a 
+              href={`https://t.me/HireSkysAlertsBot?start=${user?.id}`} // ⚠️ APNE BOT KA NAAM LIKHNA
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                // 🚀 THE MAGIC TIMER: 8 seconds baad automatically UI change ho jayega
+                setTimeout(() => {
+                  setTelegramClicked(true);
+                }, 8000); 
+              }}
+              className="w-full bg-[#0088cc] hover:bg-[#0077b5] text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-500/20 transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
+            >
+              <Send size={20} /> Connect Telegram Now
+            </a>
+          </div>
+        </>
+      ) : (
+        /* ✅ SCENARIO 2: WHATSAPP CHUNA HAI -YA- TELEGRAM CLICK KARKE WAPIS AA GAYA HAI */
+        <>
+          <div className="w-24 h-24 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+            <CheckCircle size={48} className="text-green-600 dark:text-green-400" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">You're All Set! 🚀</h2>
+          <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8">
+            Your basic details are saved. Now, build your professional identity to get hired fast.
+          </p>
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={() => router.push('/onboarding')} 
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/20 transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
+            >
+              <Briefcase size={20} /> Complete Full Profile
+            </button>
+            <button 
+              onClick={() => router.push('/')} 
+              className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-3.5 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2"
+            >
+              Skip to Dashboard
+            </button>
+          </div>
+        </>
+      )}
 
     </div>
   </div>

@@ -210,7 +210,7 @@ const COUNTRIES = [
 export default function CompleteProfile() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-const [alertPreference, setAlertPreference] = useState<'whatsapp' | 'telegram'>('whatsapp'); // 🚀 YEH NAYI STATE HAI
+const [alertPreference, setAlertPreference] = useState<'whatsapp' | 'telegram' | 'none'>('none');
   const [saving, setSaving] = useState(false);
 const [telegramClicked, setTelegramClicked] = useState(false); // 🚀 YEH NAYI STATE ADD KARO
   const [showSuccess, setShowSuccess] = useState(false);
@@ -308,13 +308,12 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   };
 
   const handleSave = async () => {
-    // 🚀 FIX: Agar WhatsApp select kiya hai, tabhi number mango, warna chhor do
     if (!formData.username || !formData.primary_role || !formData.birth_date) {
         alert("Please fill all required fields.");
         return;
     }
     if (alertPreference === 'whatsapp' && !formData.whatsapp) {
-        alert("Please enter your WhatsApp number.");
+        alert("Please enter your WhatsApp number, or select 'Skip' for alerts.");
         return;
     }
     setSaving(true);
@@ -502,35 +501,41 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
 </div>
 
                 {/* 🚀 SMART ALERT PREFERENCE TOGGLE */}
+{/* 🚀 SMART ALERT PREFERENCE TOGGLE */}
 <div>
-    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">
-        How should we send you Job Alerts?
+    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase flex items-center gap-1.5 mb-2 ml-1">
+        <BellRing size={14} className="text-indigo-500" /> Optional: VIP Job Alerts
     </label>
 
-    {/* The Toggle Buttons */}
+    {/* The Toggle Buttons (Ab 3 options hain) */}
     <div className="flex p-1.5 bg-gray-100 dark:bg-white/5 rounded-2xl mb-4 border border-gray-200 dark:border-gray-800">
         <button 
             type="button"
             onClick={() => setAlertPreference('whatsapp')} 
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${alertPreference === 'whatsapp' ? 'bg-white dark:bg-[#151b2d] text-green-600 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+            className={`flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${alertPreference === 'whatsapp' ? 'bg-white dark:bg-[#151b2d] text-green-600 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
         >
-            <Phone size={18}/> WhatsApp
+            <Phone size={16}/> <span className="hidden sm:inline">WhatsApp</span><span className="sm:hidden">WA</span>
         </button>
         <button 
             type="button"
             onClick={() => setAlertPreference('telegram')} 
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${alertPreference === 'telegram' ? 'bg-white dark:bg-[#151b2d] text-blue-500 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+            className={`flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${alertPreference === 'telegram' ? 'bg-white dark:bg-[#151b2d] text-blue-500 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
         >
-            <Send size={18}/> Telegram
+            <Send size={16}/> Telegram
+        </button>
+        <button 
+            type="button"
+            onClick={() => setAlertPreference('none')} 
+            className={`flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${alertPreference === 'none' ? 'bg-white dark:bg-[#151b2d] text-red-500 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+        >
+            <X size={16}/> Skip
         </button>
     </div>
 
     {/* Conditionally Render Inputs based on Choice */}
-    {alertPreference === 'whatsapp' ? (
+    {alertPreference === 'whatsapp' && (
         /* Unified Container for WhatsApp */
         <div className="flex items-center w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all duration-200 hover:border-gray-300 animate-in fade-in slide-in-from-top-2">
-            
-            {/* Country Code Selection */}
             <div className="relative h-full bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-gray-700 min-w-[110px]">
                  <select 
                     value={selectedCountryCode}
@@ -547,8 +552,6 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
                     <ChevronDown size={14} />
                 </div>
             </div>
-
-            {/* Number Input */}
             <div className="relative flex-grow h-full">
                 <input 
                     type="tel" 
@@ -562,16 +565,33 @@ const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
                 </div>
             </div>
         </div>
-    ) : (
+    )}
+
+    {alertPreference === 'telegram' && (
         /* Telegram Info Box */
         <div className="w-full p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
-            <div className="bg-blue-100 dark:bg-blue-800/50 p-2 rounded-full text-blue-600 dark:text-blue-400">
+            <div className="bg-blue-100 dark:bg-blue-800/50 p-2 rounded-full text-blue-600 dark:text-blue-400 flex-shrink-0">
                 <Send size={20} />
             </div>
             <div>
                 <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300">Smart Choice! 🚀</h4>
                 <p className="text-xs text-blue-700 dark:text-blue-400 mt-1 leading-relaxed">
                     You will connect your Telegram account in the very next step after saving. Get ready for lightning-fast job alerts!
+                </p>
+            </div>
+        </div>
+    )}
+
+    {alertPreference === 'none' && (
+        /* Skip Info Box */
+        <div className="w-full p-4 bg-gray-50 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700/50 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+            <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-gray-500 dark:text-gray-400 flex-shrink-0">
+                <BellRing size={20} />
+            </div>
+            <div>
+                <h4 className="text-sm font-bold text-gray-900 dark:text-gray-300">No Alerts Selected</h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                    You won't receive instant notifications for new jobs. You can always enable them later from your dashboard.
                 </p>
             </div>
         </div>

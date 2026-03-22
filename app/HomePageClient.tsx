@@ -11,7 +11,7 @@ import {
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
   User as UserIcon, Smartphone, Cpu, Edit3, X, Zap, Facebook, Linkedin,
-  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp, ChevronUp, Check, MapPin, Eye
+  Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp, ChevronUp, Check, MapPin, Eye, MessageCircle, Send, AlertTriangle
 } from 'lucide-react';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
@@ -1318,28 +1318,119 @@ return (
 {/* 🆕 VVIP Contextual Description (UX Magic) */}
 <p className="mt-2 text-base md:text-lg text-slate-600 dark:text-slate-400 font-medium">
     {loggedInDescription}
-</p>
+</p> 
                     </div>
+ 
+                    {/* --- RIGHT SIDE: STATS & ALERTS ROW --- */}
+{/* 🚀 FIXED FOR MOBILE: Grid on Mobile, Flex on Desktop */}
+<div className="grid grid-cols-2 md:flex md:flex-nowrap items-stretch gap-3 w-full md:w-auto justify-start md:justify-end mt-4 md:mt-0">
+    
+    {/* 🚨 1. FOMO BANNER (DANGER / RED THEME) */}
+    {(!userProfile?.whatsapp && !userProfile?.telegram_chat_id) && (
+        <div className="col-span-2 md:w-auto w-full relative group p-3.5 bg-gradient-to-br from-red-600 via-red-500 to-rose-600 rounded-2xl border border-red-400 shadow-[0_0_20px_rgba(220,38,38,0.5)] flex flex-col justify-center min-w-[230px] transition-transform hover:-translate-y-1">
+            <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5 text-white">
+                    <AlertTriangle size={16} className="text-yellow-300 animate-pulse drop-shadow-md" />
+                    <span className="text-[11px] font-black uppercase tracking-wider text-white drop-shadow-md">Action Required</span>
+                </div>
+                <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-200 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white shadow-sm"></span>
+                </span>
+            </div>
+            <div className="text-[9px] font-bold text-red-100 mb-2.5 leading-tight opacity-90">
+                You're missing VIP job alerts! Connect now.
+            </div>
+            <div className="flex gap-2">
+                <a 
+                    href={`https://t.me/HireSkysBot?start=${currentUser?.id}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="flex-1 bg-white hover:bg-slate-50 text-red-600 text-[10px] font-black py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 shadow-lg transition-all transform active:scale-95"
+                >
+                    <Send size={12} className="fill-red-100"/> Telegram
+                </a>
+                <a 
+                    href={`https://wa.me/923021668060?text=Connect%20My%20HireSkys%20Account:%20${currentUser?.id}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="flex-1 bg-red-800 hover:bg-red-900 text-white text-[10px] font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 border border-red-700 shadow-inner transition-all transform active:scale-95"
+                >
+                    <MessageCircle size={12} className="fill-red-900"/> WhatsApp
+                </a>
+            </div>
+        </div>
+    )}
 
-                    <div className="flex gap-3 w-full md:w-auto justify-start md:justify-end">
-                        <Link href="/profile?tab=saved" className="group relative p-3 bg-white dark:bg-[#151b2d] rounded-xl border border-slate-200 dark:border-slate-800 min-w-[90px] text-center cursor-pointer transition-all hover:bg-indigo-600 hover:border-indigo-600 active:scale-95">
-                            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white leading-none mb-1">
-                                {savedJobIds.length}
-                            </div>
-                            <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-indigo-100 tracking-wide">
-                                Saved
-                            </div>
-                        </Link>
+    {/* 🟢 2. WHATSAPP ACTIVE (Telegram Nahi) */}
+    {(userProfile?.whatsapp && !userProfile?.telegram_chat_id) && (
+        <div className="col-span-2 md:w-auto w-full relative p-3.5 bg-white dark:bg-[#151b2d] rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 min-w-[200px] flex flex-col justify-center shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-transform hover:-translate-y-1">
+            <div className="flex items-center gap-2 mb-2.5">
+                <div className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </div>
+                <span className="text-[11px] font-black uppercase text-emerald-600 dark:text-emerald-400 tracking-wider flex items-center gap-1.5">
+                    <MessageCircle size={14} className="fill-emerald-500/20" /> WhatsApp Active
+                </span>
+            </div>
+            <a 
+                href={`https://t.me/HireSkysBot?start=${currentUser?.id}`}
+                target="_blank" rel="noopener noreferrer"
+                className="group/btn flex items-center justify-between w-full bg-slate-50 hover:bg-blue-50 dark:bg-slate-800/50 dark:hover:bg-blue-900/30 px-2.5 py-1.5 rounded-lg transition-all border border-slate-100 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-800"
+            >
+                <span className="text-[10px] font-bold text-slate-500 group-hover/btn:text-blue-600 dark:text-slate-400 dark:group-hover/btn:text-blue-400 flex items-center gap-1.5">
+                    <Send size={10} className="group-hover/btn:animate-pulse" /> Switch to Telegram
+                </span>
+                <ArrowRight size={12} className="text-slate-400 group-hover/btn:text-blue-500 group-hover/btn:translate-x-0.5 transition-transform" />
+            </a>
+        </div>
+    )}
 
-                        <Link href="/profile?tab=details" className="group relative p-3 bg-white dark:bg-[#151b2d] rounded-xl border border-slate-200 dark:border-slate-800 min-w-[90px] text-center cursor-pointer transition-all hover:bg-emerald-600 hover:border-emerald-600 active:scale-95">
-                            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 group-hover:text-white leading-none mb-1">
-                                {userProfile?.skills?.length || 0}
-                            </div>
-                            <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-emerald-100 tracking-wide">
-                                Skills
-                            </div>
-                        </Link>
-                    </div>
+    {/* 🔵 3. TELEGRAM ACTIVE (WhatsApp Nahi) */}
+    {(!userProfile?.whatsapp && userProfile?.telegram_chat_id) && (
+        <div className="col-span-2 md:w-auto w-full relative p-3.5 bg-white dark:bg-[#151b2d] rounded-2xl border border-blue-500/30 dark:border-blue-500/20 min-w-[200px] flex flex-col justify-center shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-transform hover:-translate-y-1">
+            <div className="flex items-center gap-2 mb-2.5">
+                <div className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                </div>
+                <span className="text-[11px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-wider flex items-center gap-1.5">
+                    <Send size={14} className="fill-blue-500/20" /> Telegram Active
+                </span>
+            </div>
+            <a 
+                href={`https://wa.me/923021668060?text=START_ALERTS_PROFILE_COMPLETED_UID_${currentUser?.id}`}
+                target="_blank" rel="noopener noreferrer"
+                className="group/btn flex items-center justify-between w-full bg-slate-50 hover:bg-emerald-50 dark:bg-slate-800/50 dark:hover:bg-emerald-900/30 px-2.5 py-1.5 rounded-lg transition-all border border-slate-100 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-emerald-800"
+            >
+                <span className="text-[10px] font-bold text-slate-500 group-hover/btn:text-emerald-600 dark:text-slate-400 dark:group-hover/btn:text-emerald-400 flex items-center gap-1.5">
+                    <MessageCircle size={10} className="group-hover/btn:animate-pulse" /> Switch to WhatsApp
+                </span>
+                <ArrowRight size={12} className="text-slate-400 group-hover/btn:text-emerald-500 group-hover/btn:translate-x-0.5 transition-transform" />
+            </a>
+        </div>
+    )}
+
+    {/* 📌 ORIGINAL SAVED CARD */}
+    <Link href="/profile?tab=saved" className="col-span-1 md:w-auto w-full group relative p-3 bg-white dark:bg-[#151b2d] rounded-2xl border border-slate-200 dark:border-slate-800 min-w-[90px] flex flex-col justify-center items-center cursor-pointer transition-all hover:bg-indigo-600 hover:border-indigo-600 hover:-translate-y-1 active:scale-95 shadow-sm">
+        <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white leading-none mb-1">
+            {savedJobIds.length}
+        </div>
+        <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-indigo-100 tracking-wide">
+            Saved
+        </div>
+    </Link>
+
+    {/* 📌 ORIGINAL SKILLS CARD */}
+    <Link href="/profile?tab=details" className="col-span-1 md:w-auto w-full group relative p-3 bg-white dark:bg-[#151b2d] rounded-2xl border border-slate-200 dark:border-slate-800 min-w-[90px] flex flex-col justify-center items-center cursor-pointer transition-all hover:bg-emerald-600 hover:border-emerald-600 hover:-translate-y-1 active:scale-95 shadow-sm">
+        <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 group-hover:text-white leading-none mb-1">
+            {userProfile?.skills?.length || 0}
+        </div>
+        <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-emerald-100 tracking-wide">
+            Skills
+        </div>
+    </Link>
+
+</div>
                 </div>
 
                 <div className="max-w-5xl mx-auto w-full mt-10 space-y-8 relative z-40">

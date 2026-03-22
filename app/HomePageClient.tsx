@@ -654,7 +654,7 @@ const COUNTRIES = [
   const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
 
   useEffect(() => {
-    setSearchQuery(searchParams.get('q') || '');
+    // setSearchQuery(searchParams.get('q') || ''); // 👈 Isko URRA DO! (Initial state me pehle se handle hai)
     setActiveCategory(searchParams.get('category') || 'All');
     setActiveSubTag(searchParams.get('tag') || '');
     setFilterJobType(searchParams.get('type') || '');
@@ -904,14 +904,21 @@ const COUNTRIES = [
     // Bina page refresh kiye URL change karo
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
-  const handleManualSearch = (e: React.FormEvent) => {
+ const handleManualSearch = (e: React.FormEvent) => {
       e.preventDefault();
       if (searchType === 'talent') {
           router.push(`/talent?search=${encodeURIComponent(searchQuery)}`);
       } else {
-          // 🚀 THE FIX: Search button/Enter dabane par bhi URL update ho
+          // 🚀 THE FIX: Search button/Enter dabane par URL update ho
           updateURLParams('q', searchQuery.trim()); 
           fetchJobs(0, true);
+
+          // 👇 YEH 3 NAYI LINES ADD KI HAIN (Auto-Scroll ke liye)
+          if (jobsSectionRef.current) {
+              setTimeout(() => {
+                  jobsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 100); // 100ms ka delay taake UI pehle thora saans le le
+          }
       }
   }
 // 👇 Ye naya function add karo
@@ -1279,7 +1286,7 @@ return (
                         </div>
                         <div className="flex items-center gap-3">
                             <CheckCircle size={20} className="text-green-500 flex-shrink-0" />
-                            <span className="font-medium">Get Instant Job Alert Related to your skill on Whatsapp and Email</span>
+                            <span className="font-medium">Get ,nt Job Alert Related to your skill on Whatsapp and Email</span>
                         </div>
                     </div>
 

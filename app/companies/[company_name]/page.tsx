@@ -293,11 +293,11 @@ export default async function CompanyPage({ params, searchParams }: Props) {
         </div>
       </div>
 
-      {/* 🌟 DYNAMIC CONTENT AREA (Neechay sirf wahi aayega jo Tab open hai) */}
+      {/* 🌟 DYNAMIC CONTENT AREA (SEO HACK APPLIED) */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         
         {/* TAB 1: OVERVIEW */}
-        {currentTab === 'overview' && (
+        <div className={currentTab === 'overview' ? 'block animate-in fade-in duration-500' : 'hidden'}>
           <div className="bg-white dark:bg-[#131b2b] rounded-3xl p-8 border border-gray-200 dark:border-gray-800 shadow-sm max-w-4xl">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">About {companyName}</h2>
             <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
@@ -309,14 +309,12 @@ export default async function CompanyPage({ params, searchParams }: Props) {
             <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-gray-100 dark:border-gray-800">
               <div>
                 <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Founded In</span>
-                {/* 🚀 AI SE AYA HUA SAL YAHAN AYEGA */}
                 <span className="font-semibold text-gray-900 dark:text-white">
                   {manualData.founded_year || "Not Disclosed"}
                 </span>
               </div>
               <div>
                 <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Company Size</span>
-                {/* 🚀 AI SE AYA HUA SIZE YAHAN AYEGA */}
                 <span className="font-semibold text-gray-900 dark:text-white">
                   {manualData.company_size ? `${manualData.company_size}` : "Growing Fast"}
                 </span>
@@ -327,10 +325,10 @@ export default async function CompanyPage({ params, searchParams }: Props) {
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* TAB 2: JOBS */}
-        {currentTab === 'jobs' && (
+        <div className={currentTab === 'jobs' ? 'block animate-in fade-in duration-500' : 'hidden'}>
           <div className="max-w-4xl space-y-4">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center justify-between">
               Open Positions
@@ -375,39 +373,41 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                </div>
             )}
           </div>
-        )}
+        </div>
 
         {/* TAB 3: BENEFITS */}
-        {currentTab === 'benefits' && extractedBenefits.length > 0 && (
-          <div className="max-w-4xl">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                Benefits and perks at {companyName}
-              </h2>
-              <p className="text-slate-600 dark:text-slate-400 text-[15px]">
-                Learn about the {extractedBenefits.length} benefits and perks {companyName} offers its remote employees.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 bg-white dark:bg-[#131b2b] p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm">
-              {extractedBenefits.map(b => (
-                <div key={b.id} className="flex flex-col group">
-                  <span className="text-3xl mb-4 group-hover:scale-110 transition-transform origin-left">{b.icon}</span>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-                    {b.title}
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {b.desc}
-                  </p>
-                </div>
-              ))}
+        {extractedBenefits.length > 0 && (
+          <div className={currentTab === 'benefits' ? 'block animate-in fade-in duration-500' : 'hidden'}>
+            <div className="max-w-4xl">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                  Benefits and perks at {companyName}
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 text-[15px]">
+                  Learn about the {extractedBenefits.length} benefits and perks {companyName} offers its remote employees.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 bg-white dark:bg-[#131b2b] p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm">
+                {extractedBenefits.map(b => (
+                  <div key={b.id} className="flex flex-col group">
+                    <span className="text-3xl mb-4 group-hover:scale-110 transition-transform origin-left">{b.icon}</span>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                      {b.title}
+                    </h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                      {b.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
-        {/* TAB 4: SALARIES (Premium Graphical Dashboard) */}
-        {currentTab === 'salaries' && (
-          <div className="max-w-4xl space-y-8 animate-in fade-in duration-500">
+        {/* TAB 4: SALARIES */}
+        <div className={currentTab === 'salaries' ? 'block animate-in fade-in duration-500' : 'hidden'}>
+          <div className="max-w-4xl space-y-8">
             
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
@@ -420,9 +420,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
 
             {jobsWithSalary.length > 0 ? (
               <>
-                {/* 🌟 Top Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                  {/* Highest Salary Box (Job name removed) */}
                   <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center items-center text-center">
                     <span className="block text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
                       Highest Compensation
@@ -432,7 +430,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                     </h3>
                   </div>
 
-                  {/* Transparency Box */}
                   <div className="bg-white dark:bg-[#131b2b] border border-gray-200 dark:border-gray-800 rounded-3xl p-6 flex flex-col justify-center items-center text-center shadow-sm">
                     <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                       Data Availability
@@ -446,13 +443,11 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                   </div>
                 </div>
 
-                {/* 📊 THE VISUAL BAR GRAPH */}
                 <div className="bg-white dark:bg-[#131b2b] rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden p-6 sm:p-8">
                   <div className="flex justify-between items-end mb-8 border-b border-gray-100 dark:border-gray-800/60 pb-4">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                       Salary ranges by position
                     </h3>
-                    {/* Legend */}
                     <div className="flex items-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-200 dark:bg-indigo-900"></span> Min</span>
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Max</span>
@@ -461,31 +456,25 @@ export default async function CompanyPage({ params, searchParams }: Props) {
 
                   <div className="space-y-8">
                     {jobsWithSalary.map(job => {
-                      // Calculate positions for the CSS graph
                       const leftPercent = (job.parsedMin / chartMaxScale) * 100;
-                      // Ensure a minimum width of 2% so even exact salaries (min=max) show up as a dot
                       const widthPercent = Math.max(2, ((job.parsedMax - job.parsedMin) / chartMaxScale) * 100);
 
                       return (
                         <div key={job.id} className="group relative">
                           <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                            {/* Job Title */}
                             <div className="w-full md:w-1/3 flex-shrink-0">
                               <Link href={`/jobs/${createSlug(job.title, job.id)}`} className="text-[15px] font-bold text-gray-900 dark:text-white hover:text-indigo-500 transition-colors line-clamp-1">
                                 {job.title}
                               </Link>
                             </div>
                             
-                            {/* Visual Bar Track */}
                             <div className="flex-1 h-6 bg-gray-50 dark:bg-gray-800/50 rounded-full relative w-full overflow-hidden border border-gray-100 dark:border-gray-800 hidden md:block">
-                              {/* The actual colored bar representing the range */}
                               <div 
                                 className="absolute h-full bg-gradient-to-r from-indigo-300 to-indigo-500 dark:from-indigo-600 dark:to-indigo-400 rounded-full transition-all duration-700 ease-out group-hover:opacity-80"
                                 style={{ left: `${leftPercent}%`, width: `${widthPercent}%` }}
                               ></div>
                             </div>
 
-                            {/* Salary Text */}
                             <div className="w-full md:w-1/4 flex-shrink-0 text-right">
                               <span className="font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 rounded-lg text-sm">
                                 {job.salary_range}
@@ -493,7 +482,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                             </div>
                           </div>
                           
-                          {/* Mobile Bar Track (Shows only on small screens) */}
                           <div className="w-full h-4 bg-gray-50 dark:bg-gray-800/50 rounded-full relative overflow-hidden border border-gray-100 dark:border-gray-800 block md:hidden mt-2">
                               <div 
                                 className="absolute h-full bg-gradient-to-r from-indigo-300 to-indigo-500 dark:from-indigo-600 dark:to-indigo-400 rounded-full"
@@ -505,7 +493,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                     })}
                   </div>
                   
-                  {/* Graph X-Axis Label */}
                   <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800/60 flex justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
                     <span>$0</span>
                     <span>${(globalMax / 1000).toFixed(0)}k+</span>
@@ -513,7 +500,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                 </div>
               </>
             ) : (
-              /* Fallback: Agar koi salary na ho */
               <div className="py-20 bg-white dark:bg-[#131b2b] rounded-3xl text-center border border-dashed border-gray-300 dark:border-gray-700 shadow-sm">
                  <div className="text-5xl mb-4 opacity-40">💸</div>
                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No salary data available</h3>
@@ -523,7 +509,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
               </div>
             )}
           </div>
-        )}
+        </div>
 
       </div>
       {/* 📱 STICKY MOBILE CTA (Company Page) - Cleaned Up */}

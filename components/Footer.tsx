@@ -39,7 +39,7 @@ export default function Footer() {
               <a href="https://x.com/hireskys" className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                 <X size={20} />
               </a>
-              <a href="https://instgram.com/hireskys" className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+              <a href="https://www.instagram.com/hireskys/" className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                 <Instagram size={20} />
               </a>
             </div>

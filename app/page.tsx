@@ -55,9 +55,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const queryString = currentParams.toString() ? `?${currentParams.toString()}` : '';
   const canonicalUrl = `https://www.hireskys.com${queryString}`;
 
-  // 🚀 FIX 3: THE MILLION DOLLAR SEO TRICK
-  // Do not let Google index raw keyword searches (e.g. ?q=asdfg) to save crawl budget
-  const shouldIndex = !query; 
+  // 🚀 THE SEO MASTERSTROKE (Phase 2 pSEO Transition)
+  // Ab hum sirf CLEAN Homepage (hireskys.com) ko index karenge.
+  // Baqi tamam filters (?category, ?location, ?q) ko block kar denge 
+  // kyunke ab SEO traffic humare naye /remote-jobs/... pages se aayegi!
+  const isCleanHomepage = !categoryRaw && !locationRaw && !tagRaw && !query;
+  const shouldIndex = isCleanHomepage; 
 
   return {
     title: dynamicTitle,

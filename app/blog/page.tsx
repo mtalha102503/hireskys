@@ -10,15 +10,23 @@ export const metadata: Metadata = {
 // 👇 JAB BHI NAYA ARTICLE LIKHO, BAS IS LIST MEIN ADD KAR DENA
 const BLOG_POSTS = [
   {
-    slug: 'introducing-hyrizon-ai', // Jo folder ka naam hai
+    slug: 'introducing-hyrizon-ai',
     title: 'Why We Built Hyrizon AI: The End of Fake Jobs',
     excerpt: 'Finding a remote job shouldn\'t feel like Russian Roulette. See how we use AI to detect fake clients and match you with elite opportunities.',
     date: 'Feb 15, 2026',
     author: 'Muhammad Talha',
     category: 'Launch',
-    image: '/blog-og-image.png' // Jo image humne abhi banayi thi
+    image: '/blog-og-image.png' 
   },
-  // Future articles yahan add honge...
+  {
+    slug: 'telegram-whatsapp-remote-job-alerts', 
+    title: 'The Ultimate Edge: Instant Telegram & VIP WhatsApp Alerts 🚀',
+    excerpt: 'Beat the competition with lightning-fast Telegram alerts, or upgrade to our VIP WhatsApp service for custom cover letters and interview strategies.',
+    date: 'Mar 24, 2026',
+    author: 'Muhammad Talha',
+    category: 'Product Update',
+    image: '/blog-telegram-update.jpg' 
+  }
 ];
 
 export default function BlogIndex() {

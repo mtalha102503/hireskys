@@ -1427,7 +1427,7 @@ return (
             </div>
             <div className="flex gap-2">
                 <a 
-                    href={`https://t.me/HireSkysBot?start=${currentUser?.id}`}
+                    href={`https://t.me/hireskys_bot?start=${currentUser?.id}`}
                     target="_blank" rel="noopener noreferrer"
                     className="flex-1 bg-white hover:bg-slate-50 text-red-600 text-[10px] font-black py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 shadow-lg transition-all transform active:scale-95"
                 >
@@ -1457,7 +1457,7 @@ return (
                 </span>
             </div>
             <a 
-                href={`https://t.me/HireSkysBot?start=${currentUser?.id}`}
+                href={`https://t.me/hireskys_bot?start=${currentUser?.id}`}
                 target="_blank" rel="noopener noreferrer"
                 className="group/btn flex items-center justify-between w-full bg-slate-50 hover:bg-blue-50 dark:bg-slate-800/50 dark:hover:bg-blue-900/30 px-2.5 py-1.5 rounded-lg transition-all border border-slate-100 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-800"
             >

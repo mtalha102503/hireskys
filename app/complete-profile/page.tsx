@@ -366,7 +366,7 @@ export default function CompleteProfile() {
                 </p>
                 <div className="flex flex-col gap-3">
                   <a 
-                    href={`https://t.me/HireSkysBot?start=${user?.id}`} // 🚀 BOT NAME FIXED HERE
+                    href={`https://t.me/hireskys_bot?start=${user?.id}`} // 🚀 BOT NAME FIXED HERE
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {

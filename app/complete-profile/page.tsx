@@ -398,7 +398,7 @@ export default function CompleteProfile() {
                     <Briefcase size={20} /> Complete Full Profile
                   </button>
                   <button 
-                    onClick={() => router.push('/profile')} // 🚀 CHANGED FROM '/' TO '/profile' (DASHBOARD)
+                    onClick={() => router.push('/')} // 🚀 CHANGED FROM '/' TO '/profile' (DASHBOARD)
                     className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-3.5 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2"
                   >
                     Skip to Dashboard

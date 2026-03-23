@@ -417,7 +417,13 @@ let matchedCountries: any[] = [];
   };
 };
  
-export default function Home() {
+export default function Home({
+    seoCategory,
+    seoLocation
+}: {
+    seoCategory?: string;
+    seoLocation?: string;
+} = {}) {
   const router = useRouter();
   const searchParams = useSearchParams(); 
   const pathname = usePathname();        
@@ -628,7 +634,7 @@ const COUNTRIES = [
   const [countrySearch, setCountrySearch] = useState("");
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [searchType, setSearchType] = useState<'jobs' | 'talent'>('jobs');
-  const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || 'All');
+  const [activeCategory, setActiveCategory] = useState(seoCategory || searchParams.get('category') || 'All');
   const [activeSubTag, setActiveSubTag] = useState(searchParams.get('tag') || '');
   const jobsSectionRef = useRef<HTMLDivElement>(null);
   const [isFallback, setIsFallback] = useState(false);
@@ -642,7 +648,7 @@ const COUNTRIES = [
   const categoryEntries = Object.entries(CATEGORIES);
   const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); 
   const subTagsRef = useRef<HTMLDivElement>(null);
-  const [filterCountry, setFilterCountry] = useState(searchParams.get('location') || '');
+  const [filterCountry, setFilterCountry] = useState(seoLocation || searchParams.get('location') || '');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
    const hyrizonUrl = searchQuery.trim() 
     ? `/hyrizon?q=${encodeURIComponent(searchQuery)}` 
@@ -653,13 +659,71 @@ const COUNTRIES = [
   const [seenJobs, setSeenJobs] = useState<number[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
 
-  useEffect(() => {
-    // setSearchQuery(searchParams.get('q') || ''); // 👈 Isko URRA DO! (Initial state me pehle se handle hai)
-    setActiveCategory(searchParams.get('category') || 'All');
-    setActiveSubTag(searchParams.get('tag') || '');
-    setFilterJobType(searchParams.get('type') || '');
-    setFilterCountry(searchParams.get('location') || '');
-  }, [searchParams]);
+useEffect(() => {
+      let newCategory = 'All';
+      let newTag = searchParams.get('tag') || '';
+
+      if (seoCategory) {
+          // 1. URL se aane wale text ko theek karo (Decodes %20 or %26)
+          const decodedCat = decodeURIComponent(seoCategory);
+          
+          // 2. Agar "all" ya "worldwide" hai toh seedha All set kardo
+          if (decodedCat.toLowerCase() === 'all' || decodedCat.toLowerCase() === 'worldwide') {
+              newCategory = 'All';
+          } else {
+              let found = false;
+              // 3. THE MAGIC: Sab kachra (spaces, -, &, .) hata kar sirf letters bacha lo matching ke liye
+              const urlSlug = decodedCat.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+              for (const [catName, data] of Object.entries(CATEGORIES)) {
+                  const cleanCatName = catName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                  
+                  // Main Category Match (e.g. "aimachinelearning" === "aimachinelearning")
+                  if (cleanCatName === urlSlug) {
+                      newCategory = catName;
+                      found = true;
+                      break;
+                  }
+                  
+                  // Sub Tag Match
+                  const matchedTag = (data as any).sub.find((t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug);
+                  if (matchedTag) {
+                      newCategory = catName; // UI mein Parent highlight rakho
+                      newTag = matchedTag;   // Tag activate kardo
+                      found = true;
+                      break;
+                  }
+              }
+              // Agar match nahi hua toh default name title-case karke dikha do
+              if (!found) newCategory = decodedCat.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          }
+      } else {
+          newCategory = searchParams.get('category') || 'All';
+      }
+
+      // Country ke naam ko URL param se theek text mein badlo
+      let finalCountry = '';
+      
+      if (seoLocation) {
+          const decodedLoc = decodeURIComponent(seoLocation).toLowerCase();
+          
+          if (decodedLoc === 'all') {
+              finalCountry = ''; // 100% Clear
+          } else if (decodedLoc === 'worldwide') {
+              finalCountry = 'Worldwide'; // Sirf tab select hoga jab user khud "Worldwide" dabe ga
+          } else {
+              // Proper Country Name (e.g. "United Kingdom")
+              finalCountry = decodeURIComponent(seoLocation).replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          }
+      } else {
+          finalCountry = searchParams.get('location') || '';
+      }
+
+      setActiveCategory(newCategory);
+      setActiveSubTag(newTag);
+      setFilterJobType(searchParams.get('type') || '');
+      setFilterCountry(finalCountry); // 👈 Ab yeh theek set hoga
+  }, [searchParams, seoCategory, seoLocation]);
 
   useEffect(() => {
     const storedSeen = JSON.parse(localStorage.getItem('seenJobs') || '[]');
@@ -809,27 +873,20 @@ const COUNTRIES = [
     }
   }, [currentUser]);
 
+ // 🚀 THE FINAL SCROLL FIX: Jhatkay se bachne ke liye delay 100ms se 500ms kar diya
   useEffect(() => {
-    if (activeSubTag && jobsSectionRef.current) {
-        setTimeout(() => {
+    if ((activeSubTag || (activeCategory && activeCategory !== 'All')) && jobsSectionRef.current) {
+        const timer = setTimeout(() => {
+            // Check karo ke user abhi bhi isi section par jana chahta hai
             jobsSectionRef.current?.scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'start' 
             });
-        }, 100);
-    }
-  }, [activeSubTag]);
+        }, 500); // 👈 500ms delay Next.js ke auto-scroll ko hara dega
 
-  useEffect(() => {
-    if (activeCategory !== 'All' && subTagsRef.current) {
-      setTimeout(() => {
-          subTagsRef.current?.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'center'
-          });
-      }, 300);
+        return () => clearTimeout(timer);
     }
-  }, [activeCategory]);
+  }, [activeSubTag, activeCategory]); // 👈 Dono par trigger hoga
 
   // 1. ORIGINAL FETCH JOBS (Sirf API call karega, URL ko nahi chairay ga)
   useEffect(() => {
@@ -866,20 +923,57 @@ const COUNTRIES = [
       return () => clearTimeout(timer);
   }, [searchQuery]); // 👈 Notice: Yeh sirf searchQuery par trigger hoga
 
-  // 🚀 SEO MAGIC: Helper functions to generate static URLs for GoogleBot
   const getCategoryUrl = (catName: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (catName === 'All') params.delete('category');
-      else params.set('category', catName);
-      params.delete('tag'); // Nayi category select ho to tag clear kardo
-      return `${pathname}?${params.toString()}`;
-  };
+      const formattedCat = catName === 'All' ? 'all' : catName.toLowerCase().replace(/\s+/g, '-');
+      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/\s+/g, '-') : 'all';
 
-  const getTagUrl = (tagName: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (activeSubTag === tagName) params.delete('tag');
-      else params.set('tag', tagName);
-      return `${pathname}?${params.toString()}`;
+      params.delete('category');
+      params.delete('location');
+      params.delete('tag'); 
+
+      const queryString = params.toString() ? `?${params.toString()}` : '';
+      
+      // 🚀 SMART ROUTING: Agar dono filter clear hain, toh saaf Homepage par le jao
+      if (formattedLoc === 'all' && formattedCat === 'all') return `/${queryString}`;
+      
+      return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
+  };
+// 🚀 SEO MAGIC: Location URL Generator
+  const getLocationUrl = (locName: string) => {
+      const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/\s+/g, '-');
+      const formattedLoc = (!locName) ? 'all' : locName.toLowerCase().replace(/\s+/g, '-');
+
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete('category');
+      params.delete('location');
+      params.delete('tag'); 
+
+      const queryString = params.toString() ? `?${params.toString()}` : '';
+      
+      // 🚀 SMART ROUTING: Agar dono filter clear hain, toh saaf Homepage par le jao
+      if (formattedLoc === 'all' && formattedCat === 'all') return `/${queryString}`;
+      
+      return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
+  };
+  const getTagUrl = (tagName: string) => {
+      // 🚀 FIX: Agar location khali hai toh URL mein 'all' dalo
+      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/\s+/g, '-') : 'all';
+      
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete('category');
+      params.delete('location');
+      params.delete('tag');
+      const queryString = params.toString() ? `?${params.toString()}` : '';
+
+      if (activeSubTag === tagName) {
+          const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/\s+/g, '-');
+          return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
+      } else {
+          const formattedTag = tagName.toLowerCase().replace(/\s+/g, '-');
+          // Agar hum already /remote-jobs/ mein hain toh wahi structure use karo
+          return `/remote-jobs/${formattedLoc}/${formattedTag}${queryString}`;
+      }
   };
 // 🚀 THE URL MAGIC FUNCTION
   const updateURLParams = (key: string, value: string) => {
@@ -1648,15 +1742,14 @@ return (
                                             <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
                                                 {COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).length > 0 ? (
                                                     COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).map((country) => (
-                                                        <Link
+                                                       <Link
     key={country.name}
-    href={`${pathname}?${new URLSearchParams({ ...Object.fromEntries(searchParams.entries()), location: country.name }).toString()}`}
+    href={getLocationUrl(country.name)} // 🚀 FIX 1: Naya SEO Link
     scroll={false}
     onClick={() => { 
         setFilterCountry(country.name); 
         setShowCountryDropdown(false); 
         setCountrySearch(""); 
-        // Note: updateURLParams ab zaroorat nahi kyunke Link khud URL change kar dega
     }}
     className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
 >
@@ -1673,13 +1766,18 @@ return (
                                             </div>
                                             
                                             {filterCountry && (
-                                                 <button
-                                                 onClick={() => { setFilterCountry(""); setShowCountryDropdown(false); setCountrySearch(""); updateURLParams('location', ''); }} // 🚀 ADDED updateURLParams
-                                                 className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
-                                             >
-                                                 Clear Location
-                                             </button>
-                                            )}
+    <button
+        onClick={() => { 
+            setFilterCountry(""); 
+            setShowCountryDropdown(false); 
+            setCountrySearch(""); 
+            router.push(getLocationUrl(''), { scroll: false }); // 🚀 FIX: Khali string bhejo
+        }}
+        className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
+    >
+        Clear Location
+    </button>
+)}
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -1727,24 +1825,25 @@ return (
                             </button>
                         )}
                          
-                         {activeCategory !== 'All' && (
-                            <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 w-full relative z-10">
-                                {(CATEGORIES as any)[activeCategory].sub.map((tag: any) => (
-        <Link 
-            key={tag} 
-            href={getTagUrl(tag)}
-            scroll={false}
-            onClick={() => {
-                const newTag = activeSubTag === tag ? '' : tag;
-                setActiveSubTag(newTag);
-            }} 
-            className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
-        >
-            {tag}
-        </Link>
-    ))}
-                            </motion.div>
-                        )}
+                         {activeCategory !== 'All' && CATEGORIES.hasOwnProperty(activeCategory) && (
+    <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10 w-full">
+        {/* 🚀 FIX: Yahan humne ?.sub?.map lagaya hai aur ( || [] ) ka fallback diya hai taake kabhi crash na ho! */}
+        {((CATEGORIES as any)[activeCategory]?.sub || []).map((tag: any) => (
+            <Link 
+                key={tag} 
+                href={getTagUrl(tag)}
+                scroll={false}
+                onClick={() => {
+                    const newTag = activeSubTag === tag ? '' : tag;
+                    setActiveSubTag(newTag);
+                }} 
+                className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
+            >
+                {tag}
+            </Link>
+        ))}
+    </motion.div>
+)}
                     </div>
                 </div>
             </div>
@@ -2100,13 +2199,12 @@ return (
                                               COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).map((country) => (
                                                   <Link
     key={country.name}
-    href={`${pathname}?${new URLSearchParams({ ...Object.fromEntries(searchParams.entries()), location: country.name }).toString()}`}
+    href={getLocationUrl(country.name)} // 🚀 FIX 1: Naya SEO Link
     scroll={false}
     onClick={() => { 
         setFilterCountry(country.name); 
         setShowCountryDropdown(false); 
         setCountrySearch(""); 
-        // Note: updateURLParams ab zaroorat nahi kyunke Link khud URL change kar dega
     }}
     className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
 >
@@ -2123,18 +2221,18 @@ return (
                                       </div>
                                       
                                       {filterCountry && (
-                                           <button
-                                           onClick={() => { 
-                                               setFilterCountry(""); 
-                                               setShowCountryDropdown(false); 
-                                               setCountrySearch(""); 
-                                               updateURLParams('location', ''); // 🚀 FIX: Clear Location from URL
-                                           }}
-                                           className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
-                                       >
-                                           Clear Location
-                                       </button>
-                                      )}
+    <button
+        onClick={() => { 
+            setFilterCountry(""); 
+            setShowCountryDropdown(false); 
+            setCountrySearch(""); 
+            router.push(getLocationUrl(''), { scroll: false }); // 🚀 FIX: Khali string bhejo
+        }}
+        className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
+    >
+        Clear Location
+    </button>
+)}
                                   </motion.div>
                               )}
                           </AnimatePresence>
@@ -2198,29 +2296,25 @@ return (
             </div>
 
             {/* Subtags */}
-                      {activeCategory !== 'All' && (
-                          <motion.div 
-                          ref={subTagsRef}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10"
-                          >
-                              {(CATEGORIES as any)[activeCategory].sub.map((tag: any) => (
-        <Link 
-            key={tag} 
-            href={getTagUrl(tag)}
-            scroll={false}
-            onClick={() => {
-                const newTag = activeSubTag === tag ? '' : tag;
-                setActiveSubTag(newTag);
-            }} 
-            className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
-        >
-            {tag}
-        </Link>
-    ))}
-                          </motion.div>
-                      )}
+                      {activeCategory !== 'All' && CATEGORIES.hasOwnProperty(activeCategory) && (
+    <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10 w-full">
+        {/* 🚀 FIX: Yahan humne ?.sub?.map lagaya hai aur ( || [] ) ka fallback diya hai taake kabhi crash na ho! */}
+        {((CATEGORIES as any)[activeCategory]?.sub || []).map((tag: any) => (
+            <Link 
+                key={tag} 
+                href={getTagUrl(tag)}
+                scroll={false}
+                onClick={() => {
+                    const newTag = activeSubTag === tag ? '' : tag;
+                    setActiveSubTag(newTag);
+                }} 
+                className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
+            >
+                {tag}
+            </Link>
+        ))}
+    </motion.div>
+)}
           </div>
         </header>
 

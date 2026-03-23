@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { createSlug } from '@/lib/utils'; 
 import { CATEGORIES } from '@/lib/categories'; 
 import { BLOG_POSTS } from '@/lib/blogData';
+
 // 🛠️ CONFIGURATION
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ"; 
@@ -53,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // ==========================================
-  // 3️⃣ CATEGORIES & SUBCATEGORIES
+  // 3️⃣ CATEGORIES & SUBCATEGORIES (Tumhara purana logic 100% same hai)
   // ==========================================
   let categoryRoutes: MetadataRoute.Sitemap = [];
 
@@ -102,26 +103,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // ==========================================
-  // 5️⃣ DYNAMIC COMPANIES (🆕 NEW SECTION)
+  // 5️⃣ DYNAMIC COMPANIES
   // ==========================================
-  // Yahan hum companies fetch kar rahe hain
   const { data: companies } = await supabase
     .from('companies')
-    .select('slug, created_at'); // Agar 'updated_at' hai to wo use karna better hai
+    .select('slug, created_at'); 
 
   let companyRoutes: MetadataRoute.Sitemap = [];
 
   if (companies) {
     companyRoutes = companies.map((company) => ({
-      // URL format wahi hona chahiye jo tumhare page ka hai (e.g. /companies/google)
       url: `${BASE_URL}/companies/${company.slug}`, 
       lastModified: new Date(company.created_at || new Date()),
       changeFrequency: 'weekly',
       priority: 0.8,
     }));
   }
-// ==========================================
-  // 6️⃣ DYNAMIC BLOG POSTS (Ye Naya Code Hai)
+
+  // ==========================================
+  // 6️⃣ DYNAMIC BLOG POSTS
   // ==========================================
   const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,
@@ -129,7 +129,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly', 
     priority: 0.8, 
   }));
-  // 🔥 MERGE EVERYTHING (companyRoutes ko end mein add kiya)
+
+  // ==========================================
+  // 7️⃣ PROGRAMMATIC SEO PAGES (🚀 NAYA SECTION ADD KIYA HAI!)
+  // ==========================================
+  const { data: seoPages } = await supabase
+    .from('seo_pages')
+    .select('url_path, last_updated')
+    .eq('is_indexed', true); // Sirf indexable pages uthayega
+
+  let pseoRoutes: MetadataRoute.Sitemap = [];
+
+  if (seoPages) {
+    pseoRoutes = seoPages.map((page) => ({
+      // page.url_path mein already / lagga hoga (e.g. "/remote-jobs/uk/react")
+      url: `${BASE_URL}${page.url_path}`, 
+      lastModified: new Date(page.last_updated || new Date()),
+      changeFrequency: 'daily', 
+      priority: 0.9, 
+    }));
+  }
+
   // 🔥 MERGE EVERYTHING
   return [
     ...staticRoutes, 
@@ -137,6 +157,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryRoutes, 
     ...jobRoutes, 
     ...companyRoutes,
-    ...blogRoutes // 👈 Ye line add karni hai
+    ...blogRoutes,
+    ...pseoRoutes // 👈 Naya section aakhir mein merge kar diya
   ];
 }

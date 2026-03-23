@@ -703,7 +703,7 @@ const COUNTRIES = [
     fetchJobs();
   }, []);
   useEffect(() => {
-    // 🧠 Profile Fetcher: Agar data na mile to 3 baar try karega
+    // 🧠 Profile Fetcher: Smart Redirect ke sath
     const fetchProfile = async (userId: string, retryCount = 0) => {
         try {
             const { data, error } = await supabase
@@ -714,8 +714,15 @@ const COUNTRIES = [
             
             if (data) {
                 setUserProfile(data);
+                
+                // 🚀 THE MASTER FIX: Check if profile is TRULY complete
+                // Agar username, primary_role, ya skills nahi hain, toh redirect maaro!
+                if (!data.username || !data.primary_role || !data.skills || data.skills.length === 0) {
+                    router.push('/complete-profile');
+                    return; // Code yahin rok do
+                }
+                
             } else if (retryCount < 3) {
-                // ⏳ Agar DB slow hai, to 1 sec baad dobara try karo (Magic Fix)
                 console.log(`Profile syncing... Attempt ${retryCount + 1}`);
                 setTimeout(() => fetchProfile(userId, retryCount + 1), 1000);
             }
@@ -859,23 +866,6 @@ const COUNTRIES = [
       return () => clearTimeout(timer);
   }, [searchQuery]); // 👈 Notice: Yeh sirf searchQuery par trigger hoga
 
-  useEffect(() => {
-    const ensureProfileComplete = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('skills')
-          .eq('id', user.id)
-          .single();
-
-        if (!profile?.skills || profile.skills.length === 0) {
-          router.push('/complete-profile');
-        }
-      }
-    };
-    ensureProfileComplete();
-  }, []);
   // 🚀 SEO MAGIC: Helper functions to generate static URLs for GoogleBot
   const getCategoryUrl = (catName: string) => {
       const params = new URLSearchParams(searchParams.toString());

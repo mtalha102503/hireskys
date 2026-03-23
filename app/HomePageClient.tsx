@@ -809,7 +809,7 @@ useEffect(() => {
                     setShowPopup(true);
                     sessionStorage.setItem('popup_seen', 'true');
                 }
-            }, 5000);
+            }, 20000);
         }
 
         // B. Real-time Listener (Login/Logout detect karega)
@@ -1369,9 +1369,9 @@ return (
                             <span className="font-medium">Save Jobs & Apply Later</span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <CheckCircle size={20} className="text-green-500 flex-shrink-0" />
-                            <span className="font-medium">Get ,nt Job Alert Related to your skill on Whatsapp and Email</span>
-                        </div>
+    <CheckCircle size={20} className="text-green-500 flex-shrink-0" />
+    <span className="font-medium">Instant skill-matched alerts on <span className="font-bold text-indigo-600 dark:text-indigo-400">Telegram & WhatsApp</span></span>
+</div>
                     </div>
 
                     <div className="space-y-3">
@@ -2415,7 +2415,7 @@ return (
                         </p>
                     </motion.div>
 
-                    {/* Card 3: Instant Alerts */}
+                    {/* Card 3: Instant Alerts (UPDATED) */}
                     <motion.div 
                         whileHover={{ y: -10, scale: 1.02 }}
                         className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 group cursor-default"
@@ -2425,7 +2425,7 @@ return (
                         </div>
                         <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Instant Alerts</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Get notified via Email/WhatsApp the second a job drops.
+                            Get notified via <strong className="text-slate-700 dark:text-slate-300">Telegram & WhatsApp</strong> the millisecond a new job drops.
                         </p>
                     </motion.div>
 

@@ -55,7 +55,9 @@ export const metadata: Metadata = {
   authors: [{ name: "HireSkys Team", url: "https://www.hireskys.com" }],
   creator: "HireSkys Inc.",
   publisher: "HireSkys Inc.",
-
+  other: {
+    "google-adsense-account": "ca-pub-1919758160460496"
+  },
   // Social Sharing (Open Graph)
   openGraph: {
     type: "website",

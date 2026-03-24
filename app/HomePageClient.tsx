@@ -959,52 +959,59 @@ useEffect(() => {
       return () => clearTimeout(timer);
   }, [searchQuery]); // 👈 Notice: Yeh sirf searchQuery par trigger hoga
 
+  // 🚀 THE VERCEL BUILD FIX: Safe URL Generators
   const getCategoryUrl = (catName: string) => {
-      // 🚀 THE FIX: Sirf Alphabets aur Numbers rakhay ga, baqi sab (slash, brackets) ko dash (-) mein badal dega
-      const formattedCat = catName === 'All' ? 'all' : catName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'all';
+      const safeCat = catName || 'all';
+      const safeLoc = filterCountry || 'all';
 
-      const params = new URLSearchParams(searchParams.toString());
+      const formattedCat = safeCat === 'All' ? 'all' : safeCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = safeLoc === 'all' ? 'all' : safeLoc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+      const params = new URLSearchParams(searchParams?.toString() || '');
       params.delete('category');
       params.delete('location');
       params.delete('tag'); 
 
       const queryString = params.toString() ? `?${params.toString()}` : '';
-      
       if (formattedLoc === 'all' && formattedCat === 'all') return `/${queryString}`;
-      
       return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
   };
-// 🚀 SEO MAGIC: Location URL Generator
- const getLocationUrl = (locName: string) => {
-      const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      const formattedLoc = (!locName) ? 'all' : locName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-      const params = new URLSearchParams(searchParams.toString());
+  const getLocationUrl = (locName: string) => {
+      const safeCat = activeCategory || 'all';
+      const safeLoc = locName || 'all';
+
+      const formattedCat = safeCat === 'All' ? 'all' : safeCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = safeLoc === 'all' ? 'all' : safeLoc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+      const params = new URLSearchParams(searchParams?.toString() || '');
       params.delete('category');
       params.delete('location');
       params.delete('tag'); 
 
       const queryString = params.toString() ? `?${params.toString()}` : '';
-      
       if (formattedLoc === 'all' && formattedCat === 'all') return `/${queryString}`;
-      
       return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
   };
+
   const getTagUrl = (tagName: string) => {
-      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'all';
+      const safeLoc = filterCountry || 'all';
+      const safeCat = activeCategory || 'all';
+      const safeTag = tagName || '';
       
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams?.toString() || '');
       params.delete('category');
       params.delete('location');
       params.delete('tag');
       const queryString = params.toString() ? `?${params.toString()}` : '';
 
-      if (activeSubTag === tagName) {
-          const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = safeLoc === 'all' ? 'all' : safeLoc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      
+      if (activeSubTag === safeTag) {
+          const formattedCat = safeCat === 'All' ? 'all' : safeCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
           return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
       } else {
-          const formattedTag = tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          const formattedTag = safeTag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
           return `/remote-jobs/${formattedLoc}/${formattedTag}${queryString}`;
       }
   };
@@ -1772,31 +1779,31 @@ return (
                                             </div>
 
                                             {/* Scrollable Area */}
-                                            <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
-                                                {COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).length > 0 ? (
-                                                    COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).map((country) => (
-                                                       <Link
-    key={country.name}
-    href={getLocationUrl(country.name)} // 🚀 FIX 1: Naya SEO Link
-    scroll={false}
-    onClick={() => { 
-        setFilterCountry(country.name); 
-        setShowCountryDropdown(false); 
-        setCountrySearch(""); 
-    }}
-    className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
->
-    <span className="text-lg flex-shrink-0">{country.flag}</span>
-    <span className="truncate">{country.name}</span>
-    {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
-</Link>
-                                                    ))
-                                                ) : (
-                                                    <div className="p-4 text-center text-xs text-slate-400">
-                                                        No country found
-                                                    </div>
-                                                )}
-                                            </div>
+  <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
+      {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).length > 0 ? (
+          COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
+              <Link
+                  key={country.name}
+                  href={getLocationUrl(country.name)}
+                  scroll={false}
+                  onClick={() => { 
+                      setFilterCountry(country.name); 
+                      setShowCountryDropdown(false); 
+                      setCountrySearch(""); 
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
+              >
+                  <span className="text-lg flex-shrink-0">{country.flag}</span>
+                  <span className="truncate">{country.name}</span>
+                  {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
+              </Link>
+          ))
+      ) : (
+          <div className="p-4 text-center text-xs text-slate-400">
+              No country found
+          </div>
+      )}
+  </div>
                                             
                                             {filterCountry && (
     <button
@@ -2227,29 +2234,32 @@ return (
                                           </div>
                                       </div>
 
-                                      <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
-                                          {COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).length > 0 ? (
-                                              COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).map((country) => (
-                                                  <Link
-    key={country.name}
-    href={getLocationUrl(country.name)} // 🚀 FIX 1: Naya SEO Link
-    scroll={false}
-    onClick={() => { 
-        setFilterCountry(country.name); 
-        setShowCountryDropdown(false); 
-        setCountrySearch(""); 
-    }}
-    className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
->
-    <span className="text-lg flex-shrink-0">{country.flag}</span>
-    <span className="truncate">{country.name}</span>
-    {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
-</Link>
-                                              ))
-                                          ) : (
-                                              <div className="p-4 text-center text-xs text-slate-400">
-                                                  No country found
-                                              </div>
+                                      {/* Scrollable Area */}
+  <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
+      {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).length > 0 ? (
+          COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
+              <Link
+                  key={country.name}
+                  href={getLocationUrl(country.name)}
+                  scroll={false}
+                  onClick={() => { 
+                      setFilterCountry(country.name); 
+                      setShowCountryDropdown(false); 
+                      setCountrySearch(""); 
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
+              >
+                  <span className="text-lg flex-shrink-0">{country.flag}</span>
+                  <span className="truncate">{country.name}</span>
+                  {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
+              </Link>
+          ))
+      ) : (
+          <div className="p-4 text-center text-xs text-slate-400">
+              No country found
+          </div>
+      )}
+  </div>
                                           )}
                                       </div>
                                       

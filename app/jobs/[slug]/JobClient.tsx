@@ -26,6 +26,7 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [companyDetails, setCompanyDetails] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
 const [applyCount, setApplyCount] = useState(job.application_count || 0);
+
 // 🌍 GEO-LOCATION STATES
   const [userCountry, setUserCountry] = useState<string | null>(null);
   const [showGeoWarning, setShowGeoWarning] = useState(false);
@@ -143,6 +144,7 @@ if (user) {
                 const { data: savedJob } = await supabase.from('saved_jobs').select('*').match({ user_id: user.id, job_id: data.id }).single();
                 if (savedJob) setSaved(true);
             }
+            
         }
         if (data) {
         setJob(data);
@@ -616,22 +618,38 @@ const handleApply = async () => {
                   <div className="flex flex-col items-end justify-center w-auto">
                       
                       {/* 👇 Desktop Apply Button (Mobile pe hidden hai) */}
-                      <button 
-                        onClick={handleCheckAndApply} 
-                        disabled={isExpired}
-                        className={`hidden md:flex w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] items-center justify-center gap-2 transition-all whitespace-nowrap
-                          ${isExpired 
-                            ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
-                            : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]"
-                          }`}
-                      >
-                        <span>{isExpired ? "Applications Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}</span>
-                        {!isExpired && (job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />)} 
-                      </button>
+                      <div className="hidden md:flex flex-col items-end gap-2.5">
+                          <button 
+                            onClick={handleCheckAndApply} 
+                            disabled={isExpired}
+                            className={`w-fit md:w-auto px-6 h-[54px] font-bold rounded-xl shadow-[0_4px_14px_0_rgba(79,70,229,0.39)] flex items-center justify-center gap-2 transition-all whitespace-nowrap
+                              ${isExpired 
+                                ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-200 dark:border-slate-700 shadow-none" 
+                                : "bg-indigo-600 hover:bg-indigo-700 text-white hover:scale-[1.02] active:scale-[0.98]"
+                              }`}
+                          >
+                            <span>{isExpired ? "Applications Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}</span>
+                            {!isExpired && (job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />)} 
+                          </button>
 
-                      {/* 👇 Counter (Mobile par Save/Share ke saamne, Desktop par Button ke neechay) */}
-                      <div className="mt-0 md:mt-2">
-                         <ApplicantStatus count={applyCount} />
+                          {/* 🚀 UPGRADED BOUNCE RATE KILLER (Desktop) */}
+                          {isExpired && relatedJobs.length > 0 ? (
+                              <button 
+                                  onClick={(e) => {
+                                      e.preventDefault();
+                                      document.getElementById('similar-jobs')?.scrollIntoView({ behavior: 'smooth' });
+                                  }}
+                                  className="group flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-500/10 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-full border border-indigo-100 dark:border-indigo-500/30 transition-all animate-in fade-in slide-in-from-top-1 cursor-pointer"
+                              >
+                                  View Active {job.category} Jobs 
+                                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                              </button>
+                          ) : (
+                              /* 👇 Counter sirf tab dikhega agar job active hai */
+                              <div className="mt-0 md:mt-1">
+                                 <ApplicantStatus count={applyCount} />
+                              </div>
+                          )}
                       </div>
                   </div>
 
@@ -667,7 +685,7 @@ const handleApply = async () => {
                 
                 {/* 🌟 RELATED JOBS SECTION */}
                 {relatedJobs.length > 0 && (
-                  <div className="mt-12">
+                  <div id="similar-jobs" className="mt-12 scroll-mt-32">
                       <h3 className="text-xl font-bold mb-6 text-slate-900 dark:text-white flex items-center gap-2">
                         <Briefcase size={20} className="text-indigo-500" /> Similar Opportunities
                       </h3>
@@ -783,19 +801,34 @@ const handleApply = async () => {
             <Heart size={22} className={saved ? 'fill-current' : ''} />
           </button>
 
-          {/* 🚀 Main Apply Button (Uses same exact logic as desktop) */}
-          <button 
-            onClick={handleCheckAndApply} 
-            disabled={isExpired}
-            className={`flex-1 py-3.5 text-[15px] text-center font-extrabold rounded-xl transition-all flex justify-center items-center gap-2
-              ${isExpired 
-                ? "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed shadow-none" 
-                : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/25 active:scale-95"
-              }`}
-          >
-            {isExpired ? "Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}
-            {!isExpired && (job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />)}
-          </button>
+          {/* 🚀 Main Apply Button & Bounce Killer (Mobile) */}
+          <div className="flex-1 flex flex-col gap-2">
+              <button 
+                onClick={handleCheckAndApply} 
+                disabled={isExpired}
+                className={`w-full py-3.5 text-[15px] text-center font-extrabold rounded-xl transition-all flex justify-center items-center gap-2
+                  ${isExpired 
+                    ? "bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700 cursor-not-allowed shadow-none" 
+                    : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/25 active:scale-95"
+                  }`}
+              >
+                {isExpired ? "Closed" : (job.link.includes('@') ? "Apply via Email" : "Apply Now")}
+                {!isExpired && (job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />)}
+              </button>
+
+              {/* 🚀 UPGRADED BOUNCE RATE KILLER (Mobile) */}
+              {isExpired && relatedJobs.length > 0 && (
+                  <button 
+                      onClick={(e) => {
+                          e.preventDefault();
+                          document.getElementById('similar-jobs')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-50 active:bg-indigo-100 dark:bg-indigo-500/10 dark:active:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[11px] font-bold rounded-lg border border-indigo-100 dark:border-indigo-500/30 transition-all animate-in fade-in cursor-pointer"
+                  >
+                      View Similar Active Jobs <ArrowRight size={14} />
+                  </button>
+              )}
+          </div>
           
         </div>
       </div>

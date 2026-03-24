@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from '@supabase/supabase-js';
 import { createSlug } from '@/lib/utils'; // 👈 Ye line add karo
-
+import { permanentRedirect } from 'next/navigation';
 // 🛠️ CONFIGURATION
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ";
@@ -124,6 +124,74 @@ export default async function Layout({ children, params }: { children: React.Rea
     .single();
 
   if (!job) return <>{children}</>;
+
+  // 🚀 SEO PHASE 2 & 3 LOGIC START
+  const jobDate = new Date(job.date_posted);
+  const diffDays = Math.ceil(Math.abs(new Date().getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
+  const isExpired = diffDays > 60 || job.active === false;
+
+ // 🚀 SEO PHASE 3: 120 Days old dead jobs 301 redirect to Hardcoded Category Pages
+  if (diffDays > 120) {
+      if (job.category) {
+          // 1. Database name ko basic normalize karo (lowercase & remove extra spaces)
+          const dbCategory = job.category.toLowerCase().trim();
+
+          // 2. 100% Hardcoded Map (Tumhare diye gaye exact links)
+          // Hum amoomi database names ko tumhare exact slugs ke sath match kar rahe hain
+          const categoryMap: Record<string, string> = {
+              "development": "development",
+              "mobile app": "mobile-app",
+              "mobile development": "mobile-app",
+              "ai / machine learning": "ai-machine-learning",
+              "ai & machine learning": "ai-machine-learning",
+              "ai machine learning": "ai-machine-learning",
+              "design & creative": "design-creative",
+              "design creative": "design-creative",
+              "video & animation": "video-animation",
+              "video animation": "video-animation",
+              "audio & voice": "audio-voice",
+              "audio voice": "audio-voice",
+              "writing & translation": "writing-translation",
+              "writing translation": "writing-translation",
+              "marketing & sales": "marketing-sales",
+              "marketing sales": "marketing-sales",
+              "admin & support": "admin-support",
+              "admin support": "admin-support",
+              "customer service": "customer-service",
+              "finance & accounting": "finance-accounting",
+              "finance accounting": "finance-accounting",
+              "legal & hr": "legal-hr",
+              "legal hr": "legal-hr",
+              "education & coaching": "education-coaching",
+              "education coaching": "education-coaching",
+              "data science & analytics": "data-science-analytics",
+              "data science analytics": "data-science-analytics",
+              "engineering & architecture": "engineering-architecture",
+              "engineering architecture": "engineering-architecture"
+          };
+
+          // 3. Pehle map mein dhoondo, agar na mile toh basic hyphenate kardo
+          let finalSlug = categoryMap[dbCategory] || job.category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+          // 4. THE ULTIMATE GATEKEEPER: Sirf in 15 verified links par hi redirect hoga
+          const verifiedSlugs = [
+              "development", "mobile-app", "ai-machine-learning", "design-creative", 
+              "video-animation", "audio-voice", "writing-translation", "marketing-sales", 
+              "admin-support", "customer-service", "finance-accounting", "legal-hr", 
+              "education-coaching", "data-science-analytics", "engineering-architecture"
+          ];
+
+          if (verifiedSlugs.includes(finalSlug)) {
+              permanentRedirect(`/category/${finalSlug}`); // Perfect Match Redirect
+          } else {
+              permanentRedirect(`/`); // Agar koi ajeeb si category ho jo list mein na ho, toh safe side Homepage
+          }
+      } else {
+          permanentRedirect(`/`); // No category = Homepage
+      }
+  }
+  // 🚀 SEO PHASE 2 & 3 LOGIC END
+
   let googleEmploymentType = "FULL_TIME"; // Default
   if (job.employment_type) { // Maan lo DB column ka naam employment_type hai
       const type = job.employment_type.toLowerCase();
@@ -267,7 +335,9 @@ const breadcrumbLd = {
     title: job.title,
     description: job.description, // HTML description supported here
     datePosted: job.date_posted,
-    validThrough: new Date(new Date(job.date_posted).getTime() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 3 Months expiry
+    validThrough: isExpired 
+        ? new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString() 
+        : new Date(new Date(job.date_posted).getTime() + 90 * 24 * 60 * 60 * 1000).toISOString(),
     employmentType: googleEmploymentType,
     hiringOrganization: {
       '@type': 'Organization',

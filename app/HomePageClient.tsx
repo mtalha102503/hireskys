@@ -2260,8 +2260,6 @@ return (
           </div>
       )}
   </div>
-                                          )}
-                                      </div>
                                       
                                       {filterCountry && (
     <button

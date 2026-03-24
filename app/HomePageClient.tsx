@@ -626,7 +626,7 @@ const COUNTRIES = [
   const [showDateDropdown, setShowDateDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [showAll, setShowAll] = useState(false);
+  
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -646,7 +646,6 @@ const COUNTRIES = [
   const [filterDate, setFilterDate] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const categoryEntries = Object.entries(CATEGORIES);
-  const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); 
   const subTagsRef = useRef<HTMLDivElement>(null);
   const [filterCountry, setFilterCountry] = useState(seoLocation || searchParams.get('location') || '');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
@@ -658,7 +657,29 @@ const COUNTRIES = [
 // 🟢 NAYA: Seen aur Applied Jobs ke states
   const [seenJobs, setSeenJobs] = useState<number[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
+// 🧠 SMART UX: Categories ka state yaad rakhne ke liye
+  const [showAll, setShowAll] = useState(() => {
+      if (typeof window !== 'undefined') {
+          return sessionStorage.getItem('categories_expanded') === 'true';
+      }
+      return false;
+  });
+const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          sessionStorage.setItem('categories_expanded', showAll.toString());
+      }
+  }, [showAll]);
 
+  useEffect(() => {
+      // 🛡️ Ensure CATEGORIES is loaded and activeCategory is safe to read
+      if (activeCategory && activeCategory !== 'All') {
+          const top5Categories = Object.keys(CATEGORIES).slice(0, 5);
+          if (!top5Categories.includes(activeCategory)) {
+              setShowAll(true);
+          }
+      }
+  }, [activeCategory]);
 useEffect(() => {
       let newCategory = 'All';
       let newTag = searchParams.get('tag') || '';
@@ -873,20 +894,35 @@ useEffect(() => {
     }
   }, [currentUser]);
 
- // 🚀 THE FINAL SCROLL FIX: Jhatkay se bachne ke liye delay 100ms se 500ms kar diya
+ // 🚀 VIP SCROLL STEP 1: Main Category par click kare toh Sub-Categories par phenko!
   useEffect(() => {
-    if ((activeSubTag || (activeCategory && activeCategory !== 'All')) && jobsSectionRef.current) {
-        const timer = setTimeout(() => {
-            // Check karo ke user abhi bhi isi section par jana chahta hai
-            jobsSectionRef.current?.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
-        }, 500); // 👈 500ms delay Next.js ke auto-scroll ko hara dega
+      // Check: Agar Main Category select hui hai (aur 'All' nahi hai) aur koi SubTag nahi hai
+      if (activeCategory && activeCategory !== 'All' && !activeSubTag && subTagsRef.current) {
+          const timer = setTimeout(() => {
+              // block: 'center' lagaya hai taake sub-categories screen ke bilkul center mein aa jayen
+              subTagsRef.current?.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'center' 
+              });
+          }, 300); // 300ms delay taake animation complete ho jaye
 
-        return () => clearTimeout(timer);
-    }
-  }, [activeSubTag, activeCategory]); // 👈 Dono par trigger hoga
+          return () => clearTimeout(timer);
+      }
+  }, [activeCategory]); 
+
+  // 🚀 VIP SCROLL STEP 2: Sub-Category (Tag) par click kare toh Jobs par phenko!
+  useEffect(() => {
+      if (activeSubTag && jobsSectionRef.current) {
+          const timer = setTimeout(() => {
+              jobsSectionRef.current?.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start' 
+              });
+          }, 500); // 500ms delay taake jobs load ho jayen
+
+          return () => clearTimeout(timer);
+      }
+  }, [activeSubTag]);
 
   // 1. ORIGINAL FETCH JOBS (Sirf API call karega, URL ko nahi chairay ga)
   useEffect(() => {
@@ -924,8 +960,9 @@ useEffect(() => {
   }, [searchQuery]); // 👈 Notice: Yeh sirf searchQuery par trigger hoga
 
   const getCategoryUrl = (catName: string) => {
-      const formattedCat = catName === 'All' ? 'all' : catName.toLowerCase().replace(/\s+/g, '-');
-      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/\s+/g, '-') : 'all';
+      // 🚀 THE FIX: Sirf Alphabets aur Numbers rakhay ga, baqi sab (slash, brackets) ko dash (-) mein badal dega
+      const formattedCat = catName === 'All' ? 'all' : catName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'all';
 
       const params = new URLSearchParams(searchParams.toString());
       params.delete('category');
@@ -934,15 +971,14 @@ useEffect(() => {
 
       const queryString = params.toString() ? `?${params.toString()}` : '';
       
-      // 🚀 SMART ROUTING: Agar dono filter clear hain, toh saaf Homepage par le jao
       if (formattedLoc === 'all' && formattedCat === 'all') return `/${queryString}`;
       
       return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
   };
 // 🚀 SEO MAGIC: Location URL Generator
-  const getLocationUrl = (locName: string) => {
-      const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/\s+/g, '-');
-      const formattedLoc = (!locName) ? 'all' : locName.toLowerCase().replace(/\s+/g, '-');
+ const getLocationUrl = (locName: string) => {
+      const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = (!locName) ? 'all' : locName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
       const params = new URLSearchParams(searchParams.toString());
       params.delete('category');
@@ -951,14 +987,12 @@ useEffect(() => {
 
       const queryString = params.toString() ? `?${params.toString()}` : '';
       
-      // 🚀 SMART ROUTING: Agar dono filter clear hain, toh saaf Homepage par le jao
       if (formattedLoc === 'all' && formattedCat === 'all') return `/${queryString}`;
       
       return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
   };
   const getTagUrl = (tagName: string) => {
-      // 🚀 FIX: Agar location khali hai toh URL mein 'all' dalo
-      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/\s+/g, '-') : 'all';
+      const formattedLoc = filterCountry ? filterCountry.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : 'all';
       
       const params = new URLSearchParams(searchParams.toString());
       params.delete('category');
@@ -967,11 +1001,10 @@ useEffect(() => {
       const queryString = params.toString() ? `?${params.toString()}` : '';
 
       if (activeSubTag === tagName) {
-          const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/\s+/g, '-');
+          const formattedCat = activeCategory === 'All' ? 'all' : activeCategory.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
           return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
       } else {
-          const formattedTag = tagName.toLowerCase().replace(/\s+/g, '-');
-          // Agar hum already /remote-jobs/ mein hain toh wahi structure use karo
+          const formattedTag = tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
           return `/remote-jobs/${formattedLoc}/${formattedTag}${queryString}`;
       }
   };

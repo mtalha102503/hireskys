@@ -390,7 +390,7 @@ let matchedCountries: any[] = [];
 
   // 🏆 PRIORITY: Agar user ne koi country filter ki hai, usay list mein NUMBER 1 par le aao
   if (activeFilter && matchedCountries.length > 0) {
-      const filterIndex = matchedCountries.findIndex(c => c.name.toLowerCase() === activeFilter.toLowerCase());
+      const filterIndex = matchedCountries.findIndex(c => c.name?.toLowerCase() === activeFilter?.toLowerCase());
       if (filterIndex > 0) {
           const [activeCountry] = matchedCountries.splice(filterIndex, 1);
           matchedCountries.unshift(activeCountry); // Utha kar No. 1 par rakh diya
@@ -697,7 +697,7 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
     const urlSlug = decodedCat?.toLowerCase().replace(/[^a-z0-9]/g, '') || ""; // <-- FIX 3: Optional Chaining & fallback
 
               for (const [catName, data] of Object.entries(CATEGORIES)) {
-                  const cleanCatName = catName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                  const cleanCatName = String(catName).toLowerCase().replace(/[^a-z0-9]/g, '');
                   
                   // Main Category Match (e.g. "aimachinelearning" === "aimachinelearning")
                   if (cleanCatName === urlSlug) {
@@ -706,8 +706,8 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
                       break;
                   }
                   
-                  // Sub Tag Match
-                  const matchedTag = (data as any).sub.find((t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug);
+                  // Sub Tag Match (SAFE VERSION)
+                  const matchedTag = (data as any).sub?.find((t: string) => String(t).toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug);
                   if (matchedTag) {
                       newCategory = catName; // UI mein Parent highlight rakho
                       newTag = matchedTag;   // Tag activate kardo
@@ -964,8 +964,8 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
       const safeCat = catName || 'all';
       const safeLoc = filterCountry || 'all';
 
-      const formattedCat = safeCat === 'All' ? 'all' : safeCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      const formattedLoc = safeLoc === 'all' ? 'all' : safeLoc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedCat = safeCat === 'All' ? 'all' : String(safeCat).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = safeLoc === 'all' ? 'all' : String(safeLoc).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
       const params = new URLSearchParams(searchParams?.toString() || '');
       params.delete('category');
@@ -981,8 +981,8 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
       const safeCat = activeCategory || 'all';
       const safeLoc = locName || 'all';
 
-      const formattedCat = safeCat === 'All' ? 'all' : safeCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      const formattedLoc = safeLoc === 'all' ? 'all' : safeLoc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedCat = safeCat === 'All' ? 'all' : String(safeCat).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = safeLoc === 'all' ? 'all' : String(safeLoc).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
       const params = new URLSearchParams(searchParams?.toString() || '');
       params.delete('category');
@@ -1005,13 +1005,13 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
       params.delete('tag');
       const queryString = params.toString() ? `?${params.toString()}` : '';
 
-      const formattedLoc = safeLoc === 'all' ? 'all' : safeLoc.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const formattedLoc = safeLoc === 'all' ? 'all' : String(safeLoc).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
       
       if (activeSubTag === safeTag) {
-          const formattedCat = safeCat === 'All' ? 'all' : safeCat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          const formattedCat = safeCat === 'All' ? 'all' : String(safeCat).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
           return `/remote-jobs/${formattedLoc}/${formattedCat}${queryString}`;
       } else {
-          const formattedTag = safeTag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          const formattedTag = String(safeTag).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
           return `/remote-jobs/${formattedLoc}/${formattedTag}${queryString}`;
       }
   };

@@ -1779,45 +1779,45 @@ return (
                                             </div>
 
                                             {/* Scrollable Area */}
-  <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
-      {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).length > 0 ? (
-          COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
-              <Link
-                  key={country.name}
-                  href={getLocationUrl(country.name)}
-                  scroll={false}
-                  onClick={() => { 
-                      setFilterCountry(country.name); 
-                      setShowCountryDropdown(false); 
-                      setCountrySearch(""); 
-                  }}
-                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
-              >
-                  <span className="text-lg flex-shrink-0">{country.flag}</span>
-                  <span className="truncate">{country.name}</span>
-                  {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
-              </Link>
-          ))
-      ) : (
-          <div className="p-4 text-center text-xs text-slate-400">
-              No country found
-          </div>
-      )}
-  </div>
-                                            
-                                            {filterCountry && (
-    <button
-        onClick={() => { 
-            setFilterCountry(""); 
-            setShowCountryDropdown(false); 
-            setCountrySearch(""); 
-            router.push(getLocationUrl(''), { scroll: false }); // 🚀 FIX: Khali string bhejo
-        }}
-        className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
-    >
-        Clear Location
-    </button>
-)}
+    <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
+        {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).length > 0 ? (
+            COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
+                <Link
+                    key={country.name}
+                    href={getLocationUrl(country.name)}
+                    scroll={false}
+                    onClick={() => { 
+                        setFilterCountry(country.name); 
+                        setShowCountryDropdown(false); 
+                        setCountrySearch(""); 
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
+                >
+                    <span className="text-lg flex-shrink-0">{country.flag}</span>
+                    <span className="truncate">{country.name}</span>
+                    {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
+                </Link>
+            ))
+        ) : (
+            <div className="p-4 text-center text-xs text-slate-400">
+                No country found
+            </div>
+        )}
+    </div>
+    
+    {filterCountry && (
+        <button
+            onClick={() => { 
+                setFilterCountry(""); 
+                setShowCountryDropdown(false); 
+                setCountrySearch(""); 
+                router.push(getLocationUrl(''), { scroll: false });
+            }}
+            className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
+        >
+            Clear Location
+        </button>
+    )}
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -2235,45 +2235,45 @@ return (
                                       </div>
 
                                       {/* Scrollable Area */}
-  <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
-      {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).length > 0 ? (
-          COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
-              <Link
-                  key={country.name}
-                  href={getLocationUrl(country.name)}
-                  scroll={false}
-                  onClick={() => { 
-                      setFilterCountry(country.name); 
-                      setShowCountryDropdown(false); 
-                      setCountrySearch(""); 
-                  }}
-                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
-              >
-                  <span className="text-lg flex-shrink-0">{country.flag}</span>
-                  <span className="truncate">{country.name}</span>
-                  {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
-              </Link>
-          ))
-      ) : (
-          <div className="p-4 text-center text-xs text-slate-400">
-              No country found
-          </div>
-      )}
-  </div>
-                                      
-                                      {filterCountry && (
-    <button
-        onClick={() => { 
-            setFilterCountry(""); 
-            setShowCountryDropdown(false); 
-            setCountrySearch(""); 
-            router.push(getLocationUrl(''), { scroll: false }); // 🚀 FIX: Khali string bhejo
-        }}
-        className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
-    >
-        Clear Location
-    </button>
-)}
+    <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
+        {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).length > 0 ? (
+            COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
+                <Link
+                    key={country.name}
+                    href={getLocationUrl(country.name)}
+                    scroll={false}
+                    onClick={() => { 
+                        setFilterCountry(country.name); 
+                        setShowCountryDropdown(false); 
+                        setCountrySearch(""); 
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
+                >
+                    <span className="text-lg flex-shrink-0">{country.flag}</span>
+                    <span className="truncate">{country.name}</span>
+                    {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
+                </Link>
+            ))
+        ) : (
+            <div className="p-4 text-center text-xs text-slate-400">
+                No country found
+            </div>
+        )}
+    </div>
+    
+    {filterCountry && (
+        <button
+            onClick={() => { 
+                setFilterCountry(""); 
+                setShowCountryDropdown(false); 
+                setCountrySearch(""); 
+                router.push(getLocationUrl(''), { scroll: false });
+            }}
+            className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
+        >
+            Clear Location
+        </button>
+    )}
                                   </motion.div>
                               )}
                           </AnimatePresence>

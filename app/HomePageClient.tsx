@@ -686,15 +686,15 @@ useEffect(() => {
 
       if (seoCategory) {
           // 1. URL se aane wale text ko theek karo (Decodes %20 or %26)
-          const decodedCat = decodeURIComponent(seoCategory);
-          
-          // 2. Agar "all" ya "worldwide" hai toh seedha All set kardo
-          if (decodedCat.toLowerCase() === 'all' || decodedCat.toLowerCase() === 'worldwide') {
-              newCategory = 'All';
-          } else {
-              let found = false;
-              // 3. THE MAGIC: Sab kachra (spaces, -, &, .) hata kar sirf letters bacha lo matching ke liye
-              const urlSlug = decodedCat.toLowerCase().replace(/[^a-z0-9]/g, '');
+const decodedCat = decodeURIComponent(seoCategory || ""); // <-- FIX 1: Add fallback
+
+// 2. Agar "all" ya "worldwide" hai toh seedha All set kardo
+if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldwide') { // <-- FIX 2: Optional Chaining
+    newCategory = 'All';
+} else {
+    let found = false;
+    // 3. THE MAGIC: Sab kachra (spaces, -, &, .) hata kar sirf letters bacha lo matching ke liye
+    const urlSlug = decodedCat?.toLowerCase().replace(/[^a-z0-9]/g, '') || ""; // <-- FIX 3: Optional Chaining & fallback
 
               for (const [catName, data] of Object.entries(CATEGORIES)) {
                   const cleanCatName = catName.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1195,11 +1195,11 @@ useEffect(() => {
             // 🚀 THE GOOGLE TYPO MAGIC
             if (searchQuery && data.length > 0) {
                 const topJob = data[0];
-                const sq = searchQuery.toLowerCase();
-                // Check karo ke user ne jo likha hai wo exactly title, category ya tags mein hai?
-                const isExactMatch = topJob.title.toLowerCase().includes(sq) || 
-                                     topJob.category.toLowerCase().includes(sq) ||
-                                     (topJob.tags && topJob.tags.some((t: string) => t.toLowerCase().includes(sq)));
+                const sq = searchQuery?.toLowerCase() || ""; // <-- FIX: Safe string
+// Check karo ke user ne jo likha hai wo exactly title, category ya tags mein hai?
+const isExactMatch = topJob.title?.toLowerCase().includes(sq) || 
+                     topJob.category?.toLowerCase().includes(sq) ||
+                     (topJob.tags && topJob.tags.some((t: string) => t?.toLowerCase().includes(sq))); // <-- FIX: Optional chaining on title, category, and tags
                 
                 if (!isExactMatch) {
                     // Agar exact match nahi hua (Yani Typo tha), toh us job ka sahi tag ya category suggest karo!

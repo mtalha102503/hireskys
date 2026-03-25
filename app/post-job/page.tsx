@@ -554,7 +554,7 @@ export default function PostJob() {
                               Select Skills (Max 3)
                             </label>
                             <div className="flex flex-wrap gap-2">
-                              {CATEGORIES[formData.category].sub.map(tag => {
+                              {CATEGORIES[formData.category as keyof typeof CATEGORIES].sub.map(tag => {
                                 const isSelected = formData.tags.includes(tag);
                                 return (
                                   <button

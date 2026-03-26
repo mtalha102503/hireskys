@@ -48,6 +48,7 @@ type Job = {
   job_type?: string;
   country?: string; 
   location?: string;
+  company_logo_url?: string;
 };
 
 const extractCountry = (locationString: string, activeFilter: string = "") => {
@@ -761,8 +762,10 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
         if (data) {
             const logoMap: Record<string, string> = {};
             data.forEach((company: any) => {
-                if (company.name) {
-                    logoMap[company.name] = company.logo_url;
+                if (company.name && company.logo_url) {
+                    // String ko lower case aur clean karo (For Backup Fallback)
+                    const cleanName = company.name.trim().toLowerCase();
+                    logoMap[cleanName] = company.logo_url;
                 }
             });
             setCompanyLogos(logoMap);
@@ -2588,7 +2591,8 @@ return (
   const isSaved = savedJobIds.includes(job.id);
   const isSeen = seenJobs.includes(job.id);
   const isApplied = appliedJobs.includes(job.id);
-  const companyLogoUrl = companyLogos[job.source] || null; 
+  const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
+  const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
 
   // 2️⃣ RETURN CARD
   return (

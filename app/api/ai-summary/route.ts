@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     // 3. Call Groq
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: systemPrompt }],
-      model: 'llama-3.3-70b-versatile',
+      model: 'groq/compound',
       temperature: 0.5,
     });
 

@@ -19,7 +19,7 @@ type Props = {
 // 1. AUTOMATIC SEO GENERATOR (Metadata)
 // ---------------------------------------------------------
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params; // 👈 YAHAN "await" LAGAYA HAI
+  const { slug } = await params; 
   const post = BLOG_POSTS.find((p: any) => p.slug === slug);
   
   if (!post) return { title: "Article Not Found" };
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // 2. PAGE COMPONENT (Design)
 // ---------------------------------------------------------
 export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params; // 👈 YAHAN BHI "await" ZAROORI HAI
+  const { slug } = await params; 
   const post = BLOG_POSTS.find((p: any) => p.slug === slug);
 
   if (!post) {
@@ -69,30 +69,42 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100">
         <Navbar />
 
-        {/* Hero Section */}
-        <div className="relative pt-32 pb-12 px-4 bg-white dark:bg-[#111625] border-b border-slate-200 dark:border-slate-800">
-          <div className="container mx-auto max-w-4xl text-center">
-            <span className="inline-block py-1 px-3 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-sm font-bold mb-6">
+        {/* 🚀 UPGRADED HERO SECTION WITH BACKGROUND IMAGE */}
+        <div className="relative pt-40 pb-24 px-4 overflow-hidden border-b border-slate-200 dark:border-slate-800">
+          
+          {/* Background Image Cover */}
+          <div 
+            className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
+            style={{ backgroundImage: `url(${post.image})` }}
+          ></div>
+
+          {/* Dark Overlay (Taake text clear nazar aaye) */}
+          <div className="absolute inset-0 z-10 bg-slate-900/85 dark:bg-[#0B0F19]/90 backdrop-blur-[4px]"></div>
+
+          <div className="relative z-20 container mx-auto max-w-4xl text-center">
+            {/* Category Badge */}
+            <span className="inline-block py-1 px-4 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-sm font-bold tracking-wider uppercase mb-6 shadow-lg">
               {post.category}
             </span>
             
-            <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight text-slate-900 dark:text-white">
+            {/* Main Title (Forced to White for contrast) */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-tight text-white drop-shadow-md">
               {post.title}
             </h1>
 
+            {/* Author Info */}
             <div className="flex items-center justify-center gap-4 mt-8">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden relative">
-                   {/* Agar Next/Image error de to isay simple <img> tag bana dena */}
+              <div className="flex items-center gap-4">
+                <div className="h-14 w-14 rounded-full border-2 border-indigo-500/50 shadow-lg overflow-hidden relative bg-slate-800">
                    <img src={post.authorImage} alt={post.author} className="w-full h-full object-cover" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-bold text-slate-900 dark:text-white">{post.author}</p>
-                  <p className="text-xs text-slate-500">{post.role}</p>
+                  <p className="text-base font-bold text-white">{post.author}</p>
+                  <p className="text-sm font-medium text-slate-300">{post.role}</p>
                 </div>
               </div>
-              <span className="text-slate-300">|</span>
-              <span className="text-sm text-slate-500">{post.date}</span>
+              <span className="text-slate-500 font-light text-2xl mx-2">|</span>
+              <span className="text-sm font-medium text-slate-300 flex items-center mt-1">{post.date}</span>
             </div>
           </div>
         </div>
@@ -100,7 +112,7 @@ export default async function BlogPostPage({ params }: Props) {
         {/* Article Body */}
         <article className="container mx-auto max-w-3xl px-4 py-16">
           <div 
-            className="prose prose-lg dark:prose-invert prose-indigo mx-auto"
+            className="prose prose-lg dark:prose-invert prose-indigo mx-auto prose-headings:font-bold prose-a:text-indigo-500"
             dangerouslySetInnerHTML={{ __html: post.content }} 
           />
         </article>

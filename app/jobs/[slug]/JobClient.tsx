@@ -955,34 +955,28 @@ const handleApply = async () => {
                         )}
 
                         {job.location && (
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                <MapPin size={18} className={job.location.toLowerCase().includes('remote') ? "text-green-500" : "text-indigo-500"}/> 
-                                
-                                {smartLoc.matched.slice(0, 2).map((locItem: any, index: number) => (
-                                    <span key={index} className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
-                                        {locItem.isImage ? (
-                                            <img 
-                                                src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
-                                                alt={locItem.name}
-                                                className="w-4 h-3 object-cover rounded-[2px] shadow-sm"
-                                            />
-                                        ) : (
-                                            <span className="text-sm leading-none">🌍</span>
-                                        )}
-                                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                                            {locItem.name}
-                                        </span>
-                                    </span>
-                                ))}
-
-                                {/* 🚀 EXTRA COUNTRIES TAG (+1 More) */}
-                                {smartLoc.hasMore && smartLoc.totalCount > 2 && (
-                                    <span className="text-[9px] md:text-[10px] text-indigo-600 dark:text-indigo-400 font-black ml-0.5 bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded-md whitespace-nowrap">
-                                        +{smartLoc.totalCount - 2} More
-                                    </span>
-                                )}
-                            </div>
-                        )}
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <MapPin size={18} className={job.location.toLowerCase().includes('remote') ? "text-green-500" : "text-indigo-500"}/> 
+        
+        {/* 🔥 Removed slice limit so ALL countries are displayed */}
+        {smartLoc.matched.map((locItem: any, index: number) => (
+            <span key={index} className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
+                {locItem.isImage ? (
+                    <img 
+                        src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
+                        alt={locItem.name}
+                        className="w-4 h-3 object-cover rounded-[2px] shadow-sm"
+                    />
+                ) : (
+                    <span className="text-sm leading-none">🌍</span>
+                )}
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                    {locItem.name}
+                </span>
+            </span>
+        ))}
+    </div>
+)}
                         {job.job_type && (
                             <div className="flex items-center gap-2">
                                 <Briefcase size={18} className="text-blue-500"/> 

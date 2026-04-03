@@ -109,6 +109,293 @@ const correctSlug = createSlug(job.title, job.id);
 // ---------------------------------------------------------
 // 2️⃣ LAYOUT COMPONENT (Injects Schema & Wraps Page)
 // ---------------------------------------------------------
+
+// 🌍 GLOBAL COUNTRY MAP (Schema ke liye 2-letter ISO codes zaroori hain)
+const COUNTRY_MAP: Record<string, string> = {
+    // A
+    "AFGHANISTAN": "AF", "AF": "AF",
+    "ALBANIA": "AL", "AL": "AL",
+    "ALGERIA": "DZ", "DZ": "DZ",
+    "ANDORRA": "AD", "AD": "AD",
+    "ANGOLA": "AO", "AO": "AO",
+    "ANTIGUA AND BARBUDA": "AG", "AG": "AG",
+    "ARGENTINA": "AR", "AR": "AR",
+    "ARMENIA": "AM", "AM": "AM",
+    "AUSTRALIA": "AU", "AU": "AU",
+    "AUSTRIA": "AT", "AT": "AT",
+    "AZERBAIJAN": "AZ", "AZ": "AZ",
+
+    // B
+    "BAHAMAS": "BS", "BS": "BS",
+    "BAHRAIN": "BH", "BH": "BH",
+    "BANGLADESH": "BD", "BD": "BD",
+    "BARBADOS": "BB", "BB": "BB",
+    "BELARUS": "BY", "BY": "BY",
+    "BELGIUM": "BE", "BE": "BE",
+    "BELIZE": "BZ", "BZ": "BZ",
+    "BENIN": "BJ", "BJ": "BJ",
+    "BHUTAN": "BT", "BT": "BT",
+    "BOLIVIA": "BO", "BO": "BO",
+    "BOSNIA AND HERZEGOVINA": "BA", "BOSNIA": "BA", "BA": "BA",
+    "BOTSWANA": "BW", "BW": "BW",
+    "BRAZIL": "BR", "BR": "BR",
+    "BRUNEI": "BN", "BN": "BN",
+    "BULGARIA": "BG", "BG": "BG",
+    "BURKINA FASO": "BF", "BF": "BF",
+    "BURUNDI": "BI", "BI": "BI",
+
+    // C
+    "CABO VERDE": "CV", "CAPE VERDE": "CV", "CV": "CV",
+    "CAMBODIA": "KH", "KH": "KH",
+    "CAMEROON": "CM", "CM": "CM",
+    "CANADA": "CA", "CA": "CA",
+    "CENTRAL AFRICAN REPUBLIC": "CF", "CAR": "CF", "CF": "CF",
+    "CHAD": "TD", "TD": "TD",
+    "CHILE": "CL", "CL": "CL",
+    "CHINA": "CN", "CN": "CN",
+    "COLOMBIA": "CO", "CO": "CO",
+    "COMOROS": "KM", "KM": "KM",
+    "CONGO": "CG", "CG": "CG",
+    "DEMOCRATIC REPUBLIC OF THE CONGO": "CD", "DRC": "CD", "CD": "CD",
+    "COSTA RICA": "CR", "CR": "CR",
+    "CROATIA": "HR", "HR": "HR",
+    "CUBA": "CU", "CU": "CU",
+    "CYPRUS": "CY", "CY": "CY",
+    "CZECH REPUBLIC": "CZ", "CZECHIA": "CZ", "CZ": "CZ",
+
+    // D
+    "DENMARK": "DK", "DK": "DK",
+    "DJIBOUTI": "DJ", "DJ": "DJ",
+    "DOMINICA": "DM", "DM": "DM",
+    "DOMINICAN REPUBLIC": "DO", "DO": "DO",
+
+    // E
+    "ECUADOR": "EC", "EC": "EC",
+    "EGYPT": "EG", "EG": "EG",
+    "EL SALVADOR": "SV", "SV": "SV",
+    "EQUATORIAL GUINEA": "GQ", "GQ": "GQ",
+    "ERITREA": "ER", "ER": "ER",
+    "ESTONIA": "EE", "EE": "EE",
+    "ESWATINI": "SZ", "SWAZILAND": "SZ", "SZ": "SZ",
+    "ETHIOPIA": "ET", "ET": "ET",
+
+    // F
+    "FIJI": "FJ", "FJ": "FJ",
+    "FINLAND": "FI", "FI": "FI",
+    "FRANCE": "FR", "FR": "FR",
+
+    // G
+    "GABON": "GA", "GA": "GA",
+    "GAMBIA": "GM", "GM": "GM",
+    "GEORGIA": "GE", "GE": "GE",
+    "GERMANY": "DE", "DEUTSCHLAND": "DE", "DE": "DE",
+    "GHANA": "GH", "GH": "GH",
+    "GREECE": "GR", "GR": "GR",
+    "GRENADA": "GD", "GD": "GD",
+    "GUATEMALA": "GT", "GT": "GT",
+    "GUINEA": "GN", "GN": "GN",
+    "GUINEA-BISSAU": "GW", "GW": "GW",
+    "GUYANA": "GY", "GY": "GY",
+
+    // H
+    "HAITI": "HT", "HT": "HT",
+    "HONDURAS": "HN", "HN": "HN",
+    "HUNGARY": "HU", "HU": "HU",
+
+    // I
+    "ICELAND": "IS", "IS": "IS",
+    "INDIA": "IN", "IN": "IN",
+    "INDONESIA": "ID", "ID": "ID",
+    "IRAN": "IR", "IR": "IR",
+    "IRAQ": "IQ", "IQ": "IQ",
+    "IRELAND": "IE", "IE": "IE",
+    "ISRAEL": "IL", "IL": "IL",
+    "ITALY": "IT", "IT": "IT",
+    "IVORY COAST": "CI", "COTE D'IVOIRE": "CI", "CI": "CI",
+
+    // J
+    "JAMAICA": "JM", "JM": "JM",
+    "JAPAN": "JP", "JP": "JP",
+    "JORDAN": "JO", "JO": "JO",
+
+    // K
+    "KAZAKHSTAN": "KZ", "KZ": "KZ",
+    "KENYA": "KE", "KE": "KE",
+    "KIRIBATI": "KI", "KI": "KI",
+    "KOSOVO": "XK", "XK": "XK",
+    "KUWAIT": "KW", "KW": "KW",
+    "KYRGYZSTAN": "KG", "KG": "KG",
+
+    // L
+    "LAOS": "LA", "LA": "LA",
+    "LATVIA": "LV", "LV": "LV",
+    "LEBANON": "LB", "LB": "LB",
+    "LESOTHO": "LS", "LS": "LS",
+    "LIBERIA": "LR", "LR": "LR",
+    "LIBYA": "LY", "LY": "LY",
+    "LIECHTENSTEIN": "LI", "LI": "LI",
+    "LITHUANIA": "LT", "LT": "LT",
+    "LUXEMBOURG": "LU", "LU": "LU",
+
+    // M
+    "MADAGASCAR": "MG", "MG": "MG",
+    "MALAWI": "MW", "MW": "MW",
+    "MALAYSIA": "MY", "MY": "MY",
+    "MALDIVES": "MV", "MV": "MV",
+    "MALI": "ML", "ML": "ML",
+    "MALTA": "MT", "MT": "MT",
+    "MARSHALL ISLANDS": "MH", "MH": "MH",
+    "MAURITANIA": "MR", "MR": "MR",
+    "MAURITIUS": "MU", "MU": "MU",
+    "MEXICO": "MX", "MX": "MX",
+    "MICRONESIA": "FM", "FM": "FM",
+    "MOLDOVA": "MD", "MD": "MD",
+    "MONACO": "MC", "MC": "MC",
+    "MONGOLIA": "MN", "MN": "MN",
+    "MONTENEGRO": "ME", "ME": "ME",
+    "MOROCCO": "MA", "MA": "MA",
+    "MOZAMBIQUE": "MZ", "MZ": "MZ",
+    "MYANMAR": "MM", "BURMA": "MM", "MM": "MM",
+
+    // N
+    "NAMIBIA": "NA", "NA": "NA",
+    "NAURU": "NR", "NR": "NR",
+    "NEPAL": "NP", "NP": "NP",
+    "NETHERLANDS": "NL", "HOLLAND": "NL", "NL": "NL",
+    "NEW ZEALAND": "NZ", "NZ": "NZ",
+    "NICARAGUA": "NI", "NI": "NI",
+    "NIGER": "NE", "NE": "NE",
+    "NIGERIA": "NG", "NG": "NG",
+    "NORTH KOREA": "KP", "KP": "KP",
+    "NORTH MACEDONIA": "MK", "MACEDONIA": "MK", "MK": "MK",
+    "NORWAY": "NO", "NO": "NO",
+
+    // O
+    "OMAN": "OM", "OM": "OM",
+
+    // P
+    "PAKISTAN": "PK", "PK": "PK",
+    "PALAU": "PW", "PW": "PW",
+    "PALESTINE": "PS", "PS": "PS",
+    "PANAMA": "PA", "PA": "PA",
+    "PAPUA NEW GUINEA": "PG", "PNG": "PG", "PG": "PG",
+    "PARAGUAY": "PY", "PY": "PY",
+    "PERU": "PE", "PE": "PE",
+    "PHILIPPINES": "PH", "PH": "PH",
+    "POLAND": "PL", "PL": "PL",
+    "PORTUGAL": "PT", "PT": "PT",
+
+    // Q
+    "QATAR": "QA", "QA": "QA",
+
+    // R
+    "ROMANIA": "RO", "RO": "RO",
+    "RUSSIA": "RU", "RU": "RU",
+    "RWANDA": "RW", "RW": "RW",
+
+    // S
+    "SAINT KITTS AND NEVIS": "KN", "KN": "KN",
+    "SAINT LUCIA": "LC", "LC": "LC",
+    "SAINT VINCENT AND THE GRENADINES": "VC", "VC": "VC",
+    "SAMOA": "WS", "WS": "WS",
+    "SAN MARINO": "SM", "SM": "SM",
+    "SAO TOME AND PRINCIPE": "ST", "ST": "ST",
+    "SAUDI ARABIA": "SA", "KSA": "SA", "SA": "SA",
+    "SENEGAL": "SN", "SN": "SN",
+    "SERBIA": "RS", "RS": "RS",
+    "SEYCHELLES": "SC", "SC": "SC",
+    "SIERRA LEONE": "SL", "SL": "SL",
+    "SINGAPORE": "SG", "SG": "SG",
+    "SLOVAKIA": "SK", "SK": "SK",
+    "SLOVENIA": "SI", "SI": "SI",
+    "SOLOMON ISLANDS": "SB", "SB": "SB",
+    "SOMALIA": "SO", "SO": "SO",
+    "SOUTH AFRICA": "ZA", "ZA": "ZA",
+    "SOUTH KOREA": "KR", "KR": "KR",
+    "SOUTH SUDAN": "SS", "SS": "SS",
+    "SPAIN": "ES", "ES": "ES",
+    "SRI LANKA": "LK", "LK": "LK",
+    "SUDAN": "SD", "SD": "SD",
+    "SURINAME": "SR", "SR": "SR",
+    "SWEDEN": "SE", "SE": "SE",
+    "SWITZERLAND": "CH", "CH": "CH",
+    "SYRIA": "SY", "SY": "SY",
+
+    // T
+    "TAIWAN": "TW", "TW": "TW",
+    "TAJIKISTAN": "TJ", "TJ": "TJ",
+    "TANZANIA": "TZ", "TZ": "TZ",
+    "THAILAND": "TH", "TH": "TH",
+    "TIMOR-LESTE": "TL", "EAST TIMOR": "TL", "TL": "TL",
+    "TOGO": "TG", "TG": "TG",
+    "TONGA": "TO", "TO": "TO",
+    "TRINIDAD AND TOBAGO": "TT", "TT": "TT",
+    "TUNISIA": "TN", "TN": "TN",
+    "TURKEY": "TR", "TURKIYE": "TR", "TR": "TR",
+    "TURKMENISTAN": "TM", "TM": "TM",
+    "TUVALU": "TV", "TV": "TV",
+
+    // U
+    "UGANDA": "UG", "UG": "UG",
+    "UKRAINE": "UA", "UA": "UA",
+    "UAE": "AE", "UNITED ARAB EMIRATES": "AE", "DUBAI": "AE", "AE": "AE",
+    "UK": "GB", "UNITED KINGDOM": "GB", "GB": "GB", "LONDON": "GB",
+    "USA": "US", "UNITED STATES": "US", "US": "US",
+    "URUGUAY": "UY", "UY": "UY",
+    "UZBEKISTAN": "UZ", "UZ": "UZ",
+
+    // V
+    "VANUATU": "VU", "VU": "VU",
+    "VATICAN CITY": "VA", "VATICAN": "VA", "VA": "VA",
+    "VENEZUELA": "VE", "VE": "VE",
+    "VIETNAM": "VN", "VN": "VN",
+
+    // W, Y, Z
+    "YEMEN": "YE", "YE": "YE",
+    "ZAMBIA": "ZM", "ZM": "ZM",
+    "ZIMBABWE": "ZW", "ZW": "ZW",
+
+    // Famous Territories / Commonly searched
+    "HONG KONG": "HK", "HK": "HK",
+    "MACAU": "MO", "MO": "MO",
+    "PUERTO RICO": "PR", "PR": "PR",
+    "GREENLAND": "GL", "GL": "GL",
+
+    // GLOBAL / WORLDWIDE
+    "GLOBAL": "GLOBAL", "WORLDWIDE": "GLOBAL", "ANYWHERE": "GLOBAL"
+};
+
+// 🟢 STRING PARSER FOR GOOGLE SCHEMA
+const parseLocationForSchema = (locationString: string) => {
+    if (!locationString) return [];
+    
+    let cleanStr = locationString.replace(/Remote\s*/i, '').trim();
+    if (cleanStr.startsWith('(') && cleanStr.endsWith(')')) {
+        cleanStr = cleanStr.slice(1, -1).trim();
+    }
+
+    const parsedLocations: { city: string | null, countryCode: string }[] = [];
+    const regex = /([a-zA-Z\s]+)(?:\(([^)]+)\))?/g;
+    let match;
+
+    while ((match = regex.exec(cleanStr)) !== null) {
+        const countryName = match[1].trim().replace(/^,|,$/g, '').trim(); 
+        if (!countryName || countryName.toLowerCase() === 'and') continue;
+
+        const isoCode = COUNTRY_MAP[countryName.toUpperCase()] || null;
+        const cities = match[2] ? match[2].split(',').map(c => c.trim()) : [];
+        
+        if (cities.length > 0) {
+            cities.forEach(city => {
+                parsedLocations.push({ city: city, countryCode: isoCode || countryName });
+            });
+        } else {
+            parsedLocations.push({ city: null, countryCode: isoCode || countryName });
+        }
+    }
+    return parsedLocations;
+};
+
 // Params type mein 'slug' kar diya
 export default async function Layout({ children, params }: { children: React.ReactNode, params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
@@ -202,102 +489,7 @@ export default async function Layout({ children, params }: { children: React.Rea
       // Agar 'Full Time' hai to default FULL_TIME hi rahega
   }
 
-  // 👇 2. COUNTRY EXTRACTION LOGIC (Expanded for 50+ Countries)
-  // Maqsad: "Remote (Pakistan)" se "PK" nikalna Google ke liye
   
-  let targetCountry = "Worldwide"; // Default
-  
-  if (job.location) {
-      const loc = job.location.toUpperCase(); // Case insensitive check
-      
-      // 🗺️ Country Mapping (Name -> ISO Code)
-      const countries: Record<string, string> = {
-          // 🇵🇰 South Asia
-          "PAKISTAN": "PK", "PK": "PK",
-          "INDIA": "IN", "IN": "IN",
-          "BANGLADESH": "BD",
-          "SRI LANKA": "LK",
-          "NEPAL": "NP",
-          
-          // 🇺🇸 North America
-          "USA": "US", "UNITED STATES": "US", "US": "US",
-          "CANADA": "CA", "MEXICO": "MX",
-          
-          // 🇬🇧 Europe (Major)
-          "UK": "GB", "UNITED KINGDOM": "GB", "LONDON": "GB",
-          "GERMANY": "DE", "DEUTSCHLAND": "DE",
-          "FRANCE": "FR",
-          "ITALY": "IT",
-          "SPAIN": "ES",
-          "NETHERLANDS": "NL", "HOLLAND": "NL",
-          "SWEDEN": "SE",
-          "NORWAY": "NO",
-          "DENMARK": "DK",
-          "FINLAND": "FI",
-          "IRELAND": "IE",
-          "POLAND": "PL",
-          "PORTUGAL": "PT",
-          "SWITZERLAND": "CH",
-          "AUSTRIA": "AT",
-          "BELGIUM": "BE",
-          "CZECH REPUBLIC": "CZ", "CZECHIA": "CZ",
-          "GREECE": "GR",
-          "HUNGARY": "HU",
-          "ROMANIA": "RO",
-          "UKRAINE": "UA",
-          "RUSSIA": "RU",
-          "TURKEY": "TR", "TURKIYE": "TR",
-          "BULGARIA": "BG",
-          "CROATIA": "HR",
-
-          // 🇦🇪 Middle East
-          "UAE": "AE", "UNITED ARAB EMIRATES": "AE", "DUBAI": "AE",
-          "SAUDI ARABIA": "SA", "KSA": "SA",
-          "QATAR": "QA",
-          "OMAN": "OM",
-          "KUWAIT": "KW",
-          "BAHRAIN": "BH",
-          "EGYPT": "EG",
-
-          // 🌏 Asia Pacific
-          "AUSTRALIA": "AU",
-          "NEW ZEALAND": "NZ",
-          "CHINA": "CN",
-          "JAPAN": "JP",
-          "SOUTH KOREA": "KR",
-          "SINGAPORE": "SG",
-          "MALAYSIA": "MY",
-          "INDONESIA": "ID",
-          "PHILIPPINES": "PH",
-          "THAILAND": "TH",
-          "VIETNAM": "VN",
-
-          // 🌎 South America
-          "BRAZIL": "BR",
-          "ARGENTINA": "AR",
-          "COLOMBIA": "CO",
-          "CHILE": "CL",
-          "PERU": "PE",
-
-          // 🌍 Africa
-          "SOUTH AFRICA": "ZA",
-          "NIGERIA": "NG",
-          "KENYA": "KE",
-          "MOROCCO": "MA"
-      };
-
-      // 🔍 Loop chalao (Regex Update)
-      for (const [name, code] of Object.entries(countries)) {
-          // ✨ FIX: Hum RegExp use karenge taake "Australia" me "US" match na ho
-          // \b ka matlab hai "Whole Word" (Pura lafz)
-          const regex = new RegExp(`\\b${name}\\b`, 'i'); 
-          
-          if (regex.test(loc)) {
-              targetCountry = code;
-              break; 
-          }
-      }
-  }
 const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -327,13 +519,29 @@ const breadcrumbLd = {
   const minSalary = salaryNumbers ? salaryNumbers[0] : null;
   const maxSalary = salaryNumbers && salaryNumbers[1] ? salaryNumbers[1] : null;
 
+// 🌟 SMART LOCATION EXTRACTION FOR SCHEMA
+  const parsedSchemaLocations = parseLocationForSchema(job.location);
+  const isRemote = job.location?.toLowerCase().includes('remote');
+
+  const googleJobLocations = parsedSchemaLocations.length > 0 ? parsedSchemaLocations.map(loc => {
+      const locObj: any = { '@type': 'Place', 'address': { '@type': 'PostalAddress' } };
+      if (loc.countryCode === 'GLOBAL') return null;
+      if (loc.city) locObj.address.addressLocality = loc.city;
+      if (loc.countryCode) locObj.address.addressCountry = loc.countryCode;
+      if (!loc.city && !loc.countryCode) locObj.address.addressCountry = "US"; // Fallback
+      return locObj;
+  }).filter(Boolean) : [{ '@type': 'Place', 'address': { '@type': 'PostalAddress', 'addressCountry': 'US' } }];
+
+  const applicantReqs = parsedSchemaLocations
+      .filter(loc => loc.countryCode && loc.countryCode !== 'GLOBAL')
+      .map(loc => ({ '@type': 'Country', 'name': loc.countryCode }));
+
   // 🌟 GOOGLE JOBS SCHEMA (JSON-LD)
-  // Yeh wo code hai jo Google Jobs Widget trigger karega
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
     title: job.title,
-    description: job.description, // HTML description supported here
+    description: job.description, 
     datePosted: job.date_posted,
     validThrough: isExpired 
         ? new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString() 
@@ -345,33 +553,24 @@ const breadcrumbLd = {
       logo: "https://www.hireskys.com/logo2.png",
       sameAs: "https://www.hireskys.com"
     },
-    jobLocation: {
-      '@type': 'Place',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: job.location === 'Remote' ? 'Remote' : job.location,
-        ...(targetCountry !== "Worldwide" && { addressCountry: targetCountry })
-      }
-    },
+    jobLocation: googleJobLocations.length > 0 ? googleJobLocations : undefined,
     ...(minSalary && {
       baseSalary: {
         '@type': 'MonetaryAmount',
         currency: 'USD',
         value: {
           '@type': 'QuantitativeValue',
-          value: minSalary,      // Single value ya Min value
-          minValue: minSalary,   // Range support ke liye
+          value: minSalary,      
+          minValue: minSalary,   
           maxValue: maxSalary || minSalary, 
           unitText: 'YEAR'
         }
       }
     }),
-    applicantLocationRequirements: {
-      '@type': 'Country',
-      name: targetCountry
-    },
-    jobLocationType: job.location?.toLowerCase().includes('remote') ? 'TELECOMMUTE' : undefined
+    ...(applicantReqs.length > 0 && { applicantLocationRequirements: applicantReqs }),
+    ...(isRemote && { jobLocationType: 'TELECOMMUTE' })
   };
+
   return (
     <>
       {/* Schema Injection */}
@@ -387,5 +586,4 @@ const breadcrumbLd = {
       {children}
     </>
   );
-
 }

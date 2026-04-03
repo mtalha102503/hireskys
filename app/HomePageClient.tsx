@@ -51,16 +51,6 @@ type Job = {
   company_logo_url?: string;
 };
 
-const extractCountry = (locationString: string, activeFilter: string = "") => {
-  if (!locationString) return { 
-      matched: [{ name: locationString, flag: "🌍", code: null, displayName: "Global" }], 
-      isRemote: false, 
-      hasMore: false,
-      totalCount: 0
-  };
-
-  const loc = locationString.trim().toUpperCase();
-  const isRemote = loc.includes("REMOTE");
 
  const countryMap: Record<string, { code: string; flag: string; name: string }> = {
     // --- POPULAR / COMMON ---
@@ -377,45 +367,62 @@ const extractCountry = (locationString: string, activeFilter: string = "") => {
     "ZIMBABWE": { code: "ZW", flag: "🇿🇼", name: "Zimbabwe" },
     "ZW": { code: "ZW", flag: "🇿🇼", name: "Zimbabwe" },
 };
-let matchedCountries: any[] = [];
-  
-  for (const [key, data] of Object.entries(countryMap)) {
-      const regex = new RegExp(`\\b${key}\\b`, 'i');
-      if (regex.test(loc)) {
-          // Duplicate check
-          if (!matchedCountries.find(c => c.code === data.code)) {
-              matchedCountries.push({ ...data, displayName: data.name });
-          }
-      }
-  }
+// 🟢 1. STRING PARSER (Remote( UK(london), Spain(Madrid) ) ko torey ga)
+const parseComplexLocation = (locationString: string) => {
+    if (!locationString) return [];
+    
+    let cleanStr = locationString.replace(/Remote\s*/i, '').trim();
+    if (cleanStr.startsWith('(') && cleanStr.endsWith(')')) {
+        cleanStr = cleanStr.slice(1, -1).trim();
+    }
 
-  // 🏆 PRIORITY: Agar user ne koi country filter ki hai, usay list mein NUMBER 1 par le aao
-  if (activeFilter && matchedCountries.length > 0) {
-      const filterIndex = matchedCountries.findIndex(c => c.name?.toLowerCase() === activeFilter?.toLowerCase());
-      if (filterIndex > 0) {
-          const [activeCountry] = matchedCountries.splice(filterIndex, 1);
-          matchedCountries.unshift(activeCountry); // Utha kar No. 1 par rakh diya
-      }
-  }
+    const parsedLocations: any[] = [];
+    const regex = /([a-zA-Z\s]+)(?:\(([^)]+)\))?/g;
+    let match;
 
-  // Agar kuch match na ho
-  if (matchedCountries.length === 0) {
-      return { 
-          matched: [{ name: locationString, flag: "🌍", code: null, displayName: locationString }], 
-          isRemote, hasMore: false, totalCount: 0 
-      };
-  }
+    while ((match = regex.exec(cleanStr)) !== null) {
+        const countryName = match[1].trim().replace(/^,|,$/g, '').trim(); 
+        if (!countryName || countryName.toLowerCase() === 'and') continue;
 
-  // Sirf pehle 2 dikhane hain
-  const totalCount = matchedCountries.length;
-  const displayCountries = matchedCountries.slice(0, 2);
+        const cities = match[2] ? match[2].split(',').map(c => c.trim()) : [];
+        parsedLocations.push({ country: countryName, cities: cities });
+    }
 
-  return { 
-      matched: displayCountries, 
-      isRemote, 
-      hasMore: totalCount > 2, // Agar 2 se zyada hain tabhi +More aayega
-      totalCount 
-  };
+    return parsedLocations;
+};
+
+// 🟢 2. UI FORMATTER (Cards aur Title ke liye data ready karega)
+const getSmartLocationUI = (locationString: string) => {
+    if (!locationString) return { matched: [{ name: "Global", flag: "🌍", code: null }], isRemote: true, hasMore: false, totalCount: 1 };
+
+    const parsedData = parseComplexLocation(locationString);
+    if (parsedData.length === 0) {
+        return { matched: [{ name: locationString, flag: "🌍", code: null }], isRemote: true, hasMore: false, totalCount: 1 };
+    }
+    
+    const uiElements: any[] = [];
+    
+    parsedData.forEach(item => {
+        const cKey = item.country.toUpperCase();
+        const countryData = countryMap[cKey] || { code: null, flag: "🌍", name: item.country };
+        
+        // City hai toh city, warna country name
+        const displayName = item.cities.length > 0 ? item.cities[0] : countryData.name;
+        
+        uiElements.push({
+            flag: countryData.flag,
+            code: countryData.code,
+            name: displayName === "Worldwide" ? "Global" : displayName,
+            isImage: !!countryData.code // Agar code hai toh image banegi
+        });
+    });
+
+    return {
+        matched: uiElements,
+        isRemote: locationString.toLowerCase().includes('remote'),
+        hasMore: uiElements.length > 1,
+        totalCount: uiElements.length
+    };
 };
  
 export default function Home({
@@ -1150,9 +1157,9 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
     }
 
     if (filterCountry) {
-        // 🚀 DATABASE MAPPING MAGIC: UI par Worldwide, Database mein Global!
         const dbLocation = filterCountry === 'Worldwide' ? 'Global' : filterCountry;
-        query = query.ilike('location', `%${dbLocation}%`); 
+        // 🚀 SMART SEARCH: Location string ke andar match karega (Chaahe bracket mein ho ya bahar)
+        query = query.ilike('location', `%${dbLocation}%`);
     }
 
     query = query.eq('approved', true).eq('active', true).range(from, to);
@@ -1266,7 +1273,7 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
   const highlight = "text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600";
 
   const DynamicTitle = () => {
-      const locData = extractCountry(filterCountry);
+      const locData = getSmartLocationUI(filterCountry);
       // 🚀 FIX: Array mein se pehla match nikal lo
       const topMatch = locData.matched && locData.matched.length > 0 ? locData.matched[0] : null;
       
@@ -2579,10 +2586,8 @@ return (
             </div>
           ) : (
             jobs.map((job) => {
-                const detectedLocation = extractCountry(job.location || job.country || "", filterCountry);
-  
-  // Ye line add karo check karne ke liye:
-  console.log("Input:", job.location, "Detected:", detectedLocation); 
+            // 🟢 NEW SMART LOCATION ENGINE
+  const smartLoc = getSmartLocationUI(job.location || "");
   const jobDate = new Date(job.date_posted);
   const now = new Date();
   const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
@@ -2603,17 +2608,15 @@ return (
       <div className="flex justify-between items-center mb-3 md:mb-5">
         
         <div className="flex items-center gap-2 md:gap-4">
-           {/* 🏳️ LOCATION PILL (MULTI-FLAG UPDATE) */}
+           {/* 🏳️ LOCATION PILL (SMART PARSER UPDATE) */}
             <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 overflow-hidden">
                 
                 <div className="flex items-center gap-1.5">
-                    {detectedLocation.matched.map((locItem: any, index: number) => (
+                    {smartLoc.matched.slice(0, 2).map((locItem: any, index: number) => (
                         <div key={index} className="flex items-center gap-1">
-                            {/* Comma lagao agar doosra mulk hai */}
                             {index > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
                             
-                            {/* Flag Image */}
-                            {locItem.code ? (
+                            {locItem.isImage ? (
                                 <img 
                                     src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
                                     alt={locItem.name}
@@ -2623,20 +2626,17 @@ return (
                                 <span className="text-base leading-none">🌍</span>
                             )}
                             
-                            {/* Name */}
                             <span className="tracking-wide max-w-[80px] md:max-w-[120px] truncate">
-                                {locItem.displayName === "Worldwide" || locItem.displayName.includes("Global") 
-                                    ? "Global" 
-                                    : locItem.displayName}
+                                {locItem.name}
                             </span>
                         </div>
                     ))}
                 </div>
 
-                {/* 🚀 EXTRA COUNTRIES TAG (+2 More) */}
-                {detectedLocation.hasMore && (
+                {/* 🚀 EXTRA COUNTRIES TAG (+1 More) */}
+                {smartLoc.hasMore && smartLoc.totalCount > 2 && (
                     <span className="text-[9px] md:text-[10px] text-indigo-600 dark:text-indigo-400 font-black ml-0.5 bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded-md whitespace-nowrap">
-                        +{detectedLocation.totalCount - 2} More
+                        +{smartLoc.totalCount - 2} More
                     </span>
                 )}
             </div>

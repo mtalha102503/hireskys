@@ -1157,9 +1157,28 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
     }
 
     if (filterCountry) {
-        const dbLocation = filterCountry === 'Worldwide' ? 'Global' : filterCountry;
-        // 🚀 SMART SEARCH: Location string ke andar match karega (Chaahe bracket mein ho ya bahar)
-        query = query.ilike('location', `%${dbLocation}%`);
+        if (filterCountry === 'Worldwide') {
+            // Worldwide ke multiple variations check karega
+            query = query.or('location.ilike.%Global%,location.ilike.%Worldwide%,location.ilike.%Anywhere%');
+        } else {
+            // Dropdown se aane wale name se 2-letter Code nikal lo (e.g., United States -> US)
+            const upperLoc = filterCountry.toUpperCase();
+            const cData = countryMap[upperLoc]; 
+            
+            if (cData && cData.code === 'US') {
+                // 🔥 US ke liye Super Smart Query (US, USA, United States sab dhoondega)
+                query = query.or(`location.ilike.%United States%,location.ilike.%USA%,location.ilike.%(US)%,location.ilike.%US(%,location.ilike.%US %`);
+            } else if (cData && cData.code === 'GB') {
+                // UK ke liye Super Smart Query
+                query = query.or(`location.ilike.%United Kingdom%,location.ilike.%UK%,location.ilike.%(GB)%`);
+            } else if (cData && cData.code) {
+                // Baqi sab countries ke liye (Full name OR 2-letter Code in brackets)
+                query = query.or(`location.ilike.%${filterCountry}%,location.ilike.%(${cData.code})%,location.ilike.%${cData.code}(%`);
+            } else {
+                // Default fallback
+                query = query.ilike('location', `%${filterCountry}%`);
+            }
+        }
     }
 
     query = query.eq('approved', true).eq('active', true).range(from, to);

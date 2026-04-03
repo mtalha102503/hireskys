@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createSlug } from '@/lib/utils';
 import Navbar from '@/components/Navbar'; 
+import VideoPlayerFacade from '@/components/VideoPlayerFacade';
 import Image from 'next/image'; // ✅ SEO: Performance ke liye zaroori
 import type { Metadata } from 'next';
 import { 
@@ -108,7 +109,15 @@ export default async function CompanyPage({ params, searchParams }: Props) {
   const isVerified = manualData.verified || false;
   const hasCustomBanner = !!manualData.banner_url;
   const industry = manualData.industry || manualData.category || "Technology";
-
+// 🟢 SMART YOUTUBE ID EXTRACTOR
+  let videoId = null;
+  if (manualData.promo_video_url && manualData.promo_video_url !== 'Not Found') {
+    // Yeh Regex kisi bhi qisam ke YouTube URL (youtu.be, watch?v=, embed/) se exact 11-character ID nikal leta hai
+    const match = manualData.promo_video_url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=))([^"&?\/\s]{11})/);
+    if (match && match[1]) {
+      videoId = match[1];
+    }
+  }
   // 🧠 THE SMART BENEFITS EXTRACTOR ENGINE
   const combinedDescriptions = jobList.map(job => job.description || '').join(' ').toLowerCase();
   const potentialBenefits = [
@@ -167,7 +176,28 @@ export default async function CompanyPage({ params, searchParams }: Props) {
     "description": description,
     "sameAs": [website !== "#" ? website : null].filter(Boolean),
   };
-
+// 🟢 VVIP: VIDEO SCHEMA FOR GOOGLE AUTHORITY (600+ Scale Optimization)
+  const videoSchema = videoId ? {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": `${companyName} Remote Work Culture & Office Tour`,
+    "description": `Explore ${companyName}'s remote work environment, employee benefits, and culture. See why professionals are joining ${companyName} on HireSkys.`,
+    "thumbnailUrl": [
+      `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
+      `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+    ],
+    "uploadDate": manualData.created_at || new Date().toISOString(),
+    "contentUrl": `https://www.youtube.com/watch?v=${videoId}`,
+    "embedUrl": `https://www.youtube.com/embed/${videoId}`,
+    "publisher": {
+      "@type": "Organization",
+      "name": "HireSkys",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.hireskys.com/logo2.png"
+      }
+    }
+  } : null;
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -210,7 +240,9 @@ export default async function CompanyPage({ params, searchParams }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-
+      {videoSchema && (
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }} />
+       )}
       <Navbar />
 
       {/* 🌟 VVIP HEADER SECTION (Logo + Info + Tabs) */}
@@ -305,7 +337,21 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                 {description}
               </p>
             </div>
-            
+            {videoId && (
+              <div className="mt-10 mb-6">
+                <div className="rounded-3xl overflow-hidden border-2 border-gray-100 dark:border-gray-800 shadow-2xl relative aspect-video bg-gray-100 dark:bg-[#0B0F19] group cursor-pointer">
+                  <VideoPlayerFacade videoId={videoId} companyName={companyName} />
+                </div>
+                {/* 🟢 SEO Power Move: Semantic Text below video */}
+                <div className="mt-4 flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400">
+                  <span className="w-8 h-[1px] bg-slate-200 dark:bg-slate-800"></span>
+                  <p className="text-[13px] font-medium italic">
+                    Inside look: <strong className="text-indigo-600 dark:text-indigo-400 not-italic">Remote culture and values</strong> at {companyName}
+                  </p>
+                  <span className="w-8 h-[1px] bg-slate-200 dark:bg-slate-800"></span>
+                </div>
+              </div>
+            )}
             <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-gray-100 dark:border-gray-800">
               <div>
                 <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Founded In</span>

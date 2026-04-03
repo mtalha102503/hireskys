@@ -26,6 +26,15 @@ const BLOG_POSTS = [
     author: 'Muhammad Talha',
     category: 'Product Update',
     image: '/blog-telegram-update.jpg' 
+  },
+  {
+    slug: 'why-remote-job-boards-are-broken',
+    title: 'Quality > Quantity: Why 99% of Remote Job Boards are Failing You',
+    excerpt: 'Most platforms boast about having 10,000+ jobs. We boast about having zero "Ghost Jobs". Here is how we fixed the broken remote hiring industry.',
+    date: 'Mar 30, 2026',
+    author: 'Muhammad Talha',
+    category: 'Behind The Scenes',
+    image: '/blog-quality-update.png' 
   }
 ];
 
@@ -103,7 +112,7 @@ export default function BlogIndex() {
                     Join thousands of freelancers getting weekly tips on landing high-paying clients and using AI to work smarter.
                 </p>
                 <div className="flex justify-center gap-4">
-                    <Link href="/signup" className="px-8 py-3 bg-white text-slate-900 font-bold rounded-full hover:bg-slate-100 transition-all">
+                    <Link href="/login" className="px-8 py-3 bg-white text-slate-900 font-bold rounded-full hover:bg-slate-100 transition-all">
                         Join HireSkys Free
                     </Link>
                 </div>

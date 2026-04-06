@@ -1097,9 +1097,9 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
     const to = from + JOBS_PER_PAGE - 1;
    // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
     let query = supabase
-      .from('jobs')
-      .select('*', { count: 'exact' })
-      .order('date_posted', { ascending: false }); 
+  .from('jobs')
+  .select('id, title, source, link, category, date_posted, is_verified, approved, active, tags, job_type, location, company_logo_url', { count: 'exact' })
+  .order('date_posted', { ascending: false });
 
     // 🟢 2. POWERFUL SEARCH LOGIC (NOW POWERED BY TYPESENSE ⚡)
     if (searchQuery && searchQuery.trim().length > 1) {
@@ -1205,11 +1205,11 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
     }
 
     if ((!data || data.length === 0) && searchQuery && reset) {
-        setIsFallback(true); 
-        const { data: fallbackData } = await supabase
-            .from('jobs')
-            .select('*')
-            .eq('approved', true)
+    setIsFallback(true); 
+    const { data: fallbackData } = await supabase
+        .from('jobs')
+        .select('id, title, source, link, category, date_posted, is_verified, approved, active, tags, job_type, location, company_logo_url')
+        .eq('approved', true)
             .order('date_posted', { ascending: false })
             .range(0, JOBS_PER_PAGE - 1);
             

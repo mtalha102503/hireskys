@@ -501,17 +501,40 @@ if (user) {
                     setCompanyDetails(companyInfo); // ✅ State mein save kar liya
                 }
             }
-            // Related Jobs Fetch (Ye waisa hi rahega)
+            // 🌟 UPGRADED: Related Jobs Fetch with Companies Table Logos
             const { data: related } = await supabase
                 .from('jobs')
-                .select('id, title, company, location, salary_range, date_posted, category')
+                .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
                 .eq('category', data.category) 
                 .neq('id', data.id)            
                 .eq('approved', true)          
                 .order('date_posted', { ascending: false })
                 .limit(3);                     
             
-            if (related) setRelatedJobs(related);
+            if (related && related.length > 0) {
+                // 1. In jobs ke slugs nikalo taake companies table mein dhoond sakein
+                const slugsToFind = related.map(rJob => getCompanySlug(rJob.company || rJob.source || '')).filter(Boolean);
+                
+                // 2. Companies table se inke logos mangwao
+                const { data: companiesData } = await supabase
+                    .from('companies')
+                    .select('slug, logo_url')
+                    .in('slug', slugsToFind);
+                    
+                // 3. Ek Map bana lo taake fast lookup ho
+                const logoMap: Record<string, string> = {};
+                if (companiesData) {
+                    companiesData.forEach(c => { if (c.logo_url) logoMap[c.slug] = c.logo_url; });
+                }
+                
+                // 4. Jobs ke andar unka final logo attach kardo
+                const relatedWithLogos = related.map(rJob => ({
+                    ...rJob,
+                    final_logo: rJob.company_logo_url || logoMap[getCompanySlug(rJob.company || rJob.source || '')] || null
+                }));
+                
+                setRelatedJobs(relatedWithLogos);
+            }
 
             // Saved check (Waisa hi rahega)
             if (user) {
@@ -1068,56 +1091,110 @@ const handleApply = async () => {
     userProfile={userProfile} // 👈 Ye naya prop add karo
 />
 
-            {/* 👇 Original Description Text */}
+           {/* 👇 Original Description Text */}
             <div 
-                className="job-content prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white mt-6"
+                className="job-content prose prose-slate dark:prose-invert max-w-none prose-a:text-indigo-600 prose-headings:text-slate-900 dark:prose-headings:text-white mt-8 prose-p:leading-loose prose-p:text-[15px] prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-headings:mt-10 prose-headings:mb-4 prose-h2:text-xl prose-h3:text-lg prose-h4:text-base prose-headings:font-black prose-li:my-1.5 prose-ul:list-disc prose-ul:pl-5"
                 dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
             />
         </div>
         
         <ReportJob jobId={job.id} />
                 
-                {/* 🌟 RELATED JOBS SECTION */}
+                {/* 🌟 UPGRADED RELATED JOBS SECTION */}
                 {relatedJobs.length > 0 && (
-                  <div id="similar-jobs" className="mt-12 scroll-mt-32">
-                      <h3 className="text-xl font-bold mb-6 text-slate-900 dark:text-white flex items-center gap-2">
-                        <Briefcase size={20} className="text-indigo-500" /> Similar Opportunities
+                  <div id="similar-jobs" className="mt-16 scroll-mt-32 border-t border-slate-200 dark:border-slate-800 pt-10">
+                      <h3 className="text-xl md:text-2xl font-black mb-6 text-slate-900 dark:text-white flex items-center gap-2">
+                        <Briefcase size={24} className="text-indigo-500" /> Similar Opportunities
                       </h3>
+                      
                       <div className="space-y-4">
-                        {relatedJobs.map((rJob) => (
+                        {relatedJobs.map((rJob) => {
+                           // 🟢 NAYA: Har related job ki location ko smart parser se guzaaro
+                           const rSmartLoc = getSmartLocationUI(rJob.location || "");
+                           
+                           return (
                            <Link 
                               key={rJob.id} 
                               href={`/jobs/${createSlug(rJob.title, rJob.id)}`}
-                              className="block group bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 p-5 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-500 transition-all hover:shadow-md"
+                              className="group flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 p-4 md:p-5 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-500 transition-all hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1"
                            >
-                              <div className="flex justify-between items-start">
-                                  <div>
-                                      <h4 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors">
-                                        {rJob.title}
-                                      </h4>
-                                      <div className="flex items-center gap-3 mt-2 text-sm text-slate-500 dark:text-slate-400">
-                                          {rJob.company && <span className="flex items-center gap-1"><Building size={14}/> {rJob.company}</span>}
-                                          <span className="flex items-center gap-1"><MapPin size={14}/> {rJob.location || 'Remote'}</span>
-                                          <span className="flex items-center gap-1 text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{getRelativeTime(rJob.date_posted)}</span>
+                              {/* 🏢 Company Logo Wrapper */}
+                              <div className="h-14 w-14 md:h-16 md:w-16 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 flex items-center justify-center p-2 flex-shrink-0 overflow-hidden shadow-sm">
+                                  {rJob.final_logo ? (
+                                      <img 
+                                          src={rJob.final_logo} 
+                                          alt={rJob.company || rJob.source} 
+                                          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" 
+                                      />
+                                  ) : (
+                                      <Building size={24} className="text-indigo-400 group-hover:text-indigo-600 transition-colors" />
+                                  )}
+                              </div>
+
+                              {/* 📝 Job Details */}
+                              <div className="flex-1 min-w-0 w-full">
+                                  <h4 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                                    {rJob.title}
+                                  </h4>
+                                  
+                                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+                                      <span className="text-slate-700 dark:text-slate-200 font-bold bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+                                          {rJob.company || rJob.source || "Company"}
+                                      </span>
+                                      
+                                      {/* 🌍 🚀 NAYA: SMART LOCATION FLAGS IN CARD */}
+                                      <div className="flex flex-wrap items-center gap-1.5">
+                                          <MapPin size={14} className={(rJob.location || '').toLowerCase().includes('remote') ? "text-emerald-500" : "text-indigo-500"}/> 
+                                          
+                                          {rSmartLoc.matched.slice(0, 2).map((locItem: any, idx: number) => (
+                                              <span key={idx} className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-bold text-slate-700 dark:text-slate-300">
+                                                  {locItem.isImage ? (
+                                                      <img 
+                                                          src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
+                                                          alt={locItem.name}
+                                                          className="w-3.5 h-2.5 object-cover rounded-[2px] shadow-sm"
+                                                      />
+                                                  ) : (
+                                                      <span className="text-[10px] leading-none">🌍</span>
+                                                  )}
+                                                  <span className="truncate max-w-[80px]">{locItem.name}</span>
+                                              </span>
+                                          ))}
+                                          
+                                          {/* Agar 2 se zyada countries hain to "+X More" dikhao */}
+                                          {rSmartLoc.hasMore && rSmartLoc.totalCount > 2 && (
+                                              <span className="text-[10px] font-bold text-indigo-500 ml-0.5">
+                                                  +{rSmartLoc.totalCount - 2}
+                                              </span>
+                                          )}
                                       </div>
-                                  </div>
-                                  <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 text-slate-400 group-hover:text-indigo-600 transition-colors">
-                                      <ArrowRight size={20} />
+                                      
+                                      <span className="flex items-center gap-1 text-xs ml-auto sm:ml-0">
+                                          <Clock size={12} className="text-pink-500"/> 
+                                          {getRelativeTime(rJob.date_posted)}
+                                      </span>
                                   </div>
                               </div>
+
+                              {/* ➡️ Action Arrow (Desktop Only) */}
+                              <div className="hidden sm:flex p-3 bg-slate-50 dark:bg-slate-800/80 rounded-full group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 text-slate-400 group-hover:text-indigo-600 transition-colors flex-shrink-0">
+                                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                              </div>
                            </Link>
-                        ))}
+                           );
+                        })}
                       </div>
                   </div>
                 )}
             </div>
 
-            <div className="space-y-6">
-                
-                {/* SMART AUTHOR SECTION */}
-                {renderAuthorSection()}
-                
-                {/* 🏢 COMPANY PROFILE CARD (Updated) */}
+            {/* 🚀 THE FIX: lg:sticky aur lg:top-24 add kiya hai taake scroll karne par chipak jaye */}
+        <div className="space-y-6 lg:sticky lg:top-24 self-start">
+            
+            {/* SMART AUTHOR SECTION */}
+            {renderAuthorSection()}
+            
+            {/* 🏢 COMPANY PROFILE CARD (Updated) */}
                 {(job.company || companyDetails) && (
                     <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 relative overflow-hidden">
                         

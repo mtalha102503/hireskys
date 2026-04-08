@@ -1,278 +1,299 @@
 "use client";
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { 
-  Search, MapPin, User, Briefcase, Star, ChevronDown, 
-  ArrowRight, ShieldCheck, AlertCircle, Zap, Award
-} from 'lucide-react';
 import Link from 'next/link';
+import { 
+  MapPin, Briefcase, Star, Search, Award, 
+  ChevronRight, Globe, Loader2
+} from 'lucide-react';
 
-export default function TalentPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0B0F19] text-white flex items-center justify-center">Loading...</div>}>
-      <TalentContent />
-    </Suspense>
-  );
-}
+type TalentProfile = {
+  id: string;
+  full_name: string;
+  username: string;
+  primary_role: string;
+  avatar_url: string;
+  bio: string;
+  country: string;
+  experience_level: string;
+  skills: string[];
+  hourly_rate: string;
+  is_available: boolean;
+  profile_score: number;
+};
 
-function TalentContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const initialQuery = searchParams.get('search') || '';
+export default function TalentDirectory() {
+  const [talents, setTalents] = useState<TalentProfile[]>([]);
+  const [filteredTalents, setFilteredTalents] = useState<TalentProfile[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [talents, setTalents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [searchType, setSearchType] = useState<'jobs' | 'talent'>('talent'); 
+  // Paginaton Logic
+  const [visibleCount, setVisibleCount] = useState(20);
+
+  // Filters State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('All');
+  const [expFilter, setExpFilter] = useState('All');
+  const [countryFilter, setCountryFilter] = useState('All'); // 🌍 Naya Country Filter
 
   useEffect(() => {
-    fetchTalent(initialQuery);
+    fetchRankedTalent();
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchType === 'jobs') {
-      router.push(`/?search=${encodeURIComponent(searchQuery)}`);
-    } else {
-      fetchTalent(searchQuery);
-    }
-  };
+  // Real-time filtering logic
+  useEffect(() => {
+    let result = talents;
 
- // --- 🧠 SMART SEARCH ENGINE (Word-by-Word Matching) ---
-  async function fetchTalent(queryText: string) {
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(t => 
+        t.full_name?.toLowerCase().includes(query) || 
+        t.primary_role?.toLowerCase().includes(query) ||
+        t.skills?.some(s => s.toLowerCase().includes(query))
+      );
+    }
+
+    if (roleFilter !== 'All') {
+      result = result.filter(t => t.primary_role?.toLowerCase().includes(roleFilter.toLowerCase()));
+    }
+
+    if (expFilter !== 'All') {
+      result = result.filter(t => t.experience_level === expFilter);
+    }
+
+    if (countryFilter !== 'All') {
+      result = result.filter(t => t.country === countryFilter);
+    }
+
+    setFilteredTalents(result);
+    setVisibleCount(20); // 🔄 Filter change hone par wapis pehle 20 results dikhao
+  }, [searchQuery, roleFilter, expFilter, countryFilter, talents]);
+
+  async function fetchRankedTalent() {
     setLoading(true);
+    const { data, error } = await supabase.rpc('get_ranked_talent');
     
-    const [profilesRes, skillsRes] = await Promise.all([
-        supabase.from('profiles').select('*').eq('is_available', true),
-        supabase.from('user_skills').select('*')
-    ]);
-
-    if (profilesRes.error) {
-      console.error(profilesRes.error);
-      setLoading(false);
-      return;
-    }
-
-    let allProfiles = profilesRes.data || [];
-    const allSkills = skillsRes.data || [];
-
-    // Data Merging
-    allProfiles = allProfiles.map(profile => {
-        const userSkills = allSkills.filter(s => s.user_id === profile.id);
-        return { ...profile, user_skills: userSkills };
-    });
-
-    if (queryText) {
-        const searchTerms = queryText.toLowerCase().split(" ").filter(w => w.length > 1);
-
-        // FILTER
-        let filtered = allProfiles.filter(profile => {
-            const searchableText = `
-                ${profile.full_name || ''} 
-                ${profile.bio || ''} 
-                ${Array.isArray(profile.skills) ? profile.skills.join(" ") : ""} 
-                ${profile.user_skills.map((s:any) => s.skill_name).join(" ")}
-            `.toLowerCase();
-
-            return searchTerms.some(term => searchableText.includes(term));
-        });
-
-        // RANKING
-        filtered = filtered.sort((a, b) => {
-            const getScore = (profile: any) => {
-                let points = 0;
-                searchTerms.forEach(term => {
-                    // A. Verified Skill Match
-                    const matchedRatedSkill = profile.user_skills.find((s: any) => s.skill_name.toLowerCase().includes(term));
-                    if (matchedRatedSkill) {
-                        points += (matchedRatedSkill.proficiency_score || 0) * 10; 
-                        if (matchedRatedSkill.proficiency_score >= 9) points += 50; 
-                    }
-
-                    // B. Unverified Tag Match
-                    if (Array.isArray(profile.skills) && profile.skills.some((s: string) => s.toLowerCase().includes(term))) {
-                        points += 20;
-                    }
-
-                    // C. Name/Bio Match
-                    if (profile.full_name?.toLowerCase().includes(term)) points += 10;
-                    if (profile.bio?.toLowerCase().includes(term)) points += 5;
-                });
-                return points;
-            };
-            return getScore(b) - getScore(a);
-        });
-
-        setTalents(filtered);
+    if (error) {
+      console.error("Error fetching talent:", error);
     } else {
-        setTalents(allProfiles);
+      setTalents(data || []);
+      setFilteredTalents(data || []);
     }
     setLoading(false);
   }
 
-  // --- SMART BADGE GENERATOR ---
-  const getSkillBadge = (user: any) => {
-      let score = 0;
-      if (searchQuery) {
-          const specificSkill = user.user_skills.find((s: any) => s.skill_name.toLowerCase().includes(searchQuery.toLowerCase()));
-          score = specificSkill ? specificSkill.proficiency_score : 0;
-      } else {
-          if (user.user_skills.length > 0) {
-              score = Math.max(...user.user_skills.map((s: any) => s.proficiency_score));
-          }
-      }
+  // Get unique lists for dropdowns
+  const uniqueRoles = Array.from(new Set(talents.map(t => t.primary_role).filter(Boolean)));
+  const uniqueCountries = Array.from(new Set(talents.map(t => t.country).filter(Boolean)));
 
-      if (score >= 9) {
-          return (
-            <span className="flex items-center gap-1 px-2 py-0.5 md:px-3 md:py-1 bg-green-100 text-green-700 text-[10px] md:text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
-                <ShieldCheck size={12}/> Verified Expert
-            </span>
-          );
-      } else if (score >= 4) {
-          return (
-            <span className="flex items-center gap-1 px-2 py-0.5 md:px-3 md:py-1 bg-blue-100 text-blue-700 text-[10px] md:text-xs font-bold rounded-full border border-blue-200 whitespace-nowrap">
-                <Zap size={12}/> Skilled ({score}/10)
-            </span>
-          );
-      } else {
-          return (
-            <span className="flex items-center gap-1 px-2 py-0.5 md:px-3 md:py-1 bg-slate-100 text-slate-500 text-[10px] md:text-xs font-bold rounded-full border border-slate-200 whitespace-nowrap">
-                <AlertCircle size={12}/> Unverified
-            </span>
-          );
-      }
-  };
+  // Sliced data for Pagination
+  const displayedTalents = filteredTalents.slice(0, visibleCount);
 
   return (
-    <div className="min-h-screen font-sans text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-[#0B0F19] overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans pb-24">
       <Navbar />
 
-      <header className="pt-24 pb-8 md:pt-28 md:pb-12 px-4 text-center bg-white dark:bg-[#0B0F19]">
-        <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
-          
-          <h1 className="text-3xl md:text-6xl font-black text-slate-900 dark:text-white leading-tight">
-             Hire Top <span className="text-green-600">Talent</span>
+      {/* 🌟 HERO SECTION */}
+      <div className="relative pt-32 pb-16 px-4 bg-white dark:bg-[#111625] border-b border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div className="container mx-auto max-w-6xl relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-sm mb-6 border border-indigo-100 dark:border-indigo-500/20">
+            <Star size={16} className="fill-current" /> Top 1% Ranked Profiles
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
+            Hire Elite <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Remote Talent</span>
           </h1>
-          
-          <div className="max-w-3xl mx-auto w-full">
-            {/* TABS */}
-            <div className="flex justify-center mb-4 gap-2">
-                <button 
-                    onClick={() => { setSearchType('jobs'); router.push('/'); }} 
-                    className="px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-bold bg-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                    Find Jobs
-                </button>
-                <button 
-                    onClick={() => setSearchType('talent')} 
-                    className="px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-bold bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg transition-colors"
-                >
-                    Find Talent
-                </button>
-            </div>
+          <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10">
+            Browse our curated directory of fully verified developers, designers, and marketers ready to join your team.
+          </p>
+
+          {/* 🔍 SEARCH & FILTERS */}
+          <div className="max-w-5xl mx-auto bg-white dark:bg-[#151b2d] p-2 md:p-3 rounded-2xl md:rounded-full shadow-xl shadow-indigo-500/10 border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row items-center gap-3">
             
-            {/* INPUT SEARCH BAR */}
-            <form onSubmit={handleSearch} className="relative flex items-center bg-white dark:bg-[#151b2d] p-1.5 md:p-2 rounded-full shadow-xl border border-slate-200 dark:border-slate-700">
-                
-                {/* Icon Label */}
-                <div className="pl-3 pr-2 md:pl-4 md:pr-3 border-r border-slate-200 dark:border-slate-700 text-slate-400 flex items-center gap-2">
-                    <User size={18} className="text-green-500 md:w-5 md:h-5"/>
-                    <span className="text-sm font-medium hidden sm:block">Talent</span>
-                </div>
-                
-                {/* Text Field */}
-                <input 
-                    type="text" 
-                    placeholder="Search talent..." 
-                    className="flex-1 h-10 md:h-12 pl-3 pr-2 md:pl-4 md:pr-4 bg-transparent outline-none text-base md:text-lg text-slate-800 dark:text-white min-w-0" 
-                    value={searchQuery} 
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                
-                {/* Button */}
-                <button type="submit" className="bg-green-600 hover:bg-green-700 text-white p-2.5 md:px-8 md:py-3 rounded-full font-bold flex items-center gap-2 flex-shrink-0 transition-colors shadow-lg shadow-green-500/20">
-                    <Search size={18} className="md:w-5 md:h-5" />
-                    <span className="hidden md:inline">Search</span>
-                </button>
-            </form>
+            <div className="flex-1 flex items-center gap-3 px-4 w-full md:w-auto border-b md:border-b-0 border-slate-100 dark:border-slate-800 pb-2 md:pb-0">
+              <Search className="text-slate-400 flex-shrink-0" size={20} />
+              <input 
+                type="text" 
+                placeholder="Search name, role, or skills..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white py-3 placeholder:text-slate-400 font-medium"
+              />
+            </div>
+
+            <div className="hidden md:block w-[1px] h-8 bg-slate-200 dark:bg-slate-700"></div>
+
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto px-2">
+              {/* 💼 ROLE FILTER */}
+              <select 
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="flex-1 min-w-[120px] bg-transparent outline-none text-sm font-bold text-slate-700 dark:text-slate-300 py-3 cursor-pointer"
+              >
+                <option value="All" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">All Roles</option>
+                {uniqueRoles.map((role, i) => (
+                  <option key={i} value={role} className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">{role}</option>
+                ))}
+              </select>
+
+              {/* 📈 EXPERIENCE FILTER */}
+              <select 
+                value={expFilter}
+                onChange={(e) => setExpFilter(e.target.value)}
+                className="flex-1 min-w-[120px] bg-transparent outline-none text-sm font-bold text-slate-700 dark:text-slate-300 py-3 cursor-pointer"
+              >
+                <option value="All" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Any Experience</option>
+                <option value="Entry Level" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Entry Level</option>
+                <option value="Mid Level" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Mid Level</option>
+                <option value="Senior Level" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Senior Level</option>
+                <option value="Director/Executive" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Director / Exec</option>
+              </select>
+
+              {/* 🌍 COUNTRY FILTER */}
+              <select 
+                value={countryFilter}
+                onChange={(e) => setCountryFilter(e.target.value)}
+                className="flex-1 min-w-[120px] bg-transparent outline-none text-sm font-bold text-slate-700 dark:text-slate-300 py-3 cursor-pointer"
+              >
+                <option value="All" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Any Country</option>
+                {uniqueCountries.map((country, i) => (
+                  <option key={i} value={country} className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">{country}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="container mx-auto px-4 pb-24 max-w-6xl">
-        <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
-                <Star size={20} className="text-yellow-500 fill-yellow-500"/> Professionals
-            </h2>
-            <span className="text-[10px] md:text-sm font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 md:px-3 rounded-full">
-                {talents.length} found
-            </span>
-        </div>
-
+      {/* 🏆 TALENT LIST (LIST VIEW) */}
+      <div className="container mx-auto max-w-5xl px-4 py-12">
         {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {[1,2,3].map(i => <div key={i} className="h-64 rounded-2xl bg-slate-100 dark:bg-slate-800/50 animate-pulse" />)}
-            </div>
-        ) : talents.length === 0 ? (
-            <div className="text-center py-20 bg-white dark:bg-[#111625] rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
-                <User className="mx-auto h-16 w-16 text-slate-300 mb-4"/>
-                <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200">No talent found</h3>
-            </div>
+          // ✨ Skeleton Loader (List View)
+          <div className="flex flex-col gap-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-white dark:bg-[#111625] p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 h-[200px] animate-pulse flex gap-6">
+                <div className="w-24 h-24 rounded-2xl bg-slate-200 dark:bg-slate-800 flex-shrink-0"></div>
+                <div className="flex-1 space-y-4">
+                  <div className="h-5 bg-slate-200 dark:bg-slate-800 w-1/3 rounded"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 w-1/4 rounded"></div>
+                  <div className="h-16 bg-slate-200 dark:bg-slate-800 w-full rounded mt-4"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredTalents.length === 0 ? (
+          <div className="text-center py-20 bg-white dark:bg-[#111625] rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+            <Search className="mx-auto h-16 w-16 text-slate-300 mb-4" />
+            <h3 className="text-xl font-bold">No talent found</h3>
+            <p className="text-slate-500 mt-2">Try adjusting your filters or location.</p>
+          </div>
         ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {talents.map((user) => {
-                    const badge = getSkillBadge(user);
-                    
-                    return (
-                        <div key={user.id} className={`bg-white dark:bg-[#111625] rounded-2xl border p-4 md:p-6 transition-all hover:shadow-xl group flex flex-col h-full border-slate-200 dark:border-slate-800`}>
-                            
-                            {/* --- VERIFICATION BADGE AREA --- */}
-                            <div className="flex justify-end mb-2">
-                                {badge}
-                            </div>
+          <div className="flex flex-col gap-6">
+            {displayedTalents.map((talent, index) => (
+              <Link 
+                href={`/p/${talent.username || talent.id}`} 
+                key={talent.id}
+                className="group relative bg-white dark:bg-[#111625] p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col md:flex-row gap-6 items-start"
+              >
+                {/* 🥇 Top Ranked Badge (For top 3) */}
+                {index < 3 && !searchQuery && roleFilter === 'All' && countryFilter === 'All' && (
+                  <div className="absolute -top-3 left-8 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[10px] md:text-xs font-black uppercase px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1 z-10">
+                    <Award size={14} /> Top Ranked
+                  </div>
+                )}
 
-                            <div className="flex items-start justify-between mb-3 md:mb-4">
-                                <div className="flex items-center gap-3 md:gap-4">
-                                    <img 
-                                        src={user.avatar_url || 'https://via.placeholder.com/150'} 
-                                        alt={user.full_name} 
-                                        className={`w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 flex-shrink-0`} 
-                                    />
-                                    <div className="min-w-0">
-                                        <h3 className="font-bold text-base md:text-lg text-slate-900 dark:text-white group-hover:text-green-500 transition truncate pr-2">
-                                            {user.full_name || 'Anonymous'}
-                                        </h3>
-                                        <div className="flex items-center gap-1 text-xs text-slate-500">
-                                            <MapPin size={12} className="flex-shrink-0" /> 
-                                            <span className="truncate">{user.location || 'Remote'}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                {/* Left Side: Avatar */}
+                <div className="relative flex-shrink-0 flex items-center gap-4 md:block">
+                  <div className="w-16 h-16 md:w-28 md:h-28 rounded-2xl overflow-hidden bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 flex items-center justify-center shadow-sm">
+                    {talent.avatar_url ? (
+                      <img src={talent.avatar_url} alt={talent.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-3xl md:text-5xl font-black text-indigo-500">{(talent.full_name || 'U')[0].toUpperCase()}</span>
+                    )}
+                  </div>
+                  {/* Online Status Dot */}
+                  <div className="absolute -bottom-2 -right-2 md:bottom-[-5px] md:right-[-5px] w-5 h-5 bg-green-500 border-4 border-white dark:border-[#111625] rounded-full hidden md:block"></div>
+                </div>
 
-                            <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 mb-4 flex-grow">
-                                {user.bio || "No bio available."}
-                            </p>
+                {/* Middle: Content */}
+                <div className="flex-1 min-w-0 w-full pt-1">
+                  <h3 className="font-black text-xl md:text-2xl text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-1">
+                    {talent.full_name || 'Anonymous Professional'}
+                  </h3>
+                  <p className="text-sm md:text-base font-bold text-slate-500 dark:text-slate-400 truncate mb-3">
+                    {talent.primary_role || 'Remote Professional'}
+                  </p>
 
-                            <div className="flex flex-wrap gap-1.5 md:gap-2 mb-4 md:mb-6">
-                                {user.skills && user.skills.slice(0, 3).map((skill: string) => (
-                                    <span key={skill} className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] md:text-xs rounded-md font-medium">
-                                        {skill}
-                                    </span>
-                                ))}
-                            </div>
+                  {/* Location & Experience */}
+                  <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-bold text-slate-600 dark:text-slate-300 mb-4">
+                    {talent.country && (
+                      <div className="flex items-center gap-1.5">
+                        <Globe size={16} className="text-emerald-500" /> {talent.country}
+                      </div>
+                    )}
+                    {talent.experience_level && (
+                      <div className="flex items-center gap-1.5">
+                        <Briefcase size={16} className="text-blue-500" /> {talent.experience_level}
+                      </div>
+                    )}
+                  </div>
 
-                            <Link href={`/profile/${user.id}`} className="w-full mt-auto py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 hover:border-green-200 transition text-center flex items-center justify-center gap-2 text-sm md:text-base">
-                                View Profile <ArrowRight size={16} />
-                            </Link>
-                        </div>
-                    );
-                })}
-            </div>
+                  {/* Bio Preview - Now much larger and readable */}
+                  <p className="text-sm md:text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2 md:line-clamp-3 mb-5">
+                    {talent.bio || `A highly skilled ${talent.primary_role || 'professional'} from ${talent.country || 'around the globe'}, looking for remote opportunities. Check out the full profile to see experience, projects, and skills in detail.`}
+                  </p>
+
+                  {/* Skills Tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {(talent.skills || []).slice(0, 5).map((skill, idx) => (
+                      <span key={idx} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-lg">
+                        {skill}
+                      </span>
+                    ))}
+                    {(talent.skills || []).length > 5 && (
+                      <span className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-xs rounded-lg">
+                        +{talent.skills.length - 5} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right Side: Rate & Action Button */}
+                <div className="w-full md:w-auto md:min-w-[180px] flex flex-row md:flex-col items-center justify-between md:justify-center gap-4 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 md:pl-8 mt-2 md:mt-0 h-full">
+                  <div className="text-center w-full md:w-auto">
+                    <div className="font-black text-xl md:text-3xl text-slate-900 dark:text-white leading-none">
+                      {talent.hourly_rate ? `$${talent.hourly_rate}` : <span className="text-slate-400 text-lg">Negotiable</span>}
+                    </div>
+                    {talent.hourly_rate && <div className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider">Per Hour</div>}
+                  </div>
+                  
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl font-bold text-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors w-full md:w-auto">
+                      View Profile <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         )}
-      </main>
+
+        {/* 🔄 LOAD MORE BUTTON */}
+        {visibleCount < filteredTalents.length && (
+          <div className="mt-12 flex justify-center">
+            <button 
+              onClick={() => setVisibleCount(prev => prev + 20)}
+              className="flex items-center gap-2 px-8 py-3.5 bg-white dark:bg-[#151b2d] border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all shadow-sm"
+            >
+              <Loader2 size={18} className="animate-spin text-slate-400" />
+              Load More Talent
+            </button>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }

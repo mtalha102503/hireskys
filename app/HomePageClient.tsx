@@ -2490,7 +2490,7 @@ return (
       )}
 
       {/* MAIN CONTENT */}
-      <main ref={jobsSectionRef} className="container mx-auto px-4 pt-12 md:pt-16 pb-8 max-w-5xl">
+      <main id="jobs" ref={jobsSectionRef} className="container mx-auto px-4 pt-12 md:pt-16 pb-8 max-w-5xl scroll-mt-24">
         {isFallback && (
             <div className="mb-8 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center gap-3">
                 <div className="bg-amber-100 p-2 rounded-full text-amber-600">

@@ -1104,12 +1104,12 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
     // 🟢 2. POWERFUL SEARCH LOGIC (NOW POWERED BY TYPESENSE ⚡)
     if (searchQuery && searchQuery.trim().length > 1) {
         try {
-            // 1. Bijli ki speed se Typesense mein search karo
-            const searchResults = await typesenseSearchClient.collections('jobs').documents().search({
+           const searchResults = await typesenseSearchClient.collections('jobs').documents().search({
                 q: searchQuery.trim(),
                 query_by: 'title,category,tags,source',
-                per_page: JOBS_PER_PAGE,
-                num_typos: (forceExact || isExact) ? 0 : 2, // 🚀 Agar user zidd kare toh typo allow mat karo (0)
+                per_page: 250, // 🚀 FIX 1: Thora zyada data uthao taake Supabase ke paas latest sort karne ka margin ho
+                num_typos: (forceExact || isExact) ? 0 : 2,
+                sort_by: 'date_posted:desc' // 🚀 FIX 2: Typesense ko force karo ke naye jobs pehle de!
             });
 
             // 2. Jo jobs match huin, unki IDs nikal lo
@@ -1991,89 +1991,53 @@ return (
 
             {/* --- SEARCH BAR SECTION --- */}
             <div className="max-w-5xl mx-auto w-full px-4 relative z-30">
-              
-              {/* Toggles */}
-              <div className="flex justify-center mb-6 gap-2">
-                  <button 
-                      onClick={() => setSearchType('jobs')}
-                      className={`px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-bold transition-all ${
-                          searchType === 'jobs' 
-                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg scale-105' 
-                          : 'bg-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
-                      }`}
-                  >
-                      Find Jobs
-                  </button>
-                  <button 
-                      onClick={() => setSearchType('talent')}
-                      className={`px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-bold transition-all ${
-                          searchType === 'talent' 
-                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg scale-105' 
-                          : 'bg-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
-                      }`}
-                  >
-                      Find Talent
-                  </button>
-              </div>
 
-              {/* Input */}
               {/* --- SEARCH BAR WITH HYRIZON AI --- */}
               <form onSubmit={handleManualSearch} className="relative group flex items-center bg-white dark:bg-[#151b2d] p-1.5 md:p-2 rounded-full shadow-2xl shadow-indigo-500/10 border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 transition-all transform md:hover:scale-[1.01]">
                   
-                  {/* Left Icon (Briefcase/Users) */}
+                  {/* Left Icon (Briefcase Fixed) */}
                   <div className="pl-3 pr-2 border-r border-slate-200 dark:border-slate-700 text-slate-400 flex items-center gap-2">
-                      {searchType === 'jobs' ? <Briefcase size={18} /> : <Users size={18} />}
-                      <span className="text-sm font-medium hidden sm:block capitalize">{searchType}</span>
+                      <Briefcase size={18} />
+                      <span className="text-sm font-medium hidden sm:block capitalize">Jobs</span>
                   </div>
 
-                  {/* Input Field */}
+                  {/* Input Field (Placeholder Fixed) */}
                   <input 
-    type="text" 
-    placeholder={searchType === 'jobs' ? "Search roles (e.g. React Developer)..." : "Search talent..."} 
-    className="flex-1 h-10 md:h-12 pl-3 pr-2 bg-transparent outline-none text-base md:text-lg text-slate-800 dark:text-white placeholder:text-slate-400 min-w-0"
-    value={searchQuery}
-    onChange={(e) => { 
-        setSearchQuery(e.target.value); 
-        setForceExact(false); // 🚀 Naya word type hote hi reset kar do
-    }}
-/>
+                      type="text" 
+                      placeholder="Search roles (e.g. React Developer)..." 
+                      className="flex-1 h-10 md:h-12 pl-3 pr-2 bg-transparent outline-none text-base md:text-lg text-slate-800 dark:text-white placeholder:text-slate-400 min-w-0"
+                      value={searchQuery}
+                      onChange={(e) => { 
+                          setSearchQuery(e.target.value); 
+                          setForceExact(false); 
+                      }}
+                  />
 
-                  {/* --- 🔥 HYRIZON: HYRIZON AI BUTTON (Google Style) --- */}
+                  {/* --- 🔥 HYRIZON: HYRIZON AI BUTTON --- */}
                   <div className="hidden sm:flex items-center pl-2 pr-2 relative z-20">
-    <button
-        type="button"
-        onClick={handleAISearch}
-        // Button Outer Container (Responsible for the glowing border shape)
-        className="group relative p-[1.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-        title="Ask Hyrizon AI"
-    >
-        {/* 🔥 THE SPINNING GRADIENT ANIMATION (The Magic) 🔥 */}
-        {/* Ye element button ke peeche bohot tez ghoom rha hai */}
-        <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7c3aed_0%,#d946ef_50%,#06b6d4_100%)]" />
-
-        {/* 🌑 THE SOLID INNER BUTTON (Covers the center of the spin) */}
-        <div className="relative flex items-center gap-2 px-3 py-2 rounded-[10px] z-10 bg-white dark:bg-[#151b2d] transition-colors group-hover:bg-violet-50 dark:group-hover:bg-[#1e2538]">
-            
-            {/* Icon Container with subtle pulse */}
-            <div className="relative">
-                <Sparkles 
-                    size={16} 
-                    className="text-violet-600 dark:text-violet-300 relative z-10" 
-                />
-                 <div className="absolute inset-0 bg-violet-400/30 dark:bg-violet-400/20 rounded-full blur-md animate-pulse z-0"></div>
-            </div>
-            
-            <div className="flex flex-col items-start leading-none">
-                <span className="text-[9px] font-extrabold uppercase bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400 mb-0.5">
-                    HYRIZON
-                </span>
-                <span className="text-xs font-black tracking-wide text-slate-800 dark:text-white">
-                    Ask AI
-                </span>
-            </div>
-        </div>
-    </button>
-</div>
+                    <button
+                        type="button"
+                        onClick={handleAISearch}
+                        className="group relative p-[1.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+                        title="Ask Hyrizon AI"
+                    >
+                        <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7c3aed_0%,#d946ef_50%,#06b6d4_100%)]" />
+                        <div className="relative flex items-center gap-2 px-3 py-2 rounded-[10px] z-10 bg-white dark:bg-[#151b2d] transition-colors group-hover:bg-violet-50 dark:group-hover:bg-[#1e2538]">
+                            <div className="relative">
+                                <Sparkles size={16} className="text-violet-600 dark:text-violet-300 relative z-10" />
+                                 <div className="absolute inset-0 bg-violet-400/30 dark:bg-violet-400/20 rounded-full blur-md animate-pulse z-0"></div>
+                            </div>
+                            <div className="flex flex-col items-start leading-none">
+                                <span className="text-[9px] font-extrabold uppercase bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400 mb-0.5">
+                                    HYRIZON
+                                </span>
+                                <span className="text-xs font-black tracking-wide text-slate-800 dark:text-white">
+                                    Ask AI
+                                </span>
+                            </div>
+                        </div>
+                    </button>
+                  </div>
 
                   {/* Mobile Only AI Button (Small Icon) */}
                   <button 

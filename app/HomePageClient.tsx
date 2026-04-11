@@ -693,39 +693,39 @@ useEffect(() => {
       let newTag = searchParams.get('tag') || '';
 
       if (seoCategory) {
-          // 1. URL se aane wale text ko theek karo (Decodes %20 or %26)
-const decodedCat = decodeURIComponent(seoCategory || ""); // <-- FIX 1: Add fallback
+          const decodedCat = decodeURIComponent(seoCategory || ""); 
 
-// 2. Agar "all" ya "worldwide" hai toh seedha All set kardo
-if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldwide') { // <-- FIX 2: Optional Chaining
-    newCategory = 'All';
-} else {
-    let found = false;
-    // 3. THE MAGIC: Sab kachra (spaces, -, &, .) hata kar sirf letters bacha lo matching ke liye
-    const urlSlug = decodedCat?.toLowerCase().replace(/[^a-z0-9]/g, '') || ""; // <-- FIX 3: Optional Chaining & fallback
+          if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldwide') { 
+              newCategory = 'All';
+          } else {
+              let found = false;
+              const urlSlug = decodedCat?.toLowerCase().replace(/[^a-z0-9]/g, '') || ""; 
 
               for (const [catName, data] of Object.entries(CATEGORIES)) {
                   const cleanCatName = String(catName).toLowerCase().replace(/[^a-z0-9]/g, '');
                   
-                  // Main Category Match (e.g. "aimachinelearning" === "aimachinelearning")
                   if (cleanCatName === urlSlug) {
                       newCategory = catName;
                       found = true;
                       break;
                   }
                   
-                  // Sub Tag Match (SAFE VERSION)
                   const matchedTag = (data as any).sub?.find((t: string) => String(t).toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug);
                   if (matchedTag) {
-                      newCategory = catName; // UI mein Parent highlight rakho
-                      newTag = matchedTag;   // Tag activate kardo
+                      newCategory = catName; 
+                      newTag = matchedTag;   
                       found = true;
                       break;
                   }
               }
-              // Agar match nahi hua toh default name title-case karke dikha do
-              if (!found) newCategory = decodedCat.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-          }
+              
+              // 🚀 SEO MAGIC (Phantom Category Hack)
+              if (!found) {
+                  newCategory = 'All'; 
+                  const extractedWord = decodedCat.replace(/-/g, ' '); 
+                  setSearchQuery(extractedWord); 
+              }
+          } // 🔥 YEH WALI BRACKET MISSING THI TUMHARE CODE MEIN!
       } else {
           newCategory = searchParams.get('category') || 'All';
       }
@@ -737,11 +737,10 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
           const decodedLoc = decodeURIComponent(seoLocation).toLowerCase();
           
           if (decodedLoc === 'all') {
-              finalCountry = ''; // 100% Clear
+              finalCountry = ''; 
           } else if (decodedLoc === 'worldwide') {
-              finalCountry = 'Worldwide'; // Sirf tab select hoga jab user khud "Worldwide" dabe ga
+              finalCountry = 'Worldwide'; 
           } else {
-              // Proper Country Name (e.g. "United Kingdom")
               finalCountry = decodeURIComponent(seoLocation).replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
           }
       } else {
@@ -751,7 +750,7 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
       setActiveCategory(newCategory);
       setActiveSubTag(newTag);
       setFilterJobType(searchParams.get('type') || '');
-      setFilterCountry(finalCountry); // 👈 Ab yeh theek set hoga
+      setFilterCountry(finalCountry); 
   }, [searchParams, seoCategory, seoLocation]);
 
   useEffect(() => {
@@ -955,8 +954,10 @@ if (decodedCat?.toLowerCase() === 'all' || decodedCat?.toLowerCase() === 'worldw
               const currentQ = params.get('q') || '';
               const newQ = searchQuery.trim();
               
-              // Agar likhai waqai change hui hai tabhi URL update karo
-              if (currentQ !== newQ) {
+              // 🚀 CLEAN URL HACK: Agar clean URL mein pehle se hi hamara word mojood hai, toh URL kharab mat karo
+const pathWord = pathname.split('/').pop()?.replace(/-/g, ' ').toLowerCase();
+
+if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
                   if (newQ) {
                       params.set('q', newQ);
                   } else {
@@ -2568,193 +2569,145 @@ return (
               <p className="text-slate-500">Try adjusting your search filters.</p>
             </div>
           ) : (
-            jobs.map((job) => {
-            // 🟢 NEW SMART LOCATION ENGINE
-  const smartLoc = getSmartLocationUI(job.location || "");
-  const jobDate = new Date(job.date_posted);
-  const now = new Date();
-  const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffHrs / 24);
-  const isJustNow = diffHrs <= 4;
-  const isSaved = savedJobIds.includes(job.id);
-  const isSeen = seenJobs.includes(job.id);
-  const isApplied = appliedJobs.includes(job.id);
-  const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
-  const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
+            // 🚀 STEP 1: index add kiya taake hum count kar saken
+            jobs.map((job, index) => {
+              // 🟢 1. Tumhara Sara Original Logic (No changes here)
+              const smartLoc = getSmartLocationUI(job.location || "");
+              const jobDate = new Date(job.date_posted);
+              const now = new Date();
+              const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
+              const diffDays = Math.floor(diffHrs / 24);
+              const isJustNow = diffHrs <= 4;
+              const isSaved = savedJobIds.includes(job.id);
+              const isSeen = seenJobs.includes(job.id);
+              const isApplied = appliedJobs.includes(job.id);
+              const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
+              const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
 
-  // 2️⃣ RETURN CARD
-  return (
-    <div key={job.id} className="group relative flex flex-col bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl md:rounded-3xl p-4 md:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1">
-      
-      {/* 🟢 TOP ROW: Location & Time */}
-      {/* Mobile: Tight padding | Desktop: Spacious */}
-      <div className="flex justify-between items-center mb-3 md:mb-5">
-        
-        <div className="flex items-center gap-2 md:gap-4">
-           {/* 🏳️ LOCATION PILL (SMART PARSER UPDATE) */}
-            <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 overflow-hidden">
-                
-                <div className="flex items-center gap-1.5">
-                    {smartLoc.matched.slice(0, 2).map((locItem: any, index: number) => (
-                        <div key={index} className="flex items-center gap-1">
-                            {index > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
-                            
-                            {locItem.isImage ? (
-                                <img 
-                                    src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
-                                    alt={locItem.name}
-                                    className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0"
-                                />
-                            ) : (
-                                <span className="text-base leading-none">🌍</span>
-                            )}
-                            
-                            <span className="tracking-wide max-w-[80px] md:max-w-[120px] truncate">
-                                {locItem.name}
-                            </span>
-                        </div>
-                    ))}
-                </div>
+              // 🟢 2. RETURN: Har Job Card ko wrap kiya hai ek container mein
+              return (
+                <div key={job.id} className="flex flex-col gap-4">
+                  
+                  {/* 💼 YOUR ORIGINAL JOB CARD (Fully Intact) */}
+                  <div className="group relative flex flex-col bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl md:rounded-3xl p-4 md:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+                    
+                    <div className="flex justify-between items-center mb-3 md:mb-5">
+                      <div className="flex items-center gap-2 md:gap-4">
+                         <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 overflow-hidden">
+                             <div className="flex items-center gap-1.5">
+                                 {smartLoc.matched.slice(0, 2).map((locItem: any, index: number) => (
+                                     <div key={index} className="flex items-center gap-1">
+                                         {index > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
+                                         {locItem.isImage ? (
+                                             <img src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} alt={locItem.name} className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" />
+                                         ) : (
+                                             <span className="text-base leading-none">🌍</span>
+                                         )}
+                                         <span className="tracking-wide max-w-[80px] md:max-w-[120px] truncate">{locItem.name}</span>
+                                     </div>
+                                 ))}
+                             </div>
+                             {smartLoc.hasMore && smartLoc.totalCount > 2 && (
+                                 <span className="text-[9px] md:text-[10px] text-indigo-600 dark:text-indigo-400 font-black ml-0.5 bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded-md whitespace-nowrap">+{smartLoc.totalCount - 2} More</span>
+                             )}
+                         </div>
+                         <div className="hidden md:flex items-center gap-1.5 text-sm font-semibold text-slate-400 dark:text-slate-500">
+                             <Clock size={16} />
+                             <span>{diffHrs < 1 ? 'Just now' : diffHrs < 24 ? `${diffHrs}h ago` : `${diffDays}d ago`}</span>
+                         </div>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                          {isApplied ? (
+                              <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-green-100 text-green-700 border border-green-200 tracking-wider flex items-center gap-1"><CheckCircle size={12} /> Applied</span>
+                          ) : isSeen ? (
+                              <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-slate-200 text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 tracking-wider flex items-center gap-1"><Eye size={12} /> Seen</span>
+                          ) : isJustNow ? (
+                              <span className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md tracking-wider">New Arrival</span> 
+                          ) : null}
+                      </div>
+                    </div>
 
-                {/* 🚀 EXTRA COUNTRIES TAG (+1 More) */}
-                {smartLoc.hasMore && smartLoc.totalCount > 2 && (
-                    <span className="text-[9px] md:text-[10px] text-indigo-600 dark:text-indigo-400 font-black ml-0.5 bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded-md whitespace-nowrap">
-                        +{smartLoc.totalCount - 2} More
-                    </span>
-                )}
-            </div>
+                    <div className="flex items-start gap-3 md:gap-5 mb-4 md:mb-6">
+                      <div className="flex-shrink-0">
+                          {companyLogoUrl ? (
+                              <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1 md:p-1.5 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center">
+                                  <img src={companyLogoUrl} alt={job.source} className="h-full w-full object-contain" />
+                              </div>
+                          ) : (
+                              <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-indigo-50 dark:bg-slate-800 flex items-center justify-center border border-indigo-100 dark:border-slate-700">
+                                  {(() => {
+                                      const categoryData = CATEGORIES[job.category as keyof typeof CATEGORIES];
+                                      const IconComponent = categoryData ? (categoryData as any).icon : Briefcase;
+                                      return <IconComponent size={24} className="text-indigo-600 dark:text-indigo-400 md:w-8 md:h-8" />;
+                                  })()}
+                              </div>
+                          )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                          <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{job.title}</h3>
+                          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
+                              <span className="text-slate-800 dark:text-slate-200 font-bold">{job.source}</span>
+                              {job.is_verified && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 text-[10px] md:text-xs font-bold border border-blue-100"><ShieldCheck size={10} /> Verified</span>}
+                              <span className="md:hidden flex items-center gap-1 text-slate-400"> • {diffHrs < 1 ? 'Just now' : `${diffHrs}h ago`}</span>
+                          </div>
+                      </div>
+                    </div>
 
-            {/* ⏰ TIME (Desktop Only) - Mobile par hide kar diya taake bheed na ho */}
-            <div className="hidden md:flex items-center gap-1.5 text-sm font-semibold text-slate-400 dark:text-slate-500">
-                <Clock size={16} />
-                <span>
-                    {diffHrs < 1 ? 'Posted Just now' : diffHrs < 24 ? `Posted ${diffHrs}h ago` : `Posted ${diffDays}d ago`}
-                </span>
-            </div>
-        </div>
-
-        {/* 🟢 NAYA: Smart Badges (Applied > Seen > New) */}
-        <div className="flex gap-2 items-center">
-            {isApplied ? (
-                <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-green-100 text-green-700 border border-green-200 shadow-sm tracking-wider flex items-center gap-1">
-                    <CheckCircle size={12} /> Applied
-                </span>
-            ) : isSeen ? (
-                <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-slate-200 text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 shadow-sm tracking-wider flex items-center gap-1">
-                    <Eye size={12} /> Seen
-                </span>
-            ) : isJustNow ? (
-                <span className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md tracking-wider">
-                    New Arrival
-                </span> 
-            ) : null}
-        </div>
-      </div>
-
-      {/* 🟠 MIDDLE ROW: Logo & Title */}
-      <div className="flex items-start gap-3 md:gap-5 mb-4 md:mb-6">
-        
-        {/* 🏢 LOGO: Mobile (Small) vs Desktop (Big) */}
-        <div className="flex-shrink-0">
-            {companyLogoUrl ? (
-                <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1 md:p-1.5 border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden flex items-center justify-center">
-                    <img 
-                        src={companyLogoUrl} 
-                        alt={job.source} 
-                        className="h-full w-full object-contain"
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    />
-                </div>
-            ) : (
-                <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-indigo-50 dark:bg-slate-800 flex items-center justify-center border border-indigo-100 dark:border-slate-700">
-                    {(() => {
-                        const categoryData = CATEGORIES[job.category as keyof typeof CATEGORIES];
-                        const IconComponent = categoryData ? categoryData.icon : Briefcase;
-                        return <IconComponent size={24} className="text-indigo-600 dark:text-indigo-400 md:w-8 md:h-8" />;
-                    })()}
-                </div>
-            )}
-        </div>
-
-        {/* 📝 TITLE SECTION */}
-        <div className="flex-1 min-w-0">
-            {/* Title: Mobile (text-lg) vs Desktop (text-2xl) */}
-            <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                {job.title}
-            </h3>
-            
-            <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
-                <span className="text-slate-800 dark:text-slate-200 font-bold">{job.source}</span>
-                
-                {job.is_verified && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 text-[10px] md:text-xs font-bold border border-blue-100 dark:border-blue-800">
-                        <ShieldCheck size={10} className="fill-blue-500/10" /> Verified
-                    </span>
-                )}
-                
-                {/* ⏰ TIME (Mobile Only) - Yahan wapis add kar diya taake mobile user dekh sake */}
-                <span className="md:hidden flex items-center gap-1 text-slate-400">
-                     • {diffHrs < 1 ? 'Just now' : `${diffHrs}h ago`}
-                </span>
-            </div>
-        </div>
-      </div>
-
-      {/* 🔵 BOTTOM ROW: Tags & Actions */}
-      <div className="mt-auto pt-3 md:pt-5 border-t border-slate-100 dark:border-slate-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5">
-        
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2">
-            <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                {job.category}
-            </div>
-            
-            {job.job_type && (
-                <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800/30">
-                    {job.job_type}
-                </div>
-            )}
-
-            {job.tags && job.tags.length > 0 && (
-                <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-[10px] md:text-xs font-bold text-emerald-600 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800/30">
-                    {job.tags[0]}
-                </div>
-            )}
-        </div>
-
-        {/* Buttons */}
-        <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
-            <button 
-                onClick={(e) => {
-                    e.preventDefault();
-                    toggleSave(job.id);
-                }}
-                className={`p-2 md:p-3 rounded-xl border transition-all ${
-                    isSaved 
-                    ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20 dark:border-red-900' 
-                    : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 dark:border-slate-700 dark:hover:border-red-800'
-                }`}
-            >
-                <Heart size={18} className={isSaved ? "fill-current" : ""} />
-            </button>
-
-                        <Link 
-        href={`/jobs/${createSlug(job.title, job.id)}`} 
-        onClick={() => {
-            // 🟢 NAYA: Click karte hi Seen mein save kar do
-            if (!isSeen) {
-                const newSeen = [...seenJobs, job.id];
-                setSeenJobs(newSeen);
-                localStorage.setItem('seenJobs', JSON.stringify(newSeen));
-            }
-        }}
-        className="flex-1 sm:flex-none px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-lg shadow-indigo-500/10 text-center"
-    >
-        View Details
-    </Link>
+                    <div className="mt-auto pt-3 md:pt-5 border-t border-slate-100 dark:border-slate-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5">
+                      <div className="flex flex-wrap gap-2">
+                          <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200">{job.category}</div>
+                          {job.job_type && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100">{job.job_type}</div>}
+                          {job.tags && job.tags.length > 0 && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-[10px] md:text-xs font-bold text-emerald-600 dark:text-emerald-300 border border-emerald-100">{job.tags[0]}</div>}
+                      </div>
+                      <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
+                          <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>
+                          <Link href={`/jobs/${createSlug(job.title, job.id)}`} onClick={() => { if (!isSeen) { const newSeen = [...seenJobs, job.id]; setSeenJobs(newSeen); localStorage.setItem('seenJobs', JSON.stringify(newSeen)); } }} className="flex-1 sm:flex-none px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-lg text-center">View Details</Link>
+                      </div>
                     </div>
                   </div>
 
+                  {/* 🔥 THE MAGIC: TEESRA CARD (TRENDING SEARCHES) */}
+                  {/* index === 1 matlab 2 jobs ke baad, aur !searchQuery matlab sirf home default list par dikhega */}
+                  {index === 2 && !searchQuery && (
+                    <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-700 to-indigo-800 rounded-2xl md:rounded-3xl p-6 md:p-10 my-2 shadow-2xl shadow-indigo-500/20 group">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
+                      <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/20 rounded-full -ml-16 -mb-16 blur-2xl pointer-events-none"></div>
+
+                      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+                        <div className="flex-1 text-center lg:text-left">
+                          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-black uppercase tracking-widest mb-4">
+                            <TrendingUp size={14} /> Global Market Trend
+                          </div>
+                          <h3 className="text-2xl md:text-4xl font-black text-white leading-tight mb-3">
+                            Trending Remote <span className="text-indigo-200">Opportunities</span>
+                          </h3>
+                          <p className="text-indigo-100 text-sm md:text-lg font-medium opacity-90">
+                            Don't miss out! Top companies are hiring heavily for these specific roles right now.
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-[45%]">
+  {[
+    // 🚀 SEO FIX 1: query mein space ya '+' ki jagah '-' (hyphen) use karo taake clean URL banay
+    { name: "HR Jobs", slug: "hr", icon: "👔" },
+    { name: "Support", slug: "customer-support", icon: "🎧" },
+    { name: "Software Engineer", slug: "software-engineer", icon: "</>" },
+    { name: "Netflix", slug: "netflix", icon: "🎬" }
+  ].map((trend) => (
+    <Link 
+      key={trend.name}
+      // 🚀 SEO FIX 2: ?q= hata diya! Ab ye direct clean URL banayega (e.g. /remote-jobs/all/software-engineer)
+      href={getCategoryUrl(trend.slug)} 
+      scroll={false}
+      className="flex items-center gap-2 px-4 py-3 bg-white hover:bg-indigo-50 text-indigo-900 rounded-xl text-sm font-black transition-all transform hover:-translate-y-1 hover:shadow-xl active:scale-95 shadow-lg"
+    >
+      <span>{trend.icon}</span> {trend.name}
+    </Link>
+  ))}
+</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })

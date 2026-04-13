@@ -280,10 +280,15 @@ ${username}`;
     }
 }
 
-// --- MAIN API HANDLER ---
 export async function POST(request: Request) {
     try {
-        const job = await request.json();
+        const body = await request.json();
+        
+        // 🔥 AUTO-WEBHOOK LOGIC: 
+        // Agar data Supabase Webhook se aa raha hai toh 'body.record' use karo, 
+        // warna agar admin panel se aa raha hai toh direct 'body' use karo.
+        const job = body.record || body; 
+        
         const jobTitle = job.title;
         
         // Tags Logic

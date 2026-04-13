@@ -130,7 +130,7 @@ function formatPhoneNumber(phone: string) {
 }
 
 // 🚀 TELEGRAM SENDER ENGINE
-async function sendTelegramAlert(chatId, jobTitle, companyName, jobLink) {
+async function sendTelegramAlert(chatId: string | number, jobTitle: string, companyName: string, jobLink: string) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 

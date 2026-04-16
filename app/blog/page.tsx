@@ -43,7 +43,7 @@ const BLOG_POSTS = [
       date: 'Apr 16, 2026',
       author: 'Muhammad Talha',
       category: 'Career Advice',
-      image: '/blog-untapped-seo.png'
+      image: '/blog-untapped-seo.webp'
     }
 ];
 

@@ -376,7 +376,7 @@ export const BLOG_POSTS: BlogPost[] = [
     role: 'Founder, HireSkys',
     authorImage: '/founder.png', 
     category: 'Career Advice',
-    image: '/blog-untapped-seo.png', 
+    image: '/blog-untapped-seo.webp', 
     content: `
       <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
         If your resume says "General SEO Specialist" or "Digital Marketer" in 2026, you are playing the game on hard mode. The remote job market isn't shrinking it is just getting violently specific.

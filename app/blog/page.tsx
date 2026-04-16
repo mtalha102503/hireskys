@@ -35,7 +35,16 @@ const BLOG_POSTS = [
     author: 'Muhammad Talha',
     category: 'Behind The Scenes',
     image: '/blog-quality-update.png' 
-  }
+  },
+  {
+      slug: '7-untapped-remote-niches-seo-marketers-2026',
+      title: '7 Untapped Remote Niches for Programmatic SEOs and Marketers in 2026',
+      excerpt: 'The general SEO market is saturated, but these highly specific, remote marketing niches are desperately looking for talent. Here is where the big budgets are hiding.',
+      date: 'Apr 16, 2026',
+      author: 'Muhammad Talha',
+      category: 'Career Advice',
+      image: '/blog-untapped-seo.png'
+    }
 ];
 
 export default function BlogIndex() {

@@ -548,9 +548,27 @@ const breadcrumbLd = {
       return locObj;
   }).filter(Boolean) : [{ '@type': 'Place', 'address': { '@type': 'PostalAddress', 'addressCountry': 'US' } }];
 
-  const applicantReqs = parsedSchemaLocations
+  let applicantReqs = parsedSchemaLocations
       .filter(loc => loc.countryCode && loc.countryCode !== 'GLOBAL')
       .map(loc => ({ '@type': 'Country', 'name': loc.countryCode }));
+
+  // 🔥 THE MASTER PLAN: Global Multi-Market Domination
+  // Agar job Globally available hai (ya location specify nahi hai), toh hum usko Duniya ki Top 6 Tech Markets mein rank karwayenge.
+  const isGlobal = job.location?.toLowerCase().includes('global') || 
+                   job.location?.toLowerCase().includes('worldwide') || 
+                   job.location?.toLowerCase().includes('anywhere') || 
+                   (isRemote && applicantReqs.length === 0);
+
+  if (isGlobal) {
+      applicantReqs = [
+          { '@type': 'Country', 'name': 'US' }, // United States (Top Tier Traffic)
+          { '@type': 'Country', 'name': 'GB' }, // United Kingdom
+          { '@type': 'Country', 'name': 'CA' }, // Canada
+          { '@type': 'Country', 'name': 'AU' }, // Australia
+          { '@type': 'Country', 'name': 'IN' }, // India (Massive Developer Base)
+          { '@type': 'Country', 'name': 'DE' }  // Germany (Top EU Market)
+      ];
+  }
 
   // 🌟 GOOGLE JOBS SCHEMA (JSON-LD)
   const jsonLd = {

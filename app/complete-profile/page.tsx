@@ -262,13 +262,11 @@ export default function CompleteProfile() {
          
          setSelectedCountryCode(initialCode);
 
-         // 🚀 THE FIX: Smart Auto-Selection
+         // 🚀 THE FIX: Smart Auto-Selection (WhatsApp temporarily disabled)
          if (profile.telegram_chat_id) {
              setAlertPreference('telegram');
-         } else if (profile.whatsapp) {
-             setAlertPreference('whatsapp');
          } else {
-             setAlertPreference('none');
+             setAlertPreference('none'); // WhatsApp ko auto-select hone se rok diya
          }
 
          if (profile.skills && Array.isArray(profile.skills)) {
@@ -517,12 +515,20 @@ export default function CompleteProfile() {
                     </label>
 
                     <div className="flex p-1.5 bg-gray-100 dark:bg-white/5 rounded-2xl mb-4 border border-gray-200 dark:border-gray-800">
+                        {/* 🔒 DISABLED WHATSAPP BUTTON (Premium Teaser) */}
                         <button 
                             type="button"
-                            onClick={() => setAlertPreference('whatsapp')} 
-                            className={`flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${alertPreference === 'whatsapp' ? 'bg-white dark:bg-[#151b2d] text-green-600 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                            disabled
+                            className="flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold bg-gray-50 dark:bg-black/20 text-gray-400 dark:text-gray-600 cursor-not-allowed border border-transparent relative overflow-hidden"
                         >
-                            <Phone size={16}/> <span className="hidden sm:inline">WhatsApp</span><span className="sm:hidden">WA</span>
+                            <Phone size={16} className="opacity-50"/> 
+                            <span className="hidden sm:inline opacity-50">WhatsApp</span>
+                            <span className="sm:hidden opacity-50">WA</span>
+                            
+                            {/* ✨ Coming Soon Badge */}
+                            <div className="absolute top-0 right-0 bg-gradient-to-r from-emerald-400 to-green-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-wider shadow-sm">
+                                Soon
+                            </div>
                         </button>
                         <button 
                             type="button"

@@ -411,7 +411,23 @@ export default async function Layout({ children, params }: { children: React.Rea
     .single();
 
   if (!job) return <>{children}</>;
+// 🔥 SEO UPDATE: Fetch exact company logo & website
+  let exactLogo = null;
+  let exactWebsite = null;
 
+  if (job.company) {
+    const companySlug = job.company.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const { data: companyData } = await supabase
+      .from('companies')
+      .select('logo_url, website')
+      .eq('slug', companySlug)
+      .maybeSingle();
+
+    if (companyData) {
+      exactLogo = companyData.logo_url;
+      exactWebsite = companyData.website;
+    }
+  }
   // 🚀 SEO PHASE 2 & 3 LOGIC START
   const jobDate = new Date(job.date_posted);
   const diffDays = Math.ceil(Math.abs(new Date().getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -549,9 +565,9 @@ const breadcrumbLd = {
     employmentType: googleEmploymentType,
     hiringOrganization: {
       '@type': 'Organization',
-      name: job.company || "HireSkys Client",
-      logo: "https://www.hireskys.com/logo2.png",
-      sameAs: "https://www.hireskys.com"
+      name: job.company || "Confidential",
+      ...(exactLogo && { logo: exactLogo }),
+      ...(exactWebsite && { sameAs: exactWebsite })
     },
     jobLocation: googleJobLocations.length > 0 ? googleJobLocations : undefined,
     ...(minSalary && {

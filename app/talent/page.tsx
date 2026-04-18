@@ -73,8 +73,8 @@ export default function TalentDirectory() {
 
   async function fetchRankedTalent() {
     setLoading(true);
-    // 🚀 NEW FUNCTION CALLED HERE
-    const { data, error } = await supabase.rpc('get_combined_talent'); 
+    // ✅ WAPAS PURANA FUNCTION LAGA DIYA
+    const { data, error } = await supabase.rpc('get_ranked_talent'); 
     
     if (error) {
       console.error("Error fetching talent:", error);

@@ -189,17 +189,6 @@ function ProfileContent() {
         projects: data?.projects || [],
         experience: data?.experience || []
       });
-
-      const { data: skillsData } = await supabase
-        .from('user_skills')
-        .select('skill_name, proficiency_score')
-        .eq('user_id', user.id);
-      
-      const ratingsMap: Record<string, number> = {};
-      if (skillsData) {
-        skillsData.forEach((s: any) => ratingsMap[s.skill_name] = s.proficiency_score);
-      }
-      setSkillRatings(ratingsMap);
     }
     setLoading(false);
   }
@@ -774,63 +763,31 @@ useEffect(() => {
                                     </div>
                                 )}
                                 
-                                {formData.skills.map(skill => {
-                                    const rating = skillRatings[skill] || 0;
-                                    const isResume = rating === 3;
-                                    const isCertified = rating > 3;
+                                {formData.skills.map(skill => (
+  <div key={skill} className="group relative p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#151b2d] transition-all duration-300 hover:border-indigo-400 hover:shadow-md">
+    <div className="flex justify-between items-center">
+      
+      {/* Skill Name & Icon */}
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg text-indigo-600 dark:text-indigo-400">
+          <Zap size={18} />
+        </div>
+        <h3 className="font-bold text-slate-900 dark:text-white">
+          {skill}
+        </h3>
+      </div>
 
-                                    return (
-                                        <div key={skill} className={`
-                                            group relative p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg
-                                            ${isCertified 
-                                                ? 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 border-green-200 dark:border-green-800' 
-                                                : isResume
-                                                    ? 'bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/10 dark:to-amber-900/10 border-yellow-200 dark:border-yellow-800'
-                                                    : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-indigo-400'
-                                            }
-                                        `}>
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div>
-                                                    <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                                                        {skill}
-                                                        {isCertified && <CheckCircle size={16} className="text-green-500 fill-current"/>}
-                                                    </h3>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <span className={`
-                                                            text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full
-                                                            ${isCertified ? 'bg-green-200 text-green-800' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}
-                                                        `}>
-                                                            {isCertified ? 'Verified' : 'Pending'}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <button onClick={() => toggleSkill(skill)} className="text-slate-300 hover:text-red-500 p-1 rounded-md hover:bg-white/50 transition"><X size={18}/></button>
-                                            </div>
-
-                                            {/* Action Buttons */}
-                                            <div className="mt-4">
-                                                {isCertified ? (
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex-1 bg-white/80 dark:bg-black/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 shadow-sm">
-                                                            <Award size={16}/> {rating}/10
-                                                        </div>
-                                                        <button onClick={() => viewCertificate(skill)} className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 px-3 rounded-xl text-sm font-bold shadow-md shadow-green-500/20 transition flex items-center justify-center gap-2">
-                                                            <Eye size={16}/> View
-                                                        </button>
-                                                    </div>
-                                                ) : isResume ? (
-                                                    <button onClick={() => startTest(skill)} className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl text-sm font-bold shadow-lg shadow-yellow-500/20 transition flex items-center justify-center gap-2">
-                                                        <Play size={18} fill="currentColor" /> Resume Assessment
-                                                    </button>
-                                                ) : (
-                                                    <button onClick={() => startTest(skill)} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/20 transition flex items-center justify-center gap-2 group-hover:scale-[1.02]">
-                                                        <Zap size={18} fill="currentColor" /> Take Skill Test
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+      {/* Remove Button */}
+      <button 
+        onClick={() => toggleSkill(skill)} 
+        className="text-slate-300 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+      >
+        <X size={18}/>
+      </button>
+      
+    </div>
+  </div>
+))}
                              </div>
 
                              {/* CATEGORY SELECTOR (Updated with Search & Filter) */}

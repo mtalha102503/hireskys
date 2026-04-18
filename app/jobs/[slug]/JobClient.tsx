@@ -7,10 +7,11 @@ import Navbar from '@/components/Navbar';
 import ReportJob from '@/components/ReportJob';
 import MagicButton from '@/components/MagicButton';
 import VerifyMagicButton from '@/components/VerifyMagicButton';
+import { CATEGORIES } from '@/lib/categories';
 import Link from 'next/link';
 import { 
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
-  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck,ScanSearch,AlertTriangle, X
+  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck, ScanSearch, AlertTriangle, X, Bell, Star // 👈 Star add kiya
 } from 'lucide-react';
 
 // 🌍 GLOBAL COUNTRY MAP (Flags aur Codes ke liye)
@@ -386,7 +387,270 @@ const getSmartLocationUI = (locationString: string) => {
         totalCount: uiElements.length
     };
 };
+// 🚀 GUEST JOB ALERT COMPONENT (Multi-Select Skills ke sath)
+const GuestJobAlert = () => {
+    // 1. State mein 'skill' ki jagah 'skills' array bana diya
+    const [formData, setFormData] = useState<{name: string, email: string, location: string, skills: string[]}>({ 
+        name: '', email: '', location: '', skills: [] 
+    });
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
+    // 2. Add Skill Logic (Max 5 skills)
+    const addSkill = (e: any) => {
+        const selected = e.target.value;
+        if (selected && !formData.skills.includes(selected)) {
+            if (formData.skills.length >= 5) {
+                alert("You can select up to 5 skills for your alerts.");
+                return;
+            }
+            setFormData({ ...formData, skills: [...formData.skills, selected] });
+        }
+        e.target.value = ""; // Dropdown ko wapas reset kar do
+    };
+
+    // 3. Remove Skill Logic
+    const removeSkill = (skillToRemove: string) => {
+        setFormData({ ...formData, skills: formData.skills.filter(s => s !== skillToRemove) });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        // Validation: Kam az kam 1 skill select honi chahiye
+        if (formData.skills.length === 0) {
+            alert("Please select at least one skill.");
+            return;
+        }
+        
+        setStatus('loading');
+
+        // 4. Save Logic: Skills array ko string bana kar save kar rahe hain taake purana DB schema chalta rahe
+        const { error } = await supabase.from('guest_leads').insert([{
+            name: formData.name,
+            email: formData.email,
+            location: formData.location,
+            skill: formData.skills.join(', ') // Result: "React, Node.js, Python"
+        }]);
+
+        if (error) {
+            console.error("Lead Save Error:", error);
+            setStatus('error');
+        } else {
+            setStatus('success');
+        }
+    };
+
+    if (status === 'success') {
+        return (
+            <div className="bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/10 dark:to-green-900/10 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-800/30 text-center animate-in zoom-in-95 duration-300 mb-6">
+                <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <CheckCircle className="text-emerald-600 dark:text-emerald-400" size={24} />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-1">Alerts Set Successfully!</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400">We'll email you the best jobs for your selected skills.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/10 blur-[40px] rounded-full pointer-events-none"></div>
+            
+            <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400">
+                    <Bell size={20} className="animate-[wiggle_1s_ease-in-out_infinite]" />
+                </div>
+                <div>
+                    <h3 className="font-bold text-slate-900 dark:text-white">Get Instant Alerts</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Don't miss out on remote opportunities.</p>
+                </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3 relative z-10">
+                <input 
+                    required type="text" placeholder="Your Name" 
+                    value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white"
+                />
+                <input 
+                    required type="email" placeholder="Your Email" 
+                    value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white"
+                />
+                <input 
+                    required type="text" placeholder="Location (e.g. Pakistan)" 
+                    value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})}
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white"
+                />
+                
+                {/* 🚀 UPDATED: Multi-Select Dropdown Logic */}
+                <div>
+                    <select 
+                        onChange={addSkill}
+                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white appearance-none cursor-pointer"
+                    >
+                        <option value="">+ Add a skill (Max 5)...</option>
+                        {Object.entries(CATEGORIES).map(([catName, catData]: any) => (
+                            <optgroup key={catName} label={catName}>
+                                {catData.sub.map((skill: string) => (
+                                    <option key={skill} value={skill}>{skill}</option>
+                                ))}
+                            </optgroup>
+                        ))}
+                    </select>
+
+                    {/* 🏷️ Selected Skills Chips */}
+                    {formData.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {formData.skills.map((skill, index) => (
+                                <div key={index} className="flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-lg text-xs font-bold animate-in zoom-in">
+                                    {skill}
+                                    <button type="button" onClick={() => removeSkill(skill)} className="hover:text-red-500 transition-colors ml-1">
+                                        <X size={12} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <button 
+                    disabled={status === 'loading'} type="submit" 
+                    className="w-full mt-4 bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-700 text-white font-bold text-sm py-3 rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-2"
+                >
+                    {status === 'loading' ? 'Saving...' : 'Set Free Alert'}
+                </button>
+                {status === 'error' && <p className="text-xs text-red-500 text-center mt-1">Something went wrong. Try again.</p>}
+            </form>
+        </div>
+    );
+};
+// 📱 MOBILE GUEST ALERT (Banner Button + Bottom Sheet Modal)
+const MobileGuestAlert = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [formData, setFormData] = useState<{name: string, email: string, location: string, skills: string[]}>({ 
+        name: '', email: '', location: '', skills: [] 
+    });
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+    const addSkill = (e: any) => {
+        const selected = e.target.value;
+        if (selected && !formData.skills.includes(selected)) {
+            if (formData.skills.length >= 5) {
+                alert("You can select up to 5 skills.");
+                return;
+            }
+            setFormData({ ...formData, skills: [...formData.skills, selected] });
+        }
+        e.target.value = ""; 
+    };
+
+    const removeSkill = (skillToRemove: string) => {
+        setFormData({ ...formData, skills: formData.skills.filter(s => s !== skillToRemove) });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (formData.skills.length === 0) {
+            alert("Please select at least one skill.");
+            return;
+        }
+        setStatus('loading');
+        
+        const { error } = await supabase.from('guest_leads').insert([{
+            name: formData.name,
+            email: formData.email,
+            location: formData.location,
+            skill: formData.skills.join(', ')
+        }]);
+
+        if (error) {
+            console.error("Mobile Lead Error:", error);
+            setStatus('error');
+        } else {
+            setStatus('success');
+            // Modal khud hi band ho jayega aur success message button ki jagah aayega
+        }
+    };
+
+    return (
+        <div className="md:hidden w-full">
+            {/* 1. The Banner Button (Jo khali jagah par aayega) */}
+            {!isOpen && status !== 'success' && (
+                <button onClick={() => setIsOpen(true)} className="w-full h-[54px] bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl flex items-center justify-center gap-2.5 font-bold shadow-lg shadow-indigo-500/30 active:scale-95 transition-all">
+                    <Bell size={18} className="animate-[wiggle_1s_ease-in-out_infinite]" /> 
+                    Enable Instant Alerts
+                </button>
+            )}
+
+            {/* Success State in Banner */}
+            {status === 'success' && (
+                <div className="w-full h-[54px] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center gap-2 font-bold">
+                    <CheckCircle size={18} /> Alerts Enabled!
+                </div>
+            )}
+
+            {/* 2. The Bottom Sheet Modal */}
+            {isOpen && status !== 'success' && (
+                <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    {/* Modal Box */}
+                    <div className="bg-white dark:bg-[#111625] w-full rounded-t-3xl p-6 shadow-2xl relative animate-in slide-in-from-bottom-10 max-h-[90vh] overflow-y-auto border-t border-slate-200 dark:border-slate-800">
+                        
+                        {/* Close Button */}
+                        <button onClick={() => setIsOpen(false)} className="absolute top-5 right-5 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 hover:text-red-500 transition-colors">
+                            <X size={18} />
+                        </button>
+                        
+                        <div className="flex items-center gap-3 mb-6 mt-2">
+                            <div className="p-2.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400">
+                                <Bell size={24} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-xl text-slate-900 dark:text-white">VIP Job Alerts</h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Never miss a remote opportunity.</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <input required type="text" placeholder="Your Name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white" />
+                            <input required type="email" placeholder="Your Email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white" />
+                            <input required type="text" placeholder="Location (e.g. Pakistan)" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white" />
+                            
+                            <div>
+                                <select onChange={addSkill} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-sm rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-white appearance-none cursor-pointer">
+                                    <option value="">+ Add a skill (Max 5)...</option>
+                                    {Object.entries(CATEGORIES).map(([catName, catData]: any) => (
+                                        <optgroup key={catName} label={catName}>
+                                            {catData.sub.map((skill: string) => (
+                                                <option key={skill} value={skill}>{skill}</option>
+                                            ))}
+                                        </optgroup>
+                                    ))}
+                                </select>
+
+                                {formData.skills.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mt-3">
+                                        {formData.skills.map((skill, index) => (
+                                            <div key={index} className="flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg text-xs font-bold animate-in zoom-in">
+                                                {skill}
+                                                <button type="button" onClick={() => removeSkill(skill)} className="hover:text-red-500 transition-colors ml-1"><X size={14} /></button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <button disabled={status === 'loading'} type="submit" className="w-full mt-6 bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-700 text-white font-bold text-base py-4 rounded-xl transition-all shadow-xl active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-2">
+                                {status === 'loading' ? 'Saving...' : 'Set Free Alert'}
+                            </button>
+                            {status === 'error' && <p className="text-xs text-red-500 text-center mt-2">Error saving. Try again.</p>}
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
 export default function JobClient({ initialJob }: { initialJob: any }) {
   const params = useParams();
   const router = useRouter();
@@ -875,11 +1139,20 @@ const handleApply = async () => {
 
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
                 <div className="w-full md:w-auto">
-                    {/* Source Badge */}
+                    {/* 🔥 UPDATED: Top Company Logo / Source Badge */}
                     <div className="flex flex-wrap items-center gap-3 mb-4">
-                        <span className={`px-3 py-1 text-xs font-bold uppercase rounded-full flex items-center gap-2 ${sourceStyle.color}`}>
-                            {sourceStyle.icon} {sourceStyle.name}
-                        </span>
+                        
+                        {/* 🔥 UPDATED: Top Company Logo / Source Badge */}
+                        {['reddit', 'upwork', 'hacker', 'yc'].some(s => job.source?.toLowerCase().includes(s)) ? (
+                            <span className={`px-3 py-1 text-[11px] md:text-xs font-bold uppercase rounded-full flex items-center gap-1.5 md:gap-2 ${sourceStyle.color}`}>
+                                {sourceStyle.icon} {sourceStyle.name}
+                            </span>
+                        ) : companyDetails?.logo_url ? (
+                            <div className="w-12 h-12 md:w-14 md:h-14 bg-white dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center p-1.5 flex-shrink-0 transition-transform hover:scale-105">
+                                <img src={companyDetails.logo_url} alt={companyDetails.name || job.company} className="w-full h-full object-contain" />
+                            </div>
+                        ) : null}
+                        {/* 👆 Agar logo nahi hai aur normal job hai, toh humne top text ko gayab kar diya hai taake repetition na ho */}
                         
                         {job.category && (
                             <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase rounded-full">
@@ -945,90 +1218,98 @@ const handleApply = async () => {
 )}     
                     <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight break-words">{job.title}</h1>
                     
-                    <div className="flex flex-wrap gap-4 text-sm font-medium text-slate-500 dark:text-slate-400">
+                    {/* 👇 CLEANED UP METADATA SECTION */}
+                    <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-4">
                         
+                        {/* 1. Company Link (Button Style) */}
                         {(job.company || companyDetails) && (
-                            <> {/* 👈 Ye add karna zaroori hai agar error aye */}
                             <Link 
                                 href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`}
-                                className="flex items-center gap-2 group/company transition-all"
+                                className="group flex items-center gap-1.5 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md px-3 py-1.5 rounded-lg transition-all text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-bold text-sm mr-1"
                             >
-                                {/* Agar DB se Logo mila to wo dikhao, nahi to Icon */}
-                                {companyDetails?.logo_url ? (
-                                    <img 
-                                        src={companyDetails.logo_url} 
-                                        alt={companyDetails.name} 
-                                        className="w-8 h-8 object-contain rounded-md bg-white border border-slate-200 p-0.5"
-                                    />
-                                ) : (
-                                    <Building size={18} className="text-indigo-500 group-hover/company:text-indigo-600"/> 
-                                )}
-                                
-                                <span className="font-bold text-slate-700 dark:text-slate-200 group-hover/company:text-indigo-600 group-hover/company:underline">
-                                    {job.company || companyDetails?.name}
-                                </span>
-                                <ExternalLink size={12} className="opacity-0 group-hover/company:opacity-100 transition-opacity text-indigo-500"/>
+                                <Building size={16} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                                {job.company || companyDetails?.name}
                             </Link>
-                           <div className="md:hidden ml-2">
-    <VerifyMagicButton 
-        companyName={job.company || companyDetails?.name || job.source || "the company"} 
-    />
-</div>
-        </>
                         )}
 
-                        {job.location && (
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <MapPin size={18} className={job.location.toLowerCase().includes('remote') ? "text-green-500" : "text-indigo-500"}/> 
-        
-        {/* 🔥 Removed slice limit so ALL countries are displayed */}
-        {smartLoc.matched.map((locItem: any, index: number) => (
-            <span key={index} className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
-                {locItem.isImage ? (
-                    <img 
-                        src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
-                        alt={locItem.name}
-                        className="w-4 h-3 object-cover rounded-[2px] shadow-sm"
-                    />
-                ) : (
-                    <span className="text-sm leading-none">🌍</span>
-                )}
-                <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                    {locItem.name}
-                </span>
-            </span>
-        ))}
-    </div>
-)}
+                        {/* 2. Location (Soft Badges with Multi-Country & Flags) */}
+                        {job.location && smartLoc.matched.map((locItem: any, index: number) => (
+                            <div key={index} className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md">
+                                {/* Sirf pehle tag ke sath MapPin aayega */}
+                                {index === 0 && (
+                                    <MapPin size={14} className={job.location.toLowerCase().includes('remote') ? "text-emerald-500 flex-shrink-0" : "text-indigo-500 flex-shrink-0"}/> 
+                                )}
+                                
+                                {/* 🇵🇰 Flag Logic */}
+                                {locItem.isImage ? (
+                                    <img 
+                                        src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
+                                        alt={locItem.name}
+                                        className="w-3.5 h-2.5 object-cover rounded-sm shadow-sm flex-shrink-0"
+                                    />
+                                ) : (
+                                    <span className="text-[10px] leading-none">🌍</span>
+                                )}
+                                
+                                <span className="text-xs font-bold text-slate-600 dark:text-slate-300 truncate max-w-[100px] md:max-w-none">
+                                    {locItem.name}
+                                </span>
+                            </div>
+                        ))}
+
+                        {/* 3. Job Type (Soft Badge) */}
                         {job.job_type && (
-                            <div className="flex items-center gap-2">
-                                <Briefcase size={18} className="text-blue-500"/> 
-                                {job.job_type}
+                            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md">
+                                <Briefcase size={14} className="text-blue-500"/> 
+                                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{job.job_type}</span>
                             </div>
                         )}
-                        {job.salary_range && job.salary_range !== "N/A" && (
-                            <div className="flex items-center gap-2">
-                                <DollarSign size={18} className="text-green-500"/> 
-                                {job.salary_range}
+
+                        {/* 4. Salary (Smart Logic - Soft Badge) */}
+                        {(() => {
+                            const isHidden = !job.salary_range || job.salary_range === "N/A" || job.salary_range.toLowerCase() === "not disclosed";
+                            return (
+                                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md ${isHidden ? 'bg-slate-100 dark:bg-slate-800/80' : 'bg-emerald-50 dark:bg-emerald-500/10'}`}>
+                                    <DollarSign size={14} className={isHidden ? 'text-slate-400' : 'text-emerald-500'}/> 
+                                    <span className={`text-xs font-bold ${isHidden ? 'text-slate-500' : 'text-emerald-700 dark:text-emerald-400'}`}>
+                                        {isHidden ? "Not Disclosed" : job.salary_range}
+                                    </span>
+                                </div>
+                            );
+                        })()}
+
+                        {/* 5. Experience (Soft Badge) */}
+                        {job.experience_level && (
+                            <div className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-500/10 px-2.5 py-1 rounded-md">
+                                <Star size={14} className="text-amber-500" /> 
+                                <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
+                                    {job.experience_level}
+                                </span>
                             </div>
                         )}
+
                     </div>
                 </div>
 
                 {/* --- ACTION BUTTONS ROW START --- */}
-                <div className="flex justify-between md:justify-end items-center md:items-start gap-4 w-full md:w-auto mt-8 md:mt-0">
+                {/* 🚀 FIX: Logged-in user ke liye mobile par yeh poora block hide kar diya taake whitespace na aaye */}
+                <div className={`w-full md:w-auto gap-4 items-center md:items-start justify-between md:justify-end md:mt-0 ${user ? 'hidden md:flex' : 'flex mt-8'}`}>
                   
-                  {/* 1. Share & Save Group (Left Side on Mobile) */}
-                  <div className="h-[54px] flex items-center">
-                    <div className="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm h-fit">
+                  {/* 1. Share & Save Group (Desktop & Guest Mobile) */}
+                  <div className="h-[54px] w-full md:w-auto flex items-center">
+                    
+                    {/* 👇 Yahan 'hidden md:flex' laga diya taake mobile pe gayab ho jaye aur future feature ke liye jagah khali rahe */}
+                    <div className="hidden md:flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1 shadow-sm h-fit">
                       <button onClick={toggleSave} className={`p-2.5 rounded-lg transition-all ${saved ? 'text-red-500 bg-red-50 dark:bg-red-500/10' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>
                           <Heart size={22} className={saved ? 'fill-current' : ''} />
                       </button>
+                      
                       <div className="w-[1px] bg-slate-200 dark:bg-slate-700 mx-1 my-2"></div>
                       <button onClick={handleShare} className="p-2.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-2">
                           <Share2 size={22} />
                       </button>
                     </div>
+                   {!user && <MobileGuestAlert />}
                   </div>
 
                   {/* 2. Apply Button & Counter (Right Side on Mobile) */}
@@ -1194,6 +1475,13 @@ const handleApply = async () => {
             {/* SMART AUTHOR SECTION */}
             {renderAuthorSection()}
             
+            {/* 🔥 DESKTOP GUEST ALERT BOX (Mobile par hide kiya) */}
+            {!user && (
+                <div className="hidden md:block">
+                    <GuestJobAlert />
+                </div>
+            )}
+            
             {/* 🏢 COMPANY PROFILE CARD (Updated) */}
                 {(job.company || companyDetails) && (
                     <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 relative overflow-hidden">
@@ -1229,27 +1517,27 @@ const handleApply = async () => {
                         </p>
                     </div>
                 )}
-                {/* 👇 DESKTOP VERIFY CARD (Only shows on desktop) */}
-<div className="hidden md:block p-4 rounded-2xl bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-[#151b2d] dark:to-[#1e2433] border border-violet-100 dark:border-white/5 mb-6">
-    <div className="flex items-start gap-3">
-        <div className="p-2 bg-white dark:bg-white/5 rounded-lg shadow-sm text-violet-600 dark:text-violet-400">
-            <ShieldCheck size={20} />
-        </div>
-        <div className="flex-1">
-    <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-        Is this company safe?
-    </h3>
-    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">
-        Ask Hyrizon AI to scan {job.company || 'this company'} for potential red flags.
-    </p>
-    
-    {/* ✨ UPDATED DESKTOP BUTTON (Same Neon Look) */}
-    <VerifyMagicButton 
-    companyName={job.company || companyDetails?.name || job.source || "the company"} 
-/>
-</div>
-    </div>
-</div>
+                {/* 👇 VERIFY CARD (Ab Mobile aur Desktop dono par dikhega) */}
+                <div className="p-5 rounded-2xl bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-[#151b2d] dark:to-[#1e2433] border border-violet-100 dark:border-white/5 mb-6 shadow-sm">
+                    <div className="flex items-start gap-3">
+                        <div className="p-2 bg-white dark:bg-white/5 rounded-lg shadow-sm text-violet-600 dark:text-violet-400 flex-shrink-0">
+                            <ShieldCheck size={20} />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                                Is this company safe?
+                            </h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 leading-relaxed">
+                                Ask Hyrizon AI to scan {job.company || 'this company'} for potential red flags before you apply.
+                            </p>
+                            
+                            {/* ✨ Hyrizon AI Verify Button */}
+                            <VerifyMagicButton 
+                                companyName={job.company || companyDetails?.name || job.source || "the company"} 
+                            />
+                        </div>
+                    </div>
+                </div>
                 <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <h3 className="font-bold mb-4 text-sm uppercase text-slate-400 tracking-wider">Safety First</h3>
                     <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
@@ -1262,14 +1550,22 @@ const handleApply = async () => {
       </div>
       {/* 📱 STICKY MOBILE APPLY FOOTER (Sirf Mobile par dikhega) */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 dark:bg-[#0b0f19]/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 p-4 z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
-        <div className="flex items-center gap-3 max-w-md mx-auto">
+       <div className="flex items-center gap-3 max-w-md mx-auto">
           
           {/* 🔖 Save Button */}
           <button 
             onClick={toggleSave} 
-            className={`p-3.5 rounded-xl border transition-all flex items-center justify-center ${saved ? 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-900/30 text-red-500' : 'bg-slate-100 dark:bg-[#1a2333] border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}`}
+            className={`p-3.5 rounded-xl border transition-all flex items-center justify-center active:scale-95 ${saved ? 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-900/30 text-red-500' : 'bg-slate-100 dark:bg-[#1a2333] border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}`}
           >
             <Heart size={22} className={saved ? 'fill-current' : ''} />
+          </button>
+
+          {/* 📤 NEW: Share Button (Center mein) */}
+          <button 
+            onClick={handleShare} 
+            className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-[#1a2333] text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition-all flex items-center justify-center active:scale-95"
+          >
+            <Share2 size={22} />
           </button>
 
           {/* 🚀 Main Apply Button & Bounce Killer (Mobile) */}

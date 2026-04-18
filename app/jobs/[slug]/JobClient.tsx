@@ -660,6 +660,7 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [authLoaded, setAuthLoaded] = useState(false);
   const [relatedJobs, setRelatedJobs] = useState<any[]>([]); 
   const [companyDetails, setCompanyDetails] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -717,7 +718,9 @@ const [applyCount, setApplyCount] = useState(job.application_count || 0);
   async function fetchJobDetails() {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
-if (user) {
+    setAuthLoaded(true); // 👈 YEH LINE ADD KARO (Iska matlab hai Supabase ne bata diya hai ke user kon hai)
+    
+    if (user) {
         const { data: profile } = await supabase
             .from('profiles')
             .select('full_name, bio, skills, projects, experience')
@@ -1309,7 +1312,7 @@ const handleApply = async () => {
                           <Share2 size={22} />
                       </button>
                     </div>
-                   {!user && <MobileGuestAlert />}
+                   {authLoaded && !user && <MobileGuestAlert />}
                   </div>
 
                   {/* 2. Apply Button & Counter (Right Side on Mobile) */}
@@ -1476,7 +1479,7 @@ const handleApply = async () => {
             {renderAuthorSection()}
             
             {/* 🔥 DESKTOP GUEST ALERT BOX (Mobile par hide kiya) */}
-            {!user && (
+            {authLoaded && !user && (
                 <div className="hidden md:block">
                     <GuestJobAlert />
                 </div>

@@ -21,6 +21,7 @@ type TalentProfile = {
   hourly_rate: string;
   is_available: boolean;
   profile_score: number;
+  is_guest?: boolean;
 };
 
 export default function TalentDirectory() {
@@ -72,7 +73,8 @@ export default function TalentDirectory() {
 
   async function fetchRankedTalent() {
     setLoading(true);
-    const { data, error } = await supabase.rpc('get_ranked_talent');
+    // 🚀 NEW FUNCTION CALLED HERE
+    const { data, error } = await supabase.rpc('get_combined_talent'); 
     
     if (error) {
       console.error("Error fetching talent:", error);

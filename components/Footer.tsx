@@ -2,9 +2,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { X, Linkedin, Github, Heart , Instagram} from 'lucide-react';
+import { usePathname } from 'next/navigation'; // 🟢 1. YEH IMPORT ADD KIYA
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname(); // 🟢 2. CURRENT URL GET KIYA
+
+  // 🟢 3. THE MAGIC: Agar URL /embed ya /p/ (talent profiles) se shuru ho raha hai, toh Footer gayab
+  if (pathname?.startsWith('/embed') || pathname?.startsWith('/p/')) {
+    return null;
+  }
 
   return (
     <footer className="w-full bg-white dark:bg-[#0B0F19] border-t border-slate-200 dark:border-slate-800 pt-16 pb-8">
@@ -97,5 +104,3 @@ export default function Footer() {
     </footer>
   );
 }
-
-

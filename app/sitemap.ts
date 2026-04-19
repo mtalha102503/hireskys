@@ -10,7 +10,7 @@ const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const BASE_URL = 'https://www.hireskys.com'; 
-export const dynamic = 'force-dynamic';
+export const revalidate = 86400;
 
 // 🔥 THE FIX: SAFE DATE HELPER FUNCTION
 // This guarantees we never pass an invalid date to the sitemap

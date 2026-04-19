@@ -12,6 +12,20 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const BASE_URL = 'https://www.hireskys.com'; 
 export const dynamic = 'force-dynamic';
 
+// 🔥 THE FIX: SAFE DATE HELPER FUNCTION
+// This guarantees we never pass an invalid date to the sitemap
+function getSafeDate(dateString: any): Date {
+  if (!dateString) return new Date(); // Fallback to now if null/undefined
+  
+  const parsedDate = new Date(dateString);
+  // Check if the parsed date is valid
+  if (isNaN(parsedDate.getTime())) {
+    return new Date(); // Fallback to now if parsing failed
+  }
+  
+  return parsedDate;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
   // ==========================================
@@ -54,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // ==========================================
-  // 3️⃣ CATEGORIES & SUBCATEGORIES (Tumhara purana logic 100% same hai)
+  // 3️⃣ CATEGORIES & SUBCATEGORIES
   // ==========================================
   let categoryRoutes: MetadataRoute.Sitemap = [];
 
@@ -96,7 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (jobs) {
     jobRoutes = jobs.map((job) => ({
       url: `${BASE_URL}/jobs/${createSlug(job.title, job.id)}`, 
-      lastModified: new Date(job.date_posted),
+      lastModified: getSafeDate(job.date_posted), // 👈 Updated
       changeFrequency: 'weekly', 
       priority: 0.8,
     }));
@@ -114,7 +128,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (companies) {
     companyRoutes = companies.map((company) => ({
       url: `${BASE_URL}/companies/${company.slug}`, 
-      lastModified: new Date(company.created_at || new Date()),
+      lastModified: getSafeDate(company.created_at), // 👈 Updated
       changeFrequency: 'weekly',
       priority: 0.8,
     }));
@@ -125,26 +139,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ==========================================
   const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
+    lastModified: getSafeDate(post.date), // 👈 Updated
     changeFrequency: 'monthly', 
     priority: 0.8, 
   }));
 
   // ==========================================
-  // 7️⃣ PROGRAMMATIC SEO PAGES (🚀 NAYA SECTION ADD KIYA HAI!)
+  // 7️⃣ PROGRAMMATIC SEO PAGES
   // ==========================================
   const { data: seoPages } = await supabase
     .from('seo_pages')
     .select('url_path, last_updated')
-    .eq('is_indexed', true); // Sirf indexable pages uthayega
+    .eq('is_indexed', true); 
 
   let pseoRoutes: MetadataRoute.Sitemap = [];
 
   if (seoPages) {
     pseoRoutes = seoPages.map((page) => ({
-      // page.url_path mein already / lagga hoga (e.g. "/remote-jobs/uk/react")
       url: `${BASE_URL}${page.url_path}`, 
-      lastModified: new Date(page.last_updated || new Date()),
+      lastModified: getSafeDate(page.last_updated), // 👈 Updated
       changeFrequency: 'daily', 
       priority: 0.9, 
     }));
@@ -158,6 +171,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...jobRoutes, 
     ...companyRoutes,
     ...blogRoutes,
-    ...pseoRoutes // 👈 Naya section aakhir mein merge kar diya
+    ...pseoRoutes 
   ];
 }

@@ -6,6 +6,7 @@ import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
 import Navbar from '@/components/Navbar';
 import ReportJob from '@/components/ReportJob';
 import MagicButton from '@/components/MagicButton';
+import JobFeedback from '@/components/JobFeedback';
 import VerifyMagicButton from '@/components/VerifyMagicButton';
 import { CATEGORIES } from '@/lib/categories';
 import Link from 'next/link';
@@ -749,20 +750,21 @@ const [applyCount, setApplyCount] = useState(job.application_count || 0);
         if (data) {
             setJob(data);
 
-            // 🌟 NEW: Company Data Fetch Logic
-            // Logic: Job ka company name uthao, usay slug banao, aur companies table mein dhoondo
+            // 🌟 SMART: Company Data Fetch Logic (Fuzzy Matcher)
             const companyNameForSearch = data.company || 
                 (!['reddit', 'hacker news', 'yc', 'upwork'].some(s => data.source?.toLowerCase().includes(s)) ? data.source : null);
 
             if (companyNameForSearch) {
-                const slugToFind = getCompanySlug(companyNameForSearch);
+                // 1. Asli naam lo aur uske special characters (dots, spaces) ko '%' bana do
+                const smartSearchName = companyNameForSearch.replace(/[^a-zA-Z0-9]/g, '%');
                 
-                // Supabase se company data mangwao
+                // 2. .eq('slug') ki jagah .ilike('name') use karo (Same trick as Companies page)
                 const { data: companyInfo } = await supabase
                     .from('companies')
                     .select('*')
-                    .eq('slug', slugToFind)
-                    .single();
+                    .ilike('name', `%${smartSearchName}%`) // 👈 Case-insensitive & Wildcard Magic
+                    .limit(1) // 👈 Agar 2 same naam wali aa gayin toh pehli uthayega
+                    .maybeSingle(); // 👈 .single() ki jagah maybeSingle() use karo taake crash na ho
                     
                 if (companyInfo) {
                     setCompanyDetails(companyInfo); // ✅ State mein save kar liya
@@ -1381,7 +1383,7 @@ const handleApply = async () => {
                 dangerouslySetInnerHTML={{ __html: getCleanHTML(job.description) }}
             />
         </div>
-        
+        <JobFeedback jobId={job.id} userId={user?.id} />
         <ReportJob jobId={job.id} />
                 
                 {/* 🌟 UPGRADED RELATED JOBS SECTION */}

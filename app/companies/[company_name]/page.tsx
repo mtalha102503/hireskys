@@ -89,12 +89,14 @@ export default async function CompanyPage({ params, searchParams }: Props) {
 
   if (!manualData) return notFound();
 
-  // ✅ STEP 2: Fetch Related Jobs (LOGIC UNTOUCHED)
-  const jobSearchName = slug.replace(/-/g, ' '); 
+// ✅ STEP 2: Fetch Related Jobs (🔥 SUPER SMART MATCHING)
+  // Asli company name dhoondo aur har special character (dot, space, dash, &) ko '%' bana do
+  const smartSourceName = manualData.name.replace(/[^a-zA-Z0-9]/g, '%'); 
+
   const { data: jobs } = await supabase
     .from('jobs')
     .select('*')
-    .ilike('source', `%${jobSearchName}%`)
+    .ilike('source', `%${smartSourceName}%`) // 👈 Case-insensitive + Wildcard Magic
     .eq('approved', true)
     .eq('active', true)
     .order('date_posted', { ascending: false });

@@ -2689,6 +2689,8 @@ return (
                         <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-[45%]">
   {[
     // 🚀 SEO FIX 1: query mein space ya '+' ki jagah '-' (hyphen) use karo taake clean URL banay
+    { name: "Golobal AI Jobs", slug: "global-work-ai", icon: "🌎" },
+    { name: "Data Entry Jobs", slug: "data-entry", icon: "👨🏻‍💻" },
     { name: "HR Jobs", slug: "hr", icon: "👔" },
     { name: "Support", slug: "customer-support", icon: "🎧" },
     { name: "Software Engineer", slug: "software-engineer", icon: "</>" },

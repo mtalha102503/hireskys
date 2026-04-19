@@ -253,62 +253,59 @@ export default function CompaniesPage() {
     let finalCompanies: any[] = [];
     let hasMoreFlag = true;
 
-    if (currentSort === 'most-jobs' || currentSort === 'highest-salary') {
-      if (currentSort === 'most-jobs') {
-        
-        // 🚨 FIX: Syntax error fixed and country filter applied correctly
-        let jobQuery = supabase.from('jobs').select('source').eq('active', true).eq('approved', true);
-        if (filterCountry !== 'All') {
-            jobQuery = jobQuery.ilike('location', `%${filterCountry}%`); 
-        }
-        const { data: jobData } = await jobQuery;
-
-        const counts: Record<string, number> = {};
-        (jobData || []).forEach(j => { if (j.source) counts[j.source] = (counts[j.source] || 0) + 1; });
-        const sortedNames = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(e => e[0]);
-        const pageNames = sortedNames.slice(from, to + 1);
-        
-        if (pageNames.length === 0) hasMoreFlag = false;
-        else {
-          const { data: comps } = await supabase.from('companies').select('*').in('name', pageNames);
-          finalCompanies = pageNames.map(name => (comps || []).find(c => c.name === name)).filter(Boolean);
-          if (finalCompanies.length < LIMIT) hasMoreFlag = false;
-        }
-
-      } else if (currentSort === 'highest-salary') {
-        
-        // 🚨 FIX: Syntax error fixed and country filter applied correctly
-        let jobQuery = supabase.from('jobs').select('source, salary_range').not('salary_range', 'is', null).eq('active', true).eq('approved', true);
-        if (filterCountry !== 'All') {
-            jobQuery = jobQuery.ilike('location', `%${filterCountry}%`); 
-        }
-        const { data: jobData } = await jobQuery;
-
-        const maxSals: Record<string, number> = {};
-        (jobData || []).forEach(j => {
-          if (j.source && j.salary_range && !j.salary_range.toLowerCase().includes('not disclosed')) {
-            const nums = j.salary_range.match(/\d+(?:,\d+)*/g);
-            if (nums) {
-              const maxVal = Math.max(...nums.map((n: string) => parseInt(n.replace(/,/g, ''), 10)));
-              if (maxVal > (maxSals[j.source] || 0)) maxSals[j.source] = maxVal;
-            }
-          }
-        });
-
-        const sortedNames = Object.entries(maxSals).sort((a, b) => b[1] - a[1]).map(e => e[0]);
-        const pageNames = sortedNames.slice(from, to + 1);
-        
-        if (pageNames.length === 0) hasMoreFlag = false;
-        else {
-          const { data: comps } = await supabase.from('companies').select('*').in('name', pageNames);
-          finalCompanies = pageNames.map(name => (comps || []).find(c => c.name === name)).filter(Boolean);
-          if (finalCompanies.length < LIMIT) hasMoreFlag = false;
-        }
-      }
-    } else {
+    // 🏆 1. MOST JOBS (Powered by Supabase RPC)
+    if (currentSort === 'most-jobs') {
+      const locFilter = filterCountry !== 'All' ? filterCountry : '';
       
-      // 🚨 FIX: Country filter correctly applied for standard sorting
-      let query = supabase.from('companies').select('*');
+      // 👇 Yahan hum limit aur offset dono bhej rahe hain
+      const { data: topCompaniesData } = await supabase.rpc('get_top_companies_by_job_count', { 
+          limit_count: LIMIT, 
+          offset_count: from, // 👈 Yeh currentPage ke hisab se automatic skip karega (0, 30, 60...)
+          search_location: locFilter 
+      });
+
+      if (!topCompaniesData || topCompaniesData.length === 0) {
+          hasMoreFlag = false;
+      } else {
+          const pageNames = topCompaniesData.map((c: any) => c.company_name);
+          const { data: comps } = await supabase.from('companies').select('name, slug, logo_url, industry, location, description').in('name', pageNames);
+          finalCompanies = pageNames.map((name: string) => (comps || []).find((c: any) => c.name === name)).filter(Boolean);
+          if (finalCompanies.length < LIMIT) hasMoreFlag = false;
+      }
+
+    // 💰 2. HIGHEST SALARY
+    } else if (currentSort === 'highest-salary') {
+      let jobQuery = supabase.from('jobs').select('source, salary_range').not('salary_range', 'is', null).eq('active', true).eq('approved', true);
+      if (filterCountry !== 'All') {
+          jobQuery = jobQuery.ilike('location', `%${filterCountry}%`); 
+      }
+      const { data: jobData } = await jobQuery;
+
+      const maxSals: Record<string, number> = {};
+      (jobData || []).forEach(j => {
+        if (j.source && j.salary_range && !j.salary_range.toLowerCase().includes('not disclosed')) {
+          const nums = j.salary_range.match(/\d+(?:,\d+)*/g);
+          if (nums) {
+            const maxVal = Math.max(...nums.map((n: string) => parseInt(n.replace(/,/g, ''), 10)));
+            if (maxVal > (maxSals[j.source] || 0)) maxSals[j.source] = maxVal;
+          }
+        }
+      });
+
+      const sortedNames = Object.entries(maxSals).sort((a, b) => b[1] - a[1]).map(e => e[0]);
+      const pageNames = sortedNames.slice(from, to + 1);
+      
+      if (pageNames.length === 0) {
+          hasMoreFlag = false;
+      } else {
+        const { data: comps } = await supabase.from('companies').select('name, slug, logo_url, industry, location, description').in('name', pageNames);
+        finalCompanies = pageNames.map(name => (comps || []).find(c => c.name === name)).filter(Boolean);
+        if (finalCompanies.length < LIMIT) hasMoreFlag = false;
+      }
+
+    // 🔤 3. ALPHABETICAL & NEWEST
+    } else {
+      let query = supabase.from('companies').select('name, slug, logo_url, industry, location, description');
       if (filterCountry !== 'All') {
           query = query.ilike('location', `%${filterCountry}%`); 
       }
@@ -323,7 +320,7 @@ export default function CompaniesPage() {
       if (!data || data.length < LIMIT) hasMoreFlag = false;
     }
 
-    // 🚨 AAPKA EXISTING FUNCTION AS IT IS (NO CHANGES HERE)
+    // --- 📊 SALARY AND ACTIVE JOBS CALCULATION ---
     if (finalCompanies.length > 0) {
       const companyNames = finalCompanies.map(c => c.name);
       const { data: jobsData } = await supabase.from('jobs').select('source, salary_range').in('source', companyNames).eq('active', true).eq('approved', true);
@@ -332,7 +329,6 @@ export default function CompaniesPage() {
         const companyJobs = (jobsData || []).filter(j => j.source === company.name);
         const activeJobsCount = companyJobs.length;
 
-        // Salary Average Calculator
         let totalSalary = 0;
         let validSalaries = 0;
         companyJobs.forEach(job => {
@@ -359,13 +355,13 @@ export default function CompaniesPage() {
       });
     }
 
+    // --- RENDER DATA ---
     if (isReset || currentPage === 0) setCompanies(finalCompanies);
     else setCompanies((prev) => [...prev, ...finalCompanies]);
     
     setHasMore(hasMoreFlag);
     setLoading(false);
   };
-
   useEffect(() => {
     setPage(0);
     setHasMore(true);

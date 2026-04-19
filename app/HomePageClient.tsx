@@ -761,9 +761,11 @@ useEffect(() => {
   }, []);
   useEffect(() => {
     const fetchCompanies = async () => {
-        const { data } = await supabase
-            .from('companies') 
-            .select('name, logo_url');
+    const { data } = await supabase
+        .from('companies') 
+        .select('name, logo_url')
+        .not('logo_url', 'is', null) // Jinka logo hai sirf wahi lao
+        .limit(200); // 👈 MAXIMUM LIMIT LAGA DI
         
         if (data) {
             const logoMap: Record<string, string> = {};
@@ -1099,7 +1101,8 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
    // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
     let query = supabase
   .from('jobs')
-  .select('id, title, source, link, category, date_posted, is_verified, approved, active, tags, job_type, location, company_logo_url', { count: 'exact' })
+  // 👇 Is line mein aakhir mein ', company_logo_url' wapas add kar do
+  .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url', { count: 'exact' }) 
   .order('date_posted', { ascending: false });
 
     // 🟢 2. POWERFUL SEARCH LOGIC (NOW POWERED BY TYPESENSE ⚡)
@@ -1208,11 +1211,10 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
     if ((!data || data.length === 0) && searchQuery && reset) {
     setIsFallback(true); 
     const { data: fallbackData } = await supabase
-        .from('jobs')
-        .select('id, title, source, link, category, date_posted, is_verified, approved, active, tags, job_type, location, company_logo_url')
-        .eq('approved', true)
-            .order('date_posted', { ascending: false })
-            .range(0, JOBS_PER_PAGE - 1);
+    .from('jobs')
+    // 👇 Yahan bhi aakhir mein ', company_logo_url' wapas add kar do
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url') 
+    .eq('approved', true)
             
         data = fallbackData || []; 
     } else {

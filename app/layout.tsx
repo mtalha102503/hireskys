@@ -5,9 +5,11 @@ import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
-import GoogleOneTap from "@/components/GoogleOneTap";
+import dynamic from 'next/dynamic';
 import { GoogleAnalytics } from '@next/third-parties/google';
-
+const GoogleOneTap = dynamic(() => import('@/components/GoogleOneTap'), { 
+  ssr: false 
+});
 // 🌟 FONT OPTIMIZATION
 const jost = Jost({ subsets: ["latin"] });
 

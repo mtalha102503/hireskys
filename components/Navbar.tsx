@@ -6,8 +6,8 @@ import { supabase } from '@/lib/supabaseClient';
 import { usePathname } from 'next/navigation';
 import { 
   Menu, X, Sun, Moon, LogOut, User as UserIcon, 
-  ArrowRight, ShieldAlert, BellRing, History, Search , Building2,
-  Briefcase, Users // 👈 Naye icons add kiye hain
+  ArrowRight, ShieldAlert, History, Building2,
+  Briefcase, Users 
 } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
@@ -21,16 +21,30 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-    checkUser();
+    
+    // 🚀 THE FIX: Sirf Client Browser par check lagao, Vercel Server ko bypass karo!
+    if (typeof window !== 'undefined') {
+        checkUser();
+        
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+          (_event, session) => {
+            setUser(session?.user ?? null);
+          }
+        );
+
+        return () => {
+          authListener?.subscription.unsubscribe();
+        };
+    }
   }, []);
 
   async function checkUser() {
-    const { data: { session } } = await supabase.auth.getSession();
-    setUser(session?.user ?? null);
-    
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+    } catch (error) {
+        console.error("Auth check failed:", error);
+    }
   }
 
   const isAdmin = user?.email === 'mtalha1025031@gmail.com'; 

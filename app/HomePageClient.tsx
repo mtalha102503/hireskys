@@ -636,6 +636,7 @@ const COUNTRIES = [
   const [jobs, setJobs] = useState<Job[]>([]);
   
   const [loading, setLoading] = useState(false);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [totalCount, setTotalCount] = useState(0); 
@@ -843,7 +844,7 @@ useEffect(() => {
                 }
             }, 20000);
         }
-
+       setIsAuthChecking(false);
         // B. Real-time Listener (Login/Logout detect karega)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (session?.user) {
@@ -1403,6 +1404,20 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
       </>
   );
   // --- END: MASTER DESCRIPTION ENGINE ---
+  if (isAuthChecking) {
+      return (
+          <div className="min-h-screen font-sans bg-slate-50 dark:bg-[#0B0F19] flex flex-col items-center justify-center">
+              <Navbar /> {/* Taa ke upar navbar dikhta rahe */}
+              <div className="flex flex-col items-center gap-4 animate-pulse mt-20">
+                  <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-2xl flex items-center justify-center shadow-inner">
+                      <Briefcase size={32} />
+                  </div>
+                  <div className="h-4 w-40 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
+                  <div className="h-3 w-24 bg-slate-200 dark:bg-slate-800 rounded-full mt-2"></div>
+              </div>
+          </div>
+      );
+  }
 return (
     <div className="min-h-screen font-sans text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-[#0B0F19] overflow-x-hidden">
       <Navbar />

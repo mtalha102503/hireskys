@@ -31,7 +31,17 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  // 👇🔥 THE REVOLUTIONARY FIX:
+  // Agar user Homepage, Jobs, ya Companies wale public pages par hai,
+  // toh 'getUser()' ko skip kardo taake Vercel page ko CACHE kar sakay.
+  
+  const path = request.nextUrl.pathname;
+  const isPublicPage = path === '/' || path.startsWith('/jobs') || path.startsWith('/companies') || path.startsWith('/talent');
+
+  if (!isPublicPage) {
+      // Sirf private pages (Profile, Admin, etc.) par session refresh karo
+      await supabase.auth.getUser()
+  }
 
   return response
 }

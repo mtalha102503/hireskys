@@ -37,8 +37,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   // 🔥 SEO UPDATE: Social Media aur Browser Tab ke liye exact company name fetch karna
-  let exactCompanyName = job.company_name || job.company || "Confidential";
-  const companyIdentifier = job.company_name || job.company;
+  // 👇 FIX: Yahan 'job.source' add kiya hai kyunke DB mein company ka naam 'source' column mein hai
+  const companyIdentifier = job.source || job.company_name || job.company;
+  let exactCompanyName = companyIdentifier || "Confidential";
+
+  // Agar galti se DB mein "HireSkys" aa raha ho toh usko hide karne ka filter
+  if (exactCompanyName.toLowerCase() === "hireskys") {
+      exactCompanyName = "Confidential";
+  }
 
   if (companyIdentifier) {
     const companySlug = companyIdentifier.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -434,12 +440,12 @@ export default async function Layout({ children, params }: { children: React.Rea
 
   if (!job) return <>{children}</>;
 // 🔥 SEO UPDATE: Fetch exact company logo & website
-  let exactCompanyName = "Confidential"; // Default fallback
   let exactLogo = null;
   let exactWebsite = null;
 
-  // Dhyan rakho: Ho sakta hai DB mein column 'company_name' ho ya 'company'
-  const companyIdentifier = job.company_name || job.company; 
+  // 👇 FIX: Yahan bhi 'job.source' add karna zaroori hai
+  const companyIdentifier = job.source || job.company_name || job.company; 
+  let exactCompanyName = companyIdentifier || "Confidential";
 
   if (companyIdentifier) {
     const companySlug = companyIdentifier.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');

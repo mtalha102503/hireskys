@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import HomePageClient from './HomePageClient'; 
 import { Suspense } from 'react';
 export const revalidate = 86400;
+export const dynamic = 'force-static';
 // Next.js 15 Strict Types
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>

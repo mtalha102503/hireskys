@@ -6,7 +6,7 @@ import { permanentRedirect } from 'next/navigation';
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
+export const revalidate = 86400;
 // ✅ Fix for Next.js 15/16 (Params as Promise)
 type Props = {
   params: Promise<{ slug: string }>; // id -> slug

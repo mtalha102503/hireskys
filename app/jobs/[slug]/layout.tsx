@@ -70,8 +70,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const jobImage = "https://www.hireskys.com/og-job-card.png"; // Future dynamic image
 
   return {
-    // Basic SEO
-    title: pageTitle,
+    title: { absolute: pageTitle }, // 👈 'absolute' Next.js ko order dega ke kisi aur layout ka text add na kare
     description: summary,
     keywords: [
       job.category, 

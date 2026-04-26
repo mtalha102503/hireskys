@@ -18,15 +18,15 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
 
-// 👇 SLUG SE ID NIKALNE KA LOGIC
-const slugParts = resolvedParams.slug.split('-'); 
-const jobId = slugParts[slugParts.length - 1]; // Last part ID hai
+  // 👇 SLUG SE ID NIKALNE KA LOGIC
+  const slugParts = resolvedParams.slug.split('-'); 
+  const jobId = slugParts[slugParts.length - 1]; // Last part ID hai
 
-const { data: job } = await supabase
-  .from('jobs')
-  .select('*')
-  .eq('id', jobId) // ✅ Ab Sahi ID jayegi
-  .single();
+  const { data: job } = await supabase
+    .from('jobs')
+    .select('*')
+    .eq('id', jobId)
+    .single();
 
   if (!job) {
     return {
@@ -35,12 +35,33 @@ const { data: job } = await supabase
       robots: { index: false, follow: false }
     };
   }
-const correctSlug = createSlug(job.title, job.id); 
+
+  // 🔥 SEO UPDATE: Social Media aur Browser Tab ke liye exact company name fetch karna
+  let exactCompanyName = job.company_name || job.company || "Confidential";
+  const companyIdentifier = job.company_name || job.company;
+
+  if (companyIdentifier) {
+    const companySlug = companyIdentifier.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    
+    // Yahan sirf name chahiye meta tags ke liye
+    const { data: companyData } = await supabase
+      .from('companies')
+      .select('name') 
+      .eq('slug', companySlug)
+      .maybeSingle();
+
+    if (companyData) {
+      exactCompanyName = companyData.name;
+    }
+  }
+
+  const correctSlug = createSlug(job.title, job.id); 
   const seoUrl = `https://www.hireskys.com/jobs/${correctSlug}`;
-  // Smart Strings Construction
-  const pageTitle = `${job.title} ${job.company ? `at ${job.company}` : ''} | HireSkys`;
-  const summary = `Hiring: ${job.title}. Category: ${job.category}. ${job.location === 'Remote' ? '🌍 Remote Work' : `📍 ${job.location}`}. Salary: ${job.salary_range || 'Competitive'}. Apply securely via HireSkys.`;
-  const jobImage = "https://www.hireskys.com/og-job-card.png"; // Future mein dynamic image laga sakte ho
+  
+  // ✨ FIX: Ab page title aur description mein exact name use hoga
+  const pageTitle = `${job.title} ${exactCompanyName !== "Confidential" ? `at ${exactCompanyName}` : ''} | HireSkys`;
+  const summary = `Hiring: ${job.title} at ${exactCompanyName}. Category: ${job.category}. ${job.location === 'Remote' ? '🌍 Remote Work' : `📍 ${job.location}`}. Salary: ${job.salary_range || 'Competitive'}. Apply securely via HireSkys.`;
+  const jobImage = "https://www.hireskys.com/og-job-card.png"; // Future dynamic image
 
   return {
     // Basic SEO
@@ -56,10 +77,11 @@ const correctSlug = createSlug(job.title, job.id);
       "Full Time", 
       job.tags?.join(", ") || "Tech Job"
     ],
-    authors: [{ name: "HireSkys Bot" }, { name: job.company || "Confidential Client" }],
+    // ✨ FIX: Author mein exact name!
+    authors: [{ name: "HireSkys Bot" }, { name: exactCompanyName }],
     category: "Employment",
     
-    // Canonical URL (Duplicate Content se bachne ke liye)
+    // Canonical URL
     alternates: {
       canonical: seoUrl, 
     },
@@ -71,7 +93,7 @@ const correctSlug = createSlug(job.title, job.id);
       url: seoUrl,
       siteName: 'HireSkys - Elite Job Radar',
       locale: 'en_US',
-      type: 'website', // JobPosting type OG mein nahi hota, website best hai
+      type: 'website', 
       images: [
         {
           url: jobImage,
@@ -87,11 +109,11 @@ const correctSlug = createSlug(job.title, job.id);
       card: 'summary_large_image',
       title: pageTitle,
       description: summary,
-      creator: '@HireSkys', // Apna handle lagao agar hai
+      creator: '@HireSkys', 
       images: [jobImage],
     },
 
-    // Robots (Google Permissions)
+    // Robots
     robots: {
       index: true,
       follow: true,
@@ -412,20 +434,31 @@ export default async function Layout({ children, params }: { children: React.Rea
 
   if (!job) return <>{children}</>;
 // 🔥 SEO UPDATE: Fetch exact company logo & website
+  let exactCompanyName = "Confidential"; // Default fallback
   let exactLogo = null;
   let exactWebsite = null;
 
-  if (job.company) {
-    const companySlug = job.company.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  // Dhyan rakho: Ho sakta hai DB mein column 'company_name' ho ya 'company'
+  const companyIdentifier = job.company_name || job.company; 
+
+  if (companyIdentifier) {
+    const companySlug = companyIdentifier.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    
+    // ✨ FIX 1: Humne 'name' column ko bhi select mein add kar diya
     const { data: companyData } = await supabase
       .from('companies')
-      .select('logo_url, website')
+      .select('name, logo_url, website') 
       .eq('slug', companySlug)
       .maybeSingle();
 
     if (companyData) {
+      // ✨ FIX 2: Ab hum exact real name (e.g., '1Password') Companies table se uthayenge
+      exactCompanyName = companyData.name; 
       exactLogo = companyData.logo_url;
       exactWebsite = companyData.website;
+    } else {
+      // Agar companies table mein match nahi mila toh purana naam use kar lo
+      exactCompanyName = companyIdentifier;
     }
   }
   // 🚀 SEO PHASE 2 & 3 LOGIC START
@@ -583,7 +616,7 @@ const breadcrumbLd = {
     employmentType: googleEmploymentType,
     hiringOrganization: {
       '@type': 'Organization',
-      name: job.company || "Confidential",
+      name: exactCompanyName,
       ...(exactLogo && { logo: exactLogo }),
       ...(exactWebsite && { sameAs: exactWebsite })
     },

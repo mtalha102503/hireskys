@@ -12,6 +12,7 @@ export default function robots(): MetadataRoute.Robots {
         '/update-password/',  // ❌ Password reset page
         '/test/',             // ❌ Tumhare testing pages
         '/test-alert/',       // ❌ Testing pages
+        '/*?tab=*',           // 🔥 YEH ADD KIYA HAI: Kisi bhi URL me ?tab= ho toh usay block kardo
       ],
     },
     sitemap: 'https://www.hireskys.com/sitemap.xml', // ✅ Map ka rasta dikhana zaroori hai

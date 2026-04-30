@@ -279,7 +279,67 @@ ${username}`;
         console.error("❌ Email Error:", error.message);
     }
 }
+async function sendGuestEmail(to: string, job: any, guestName: string, jobLink: string, matchedTag: string) {
+    const proposalText = `Hi Hiring Team,
+I came across your opening for the **${job.title}** position and wanted to express my interest.
 
+I am a skilled professional and I am available to discuss how my skills align with your goals.
+
+Best regards,
+${guestName || 'Professional'}`;
+
+    const headerText = matchedTag ? matchedTag.toUpperCase() : "VERIFIED JOB";
+
+    try {
+        const mailOptions = {
+            from: '"HireSkys Job Alerts" <jobalerts@hireskys.com>',
+            to: to,
+            subject: `🔥 Job Alert: ${job.title} (${headerText})`,
+            html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    /* (Same CSS as your existing sendEmail function) */
+                    body { font-family: 'Arial', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 20px auto; background-color: #111827; color: #ffffff; border-radius: 12px; overflow: hidden; }
+                    .header { background-color: #4f46e5; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; color: white; }
+                    .content { padding: 30px; }
+                    .job-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #ffffff; }
+                    .details { color: #d1d5db; font-size: 14px; margin-bottom: 20px; }
+                    .proposal-box { background-color: #1f2937; border: 2px dashed #6366f1; padding: 20px; border-radius: 8px; margin: 20px 0; color: #9ca3af; font-family: monospace; white-space: pre-wrap; font-size: 12px; }
+                    .label { color: #fbbf24; font-weight: bold; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; display: block; }
+                    .btn { display: block; width: 100%; background-color: #10b981; color: white; text-align: center; padding: 15px 0; text-decoration: none; font-weight: bold; border-radius: 8px; margin-top: 20px; }
+                    .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">🚀 ${headerText} ALERT</div>
+                    <div class="content">
+                        <p>Hi ${guestName}, we found a job matching your skills!</p>
+                        <div class="job-title">${job.title}</div>
+                        <div class="details">
+                            <strong>Source:</strong> ${job.source || "Direct Client"} <br>
+                            <strong>Pay:</strong> ${job.salary_range || "Competitive / Not Disclosed"}
+                        </div>
+                        <hr style="border-color: #374151;">
+                        <span class="label">👇 Copy This Proposal:</span>
+                        <div class="proposal-box">${proposalText}</div>
+                        <a href="${jobLink}" class="btn">Apply Now & Create Full Profile</a>
+                    </div>
+                    <div class="footer">Sent by HireSkys</div>
+                </div>
+            </body>
+            </html>
+            `
+        };
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Guest Email Sent to ${to}!`);
+    } catch (error: any) {
+        console.error("❌ Guest Email Error:", error.message);
+    }
+}
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -416,6 +476,44 @@ export async function POST(request: Request) {
                     last_alert_date: todayDate,
                     daily_alert_count: currentCount + 1
                 }).eq('id', user.id);
+            }
+        }
+        console.log("🚀 Checking Guest Leads...");
+
+        // 🕵️‍♂️ 1. Fetch Guest Leads Data
+        const { data: guests, error: guestError } = await supabase
+            .from('guest_leads')
+            .select('*');
+
+        if (!guestError && guests) {
+            for (const guest of guests) {
+                
+                // 🌍 STEP A: CHECK COUNTRY / LOCATION
+                if (targetCountries.length > 0) {
+                    const guestLocation = guest.location ? guest.location.toLowerCase() : "";
+                    
+                    // Agar guest ki location targetCountries mein NAHI hai, toh skip karo
+                    if (!targetCountries.includes(guestLocation)) {
+                        continue; 
+                    }
+                }
+
+                // 🎯 STEP B: CHECK SKILL
+                let isGuestMatch = false;
+                const guestSkill = guest.skill ? guest.skill.toLowerCase() : "";
+
+                // Guest table mein 'skill' text field hai, check if it matches our skillTags
+                if (guestSkill && skillTags.includes(guestSkill)) {
+                    isGuestMatch = true;
+                }
+
+                // ✅ STEP C: SEND EMAIL
+                if (isGuestMatch && guest.email) {
+                    console.log(`✅ Alerting Guest: ${guest.name} (Matched: ${guest.skill})`);
+                    alertsSent++;
+                    
+                    await sendGuestEmail(guest.email, job, guest.name, internalLink, guest.skill);
+                }
             }
         }
         // --- LOOP END ---

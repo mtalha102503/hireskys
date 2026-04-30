@@ -21,9 +21,13 @@ type Props = {
 }
 
 // --- 1. SEO METADATA (🔥 UPGRADED 8x) ---
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams; // ✅ searchParams ko await karo
   const urlSlug = decodeURIComponent(resolvedParams.company_name);
+  
+  // ✅ Check karo ke kya URL mein koi parameter hai?
+  const hasQueryParams = !!resolvedSearchParams?.tab;
 
   const { data: manualCompany } = await supabase
     .from('companies')
@@ -34,23 +38,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!manualCompany) {
     return { 
       title: 'Company Not Found | HireSkys',
-      robots: { index: false, follow: false } // 404 pages ko index mat karne do
+      robots: { index: false, follow: false }
     };
   }
 
   const title = `${manualCompany.name} Remote Jobs & Careers | HireSkys`;
   const desc = manualCompany.description?.slice(0, 160) || `Apply for remote jobs at ${manualCompany.name}. Verified career opportunities and hiring details.`;
+  const cleanUrl = `https://www.hireskys.com/companies/${urlSlug}`;
 
   return {
     title: title,
     description: desc,
     keywords: [`${manualCompany.name} jobs`, `${manualCompany.name} remote careers`, "remote work", "tech jobs", "HireSkys"],
     authors: [{ name: "HireSkys Team" }],
-    robots: { index: true, follow: true },
+    robots: { 
+      index: !hasQueryParams, 
+      follow: true, // follow hamesha true rakho taake Google jobs ke links tak ja sake
+      googleBot: {
+        index: !hasQueryParams,
+        follow: true,
+      }
+    },
+    alternates: {
+      // 🔥 CANONICAL HAMESHA CLEAN URL RAHEGA, chahe koi bhi tab ho
+      canonical: cleanUrl,
+    },
     openGraph: {
       title: title,
       description: desc,
-      url: `https://www.hireskys.com/companies/${urlSlug}`,
+      url: cleanUrl,
       siteName: 'HireSkys',
       images: [{
         url: manualCompany.logo_url || '/og-main.png',
@@ -111,6 +127,24 @@ export default async function CompanyPage({ params, searchParams }: Props) {
   const isVerified = manualData.verified || false;
   const hasCustomBanner = !!manualData.banner_url;
   const industry = manualData.industry || manualData.category || "Technology";
+  let itemListSchema = null;
+  
+  // Agar company ki jobs available hain, tabhi list schema banega
+  if (jobList.length > 0) {
+    itemListSchema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": `Active Remote Jobs at ${companyName}`,
+      "description": `List of current open remote positions at ${companyName}.`,
+      // .map() use karke automatically jobs ki list generate kar rahe hain
+      "itemListElement": jobList.map((job, index) => ({
+        "@type": "ListItem",
+        "position": index + 1, // Position hamesha 1 se shuru hoti hai
+        "name": job.title,
+        "url": `https://www.hireskys.com/jobs/${createSlug(job.title, job.id)}`
+      }))
+    };
+  }
 // 🟢 SMART YOUTUBE ID EXTRACTOR
   let videoId = null;
   if (manualData.promo_video_url && manualData.promo_video_url !== 'Not Found') {
@@ -245,6 +279,10 @@ export default async function CompanyPage({ params, searchParams }: Props) {
       {videoSchema && (
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }} />
        )}
+
+      {itemListSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      )}
       <Navbar />
 
       {/* 🌟 VVIP HEADER SECTION (Logo + Info + Tabs) */}

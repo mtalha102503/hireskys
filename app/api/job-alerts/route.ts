@@ -152,8 +152,8 @@ async function sendTelegramAlert(chatId: string | number, jobTitle: string, comp
       body: JSON.stringify({
         chat_id: chatId,
         text: message,
-        parse_mode: 'HTML', // Is se text bold aur links pyare lagte hain
-        disable_web_page_preview: true // Barray ajeeb se link previews rokne ke liye
+        parse_mode: 'HTML', 
+        disable_web_page_preview: true 
       })
     });
     const data = await response.json();
@@ -345,8 +345,6 @@ export async function POST(request: Request) {
         const body = await request.json();
         
         // 🔥 AUTO-WEBHOOK LOGIC: 
-        // Agar data Supabase Webhook se aa raha hai toh 'body.record' use karo, 
-        // warna agar admin panel se aa raha hai toh direct 'body' use karo.
         const job = body.record || body; 
         
         const jobTitle = job.title;
@@ -378,8 +376,11 @@ export async function POST(request: Request) {
         console.log(`🎯 Target Skills:`, skillTags);
 
         const internalLink = createJobLink(job.title, job.id);
+        const todayDate = new Date().toISOString().split('T')[0]; // Ek baar top par nikal liya taake dono loops mein use ho
 
-        // Fetch Candidates
+        // -------------------------------------------------------------
+        // 🚀 LOOP 1: REGISTERED PROFILES
+        // -------------------------------------------------------------
         const { data: candidates, error } = await supabase
             .from('profiles')
             .select('*, user_skills(*)')
@@ -389,14 +390,12 @@ export async function POST(request: Request) {
 
         let alertsSent = 0;
         
-        // --- SINGLE MERGED LOOP START ---
         for (const user of candidates) {
             
             // 🛑 STEP 1: CHECK QUOTA & DATE
             const userLimit = user.alert_limit || 3; 
             let currentCount = user.daily_alert_count || 0;
             const lastDate = user.last_alert_date;
-            const todayDate = new Date().toISOString().split('T')[0];
 
             if (lastDate !== todayDate) {
                 currentCount = 0;
@@ -420,7 +419,6 @@ export async function POST(request: Request) {
             let isMatch = false;
             let matchedSkill = ""; 
 
-            // A. Check in Simple Skills Array
             if (user.skills && Array.isArray(user.skills)) {
                 for (const skill of user.skills) {
                     if (skillTags.includes(skill.toLowerCase())) {
@@ -431,7 +429,6 @@ export async function POST(request: Request) {
                 }
             }
 
-            // B. Check in Rated Skills
             if (!isMatch && user.user_skills && Array.isArray(user.user_skills)) {
                 for (const s of user.user_skills) {
                     if (s.skill_name && skillTags.includes(s.skill_name.toLowerCase())) {
@@ -447,7 +444,7 @@ export async function POST(request: Request) {
                 console.log(`✅ Alerting: ${user.username} (Matched: ${matchedSkill}, Country: ${user.country})`);
                 alertsSent++;
                 
-                // --- 🚀 NEW WHATSAPP LOGIC ---
+                // --- 🚀 WHATSAPP LOGIC ---
                 if (user.whatsapp && user.whatsapp_active !== false) {
                     const waSuccess = await sendWhatsApp(user.whatsapp, job, user.username, internalLink, matchedSkill);
                     if (!waSuccess) {
@@ -478,9 +475,14 @@ export async function POST(request: Request) {
                 }).eq('id', user.id);
             }
         }
+        // --- LOOP 1 END ---
+        
+
+        // -------------------------------------------------------------
+        // 🚀 LOOP 2: GUEST LEADS
+        // -------------------------------------------------------------
         console.log("🚀 Checking Guest Leads...");
 
-        // 🕵️‍♂️ 1. Fetch Guest Leads Data
         const { data: guests, error: guestError } = await supabase
             .from('guest_leads')
             .select('*');
@@ -488,35 +490,55 @@ export async function POST(request: Request) {
         if (!guestError && guests) {
             for (const guest of guests) {
                 
-                // 🌍 STEP A: CHECK COUNTRY / LOCATION
+                // 🛑 STEP A: CHECK GUEST QUOTA & DATE
+                const guestLimit = 3; // Hardcoded limit for guests: 3 alerts/day
+                let currentGuestCount = guest.daily_alert_count || 0;
+                const lastGuestDate = guest.last_alert_date;
+
+                // Reset logic agar naya din shuru ho gaya hai
+                if (lastGuestDate !== todayDate) {
+                    currentGuestCount = 0;
+                }
+
+                // Agar guest ne aaj 3 alerts receive kar liye hain, toh skip karo
+                if (currentGuestCount >= guestLimit) {
+                    console.log(`⚠️ Guest Limit Reached for ${guest.name}. Skipping...`);
+                    continue; 
+                }
+
+                // 🌍 STEP B: CHECK COUNTRY / LOCATION
                 if (targetCountries.length > 0) {
                     const guestLocation = guest.location ? guest.location.toLowerCase() : "";
                     
-                    // Agar guest ki location targetCountries mein NAHI hai, toh skip karo
                     if (!targetCountries.includes(guestLocation)) {
                         continue; 
                     }
                 }
 
-                // 🎯 STEP B: CHECK SKILL
+                // 🎯 STEP C: CHECK SKILL
                 let isGuestMatch = false;
                 const guestSkill = guest.skill ? guest.skill.toLowerCase() : "";
 
-                // Guest table mein 'skill' text field hai, check if it matches our skillTags
                 if (guestSkill && skillTags.includes(guestSkill)) {
                     isGuestMatch = true;
                 }
 
-                // ✅ STEP C: SEND EMAIL
+                // ✅ STEP D: SEND EMAIL & UPDATE DB
                 if (isGuestMatch && guest.email) {
                     console.log(`✅ Alerting Guest: ${guest.name} (Matched: ${guest.skill})`);
                     alertsSent++;
                     
                     await sendGuestEmail(guest.email, job, guest.name, internalLink, guest.skill);
+
+                    // Update Guest Database (Count + 1)
+                    await supabase.from('guest_leads').update({
+                        last_alert_date: todayDate,
+                        daily_alert_count: currentGuestCount + 1
+                    }).eq('id', guest.id);
                 }
             }
         }
-        // --- LOOP END ---
+        // --- LOOP 2 END ---
         
         return NextResponse.json({ success: true, alerts: alertsSent });
 

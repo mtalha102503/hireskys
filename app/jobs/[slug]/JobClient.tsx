@@ -750,26 +750,24 @@ const [applyCount, setApplyCount] = useState(job.application_count || 0);
         if (data) {
             setJob(data);
 
-            // 🌟 SMART: Company Data Fetch Logic (Fuzzy Matcher)
-            const companyNameForSearch = data.company || 
-                (!['reddit', 'hacker news', 'yc', 'upwork'].some(s => data.source?.toLowerCase().includes(s)) ? data.source : null);
+            // 🌟 EXACT MATCH: Company Data Fetch Logic
+const companyNameForSearch = data.company || 
+    (!['reddit', 'hacker news', 'upwork'].some(s => data.source?.toLowerCase().includes(s)) ? data.source : null);
 
-            if (companyNameForSearch) {
-                // 1. Asli naam lo aur uske special characters (dots, spaces) ko '%' bana do
-                const smartSearchName = companyNameForSearch.replace(/[^a-zA-Z0-9]/g, '%');
-                
-                // 2. .eq('slug') ki jagah .ilike('name') use karo (Same trick as Companies page)
-                const { data: companyInfo } = await supabase
-                    .from('companies')
-                    .select('*')
-                    .ilike('name', `%${smartSearchName}%`) // 👈 Case-insensitive & Wildcard Magic
-                    .limit(1) // 👈 Agar 2 same naam wali aa gayin toh pehli uthayega
-                    .maybeSingle(); // 👈 .single() ki jagah maybeSingle() use karo taake crash na ho
-                    
-                if (companyInfo) {
-                    setCompanyDetails(companyInfo); // ✅ State mein save kar liya
-                }
-            }
+if (companyNameForSearch) {
+    // Exact URL slug banayen (Maslan: "Near" -> "near")
+    const companySlug = companyNameForSearch.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    
+    const { data: companyInfo } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('slug', companySlug) // ✅ 100% Exact Match
+        .maybeSingle(); 
+        
+    if (companyInfo) {
+        setCompanyDetails(companyInfo);
+    }
+}
             // 🌟 UPGRADED: Related Jobs Fetch with Companies Table Logos
             const { data: related } = await supabase
                 .from('jobs')

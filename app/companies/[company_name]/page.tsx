@@ -82,9 +82,6 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       description: desc,
       images: [manualCompany.logo_url || '/og-main.png'],
     },
-    alternates: {
-      canonical: `https://www.hireskys.com/companies/${resolvedParams.company_name}`,
-    }
   };
 }
 

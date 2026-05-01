@@ -515,20 +515,30 @@ export async function POST(request: Request) {
                     }
                 }
 
-                // 🎯 STEP C: CHECK SKILL
+                // 🎯 STEP C: CHECK SKILL (UPDATED FOR COMMA-SEPARATED STRINGS)
                 let isGuestMatch = false;
-                const guestSkill = guest.skill ? guest.skill.toLowerCase() : "";
+                let matchedGuestSkill = "";
 
-                if (guestSkill && skillTags.includes(guestSkill)) {
-                    isGuestMatch = true;
+                if (guest.skill) {
+                    // 1. Guest ki string ko comma se tod kar array banao aur faaltu spaces hata do
+                    const guestSkillsArray = guest.skill.toLowerCase().split(',').map((s: string) => s.trim());
+
+                    // 2. Check karo kya guest ke array ka koi bhi skill targetTags mein mojood hai
+                    for (const gSkill of guestSkillsArray) {
+                        if (skillTags.includes(gSkill)) {
+                            isGuestMatch = true;
+                            matchedGuestSkill = gSkill; // Kis skill par match hua wo save kar lo
+                            break;
+                        }
+                    }
                 }
 
                 // ✅ STEP D: SEND EMAIL & UPDATE DB
                 if (isGuestMatch && guest.email) {
-                    console.log(`✅ Alerting Guest: ${guest.name} (Matched: ${guest.skill})`);
+                    console.log(`✅ Alerting Guest: ${guest.name} (Matched: ${matchedGuestSkill})`);
                     alertsSent++;
                     
-                    await sendGuestEmail(guest.email, job, guest.name, internalLink, guest.skill);
+                    await sendGuestEmail(guest.email, job, guest.name, internalLink, matchedGuestSkill);
 
                     // Update Guest Database (Count + 1)
                     await supabase.from('guest_leads').update({

@@ -634,7 +634,7 @@ const COUNTRIES = [
   const [showDateDropdown, setShowDateDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const [jobs, setJobs] = useState<Job[]>([]);
-  
+  const [featuredJobs, setFeaturedJobs] = useState<Job[] & { matchScore?: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -811,7 +811,7 @@ useEffect(() => {
             
             if (data) {
                 setUserProfile(data);
-                
+                fetchFeaturedMatches(data);
                 // 🚀 THE MASTER FIX: Check if profile is TRULY complete
                 // Agar username, primary_role, ya skills nahi hain, toh redirect maaro!
                 if (!data.username || !data.primary_role || !data.skills || data.skills.length === 0) {
@@ -1088,7 +1088,105 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
           await supabase.from('saved_jobs').insert({ user_id: currentUser.id, job_id: jobId });
       }
   }
+// 🚀 THE HYPER-PERSONALIZATION ENGINE (DEEP PROFILE + STRICT GEO-MATCH)
+  const fetchFeaturedMatches = async (profileData: any) => {
+      // Agar skills nahi hain toh return ho jao
+      if (!profileData || !profileData.skills || profileData.skills.length === 0) return;
 
+      const userSkills = profileData.skills.map((s: string) => s.toLowerCase());
+      const userRole = profileData.primary_role ? profileData.primary_role.toLowerCase() : "";
+      const userCountry = profileData.country ? profileData.country.toLowerCase().trim() : "";
+
+      // 🧠 NEW: User ki poori history (Bio, Exp, Projects) ka ek text bana lo
+      const userDeepProfileText = `
+          ${profileData.bio || ''} 
+          ${JSON.stringify(profileData.experience || [])} 
+          ${JSON.stringify(profileData.projects || [])}
+      `.toLowerCase();
+
+      // ⏱️ STRICT 48 HOURS
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setHours(twoDaysAgo.getHours() - 48);
+
+      // 📥 FETCH JOBS (Isme description bhi mangwa li taake skills usme dhoond sakein)
+      const { data: recentJobs } = await supabase
+          .from('jobs')
+          .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, description')
+          .gte('date_posted', twoDaysAgo.toISOString())
+          .eq('active', true)
+          .eq('approved', true);
+
+      if (!recentJobs || recentJobs.length === 0) {
+          setFeaturedJobs([]);
+          return;
+      }
+
+      // 🧮 SCORING & FILTERING LOGIC
+      const scoredJobs = recentJobs.map(job => {
+          let score = 0;
+          
+          // Job ka poora data (Description bhi shamil kar li)
+          const jobContent = `${job.title} ${job.category} ${(job.tags || []).join(' ')} ${job.description || ''}`.toLowerCase();
+          const jobLoc = (job.location || "").toLowerCase();
+
+          // 🌍 STEP 1: STRICT GEO-CHECK
+          let isLocMatch = false;
+          if (userCountry && jobLoc.includes(userCountry)) {
+              score += 100; // Perfect Country Match
+              isLocMatch = true;
+          } else if (jobLoc.includes('worldwide') || jobLoc.includes('global') || jobLoc.includes('anywhere') || jobLoc === 'remote') {
+              score += 50; // Global Match
+              isLocMatch = true;
+          }
+
+          // 🛑 Reject if location fails
+          if (!isLocMatch) {
+              return { ...job, matchScore: 0 };
+          }
+
+          // 🎯 STEP 2: PRIMARY ROLE & SKILL CHECK
+          if (userRole && job.title.toLowerCase().includes(userRole)) {
+              score += 50; 
+          }
+
+          let skillMatches = 0;
+          userSkills.forEach((skill: string) => {
+              // Check if user skill is mentioned ANYWHERE in the job post (Title, Tags, or Description)
+              if (jobContent.includes(skill)) {
+                  skillMatches += 1;
+                  score += 15;
+              }
+          });
+
+          // 🚀 STEP 3: DEEP PROFILE MATCHING (The Magic)
+          // Kya job ke tags (e.g., 'React', 'Node') user ke past experience ya projects mein use hue hain?
+          (job.tags || []).forEach((tag: string) => {
+              if (userDeepProfileText.includes(tag.toLowerCase())) {
+                  score += 10; // Extra points for proven experience!
+              }
+          });
+
+          // Kya job ki category (e.g., 'Design') user ke bio mein hai?
+          if (job.category && userDeepProfileText.includes(job.category.toLowerCase())) {
+              score += 5;
+          }
+
+          // 🛑 Agar Location theek hai lekin Skills/Role/Experience kuch bhi match nai karta toh reject
+          if (skillMatches === 0 && (!userRole || !job.title.toLowerCase().includes(userRole))) {
+              score = 0;
+          }
+
+          return { ...job, matchScore: score };
+      });
+
+      // Filter (Score > 0), Sort (Highest First), Limit (Top 3)
+      const topMatches = scoredJobs
+          .filter(job => job.matchScore > 0)
+          .sort((a, b) => b.matchScore - a.matchScore)
+          .slice(0, 3);
+
+      setFeaturedJobs(topMatches);
+  };
   async function fetchJobs(pageNumber = 0, reset = false, isExact = false) {
     if (reset) {
         setLoading(true);
@@ -2577,6 +2675,113 @@ return (
         </div>
 
         <div className="space-y-4">
+            {/* 🌟 VVIP FEATURED MATCHES (Only on default dashboard, Logged In) */}
+        {currentUser && !searchQuery && activeCategory === 'All' && featuredJobs.length > 0 && (
+            <div className="mb-8 space-y-4 animate-in fade-in slide-in-from-bottom-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <Sparkles size={20} className="text-amber-500 animate-pulse" />
+                    <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                        Top Matches For You
+                    </h3>
+                </div>
+                
+                {featuredJobs.map((job) => {
+                    const smartLoc = getSmartLocationUI(job.location || "");
+                    const isApplied = appliedJobs.includes(job.id);
+                    const isSaved = savedJobIds.includes(job.id);
+                    const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
+                    const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
+
+                    // 🕒 Time Logic (Same as normal cards)
+                    const jobDate = new Date(job.date_posted);
+                    const now = new Date();
+                    const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
+                    const diffDays = Math.floor(diffHrs / 24);
+
+                    return (
+                        <div key={`featured-${job.id}`} className="relative p-[2px] rounded-2xl md:rounded-3xl bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 shadow-xl shadow-amber-500/10 transition-transform duration-300 hover:-translate-y-1 hover:shadow-amber-500/20">
+                            {/* Glowing Background Effect */}
+                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-3xl blur opacity-20"></div>
+                            
+                            <div className="relative bg-white dark:bg-[#111625] rounded-[20px] md:rounded-[28px] p-4 md:p-6 flex flex-col hover:bg-amber-50/50 dark:hover:bg-[#151b2d] transition-colors">
+                                
+                                {/* 📍 Top Row: Location & Actual Time (EXACTLY like normal cards) */}
+                                <div className="flex justify-between items-center mb-3 md:mb-5">
+                                    <div className="flex items-center gap-2 md:gap-4">
+                                        <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 overflow-hidden">
+                                            <div className="flex items-center gap-1.5">
+                                                {smartLoc.matched.slice(0, 2).map((locItem: any, index: number) => (
+                                                    <div key={index} className="flex items-center gap-1">
+                                                        {index > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
+                                                        {locItem.isImage ? (
+                                                            <img src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} alt={locItem.name} className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" />
+                                                        ) : (
+                                                            <span className="text-base leading-none">🌍</span>
+                                                        )}
+                                                        <span className="tracking-wide max-w-[80px] md:max-w-[120px] truncate">{locItem.name}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {smartLoc.hasMore && smartLoc.totalCount > 2 && (
+                                                <span className="text-[9px] md:text-[10px] text-indigo-600 dark:text-indigo-400 font-black ml-0.5 bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded-md whitespace-nowrap">+{smartLoc.totalCount - 2} More</span>
+                                            )}
+                                        </div>
+                                        <div className="hidden md:flex items-center gap-1.5 text-sm font-semibold text-amber-600/80 dark:text-amber-500/80">
+                                            <Clock size={16} />
+                                            <span>{diffHrs < 1 ? 'Just now' : diffHrs < 24 ? `${diffHrs}h ago` : `${diffDays}d ago`}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Top Match Badge */}
+                                    <div className="flex gap-2 items-center">
+                                        <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md tracking-wider flex items-center gap-1">
+                                            <Award size={12} /> Top Match
+                                        </span> 
+                                    </div>
+                                </div>
+
+                                {/* 💼 Main Details */}
+                                <div className="flex items-start gap-3 md:gap-5 mb-4">
+                                    <div className="flex-shrink-0">
+                                        {companyLogoUrl ? (
+                                            <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1 md:p-1.5 border border-amber-100 dark:border-slate-700 shadow-sm flex items-center justify-center">
+                                                <img src={companyLogoUrl} alt={job.source} className="h-full w-full object-contain" />
+                                            </div>
+                                        ) : (
+                                            <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-amber-50 dark:bg-slate-800 flex items-center justify-center border border-amber-100 dark:border-slate-700">
+                                                <Briefcase size={24} className="text-amber-500" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{job.title}</h3>
+                                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
+                                            <span className="text-slate-800 dark:text-slate-200 font-bold">{job.source}</span>
+                                            {job.is_verified && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 text-[10px] md:text-xs font-bold"><ShieldCheck size={10} /> Verified</span>}
+                                            <span className="md:hidden flex items-center gap-1 text-amber-500/80"> • {diffHrs < 1 ? 'Just now' : `${diffHrs}h ago`}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* ⚡ Action Row */}
+                                <div className="mt-auto pt-3 md:pt-5 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5">
+                                    <div className="flex flex-wrap gap-2">
+                                        <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-[10px] md:text-xs font-bold text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">{job.category}</div>
+                                        {job.job_type && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-[10px] md:text-xs font-bold text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">{job.job_type}</div>}
+                                    </div>
+                                    <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
+                                        <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>
+                                        <Link href={`/jobs/${createSlug(job.title, job.id)}`} className="flex-1 sm:flex-none px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-bold rounded-xl hover:shadow-lg hover:shadow-amber-500/30 transition-all text-center">
+                                            {isApplied ? 'Applied ✓' : 'View Details'}
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        )}
           {loading ? (
             [1,2,3].map(i => <div key={i} className="h-32 rounded-2xl bg-slate-100 dark:bg-slate-800/50 animate-pulse" />)
           ) : jobs.length === 0 ? (
@@ -2585,7 +2790,9 @@ return (
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">No jobs found</h3>
               <p className="text-slate-500">Try adjusting your search filters.</p>
             </div>
+            
           ) : (
+            
             // 🚀 STEP 1: index add kiya taake hum count kar saken
             jobs.map((job, index) => {
               // 🟢 1. Tumhara Sara Original Logic (No changes here)

@@ -415,38 +415,75 @@ export async function POST(request: Request) {
                 }
             }
 
-            // 🎯 STEP 3: CHECK SKILLS
-            let isMatch = false;
+            // 🎯 STEP 3: CHECK SKILLS (Normal Match)
+            let isSkillMatch = false;
             let matchedSkill = ""; 
 
             if (user.skills && Array.isArray(user.skills)) {
                 for (const skill of user.skills) {
                     if (skillTags.includes(skill.toLowerCase())) {
-                        isMatch = true;
+                        isSkillMatch = true;
                         matchedSkill = skill;
                         break;
                     }
                 }
             }
 
-            if (!isMatch && user.user_skills && Array.isArray(user.user_skills)) {
+            if (!isSkillMatch && user.user_skills && Array.isArray(user.user_skills)) {
                 for (const s of user.user_skills) {
                     if (s.skill_name && skillTags.includes(s.skill_name.toLowerCase())) {
-                        isMatch = true;
+                        isSkillMatch = true;
                         matchedSkill = s.skill_name;
                         break;
                     }
                 }
             }
 
+            // 🧠 STEP 3.5: DEEP PROFILE CHECK (Bio, Education, Projects)
+            let isDeepMatch = false;
+            
+            // User ki in 3 cheezon ka ek lamba text bana lo taake dhoondna asaan ho
+            const userDeepText = `
+                ${user.bio || ''} 
+                ${JSON.stringify(user.education || [])} 
+                ${JSON.stringify(user.projects || [])}
+            `.toLowerCase();
+
+            // Check karo kya job ke tags is text mein kahin mojood hain?
+            for (const tag of skillTags) {
+                if (userDeepText.includes(tag)) {
+                    isDeepMatch = true;
+                    // Agar skill list mein tag nahi mila tha, toh deep profile wale tag ko use kar lo
+                    if (!matchedSkill) matchedSkill = tag; 
+                    break;
+                }
+            }
+
+            // 🛑 DECISION POINT (Crucial Logic)
+            // Agar na Skill match hui, aur na hi Bio/Education/Projects match hue, toh SKIP kar do!
+            if (!isSkillMatch && !isDeepMatch) {
+                continue; 
+            }
+
+            // 🏷️ DYNAMIC HEADER CREATION (WhatsApp/Email mein dikhane ke liye)
+            let customAlertHeader = "";
+            if (isSkillMatch && isDeepMatch) {
+                customAlertHeader = `🌟 PERFECT MATCH: ${matchedSkill}`;
+            } else if (isDeepMatch) {
+                customAlertHeader = `✨ PROFILE MATCH: ${matchedSkill}`;
+            } else {
+                customAlertHeader = `🔥 SKILL MATCH: ${matchedSkill}`; // (Tumhari requirement ke mutabiq fallback)
+            }
+
             // ✅ STEP 4: SEND ALERT & UPDATE DB
-            if (isMatch) {
-                console.log(`✅ Alerting: ${user.username} (Matched: ${matchedSkill}, Country: ${user.country})`);
+            if (isSkillMatch || isDeepMatch) {
+                console.log(`✅ Alerting: ${user.username} (Header: ${customAlertHeader}, Country: ${user.country})`);
                 alertsSent++;
                 
                 // --- 🚀 WHATSAPP LOGIC ---
                 if (user.whatsapp && user.whatsapp_active !== false) {
-                    const waSuccess = await sendWhatsApp(user.whatsapp, job, user.username, internalLink, matchedSkill);
+                    // Dhyan rakho, maine aakhir mein 'matchedSkill' ki jagah 'customAlertHeader' pass kiya hai
+                    const waSuccess = await sendWhatsApp(user.whatsapp, job, user.username, internalLink, customAlertHeader);
                     if (!waSuccess) {
                         console.log(`❌ WhatsApp failed for ${user.username}. Disabling WhatsApp only.`);
                         await supabase
@@ -458,7 +495,7 @@ export async function POST(request: Request) {
 
                 // --- 📧 EMAIL LOGIC ---
                 if (user.email) {
-                    await sendEmail(user.email, job, user.username, internalLink, matchedSkill);
+                    await sendEmail(user.email, job, user.username, internalLink, customAlertHeader);
                 }
                 
                 // --- ✈️ TELEGRAM LOGIC ---

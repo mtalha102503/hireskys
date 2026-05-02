@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import SupportChat from '@/components/SupportChat';
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
@@ -7,6 +8,7 @@ import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
+
 // 🌟 FONT OPTIMIZATION
 const jost = Jost({ subsets: ["latin"] });
 
@@ -54,7 +56,7 @@ export const metadata: Metadata = {
   authors: [{ name: "HireSkys Team", url: "https://www.hireskys.com" }],
   creator: "HireSkys Inc.",
   publisher: "HireSkys Inc.",
-  other: {
+other: {
     "google-adsense-account": "ca-pub-1919758160460496"
   },
   // Social Sharing (Open Graph)
@@ -89,6 +91,7 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    nocache: true,
     googleBot: {
       index: true,
       follow: true,
@@ -164,6 +167,7 @@ export default function RootLayout({
           </div>
           
           <ConsentBanner />
+          <SupportChat />
         </ThemeProvider>
         <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />

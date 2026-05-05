@@ -376,7 +376,7 @@ export const BLOG_POSTS: BlogPost[] = [
     role: 'Founder, HireSkys',
     authorImage: '/founder.png', 
     category: 'Career Advice',
-    image: '/blog-untapped-seo.webp', 
+    image: '/blog-untapped-seo.png', 
     content: `
       <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
         If your resume says "General SEO Specialist" or "Digital Marketer" in 2026, you are playing the game on hard mode. The remote job market isn't shrinking it is just getting violently specific.
@@ -515,5 +515,114 @@ export const BLOG_POSTS: BlogPost[] = [
           </div>
       </div>
     `
-  }
+  },
+  {
+    slug: 'top-premium-global-remote-jobs-weekly-roundup',
+    title: 'Top Global Remote Jobs of the Week: AI, Web3, and Tech',
+    excerpt: 'Companies are hiring everywhere right now. Here is a look at some of the best 100% remote jobs we found on HireSkys this week.',
+    date: 'May 5, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png', 
+    category: 'Weekly Roundups',
+    image: '/blog-weekly-roundup.jpg', 
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        You don't need to be in a major tech hub to land a great role anymore. Companies are actively hiring everywhere, and if you have the right skills in AI, Web3, or marketing, there are solid remote options out there.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
+        This week at <strong>HireSkys</strong>, we’ve rounded up a fresh batch of 100% remote jobs that actually pay well and offer great perks. Let's dive right into some of our top picks! 🚀
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-8 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+        Software Engineering & AI
+      </h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Good developers are always in demand. If you're building in AI or just really good with backend systems, you'll want to check these out:
+      </p>
+
+      <div class="grid grid-cols-1 gap-4 my-8">
+        <a href="/jobs/senior-web-security-engineer-7657" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Senior Web Security Engineer @ DuckDuckGo</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Help protect user privacy online. Pays up to $178,500 USD/year. You'll need strong JavaScript and WebView experience.</p>
+        </a>
+        <a href="/jobs/cli-engineer-7553" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">CLI Engineer @ Supabase</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Work on improving local development experiences using TypeScript and NestJS for one of the fastest-growing dev platforms.</p>
+        </a>
+        <a href="/jobs/ascendancy-full-stack-engineer-7555" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Full-Stack Engineer @ Ascendancy</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Paying $60k - $100k/year + Equity. You'll be building AI features and working with LLMs using Python and Next.js.</p>
+        </a>
+        <a href="/jobs/data-engineer-7681" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Data Engineer @ Evoplay</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Manage data quality and set up large-scale ETL pipelines using Python and ClickHouse for a major iGaming company.</p>
+        </a>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-8 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Executive Leadership & Security
+      </h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        If you're more into strategy, management, or keeping systems secure, here are a few high-impact roles:
+      </p>
+
+      <div class="grid grid-cols-1 gap-4 my-8">
+        <a href="/jobs/head-of-security-7562" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-rose-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Head of Security @ Near</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Handle complex security protocols and risk management across the NEAR crypto ecosystem.</p>
+        </a>
+        <a href="/jobs/special-projects-7645" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-rose-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Special Projects @ Deeter Analytics</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Work directly with the founder on open-ended problems, startup incubation, and AI strategy.</p>
+        </a>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-8 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+        Design, Creative & Marketing
+      </h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        For the folks building brands, designing interfaces, and driving sales, we found some interesting open positions:
+      </p>
+
+      <div class="grid grid-cols-1 gap-4 my-8">
+        <a href="/jobs/creative-director-7673" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-emerald-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Creative Director @ Trust Wallet</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Take charge of the brand identity for one of the biggest non-custodial crypto wallets out there.</p>
+        </a>
+        <a href="/jobs/designer-7672" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-emerald-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Designer @ Epoch AI</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Turn complex machine learning data into clean, easy-to-read UI/UX designs. Salary: $75k - $100k/year.</p>
+        </a>
+        <a href="/jobs/shopify-conversion-specialist-7649" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-emerald-500/50 transition-colors no-underline">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Shopify Conversion Specialist @ GTE Brands</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Run A/B tests and optimize product pages for large-scale Shopify stores to boost sales.</p>
+        </a>
+      </div>
+
+      <div class="mt-16 p-8 md:p-12 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500/20 blur-[80px] rounded-full"></div>
+        </div>
+
+        <div class="relative z-10">
+          <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Looking for something else?</h3>
+          <p class="text-slate-300 mb-8 text-lg">The remote job market moves fast. We update our database daily with new roles from around the world.</p>
+          
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="/" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/30 no-underline">
+                  Browse All Remote Jobs
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+          </div>
+        </div>
+      </div>
+    `
+}
 ];

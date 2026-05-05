@@ -37,14 +37,23 @@ const BLOG_POSTS = [
     image: '/blog-quality-update.png' 
   },
   {
-      slug: '7-untapped-remote-niches-seo-marketers-2026',
-      title: '7 Untapped Remote Niches for Programmatic SEOs and Marketers in 2026',
-      excerpt: 'The general SEO market is saturated, but these highly specific, remote marketing niches are desperately looking for talent. Here is where the big budgets are hiding.',
-      date: 'Apr 16, 2026',
-      author: 'Muhammad Talha',
-      category: 'Career Advice',
-      image: '/blog-untapped-seo.webp'
-    }
+    slug: '7-untapped-remote-niches-seo-marketers-2026',
+    title: '7 Untapped Remote Niches for Programmatic SEOs and Marketers in 2026',
+    excerpt: 'The general SEO market is saturated, but these highly specific, remote marketing niches are desperately looking for talent. Here is where the big budgets are hiding.',
+    date: 'Apr 16, 2026',
+    author: 'Muhammad Talha',
+    category: 'Career Advice',
+    image: '/blog-untapped-seo.png'
+  },
+  {
+    slug: 'top-premium-global-remote-jobs-weekly-roundup',
+    title: 'Top Global Remote Jobs of the Week: AI, Web3, and Tech',
+    excerpt: 'Companies are hiring everywhere right now. Here is a look at some of the best 100% remote jobs we found on HireSkys this week.',
+    date: 'May 5, 2026',
+    author: 'Muhammad Talha',
+    category: 'Weekly Roundups',
+    image: '/blog-weekly-roundup.jpg'
+  }
 ];
 
 export default function BlogIndex() {

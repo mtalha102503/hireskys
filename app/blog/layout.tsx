@@ -1,21 +1,27 @@
 import type { Metadata } from "next";
 
-// 👇 1. CONFIGURATION (Apna URL yahan update kar lena jab deploy karo)
+// 👇 1. CONFIGURATION
 const SITE_URL = "https://www.hireskys.com"; 
 const BLOG_NAME = "HireSkys Insider";
 const BLOG_DESCRIPTION = "Expert insights on remote work, freelancing, and AI-powered career growth. The official blog of HireSkys.";
 
 export const metadata: Metadata = {
-  // ✅ Base Metadata
   metadataBase: new URL(SITE_URL),
   title: {
     default: BLOG_NAME,
-    template: `%s | ${BLOG_NAME}`, // Har page ka title auto-format hoga
+    template: `%s | ${BLOG_NAME}`,
   },
   description: BLOG_DESCRIPTION,
   keywords: ["Remote Jobs", "Freelancing Tips", "Hyrizon AI", "Career Advice", "Tech Jobs", "Work from Home"],
   
-  // ✅ Social Media (Open Graph) - Facebook, LinkedIn, WhatsApp
+  // ✅ PRO TWEAK 1: Canonical URLs (Prevents Duplicate Content)
+  alternates: {
+    canonical: '/blog',
+  },
+
+  // ✅ PRO TWEAK 2: Author Authority
+  authors: [{ name: "Muhammad Talha", url: SITE_URL }],
+
   openGraph: {
     title: {
       default: BLOG_NAME,
@@ -28,7 +34,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo2.png", // 👈 Is naam ki image public folder me daal dena
+        url: "/logo2.png", 
         width: 1200,
         height: 630,
         alt: "HireSkys Blog - Remote Work Intelligence",
@@ -36,7 +42,6 @@ export const metadata: Metadata = {
     ],
   },
 
-  // ✅ Twitter Card
   twitter: {
     card: "summary_large_image",
     title: {
@@ -44,11 +49,10 @@ export const metadata: Metadata = {
       template: `%s | ${BLOG_NAME}`,
     },
     description: BLOG_DESCRIPTION,
-    images: ["/logo2.png"], // Same image use hogi
-    creator: "@hireskys", // Apna Twitter handle likh dena
+    images: ["/logo2.png"],
+    creator: "@hireskys", 
   },
 
-  // ✅ Robots (Google Bot ko allow karo)
   robots: {
     index: true,
     follow: true,
@@ -67,8 +71,8 @@ export default function BlogLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 👇 2. JSON-LD (Google ki zubaan)
-  // Ye code Google ko batata hai ke ye "Blog" hai aur iska malik "HireSkys" hai.
+  
+  // 👇 2. JSON-LD (Advanced schema with Social Links)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -80,20 +84,22 @@ export default function BlogLayout({
       "name": "HireSkys",
       "logo": {
         "@type": "ImageObject",
-        "url": `${SITE_URL}/logo1.png` // Apne logo ka path confirm kar lena
-      }
+        "url": `${SITE_URL}/logo1.png` 
+      },
+      // ✅ PRO TWEAK 3: SameAs (Builds Entity Trust in Google)
+      "sameAs": [
+        "https://twitter.com/hireskys",
+      ]
     }
   };
 
   return (
     <>
-      {/* Structured Data Injector */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      {/* Page Content */}
       <main className="min-h-screen bg-slate-50 dark:bg-[#0B0F19]">
         {children}
       </main>

@@ -5,10 +5,11 @@ import { useParams, useRouter } from 'next/navigation';
 import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
 import Navbar from '@/components/Navbar';
 import ReportJob from '@/components/ReportJob';
-import MagicButton from '@/components/MagicButton';
 import JobFeedback from '@/components/JobFeedback';
 import VerifyMagicButton from '@/components/VerifyMagicButton';
 import { CATEGORIES } from '@/lib/categories';
+import SkillGapAnalyzer from '@/components/SkillGapAnalyzer';
+import GuestSkillAnalyzer from '@/components/GuestSkillAnalyzer';
 import Link from 'next/link';
 import { 
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
@@ -1367,13 +1368,41 @@ const handleApply = async () => {
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Briefcase className="text-indigo-500"/> Job Description
             </h2>
-            
-            {/* 🔥🔥🔥 AI BUTTON YAHAN LAGA DIYA 🔥🔥🔥 */}
-            <MagicButton 
-    jobDescription={job.description} 
-    jobTitle={job.title} 
-    userProfile={userProfile} // 👈 Ye naya prop add karo
-/>
+
+            {/* 🚀 AI SKILL-GAP ANALYZER (Smart Routing: Logged-in vs Guest) */}
+            <div className="mb-8">
+              {(() => {
+                const rawJobSkills = job.skills || job.tags || []; 
+                
+                const filteredJobSkills = rawJobSkills.filter((tag: string) => {
+                    const upperTag = tag.trim().toUpperCase();
+                    if (upperTag === "IT") return true; 
+                    const isCountry = !!COUNTRY_MAP[upperTag];
+                    const isGenericWord = ["GLOBAL", "WORLDWIDE", "ANYWHERE", "REMOTE"].includes(upperTag);
+                    return !isCountry && !isGenericWord; 
+                });
+
+                if (filteredJobSkills.length === 0) return null; // Agar koi skill hi nahi mili toh kuch mat dikhao
+
+                // Agar User Profile hai (Logged In) toh exact Match Score dikhao
+                if (userProfile) {
+                  return (
+                    <SkillGapAnalyzer 
+                      jobSkills={filteredJobSkills} 
+                      userSkills={userProfile.skills || []} 
+                    />
+                  );
+                } 
+                // Agar Guest hai (Logged Out) toh Upsell Banner dikhao
+                else {
+                  return (
+                    <GuestSkillAnalyzer 
+                      jobSkills={filteredJobSkills} 
+                    />
+                  );
+                }
+              })()}
+            </div>
 
            {/* 👇 Original Description Text */}
             <div 

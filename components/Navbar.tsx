@@ -165,7 +165,7 @@ export default function Navbar() {
           {/* 👇 COMMUNITY LINKS - DESKTOP */}
           <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-700 pl-4 ml-1">
             <Link 
-              href="YOUR_DISCORD_LINK_HERE" 
+              href="https://discord.gg/BmfgGfX5" 
               target="_blank" 
               title="Join our Discord"
               className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-[#5865F2] hover:bg-[#5865F2]/10 transition-all duration-200"
@@ -176,7 +176,7 @@ export default function Navbar() {
             </Link>
             
             <Link 
-              href="YOUR_TELEGRAM_LINK_HERE" 
+              href="https://t.me/hireskys_jobs" 
               target="_blank" 
               title="Join our Telegram"
               className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-[#0088cc] hover:bg-[#0088cc]/10 transition-all duration-200"

@@ -10,7 +10,7 @@ import {
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { CATEGORIES } from '@/lib/categories'; 
-
+import toast, { Toaster } from 'react-hot-toast';
 // 👇 COUNTRIES DATA
 const COUNTRIES = [
   { code: "+92", flag: "🇵🇰", name: "Pakistan" },
@@ -308,14 +308,27 @@ export default function CompleteProfile() {
   };
 
   const handleSave = async () => {
-    if (!formData.username || !formData.primary_role || !formData.birth_date) {
-        alert("Please fill all required fields.");
+    // 🛑 STRICT CHECKS WITH MODERN TOAST
+    if (!formData.primary_role) {
+        toast.error("Please select your Main Expertise before continuing.");
+        return; 
+    }
+
+    if (mySkills.length === 0) {
+        toast.error("Please add at least 1 Secondary Skill.");
         return;
     }
+
+    if (!formData.username || !formData.birth_date) {
+        toast.error("Please fill all required fields (Username, Birth Date).");
+        return;
+    }
+
     if (alertPreference === 'whatsapp' && !formData.whatsapp) {
-        alert("Please enter your WhatsApp number, or select 'Skip' for alerts.");
+        toast.error("Please enter your WhatsApp number, or select 'Skip'.");
         return;
     }
+
     setSaving(true);
     
     // 🔗 Merge Country Code + Number
@@ -337,14 +350,17 @@ export default function CompleteProfile() {
     }).eq('id', user.id);
 
     setSaving(false);
-    if (!error) setShowWhatsAppModal(true);
-    else alert("Error: " + error.message);
+    if (!error) {
+        setShowWhatsAppModal(true);
+    } else {
+        toast.error("Error: " + error.message);
+    }
   };
-
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0B0F19]"><Loader2 className="animate-spin text-indigo-600 dark:text-indigo-400" size={40}/></div>;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0B0F19] transition-colors duration-300">
+     <Toaster position="top-center" />
       <div className="fixed top-0 w-full z-50"><Navbar /></div>
 
       {/* 🟢 FINAL SUCCESS MODAL */}
@@ -456,9 +472,9 @@ export default function CompleteProfile() {
 
                 {/* 🚀 STEP 2: MAIN SKILL */}
                 <div className={`group mt-5 transition-all duration-500 ${!selectedCategory ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
-                    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">
-                        Main Expertise
-                    </label>
+                    <label className="text-xs font-bold text-gray-500 uppercase block mb-2 ml-1">
+    Main Expertise <span className="text-red-500">*</span>
+</label>
                     <div className="relative">
                         <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" size={20} />
                         <select 
@@ -478,7 +494,9 @@ export default function CompleteProfile() {
 
                 {/* 🚀 STEP 3: SECONDARY SKILLS */}
                 <div className={`mt-5 transition-all duration-500 ${!selectedCategory ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
-                    <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase block mb-2 ml-1">Top 5 Secondary Skills</label>
+                    <label className="text-xs font-bold text-gray-500 uppercase block mb-2 ml-1">
+    Top 5 Secondary Skills <span className="text-red-500">*</span>
+</label>
                     <div className="relative">
                         <LayoutGrid className="absolute left-4 top-3.5 text-gray-400 dark:text-slate-500" size={18} />
                         <select 

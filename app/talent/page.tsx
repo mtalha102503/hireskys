@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
@@ -37,7 +37,32 @@ export default function TalentDirectory() {
   const [roleFilter, setRoleFilter] = useState('All');
   const [expFilter, setExpFilter] = useState('All');
   const [countryFilter, setCountryFilter] = useState('All'); // 🌍 Naya Country Filter
+  // 🎯 Auto-Scroll / Infinite Scroll Logic
+  const observerTarget = useRef(null);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Agar observer target screen par nazar aa jaye, aur mazeed data bacha ho
+        if (entries[0].isIntersecting && visibleCount < filteredTalents.length) {
+          setVisibleCount((prev) => prev + 20); // Agle 20 load kardo
+        }
+      },
+      { threshold: 0.1 } // Jaise hi 10% hissa nazar aaye, trigger kardo
+    );
+
+    // Observer ko target par laga do
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    // Cleanup taake memory leak na ho
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [visibleCount, filteredTalents.length]);
   useEffect(() => {
     fetchRankedTalent();
   }, []);
@@ -282,16 +307,14 @@ export default function TalentDirectory() {
           </div>
         )}
 
-        {/* 🔄 LOAD MORE BUTTON */}
+        {/* 🔄 AUTO-LOAD SENSOR (Invisible unless loading) */}
         {visibleCount < filteredTalents.length && (
-          <div className="mt-12 flex justify-center">
-            <button 
-              onClick={() => setVisibleCount(prev => prev + 20)}
-              className="flex items-center gap-2 px-8 py-3.5 bg-white dark:bg-[#151b2d] border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all shadow-sm"
-            >
-              <Loader2 size={18} className="animate-spin text-slate-400" />
-              Load More Talent
-            </button>
+          <div 
+            ref={observerTarget} 
+            className="mt-12 mb-8 flex justify-center items-center gap-3 text-slate-500 font-medium"
+          >
+            <Loader2 size={24} className="animate-spin text-indigo-500" />
+            Loading more talent...
           </div>
         )}
 

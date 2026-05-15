@@ -708,14 +708,16 @@ const [applyCount, setApplyCount] = useState(job.application_count || 0);
     }
   }, [job]);
   // 👇 Helper functions ko yahan define kiya taake wo fetchJobDetails ke andar bhi milein
-  const getCompanySlug = (name: string) => {
+  // 👇 UPDATED: Super clean slug generator (Double dashes handle karega)
+const getCompanySlug = (name: string) => {
     if (!name) return '#';
     return name
         .toLowerCase()
         .trim()
-        .replace(/[^a-z0-9]+/g, '-') // Special chars ko dash bana do
+        .replace(/[^a-z0-9]+/g, '-') // Special chars ko dash banao
+        .replace(/-+/g, '-')         // 🔥 NAYA: Agar 2 ya 3 dashes sath aa gaye hain, toh unhe 1 dash bana do
         .replace(/^-+|-+$/g, '');    // Start/End se dash hata do
-  };
+};
 
   async function fetchJobDetails() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -756,13 +758,14 @@ const companyNameForSearch = data.company ||
     (!['reddit', 'hacker news', 'upwork'].some(s => data.source?.toLowerCase().includes(s)) ? data.source : null);
 
 if (companyNameForSearch) {
-    // Exact URL slug banayen (Maslan: "Near" -> "near")
-    const companySlug = companyNameForSearch.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    // Exact URL slug banayen using updated function
+    const companySlug = getCompanySlug(companyNameForSearch);
     
+    // 🔥 PUKKA HAL: Slug se bhi dhoondo, aur agar na mile toh direct Name se Case-Insensitive (ilike) search maro!
     const { data: companyInfo } = await supabase
         .from('companies')
         .select('*')
-        .eq('slug', companySlug) // ✅ 100% Exact Match
+        .or(`slug.eq.${companySlug},name.ilike.%${companyNameForSearch}%`) // 👈 Yeh line badli hai!
         .maybeSingle(); 
         
     if (companyInfo) {

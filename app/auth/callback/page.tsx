@@ -15,70 +15,62 @@ export default function AuthCallbackPage() {
         const user = session.user;
         let userRole = user.user_metadata?.role;
 
-        // 🚨 PURANE USERS KA CATCH: Agar metadata mein role nahi hai
+        // 🚨 NEW FIX: Auto-generated khali profiles ka catch
         if (!userRole) {
-          // 1. Pehle check karo kya ye purana Seeker hai?
-          const { data: seekerProfile } = await supabase
-            .from('profiles')
+          // 1. Pehle check karo kya ye purana Employer hai? (Companies table mein data hai)
+          const { data: employerProfile } = await supabase
+            .from('companies')
             .select('id')
-            .eq('id', user.id)
+            .eq('employer_id', user.id)
             .single();
 
-          if (seekerProfile) {
-            userRole = 'seeker';
-            // Chupke se metadata bhi update kar dete hain taake next time fast ho jaye
-            await supabase.auth.updateUser({ data: { role: 'seeker' } });
+          if (employerProfile) {
+            userRole = 'employer';
+            await supabase.auth.updateUser({ data: { role: 'employer' } });
           } else {
-            // 2. Agar profile mein nahi mila, toh check karo kya purana Employer hai?
-            const { data: employerProfile } = await supabase
-              .from('companies')
-              .select('id')
-              .eq('employer_id', user.id)
+            // 2. Check karo kya ye purana Seeker hai jisne profile waqai COMPLETE ki hui hai?
+            const { data: seekerProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', user.id)
               .single();
 
-            if (employerProfile) {
-              userRole = 'employer';
-              await supabase.auth.updateUser({ data: { role: 'employer' } });
+            if (seekerProfile && 
+                seekerProfile.username && 
+                seekerProfile.whatsapp && 
+                seekerProfile.birth_date && 
+                seekerProfile.primary_role) {
+              userRole = 'seeker';
+              await supabase.auth.updateUser({ data: { role: 'seeker' } });
             }
           }
         }
 
-        // 🎯 AB ROUTING BILKUL SAFE HAI
+        // 🎯 FINAL ROUTING LOGIC
 
-        // A. Agar bilkul naya banda hai (na metadata hai na database mein record)
+        // A. Agar bilkul naya user hai (ya khali auto-generated profile hai) -> Role Selection
         if (!userRole) {
           router.push('/role-selection');
           return;
         }
 
-        // B. If Employer (Chahe naya ho ya purana)
+        // B. If Employer
         if (userRole === 'employer') {
           router.push('/employer/setting');
           return;
         }
 
-        // C. If Seeker (Chahe naya ho ya purana)
+        // C. If Seeker -> Unki completeness check karo
         if (userRole === 'seeker') {
-          const { data, error } = await supabase
+          const { data: profile, error } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', user.id)
             .single();
 
-          const profile = data as any;
-
-          if (error || !profile) {
+          if (error || !profile || !profile.username || !profile.whatsapp || !profile.birth_date || !profile.primary_role) {
             router.push('/complete-profile');
-          } 
-          else if (
-              !profile.username || 
-              !profile.whatsapp || 
-              !profile.birth_date || 
-              !profile.primary_role 
-          ) {
-            router.push('/complete-profile');
-          } 
-          else {
+          } else {
             router.push('/');
           }
         }

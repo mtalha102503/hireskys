@@ -20,7 +20,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
   
   // Baqi states wese hi rahengi...
-const JOBS_PER_PAGE = 80;
+const JOBS_PER_PAGE = 50;
 
 // --- PLATFORM ICONS ---
 const getPlatformIcon = (platform: string) => {

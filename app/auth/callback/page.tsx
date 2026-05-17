@@ -9,45 +9,84 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      // 1. Check karo user session hai ya nahi
       const { data: { session } } = await supabase.auth.getSession();
 
       if (session) {
         const user = session.user;
+        let userRole = user.user_metadata?.role;
 
-        // 1. Pehle 'data' ko 'data' hi rehne do
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
+        // 🚨 PURANE USERS KA CATCH: Agar metadata mein role nahi hai
+        if (!userRole) {
+          // 1. Pehle check karo kya ye purana Seeker hai?
+          const { data: seekerProfile } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', user.id)
+            .single();
 
-        // 2. Ab 'data' ko 'profile' mein convert karo
-        const profile = data as any;
+          if (seekerProfile) {
+            userRole = 'seeker';
+            // Chupke se metadata bhi update kar dete hain taake next time fast ho jaye
+            await supabase.auth.updateUser({ data: { role: 'seeker' } });
+          } else {
+            // 2. Agar profile mein nahi mila, toh check karo kya purana Employer hai?
+            const { data: employerProfile } = await supabase
+              .from('companies')
+              .select('id')
+              .eq('employer_id', user.id)
+              .single();
 
-        // 👇 UPDATED LOGIC HERE
-        if (error || !profile) {
-          // 1. Agar profile exist hi nahi karti -> Naye Setup Page par bhejo
-          router.push('/complete-profile');
-        } 
-        // 2. Agar Profile hai lekin INCOMPLETE hai
-        else if (
-            !profile.username || 
-            !profile.whatsapp || 
-            !profile.birth_date || 
-            !profile.primary_role 
-        ) {
-          router.push('/complete-profile');
-        } 
-        else {
-          // 3. Sab kuch set hai -> Home Page
-          router.push('/');
+            if (employerProfile) {
+              userRole = 'employer';
+              await supabase.auth.updateUser({ data: { role: 'employer' } });
+            }
+          }
         }
+
+        // 🎯 AB ROUTING BILKUL SAFE HAI
+
+        // A. Agar bilkul naya banda hai (na metadata hai na database mein record)
+        if (!userRole) {
+          router.push('/role-selection');
+          return;
+        }
+
+        // B. If Employer (Chahe naya ho ya purana)
+        if (userRole === 'employer') {
+          router.push('/employer/setting');
+          return;
+        }
+
+        // C. If Seeker (Chahe naya ho ya purana)
+        if (userRole === 'seeker') {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+          const profile = data as any;
+
+          if (error || !profile) {
+            router.push('/complete-profile');
+          } 
+          else if (
+              !profile.username || 
+              !profile.whatsapp || 
+              !profile.birth_date || 
+              !profile.primary_role 
+          ) {
+            router.push('/complete-profile');
+          } 
+          else {
+            router.push('/');
+          }
+        }
+
       } else {
-        // 🛑 YE MISSING THA: Agar session nahi hai to Login par bhejo
         router.push('/login');
       }
-    }; // 👈 YE BRACKET MISSING THA
+    };
 
     handleCallback();
   }, [router]);

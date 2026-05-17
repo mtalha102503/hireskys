@@ -153,7 +153,7 @@ export default function BillingPage() {
       id="fsc-api"
       src="https://sbl.onfastspring.com/sbl/0.9.2/fastspring-builder.min.js"
       type="text/javascript"
-      data-storefront="hireskys.test.onfastspring.com/popup-hireskys" // Ise apne exact URL se replace karein
+      data-storefront="hireskys.onfastspring.com/popup-hireskys" // Ise apne exact URL se replace karein
       strategy="lazyOnload"
     />
     <div className="max-w-[1250px] mx-auto space-y-12 animate-in fade-in duration-500 pb-12">

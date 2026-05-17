@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
-import OneSignal from 'react-onesignal';
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);

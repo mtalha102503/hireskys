@@ -20,7 +20,8 @@ export default function BillingPage() {
   const [loading, setLoading] = useState(true);
   const [credits, setCredits] = useState(0);
   const [processingPlan, setProcessingPlan] = useState<string | null>(null);
-  
+  // 🟢 NAYA STATE: Custom Popup ke liye
+  const [popup, setPopup] = useState({ show: false, type: 'success', message: '' });
   // 🟢 NAYA STATE: Trial claim ki loading ke liye
   const [claimingTrial, setClaimingTrial] = useState(false);
 
@@ -52,14 +53,13 @@ export default function BillingPage() {
     }
   }
 
-  // 🟢 NAYA FUNCTION: Free Trial Claim Karne Ke Liye
+ // 🟢 NAYA FUNCTION: Free Trial Claim Karne Ke Liye
   const handleFreeTrial = async () => {
     setClaimingTrial(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) throw new Error("Please log in first");
 
-      // Check karo ke kya user ne pehle trial le liya hai?
       const { data: company, error: fetchError } = await supabase
         .from('companies')
         .select('job_credits, has_used_trial')
@@ -69,12 +69,12 @@ export default function BillingPage() {
       if (fetchError) throw fetchError;
 
       if (company?.has_used_trial) {
-        alert("You have already claimed your free trial! Please purchase a plan to continue.");
+        // 🔴 Pehla Alert Replaced
+        setPopup({ show: true, type: 'error', message: "You have already claimed your free trial! Please purchase a plan to continue." });
         setClaimingTrial(false);
         return;
       }
 
-      // Agar trial nahi liya, toh 5 credits add karo aur has_used_trial ko true kar do
       const newCredits = (company?.job_credits || 0) + 5;
       
       const { error: updateError } = await supabase
@@ -88,11 +88,13 @@ export default function BillingPage() {
 
       if (updateError) throw updateError;
 
-      alert("🎉 5 Free Credits added to your account successfully!");
-      setCredits(newCredits); // Screen par foran credits update kar do
+      // 🟢 Dusra Alert Replaced
+      setPopup({ show: true, type: 'success', message: "🎉 5 Free Credits added to your account successfully!" });
+      setCredits(newCredits); 
 
     } catch (error: any) {
-      alert("Error claiming trial: " + error.message);
+      // 🔴 Teesra Alert Replaced
+      setPopup({ show: true, type: 'error', message: "Error claiming trial: " + error.message });
     } finally {
       setClaimingTrial(false);
     }
@@ -442,6 +444,33 @@ export default function BillingPage() {
         </div>
       </div>
     </div>
+    {/* 🟢 CUSTOM VIP POPUP (MODAL) */}
+      {popup.show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white dark:bg-[#111625] rounded-[2rem] p-8 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 transform animate-in zoom-in-95 duration-300 flex flex-col items-center text-center">
+            
+            {/* Icon based on Success or Error */}
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-inner ${popup.type === 'success' ? 'bg-emerald-100 text-emerald-500 dark:bg-emerald-500/20' : 'bg-red-100 text-red-500 dark:bg-red-500/20'}`}>
+              {popup.type === 'success' ? <CheckCircle2 size={32} /> : <X size={32} />}
+            </div>
+            
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+              {popup.type === 'success' ? 'Awesome!' : 'Oops!'}
+            </h3>
+            
+            <p className="text-slate-500 dark:text-slate-400 font-medium mb-8">
+              {popup.message}
+            </p>
+            
+            <button 
+              onClick={() => setPopup({ ...popup, show: false })}
+              className={`w-full py-3.5 rounded-xl font-bold text-white transition-all shadow-md hover:shadow-lg ${popup.type === 'success' ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600'}`}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

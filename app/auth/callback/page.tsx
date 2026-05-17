@@ -56,7 +56,7 @@ export default function AuthCallbackPage() {
 
         // B. If Employer
         if (userRole === 'employer') {
-          router.push('/employer/setting');
+          router.push('/employer/settings');
           return;
         }
 

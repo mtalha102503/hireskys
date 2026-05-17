@@ -322,10 +322,6 @@ export default function BillingPage() {
                   <CheckCircle2 size={20} className="text-indigo-300 shrink-0 mt-0.5" /> 
                   <span>Embed Jobs on Career Page</span>
                 </li>
-                <li className="flex items-start gap-3 text-indigo-50 text-sm font-medium">
-                  <CheckCircle2 size={20} className="text-indigo-300 shrink-0 mt-0.5" /> 
-                  <span>AI Job Description Generator</span>
-                </li>
               </ul>
               <button 
                 onClick={() => handleCheckout('scale')}

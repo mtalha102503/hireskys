@@ -45,7 +45,7 @@ export default function RoleSelection() {
 
       // 2. Role ke mutabiq sahi page par redirect karein 🎉
       if (role === 'employer') {
-        router.push('/employer/setting');
+        router.push('/employer/settings');
       } else {
         router.push('/complete-profile');
       }

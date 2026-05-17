@@ -52,35 +52,6 @@ const router = useRouter();
   const [showNotifs, setShowNotifs] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
-useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const setupOneSignal = async () => {
-        try {
-          // 1. Agar pehle se init hai toh dubara mat karo
-          if (!window.hasOwnProperty('OneSignal') || !(OneSignal as any).initialized) {
-            await OneSignal.init({
-              appId: "db29acc7-7561-4ed0-a434-9f1575225026",
-              allowLocalhostAsSecureOrigin: true,
-              serviceWorkerParam: { scope: "/" },
-              serviceWorkerPath: "OneSignalSDKWorker.js",
-            });
-          }
-
-          // 2. Login ko thora sa delay do taake SDK ready ho jaye
-          if (user?.id) {
-            setTimeout(async () => {
-              console.log("Linking User:", user.id);
-              await OneSignal.login(user.id);
-            }, 1000); 
-          }
-        } catch (error) {
-          console.log("OneSignal Status:", error);
-        }
-      };
-
-      setupOneSignal();
-    }
-  }, [user?.id]);
   useEffect(() => {
     if (user) {
       const fetchNotifs = async () => {

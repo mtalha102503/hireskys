@@ -1,7 +1,10 @@
 import { supabase } from '@/lib/supabaseClient';
 import JobClient from './JobClient'; 
-import { notFound, redirect } from 'next/navigation'; // 👈 Redirect import kiya
-import { createSlug } from '@/lib/utils'; // 👈 Helper function zaroori hai
+import { notFound, redirect } from 'next/navigation';
+import { createSlug } from '@/lib/utils'; 
+
+// 👇 BSS YE EK LINE YAHAN ADD KARNI HAI 👇
+export const revalidate = 86400; // Ye page ko 24 ghante (86400 seconds) ke liye cache kar dega
 
 // Folder ka naam [slug] hai, isliye params mein slug aayega
 export default async function JobPage({ params }: { params: Promise<{ slug: string }> }) {

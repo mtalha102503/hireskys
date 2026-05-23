@@ -1,27 +1,42 @@
 import { supabase } from '@/lib/supabaseClient';
 import JobClient from './JobClient'; 
 import { notFound, redirect } from 'next/navigation';
-import { createSlug } from '@/lib/utils'; 
+import { createSlug } from '@/lib/utils';
 
-// 👇 BSS YE EK LINE YAHAN ADD KARNI HAI 👇
-export const revalidate = 86400; // Ye page ko 24 ghante (86400 seconds) ke liye cache kar dega
+// Ye cache wali line naye jobs (jo build ke baad add honge) ko handle karegi
+export const revalidate = 86400; 
 
-// Folder ka naam [slug] hai, isliye params mein slug aayega
+// 👇 YE NAYA FUNCTION ADD KIYA HAI 👇
+export async function generateStaticParams() {
+  // Build time par latest 500 active jobs fetch kar lo 
+  // (Limit 500 isliye rakhi hai taake build fast ho aur memory limit hit na ho)
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('id, title')
+    .eq('approved', true)
+    .eq('active', true)
+    .order('date_posted', { ascending: false })
+    .limit(500); 
+
+  if (!jobs) return [];
+
+  // Next.js ko slugs return karo taake wo in pages ko statically generate kar le
+  return jobs.map((job) => ({
+    slug: createSlug(job.title, job.id),
+  }));
+}
+
+// Baki tumhara page component waise ka waisa hi hai
 export default async function JobPage({ params }: { params: Promise<{ slug: string }> }) {
-  
-  // 1. Params await karo
   const { slug } = await params;
 
-  // 2. Slug se ID nikalo (Last part: "react-dev-692" -> "692")
   const slugParts = slug.split('-');
-  const id = slugParts[slugParts.length - 1]; // Sabse last wala hissa ID hai
+  const id = slugParts[slugParts.length - 1]; 
 
-  // Agar ID valid number nahi hai, to 404
   if (!id || isNaN(Number(id))) {
     return notFound();
   }
 
-  // 3. Database se Job fetch karo (ID use karke)
   const { data: job, error } = await supabase
     .from('jobs')
     .select('*')
@@ -32,16 +47,11 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
     return notFound();
   }
 
-  // 4. 🔥 SEO REDIRECT MAGIC
-  // Check karo: Kya URL perfect hai?
   const expectedSlug = createSlug(job.title, job.id);
 
-  // Agar URL mein "react-dev" nahi likha (sirf ID hai), ya spelling galat hai
   if (slug !== expectedSlug) {
-    // To user ko sahi URL par bhej do (301 Permanent Redirect)
     redirect(`/jobs/${expectedSlug}`);
   }
 
-  // 5. Agar sab theek hai, to Page dikhao
   return <JobClient initialJob={job} />;
 }

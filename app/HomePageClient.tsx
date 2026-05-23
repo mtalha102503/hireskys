@@ -49,6 +49,8 @@ type Job = {
   country?: string; 
   location?: string;
   company_logo_url?: string;
+  featured_until?: string;
+  brand_color?: string;
 };
 
 
@@ -1198,10 +1200,13 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
     const from = pageNumber * JOBS_PER_PAGE;
     const to = from + JOBS_PER_PAGE - 1;
    // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
-    let query = supabase
+    // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
+   let query = supabase
   .from('jobs')
-  // 👇 Is line mein aakhir mein ', company_logo_url' wapas add kar do
-  .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url', { count: 'exact' }) 
+  // 👇 Naye columns (featured_until, brand_color) add kiye
+  .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color', { count: 'exact' })
+  // 👇 Pehle featured jobs ko top pe laaye, phir date ke hisaab se
+  .order('featured_until', { ascending: false, nullsFirst: false }) 
   .order('date_posted', { ascending: false });
 
     // 🟢 2. POWERFUL SEARCH LOGIC (NOW POWERED BY TYPESENSE ⚡)
@@ -1307,12 +1312,12 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
          setTotalCount(data ? data.length : 0);
     }
 
-    if ((!data || data.length === 0) && searchQuery && reset) {
+  if ((!data || data.length === 0) && searchQuery && reset) {
     setIsFallback(true); 
     const { data: fallbackData } = await supabase
     .from('jobs')
-    // 👇 Yahan bhi aakhir mein ', company_logo_url' wapas add kar do
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url') 
+    // 👇 Yahan bhi naye columns add karein
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color') 
     .eq('approved', true)
             
         data = fallbackData || []; 
@@ -2654,13 +2659,13 @@ return (
                     const isSaved = savedJobIds.includes(job.id);
                     const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
                     const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
-
+                    
                     // 🕒 Time Logic (Same as normal cards)
                     const jobDate = new Date(job.date_posted);
                     const now = new Date();
                     const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
                     const diffDays = Math.floor(diffHrs / 24);
-
+                    
                     return (
                         <div key={`featured-${job.id}`} className="relative p-[2px] rounded-2xl md:rounded-3xl bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 shadow-xl shadow-amber-500/10 transition-transform duration-300 hover:-translate-y-1 hover:shadow-amber-500/20">
                             {/* Glowing Background Effect */}
@@ -2715,6 +2720,7 @@ return (
                                                 <Briefcase size={24} className="text-amber-500" />
                                             </div>
                                         )}
+                                        
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{job.title}</h3>
@@ -2731,12 +2737,14 @@ return (
                                     <div className="flex flex-wrap gap-2">
                                         <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-[10px] md:text-xs font-bold text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">{job.category}</div>
                                         {job.job_type && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-[10px] md:text-xs font-bold text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">{job.job_type}</div>}
+                                    
                                     </div>
                                     <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
                                         <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>
                                         <Link href={`/jobs/${createSlug(job.title, job.id)}`} className="flex-1 sm:flex-none px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-bold rounded-xl hover:shadow-lg hover:shadow-amber-500/30 transition-all text-center">
                                             {isApplied ? 'Applied ✓' : 'View Details'}
                                         </Link>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -2770,21 +2778,41 @@ return (
               const isApplied = appliedJobs.includes(job.id);
               const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
               const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
-
+              const isFeatured = job.featured_until ? new Date(job.featured_until) > new Date() : false;
+              const activeBrandColor = (job.brand_color && job.brand_color.toLowerCase() !== '#ffffff' && job.brand_color.toLowerCase() !== 'white' && job.brand_color.trim() !== '') 
+  ? job.brand_color 
+  : '#4f46e5';
               // 🟢 2. RETURN: Har Job Card ko wrap kiya hai ek container mein
               return (
-                <div key={job.id} className="flex flex-col gap-4">
                   
-                  {/* 💼 YOUR ORIGINAL JOB CARD (Fully Intact) */}
-                  <div className="group relative flex flex-col bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl md:rounded-3xl p-4 md:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+                  <div key={job.id} className="flex flex-col gap-4">
+                  
+                  {/* 💼 YOUR ORIGINAL JOB CARD (Now with Featured Logic) */}
+                  <div 
+                    className={`group relative flex flex-col bg-white dark:bg-[#111625] border md:rounded-3xl p-4 md:p-6 transition-all duration-300 hover:-translate-y-1 ${
+                      isFeatured ? 'border-2 shadow-lg rounded-2xl' : 'border-slate-200 dark:border-slate-800 rounded-2xl hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-500/10'
+                    }`}
+                    style={isFeatured ? { 
+                      borderColor: activeBrandColor, 
+                      boxShadow: `0 4px 20px -2px ${activeBrandColor}30` 
+                    } : {}}
+                  >
                     
-                    <div className="flex justify-between items-center mb-3 md:mb-5">
+                    {/* Glowing effect for featured */}
+                    {isFeatured && (
+                      <div 
+                        className="absolute -inset-[1px] rounded-[inherit] blur-sm opacity-20 pointer-events-none" 
+                        style={{ backgroundColor: activeBrandColor }}
+                      />
+                    )}
+                    
+                    <div className="flex justify-between items-center mb-3 md:mb-5 relative z-10">
                       <div className="flex items-center gap-2 md:gap-4">
                          <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 overflow-hidden">
                              <div className="flex items-center gap-1.5">
-                                 {smartLoc.matched.slice(0, 2).map((locItem: any, index: number) => (
-                                     <div key={index} className="flex items-center gap-1">
-                                         {index > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
+                                 {smartLoc.matched.slice(0, 2).map((locItem: any, i: number) => (
+                                     <div key={i} className="flex items-center gap-1">
+                                         {i > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
                                          {locItem.isImage ? (
                                              <img src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} alt={locItem.name} className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" />
                                          ) : (
@@ -2803,18 +2831,27 @@ return (
                              <span>{diffHrs < 1 ? 'Just now' : diffHrs < 24 ? `${diffHrs}h ago` : `${diffDays}d ago`}</span>
                          </div>
                       </div>
+                      
                       <div className="flex gap-2 items-center">
+                          {isFeatured && (
+                              <span 
+                                className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase text-white shadow-md tracking-wider flex items-center gap-1"
+                                style={{ backgroundColor: activeBrandColor }}
+                              >
+                                ⚡ Featured
+                              </span>
+                          )}
                           {isApplied ? (
                               <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-green-100 text-green-700 border border-green-200 tracking-wider flex items-center gap-1"><CheckCircle size={12} /> Applied</span>
                           ) : isSeen ? (
                               <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-slate-200 text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 tracking-wider flex items-center gap-1"><Eye size={12} /> Seen</span>
-                          ) : isJustNow ? (
+                          ) : isJustNow && !isFeatured ? (
                               <span className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md tracking-wider">New Arrival</span> 
                           ) : null}
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 md:gap-5 mb-4 md:mb-6">
+                    <div className="flex items-start gap-3 md:gap-5 mb-4 md:mb-6 relative z-10">
                       <div className="flex-shrink-0">
                           {companyLogoUrl ? (
                               <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1 md:p-1.5 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center">
@@ -2831,7 +2868,7 @@ return (
                           )}
                       </div>
                       <div className="flex-1 min-w-0">
-                          <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{job.title}</h3>
+                          <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 transition-colors" style={{ ':hover': { color: activeBrandColor } } as any}>{job.title}</h3>
                           <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
                               <span className="text-slate-800 dark:text-slate-200 font-bold">{job.source}</span>
                               {job.is_verified && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 text-[10px] md:text-xs font-bold border border-blue-100"><ShieldCheck size={10} /> Verified</span>}
@@ -2840,7 +2877,7 @@ return (
                       </div>
                     </div>
 
-                    <div className="mt-auto pt-3 md:pt-5 border-t border-slate-100 dark:border-slate-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5">
+                    <div className="mt-auto pt-3 md:pt-5 border-t border-slate-100 dark:border-slate-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5 relative z-10">
                       <div className="flex flex-wrap gap-2">
                           <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200">{job.category}</div>
                           {job.job_type && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100">{job.job_type}</div>}
@@ -2848,7 +2885,27 @@ return (
                       </div>
                       <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
                           <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>
-                          <Link href={`/jobs/${createSlug(job.title, job.id)}`} onClick={() => { if (!isSeen) { const newSeen = [...seenJobs, job.id]; setSeenJobs(newSeen); localStorage.setItem('seenJobs', JSON.stringify(newSeen)); } }} className="flex-1 sm:flex-none px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-lg text-center">View Details</Link>
+                          
+                          {/* 🔥 YOUR ORIGINAL VIEW DETAILS BUTTON (With Dynamic Colors added) */}
+                          <Link 
+                            href={`/jobs/${createSlug(job.title, job.id)}`} 
+                            onClick={() => { 
+                                if (!isSeen) { 
+                                    const newSeen = [...seenJobs, job.id]; 
+                                    setSeenJobs(newSeen); 
+                                    localStorage.setItem('seenJobs', JSON.stringify(newSeen)); 
+                                } 
+                            }} 
+                            className={`flex-1 sm:flex-none px-6 py-2.5 text-sm font-bold rounded-xl transition-all shadow-lg text-center ${
+                              isFeatured 
+                                ? 'text-white hover:opacity-90' 
+                                : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-indigo-600 dark:hover:bg-slate-200'
+                            }`}
+                            style={isFeatured ? { backgroundColor: activeBrandColor } : {}}
+                          >
+                            View Details
+                          </Link>
+                          
                       </div>
                     </div>
                   </div>

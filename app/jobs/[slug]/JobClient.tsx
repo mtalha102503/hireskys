@@ -11,9 +11,10 @@ import { CATEGORIES } from '@/lib/categories';
 import SkillGapAnalyzer from '@/components/SkillGapAnalyzer';
 import GuestSkillAnalyzer from '@/components/GuestSkillAnalyzer';
 import Link from 'next/link';
+import toast, { Toaster } from 'react-hot-toast';
 import { 
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
-  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe, ShieldCheck, ScanSearch, AlertTriangle, X, Bell, Star // 👈 Star add kiya
+  Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe,Loader2, ShieldCheck, ScanSearch, AlertTriangle, X, Bell, Star // 👈 Star add kiya
 } from 'lucide-react';
 
 // 🌍 GLOBAL COUNTRY MAP (Flags aur Codes ke liye)
@@ -667,7 +668,8 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [companyDetails, setCompanyDetails] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
 const [applyCount, setApplyCount] = useState(job.application_count || 0);
-
+const [isReporting, setIsReporting] = useState(false);
+  const [hasReported, setHasReported] = useState(false);
 // 🌍 GEO-LOCATION STATES
   const [userCountry, setUserCountry] = useState<string | null>(null);
   const [showGeoWarning, setShowGeoWarning] = useState(false);
@@ -772,41 +774,87 @@ if (companyNameForSearch) {
         setCompanyDetails(companyInfo);
     }
 }
-            // 🌟 UPGRADED: Related Jobs Fetch with Companies Table Logos
-            const { data: related } = await supabase
+            // 🌟 SUPER SMART RELATED JOBS (Location + Category + 30 Days Fallback)
+            
+            // 1. Calculate Date for Last 30 Days
+           const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const thirtyDaysAgoStr = thirtyDaysAgo.toISOString();
+
+            let strictRelated: any[] = [];
+            
+            // 2. PRIMARY QUERY: Multi-Country Logic
+            // Tumhara apna function use kar ke location ko array mein torenge (e.g. ["India", "Pakistan"])
+            const parsedLocs = getSmartLocationUI(data.location).matched;
+            const countryNames = parsedLocs.filter((l: any) => l.code).map((l: any) => l.name);
+
+            let primaryQuery = supabase
                 .from('jobs')
                 .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-                .eq('category', data.category) 
-                .neq('id', data.id)            
-                .eq('approved', true)          
+                .eq('category', data.category)
+                .gte('date_posted', thirtyDaysAgoStr) // Last 30 days
+                .neq('id', data.id)
+                .eq('approved', true)
                 .order('date_posted', { ascending: false })
-                .limit(3);                     
-            
-            if (related && related.length > 0) {
-                // 1. In jobs ke slugs nikalo taake companies table mein dhoond sakein
-                const slugsToFind = related.map(rJob => getCompanySlug(rJob.company || rJob.source || '')).filter(Boolean);
+                .limit(3);
+
+            // 🧠 Agar specific countries mili hain, toh Supabase '.or()' trigger karo
+            if (countryNames.length > 0) {
+                // Yeh ek string banayega jese: "location.ilike.%India%,location.ilike.%Pakistan%"
+                const orQueryString = countryNames.map((c: string) => `location.ilike.%${c}%`).join(',');
+                primaryQuery = primaryQuery.or(orQueryString);
+            }
+
+            const { data: strictData } = await primaryQuery;
+            if (strictData) strictRelated = strictData;
+
+            let finalRelatedJobs = [...strictRelated];
+
+            // 3. FALLBACK QUERY: Agar 3 jobs poori nahi hui, to simply latest category jobs le aao
+            if (finalRelatedJobs.length < 3) {
+                // Jo jobs Primary Query mein aagayi hain unki ID nikal lo taake duplicate na hon
+                const excludeIds = [data.id, ...finalRelatedJobs.map(j => j.id)];
+                const remainingLimit = 3 - finalRelatedJobs.length;
+
+                const { data: fallbackData } = await supabase
+                    .from('jobs')
+                    .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
+                    .eq('category', data.category)
+                    .not('id', 'in', `(${excludeIds.join(',')})`) // Pehle wali aur current job ko ignore karo
+                    .eq('approved', true)
+                    .order('date_posted', { ascending: false })
+                    .limit(remainingLimit);
+
+                if (fallbackData) {
+                    finalRelatedJobs = [...finalRelatedJobs, ...fallbackData];
+                }
+            }
+
+            // 4. LOGO FETCHING LOGIC (Ab 'related' ki jagah 'finalRelatedJobs' use hoga)
+            if (finalRelatedJobs.length > 0) {
+                // In jobs ke slugs nikalo taake companies table mein dhoond sakein
+                const slugsToFind = finalRelatedJobs.map(rJob => getCompanySlug(rJob.company || rJob.source || '')).filter(Boolean);
                 
-                // 2. Companies table se inke logos mangwao
+                // Companies table se inke logos mangwao
                 const { data: companiesData } = await supabase
                     .from('companies')
                     .select('slug, logo_url')
                     .in('slug', slugsToFind);
                     
-                // 3. Ek Map bana lo taake fast lookup ho
+                // Map bana lo taake fast lookup ho
                 const logoMap: Record<string, string> = {};
                 if (companiesData) {
                     companiesData.forEach(c => { if (c.logo_url) logoMap[c.slug] = c.logo_url; });
                 }
                 
-                // 4. Jobs ke andar unka final logo attach kardo
-                const relatedWithLogos = related.map(rJob => ({
+                // Jobs ke andar unka final logo attach kardo
+                const relatedWithLogos = finalRelatedJobs.map(rJob => ({
                     ...rJob,
                     final_logo: rJob.company_logo_url || logoMap[getCompanySlug(rJob.company || rJob.source || '')] || null
                 }));
                 
                 setRelatedJobs(relatedWithLogos);
             }
-
             // Saved check (Waisa hi rahega)
             if (user) {
                 const { data: savedJob } = await supabase.from('saved_jobs').select('*').match({ user_id: user.id, job_id: data.id }).single();
@@ -943,6 +991,40 @@ const handleApply = async () => {
         });
         console.log("User History Saved!");
     }
+  };
+  const handleReportExpired = async () => {
+      // 1. Check from LocalStorage if already reported
+      const expiredReports = JSON.parse(localStorage.getItem('expiredReports') || '[]');
+      if (expiredReports.includes(job.id)) {
+          setHasReported(true);
+          toast.success("You've already reported this job. Thanks!");
+          return;
+      }
+
+      setIsReporting(true);
+
+      // 2. Insert into your EXISTING 'job_reports' table
+      const { error } = await supabase
+          .from('job_reports')
+          .insert([
+              { 
+                  job_id: job.id, 
+                  reason: 'Expired / Closed',  // Tumhara existing column
+                  details: 'Quick Action: User flagged this job as expired via the one-click button.' // Tumhara existing column
+              }
+          ]);
+
+      setIsReporting(false);
+
+      if (error) {
+          console.error("Report Error:", error);
+          toast.error("Something went wrong.");
+      } else {
+          // 3. Save to LocalStorage to prevent spamming
+          localStorage.setItem('expiredReports', JSON.stringify([...expiredReports, job.id]));
+          setHasReported(true);
+          toast.success("Flagged as expired! Our team will review it.");
+      }
   };
   const handleCheckAndApply = (e: any) => {
     e.preventDefault(); 
@@ -1350,10 +1432,31 @@ const handleApply = async () => {
                                   <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                               </button>
                           ) : (
-                              /* 👇 Counter sirf tab dikhega agar job active hai */
-                              <div className="mt-0 md:mt-1">
-                                 <ApplicantStatus count={applyCount} />
-                              </div>
+<div className="mt-0 md:mt-1 flex flex-col items-end">
+    <ApplicantStatus count={applyCount} />
+    
+    {/* 🚀 PREMIUM DESKTOP: Report Expired Button */}
+{!isExpired && (
+    <button 
+        onClick={handleReportExpired}
+        disabled={hasReported || isReporting}
+        className={`mt-3 group flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-full border transition-all duration-300 shadow-sm ${
+            hasReported 
+            ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 cursor-not-allowed' 
+            : 'bg-white/50 dark:bg-slate-800/30 border-slate-200 dark:border-slate-700/60 text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-900/30 hover:text-red-600 dark:hover:text-red-400'
+        }`}
+    >
+        {isReporting ? (
+            <Loader2 size={12} className="animate-spin" />
+        ) : hasReported ? (
+            <CheckCircle size={12} />
+        ) : (
+            <AlertTriangle size={12} className="opacity-70 group-hover:opacity-100 transition-opacity" />
+        )}
+        <span>{isReporting ? 'Reporting...' : hasReported ? 'Marked Expired' : 'Flag as Expired'}</span>
+    </button>
+)}
+</div>
                           )}
                       </div>
                   </div>
@@ -1618,18 +1721,21 @@ const handleApply = async () => {
                 {!isExpired && (job.link.includes('@') ? <Mail size={18} /> : <ExternalLink size={18} />)}
               </button>
 
-              {/* 🚀 UPGRADED BOUNCE RATE KILLER (Mobile) */}
-              {isExpired && relatedJobs.length > 0 && (
-                  <button 
-                      onClick={(e) => {
-                          e.preventDefault();
-                          document.getElementById('similar-jobs')?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-50 active:bg-indigo-100 dark:bg-indigo-500/10 dark:active:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[11px] font-bold rounded-lg border border-indigo-100 dark:border-indigo-500/30 transition-all animate-in fade-in cursor-pointer"
-                  >
-                      View Similar Active Jobs <ArrowRight size={14} />
-                  </button>
-              )}
+             {/* 🚀 PREMIUM MOBILE: Report Expired Button */}
+{!isExpired && (
+    <button 
+        onClick={handleReportExpired}
+        disabled={hasReported || isReporting}
+        className={`w-full mt-2 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[11px] font-bold rounded-xl transition-all ${
+            hasReported 
+            ? 'text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-500/10 cursor-not-allowed border border-emerald-100 dark:border-emerald-800/30' 
+            : 'text-slate-500 dark:text-slate-400 bg-transparent border border-slate-200 dark:border-slate-700/50 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/30'
+        }`}
+    >
+        {isReporting ? <Loader2 size={12} className="animate-spin" /> : hasReported ? <CheckCircle size={12} /> : <AlertTriangle size={12} />}
+        <span>{isReporting ? 'Reporting...' : hasReported ? 'Marked Expired' : 'Flag as Expired'}</span>
+    </button>
+)}
           </div>
           
         </div>

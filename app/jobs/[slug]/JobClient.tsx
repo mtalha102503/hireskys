@@ -673,7 +673,8 @@ const [isReporting, setIsReporting] = useState(false);
 // 🌍 GEO-LOCATION STATES
   const [userCountry, setUserCountry] = useState<string | null>(null);
   const [showGeoWarning, setShowGeoWarning] = useState(false);
-
+const [companyJobs, setCompanyJobs] = useState<any[]>([]); // Company ki baki jobs ke liye
+const [industryCompanies, setIndustryCompanies] = useState<any[]>([]); // Industry ki companies ke liye
   // 👇 LOCATION DETECTION LOGIC (Auto Run)
   useEffect(() => {
     const detectLocation = async () => {
@@ -760,19 +761,88 @@ const companyNameForSearch = data.company ||
     (!['reddit', 'hacker news', 'upwork'].some(s => data.source?.toLowerCase().includes(s)) ? data.source : null);
 
 if (companyNameForSearch) {
-    // Exact URL slug banayen using updated function
     const companySlug = getCompanySlug(companyNameForSearch);
     
-    // 🔥 PUKKA HAL: Slug se bhi dhoondo, aur agar na mile toh direct Name se Case-Insensitive (ilike) search maro!
+    // 1. Check if Company exists in Companies table
     const { data: companyInfo } = await supabase
         .from('companies')
         .select('*')
-        .or(`slug.eq.${companySlug},name.ilike.%${companyNameForSearch}%`) // 👈 Yeh line badli hai!
+        .or(`slug.eq.${companySlug},name.ilike.%${companyNameForSearch}%`)
         .maybeSingle(); 
         
     if (companyInfo) {
         setCompanyDetails(companyInfo);
+        
+        // 1. Same Company Jobs
+        const { data: cJobs } = await supabase
+            .from('jobs')
+            .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
+            .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
+            .neq('id', data.id) 
+            .eq('approved', true)
+            .order('date_posted', { ascending: false })
+            .limit(4);
+        if (cJobs) setCompanyJobs(cJobs);
+
+        // 🚀 2. THE NEW SMART INDUSTRY ENGINE (90% Coverage & Variety)
+        let finalCompanies: any[] = [];
+        let excludeSlugs = [companyInfo.slug]; // Current company dubara na aye
+
+        // Step A: Smart Keyword Matching (Lambi industry strings ko tor kar dhoondo)
+        if (companyInfo.industry) {
+            // Extra words hata kar sirf main keywords nikalo
+            const keywords = companyInfo.industry.split(/[\s,/&]+/).filter((k: string) => k.length > 3);
+            
+            if (keywords.length > 0) {
+                const orQuery = keywords.map((k: string) => `industry.ilike.%${k}%`).join(',');
+                const { data: indData } = await supabase
+                    .from('companies')
+                    .select('slug, name, logo_url, industry, location, company_size, verified')
+                    .or(orQuery)
+                    .neq('slug', companyInfo.slug)
+                    .eq('verified', true) // Hamesha premium verified companies lao
+                    .limit(4);
+                    
+                if (indData) {
+                    finalCompanies = [...indData];
+                    excludeSlugs = [...excludeSlugs, ...indData.map(c => c.slug)];
+                }
+            }
+        }
+
+        // Step B: Random Fallback Padding (Agar 4 cards poore nahi hue, to random verified companies daalo)
+        if (finalCompanies.length < 4) {
+            const limitNeeded = 4 - finalCompanies.length;
+            
+            // Thori zyada mangwa lo taake shuffle kar sakein
+            const { data: randomData } = await supabase
+                .from('companies')
+                .select('slug, name, logo_url, industry, location, company_size, verified')
+                .eq('verified', true)
+                .not('slug', 'in', `(${excludeSlugs.join(',')})`)
+                .limit(15); 
+
+            if (randomData && randomData.length > 0) {
+                // Array ko randomly shuffle karo taake har job par different cards ayen
+                const shuffled = randomData.sort(() => 0.5 - Math.random()).slice(0, limitNeeded);
+                finalCompanies = [...finalCompanies, ...shuffled];
+            }
+        }
+
+        setIndustryCompanies(finalCompanies);
     }
+
+    // 3. Fetch maximum lates 5 jobs of the SAME company (from jobs table directly)
+    const { data: cJobs } = await supabase
+        .from('jobs')
+        .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
+        // 🚀 THE FIX: Ab yeh 'source' column mein bhi company ka naam dhoondega!
+        .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
+        .neq('id', data.id) 
+        .eq('approved', true)
+        .order('date_posted', { ascending: false })
+        .limit(4);
+    if (cJobs) setCompanyJobs(cJobs);
 }
             // 🌟 SUPER SMART RELATED JOBS (Location + Category + 30 Days Fallback)
             
@@ -796,7 +866,7 @@ if (companyNameForSearch) {
                 .neq('id', data.id)
                 .eq('approved', true)
                 .order('date_posted', { ascending: false })
-                .limit(3);
+                .limit(4);
 
             // 🧠 Agar specific countries mili hain, toh Supabase '.or()' trigger karo
             if (countryNames.length > 0) {
@@ -814,7 +884,7 @@ if (companyNameForSearch) {
             if (finalRelatedJobs.length < 3) {
                 // Jo jobs Primary Query mein aagayi hain unki ID nikal lo taake duplicate na hon
                 const excludeIds = [data.id, ...finalRelatedJobs.map(j => j.id)];
-                const remainingLimit = 3 - finalRelatedJobs.length;
+                const remainingLimit = 4 - finalRelatedJobs.length;
 
                 const { data: fallbackData } = await supabase
                     .from('jobs')
@@ -867,8 +937,11 @@ if (companyNameForSearch) {
         if (data.application_count) {
             setApplyCount(data.application_count);
         }
+        
         }
-    } // FIX: Closing brace for if (jobId)
+        
+    }
+     // FIX: Closing brace for if (jobId)
   } // FIX: Closing brace for fetchJobDetails function
 
   function getRelativeTime(dateString: string) {
@@ -1236,12 +1309,11 @@ const handleApply = async () => {
                             <span className={`px-3 py-1 text-[11px] md:text-xs font-bold uppercase rounded-full flex items-center gap-1.5 md:gap-2 ${sourceStyle.color}`}>
                                 {sourceStyle.icon} {sourceStyle.name}
                             </span>
-                        ) : companyDetails?.logo_url ? (
-                            <div className="w-12 h-12 md:w-14 md:h-14 bg-white dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center p-1.5 flex-shrink-0 transition-transform hover:scale-105">
-                                <img src={companyDetails.logo_url} alt={companyDetails.name || job.company} className="w-full h-full object-contain" />
-                            </div>
-                        ) : null}
-                        {/* 👆 Agar logo nahi hai aur normal job hai, toh humne top text ko gayab kar diya hai taake repetition na ho */}
+                       ) : companyDetails?.logo_url ? (
+    <div className="w-16 h-16 md:w-20 md:h-20 bg-white dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105 overflow-hidden">
+        <img src={companyDetails.logo_url} alt={companyDetails.name || job.company} className="w-full h-full object-contain" />
+    </div>
+) : null}
                         
                         {job.category && (
                             <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold uppercase rounded-full">
@@ -1519,89 +1591,214 @@ const handleApply = async () => {
         <JobFeedback jobId={job.id} userId={user?.id} />
         <ReportJob jobId={job.id} />
                 
-                {/* 🌟 UPGRADED RELATED JOBS SECTION */}
+                {/* 🌟 SECTION 1: SIMILAR OPPORTUNITIES (2x2 Grid) */}
                 {relatedJobs.length > 0 && (
                   <div id="similar-jobs" className="mt-16 scroll-mt-32 border-t border-slate-200 dark:border-slate-800 pt-10">
                       <h3 className="text-xl md:text-2xl font-black mb-6 text-slate-900 dark:text-white flex items-center gap-2">
                         <Briefcase size={24} className="text-indigo-500" /> Similar Opportunities
                       </h3>
                       
-                      <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {relatedJobs.map((rJob) => {
-                           // 🟢 NAYA: Har related job ki location ko smart parser se guzaaro
-                           const rSmartLoc = getSmartLocationUI(rJob.location || "");
-                           
-                           return (
-                           <Link 
-                              key={rJob.id} 
-                              href={`/jobs/${createSlug(rJob.title, rJob.id)}`}
-                              className="group flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 p-4 md:p-5 rounded-2xl hover:border-indigo-500 dark:hover:border-indigo-500 transition-all hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1"
-                           >
-                              {/* 🏢 Company Logo Wrapper */}
-                              <div className="h-14 w-14 md:h-16 md:w-16 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 flex items-center justify-center p-2 flex-shrink-0 overflow-hidden shadow-sm">
-                                  {rJob.final_logo ? (
-                                      <img 
-                                          src={rJob.final_logo} 
-                                          alt={rJob.company || rJob.source} 
-                                          className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" 
-                                      />
-                                  ) : (
-                                      <Building size={24} className="text-indigo-400 group-hover:text-indigo-600 transition-colors" />
-                                  )}
-                              </div>
+    const rSmartLoc = getSmartLocationUI(rJob.location || "");
+    return (
+        <Link 
+            key={rJob.id}
+            href={`/jobs/${createSlug(rJob.title, rJob.id)}`}
+            className="group flex flex-col h-full bg-white dark:bg-[#161C2D] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-7 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-indigo-500/10 hover:-translate-y-1"
+        >
+            {/* 🚀 TOP: Logo */}
+            <div className="mb-4 md:mb-5">
+                <div className="h-14 w-14 md:h-16 md:w-16 bg-white dark:bg-[#1A2333] border border-slate-100 dark:border-slate-700/50 rounded-xl flex items-center justify-center p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+                    {rJob.final_logo ? (
+                        <img 
+                            src={rJob.final_logo} 
+                            alt={rJob.company || rJob.source} 
+                            className="w-full h-full object-contain scale-[1.15]" 
+                        />
+                    ) : (
+                        <Building size={28} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                    )}
+                </div>
+            </div>
+            
+            {/* 🚀 MIDDLE: Title aur Company name khula aur clear */}
+            <div className="flex-1 min-w-0 mb-6">
+                <h4 className="font-extrabold text-lg md:text-[22px] text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug mb-2">
+                    {rJob.title}
+                </h4>
+                <p className="font-medium text-sm md:text-base text-slate-500 dark:text-slate-400 truncate">
+                    {rJob.company || rJob.source || "Company"}
+                </p>
+            </div>
+            
+            {/* 🚀 BOTTOM: Location & Time (Same styling as before) */}
+            <div className="mt-auto pt-4 md:pt-5 flex items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800/60">
+                <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-[#1A2333] px-3 py-1.5 rounded-lg border border-slate-200/60 dark:border-slate-700/50 flex-1 min-w-0 overflow-hidden">
+                    <MapPin size={16} className={(rJob.location || '').toLowerCase().includes('remote') ? "text-emerald-500 flex-shrink-0" : "text-indigo-500 flex-shrink-0"}/> 
+                    
+                    <div className="flex items-center gap-1 truncate">
+                        {rSmartLoc.matched.slice(0, 2).map((locItem: any, idx: number) => (
+                            <span key={idx} className="flex items-center gap-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                {locItem.isImage ? (
+                                    <img src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} alt={locItem.name} className="w-4 h-3 object-cover rounded-[2px] shadow-sm flex-shrink-0"/>
+                                ) : (
+                                    <span className="text-[11px] leading-none flex-shrink-0">🌍</span>
+                                )}
+                                <span className="truncate max-w-[70px] md:max-w-[100px]">{locItem.name}</span>
+                            </span>
+                        ))}
+                    </div>
+                    {rSmartLoc.hasMore && rSmartLoc.totalCount > 2 && (
+                        <span className="text-[11px] font-bold text-indigo-500 ml-auto flex-shrink-0">+{rSmartLoc.totalCount - 2}</span>
+                    )}
+                </div>
+                
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider flex-shrink-0 whitespace-nowrap">
+                    <Clock size={14} className="text-slate-300 dark:text-slate-500 flex-shrink-0"/> {getRelativeTime(rJob.date_posted)}
+                </span>
+            </div>
+        </Link>
+    );
+})}
+                      </div>
+                  </div>
+                )}
 
-                              {/* 📝 Job Details */}
-                              <div className="flex-1 min-w-0 w-full">
-                                  <h4 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
-                                    {rJob.title}
-                                  </h4>
-                                  
-                                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-                                      <span className="text-slate-700 dark:text-slate-200 font-bold bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
-                                          {rJob.company || rJob.source || "Company"}
-                                      </span>
-                                      
-                                      {/* 🌍 🚀 NAYA: SMART LOCATION FLAGS IN CARD */}
-                                      <div className="flex flex-wrap items-center gap-1.5">
-                                          <MapPin size={14} className={(rJob.location || '').toLowerCase().includes('remote') ? "text-emerald-500" : "text-indigo-500"}/> 
-                                          
-                                          {rSmartLoc.matched.slice(0, 2).map((locItem: any, idx: number) => (
-                                              <span key={idx} className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-bold text-slate-700 dark:text-slate-300">
-                                                  {locItem.isImage ? (
-                                                      <img 
-                                                          src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`}
-                                                          alt={locItem.name}
-                                                          className="w-3.5 h-2.5 object-cover rounded-[2px] shadow-sm"
-                                                      />
-                                                  ) : (
-                                                      <span className="text-[10px] leading-none">🌍</span>
-                                                  )}
-                                                  <span className="truncate max-w-[80px]">{locItem.name}</span>
-                                              </span>
-                                          ))}
-                                          
-                                          {/* Agar 2 se zyada countries hain to "+X More" dikhao */}
-                                          {rSmartLoc.hasMore && rSmartLoc.totalCount > 2 && (
-                                              <span className="text-[10px] font-bold text-indigo-500 ml-0.5">
-                                                  +{rSmartLoc.totalCount - 2}
-                                              </span>
-                                          )}
-                                      </div>
-                                      
-                                      <span className="flex items-center gap-1 text-xs ml-auto sm:ml-0">
-                                          <Clock size={12} className="text-pink-500"/> 
-                                          {getRelativeTime(rJob.date_posted)}
-                                      </span>
-                                  </div>
-                              </div>
+                {/* 🏢 SECTION 2: MORE OPENINGS (2x2 Grid) */}
+                {companyJobs.length > 0 && (
+                  <div className="mt-12 border-t border-slate-200 dark:border-slate-800 pt-10">
+                      <h3 className="text-xl md:text-2xl font-black mb-6 text-slate-900 dark:text-white flex items-center gap-2">
+                        <Building size={24} className="text-indigo-500" /> More Openings at {companyDetails?.name || job.company || job.source}
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {companyJobs.map((cJob) => {
+    const cSmartLoc = getSmartLocationUI(cJob.location || "");
+    return (
+        <Link 
+    key={cJob.id} 
+    href={`/jobs/${createSlug(cJob.title, cJob.id)}`}
+    className="group flex flex-col h-full bg-white dark:bg-[#161C2D] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-7 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-indigo-500/10 hover:-translate-y-1"
+>
+    {/* 🚀 TOP: Logo */}
+            <div className="mb-4 md:mb-5">
+                <div className="h-14 w-14 md:h-16 md:w-16 bg-white dark:bg-[#1A2333] border border-slate-100 dark:border-slate-700/50 rounded-xl flex items-center justify-center p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+                    {companyDetails?.logo_url ? (
+                        <img 
+                            src={companyDetails.logo_url} 
+                            alt={companyDetails.name || cJob.company} 
+                            className="w-full h-full object-contain scale-[1.15]" 
+                        />
+                    ) : (
+                        <Building size={28} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+                    )}
+                </div>
+            </div>
+    
+    {/* 🚀 MIDDLE: Title aur Company name khula aur clear */}
+    <div className="flex-1 min-w-0 mb-6">
+        <h4 className="font-extrabold text-lg md:text-[22px] text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug mb-2">
+            {cJob.title}
+        </h4>
+        <p className="font-medium text-sm md:text-base text-slate-500 dark:text-slate-400 truncate">
+            {companyDetails?.name || cJob.company || cJob.source || "Company"}
+        </p>
+    </div>
+    
+    {/* 🚀 BOTTOM: Location & Time (Same styling) */}
+    <div className="mt-auto pt-4 md:pt-5 flex items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800/60">
+        <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-[#1A2333] px-3 py-1.5 rounded-lg border border-slate-200/60 dark:border-slate-700/50 flex-1 min-w-0 overflow-hidden">
+            <MapPin size={16} className={(cJob.location || '').toLowerCase().includes('remote') ? "text-emerald-500 flex-shrink-0" : "text-indigo-500 flex-shrink-0"}/> 
+            
+            <div className="flex items-center gap-1 truncate">
+                {cSmartLoc.matched.slice(0, 2).map((locItem: any, idx: number) => (
+                    <span key={idx} className="flex items-center gap-1 text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300">
+                        {locItem.isImage ? (
+                            <img src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} alt={locItem.name} className="w-4 h-3 object-cover rounded-[2px] shadow-sm flex-shrink-0"/>
+                        ) : (
+                            <span className="text-[11px] leading-none flex-shrink-0">🌍</span>
+                        )}
+                        <span className="truncate max-w-[70px] md:max-w-[100px]">{locItem.name}</span>
+                    </span>
+                ))}
+            </div>
+            {cSmartLoc.hasMore && cSmartLoc.totalCount > 2 && (
+                <span className="text-[11px] font-bold text-indigo-500 ml-auto flex-shrink-0">+{cSmartLoc.totalCount - 2}</span>
+            )}
+        </div>
+        
+        <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider flex-shrink-0 whitespace-nowrap">
+            <Clock size={14} className="text-slate-300 dark:text-slate-500 flex-shrink-0"/> {getRelativeTime(cJob.date_posted)}
+        </span>
+    </div>
+</Link>
+    );
+})}
+                      </div>
+                  </div>
+                )}
 
-                              {/* ➡️ Action Arrow (Desktop Only) */}
-                              <div className="hidden sm:flex p-3 bg-slate-50 dark:bg-slate-800/80 rounded-full group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 text-slate-400 group-hover:text-indigo-600 transition-colors flex-shrink-0">
-                                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                              </div>
-                           </Link>
-                           );
-                        })}
+                {/* 🌟 SECTION 3: TOP COMPANIES (2x2 Grid) */}
+                {industryCompanies.length > 0 && (
+                  <div className="mt-12 border-t border-slate-200 dark:border-slate-800 pt-10">
+                      <h3 className="text-xl md:text-2xl font-black mb-2 text-slate-900 dark:text-white flex items-center gap-2">
+                        <Star size={24} className="text-amber-500" /> Explore Top Companies in this Space
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {industryCompanies.map((comp) => (
+    <Link 
+    key={comp.slug}
+    href={`/companies/${comp.slug}`}
+    className="group flex flex-col h-full bg-white dark:bg-[#161C2D] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-7 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-indigo-500/10 hover:-translate-y-1"
+>
+    {/* 🚀 TOP: Logo */}
+    <div className="mb-4 md:mb-5">
+        <div className="h-14 w-14 md:h-16 md:w-16 bg-white dark:bg-[#1A2333] border border-slate-100 dark:border-slate-700/50 rounded-xl flex items-center justify-center p-1 shadow-sm transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+            {comp.logo_url ? (
+                <img 
+                    src={comp.logo_url} 
+                    alt={comp.name} 
+                    className="w-full h-full object-contain scale-[1.15]" 
+                />
+            ) : (
+                <Building size={28} className="text-slate-400 group-hover:text-indigo-500 transition-colors" />
+            )}
+        </div>
+    </div>
+    
+    {/* 🚀 MIDDLE: Company Name & Industry */}
+    <div className="flex-1 min-w-0 mb-6">
+        <div className="flex items-center gap-2 mb-2">
+            <h4 className="font-extrabold text-lg md:text-[22px] text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                {comp.name}
+            </h4>
+            {comp.verified && (
+                <div title="Verified Employer" className="text-blue-500 flex-shrink-0">
+                    <CheckCircle size={18} fill="currentColor" className="text-white dark:text-[#161C2D]" />
+                </div>
+            )}
+        </div>
+        <p className="text-sm md:text-base font-medium text-slate-500 dark:text-slate-400 truncate">
+            {comp.industry || 'Technology'}
+        </p>
+    </div>
+    
+    {/* 🚀 BOTTOM: Location & Tags */}
+    <div className="mt-auto flex flex-wrap items-center gap-2.5 pt-5 border-t border-slate-100 dark:border-slate-800/60">
+        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-semibold rounded-lg uppercase tracking-wide">
+            <MapPin size={14} /> {comp.location || 'Global Remote'}
+        </span>
+        
+        {comp.company_size && (
+            <span className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100/50 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-400 text-xs font-semibold rounded-lg uppercase tracking-wide">
+                <User size={14} /> {comp.company_size}
+            </span>
+        )}
+    </div>
+</Link>
+))}
                       </div>
                   </div>
                 )}
@@ -1683,6 +1880,14 @@ const handleApply = async () => {
                         <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Do not share sensitive bank info.</li>
                         <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Verify the client before starting work.</li>
                     </ul>
+                    
+                    {/* 🚀 NEW: Learn More Button */}
+                    <Link 
+                        href="/blog/ultimate-guide-remote-job-safety-2026" 
+                        className="mt-5 flex items-center justify-center gap-2 w-full py-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-95 group"
+                    >
+                        Learn More <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
                 </div>
             </div>
       </div>

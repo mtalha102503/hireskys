@@ -840,6 +840,7 @@ if (companyNameForSearch) {
         .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
         .neq('id', data.id) 
         .eq('approved', true)
+        .eq('active', true)
         .order('date_posted', { ascending: false })
         .limit(4);
     if (cJobs) setCompanyJobs(cJobs);
@@ -892,6 +893,7 @@ if (companyNameForSearch) {
                     .eq('category', data.category)
                     .not('id', 'in', `(${excludeIds.join(',')})`) // Pehle wali aur current job ko ignore karo
                     .eq('approved', true)
+                    .eq('active', true)
                     .order('date_posted', { ascending: false })
                     .limit(remainingLimit);
 

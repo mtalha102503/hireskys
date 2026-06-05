@@ -790,7 +790,6 @@ if (companyNameForSearch) {
 
         // Step A: Smart Keyword Matching (Lambi industry strings ko tor kar dhoondo)
         if (companyInfo.industry) {
-            // Extra words hata kar sirf main keywords nikalo
             const keywords = companyInfo.industry.split(/[\s,/&]+/).filter((k: string) => k.length > 3);
             
             if (keywords.length > 0) {
@@ -800,30 +799,32 @@ if (companyNameForSearch) {
                     .select('slug, name, logo_url, industry, location, company_size, verified')
                     .or(orQuery)
                     .neq('slug', companyInfo.slug)
-                    .eq('verified', true) // Hamesha premium verified companies lao
-                    .limit(4);
+                    // .eq('verified', true) // 👈 WARNING: Agar verified companies kam hain, to isko comment kardo
+                    .limit(50); // 👈 FIX: 4 ki jagah 50 lao taake pool bada ho
                     
-                if (indData) {
-                    finalCompanies = [...indData];
-                    excludeSlugs = [...excludeSlugs, ...indData.map(c => c.slug)];
+                if (indData && indData.length > 0) {
+                    // 👈 FIX: Un 50 ko frontend pe shuffle karo aur pehli 4 uthao
+                    const shuffledInd = indData.sort(() => 0.5 - Math.random()).slice(0, 4);
+                    finalCompanies = [...shuffledInd];
+                    excludeSlugs = [...excludeSlugs, ...finalCompanies.map(c => c.slug)];
                 }
             }
         }
 
-        // Step B: Random Fallback Padding (Agar 4 cards poore nahi hue, to random verified companies daalo)
+        // Step B: Random Fallback Padding (Agar 4 cards poore nahi hue)
         if (finalCompanies.length < 4) {
             const limitNeeded = 4 - finalCompanies.length;
             
-            // Thori zyada mangwa lo taake shuffle kar sakein
+            // 👈 FIX: Ab 15 ki jagah 100 mangwa rahe hain taake randomness 1950 database se match kare
             const { data: randomData } = await supabase
                 .from('companies')
                 .select('slug, name, logo_url, industry, location, company_size, verified')
-                .eq('verified', true)
+                // .eq('verified', true) // 👈 WARNING: Same yahan, agar randomness kam hai to ise hata do
                 .not('slug', 'in', `(${excludeSlugs.join(',')})`)
-                .limit(15); 
+                .limit(100); 
 
             if (randomData && randomData.length > 0) {
-                // Array ko randomly shuffle karo taake har job par different cards ayen
+                // Ab yeh 100 records mein se randomly choose karega
                 const shuffled = randomData.sort(() => 0.5 - Math.random()).slice(0, limitNeeded);
                 finalCompanies = [...finalCompanies, ...shuffled];
             }

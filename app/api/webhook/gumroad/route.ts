@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const payload = Object.fromEntries(formData.entries());
 
     // Gumroad se bhejey gaye data ko nikalna
-    const employerId = payload['url_params[employerId]'] as string;
+    const employerId = payload.employerId as string;
     const buyerEmail = payload.email as string;
     const saleId = payload.sale_id as string;
     const isRefunded = payload.refunded === 'true';

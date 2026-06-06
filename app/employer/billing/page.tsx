@@ -24,7 +24,7 @@ export default function BillingPage() {
   const [popup, setPopup] = useState({ show: false, type: 'success', message: '' });
   // 🟢 NAYA STATE: Trial claim ki loading ke liye
   const [claimingTrial, setClaimingTrial] = useState(false);
-
+  const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
     fetchCredits();
   }, []);
@@ -45,7 +45,7 @@ export default function BillingPage() {
 
       if (error) throw error;
       if (data) setCredits(data.job_credits || 0);
-      
+      setUserId(session.user.id);
     } catch (error: any) {
       console.error("Error fetching credits:", error.message);
     } finally {
@@ -148,14 +148,9 @@ export default function BillingPage() {
 
   return (
   <>
-    {/* FASTSPRING SCRIPT */}
-    <Script
-      id="fsc-api"
-      src="https://sbl.onfastspring.com/sbl/0.9.2/fastspring-builder.min.js"
-      type="text/javascript"
-      data-storefront="hireskys.onfastspring.com/popup-hireskys" // Ise apne exact URL se replace karein
-      strategy="lazyOnload"
-    />
+    {/* GUMROAD SCRIPT */}
+    {/* Purani line ko is line se replace kar do */}
+<Script src="https://gumroad.com/js/gumroad.js" strategy="afterInteractive" />
     <div className="max-w-[1250px] mx-auto space-y-12 animate-in fade-in duration-500 pb-12">
       
       {/* 📌 HEADER */}
@@ -279,13 +274,13 @@ export default function BillingPage() {
                   <span>No AI Automation Features</span>
                 </li>
               </ul>
-              <button 
-                onClick={() => handleCheckout('startup-plan')}
-                disabled={processingPlan !== null}
-                className="block w-full py-4 text-center rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all duration-300 disabled:opacity-70 flex justify-center items-center mt-auto"
+              <a 
+                href={`https://shelbydreams40.gumroad.com/l/startup-plan?url_params[employerId]=${userId}`} 
+                data-gumroad-overlay-checkout="true"
+                className="block w-full py-4 text-center rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all duration-300 flex justify-center items-center mt-auto cursor-pointer"
               >
-                {processingPlan === 'Startup' ? <Loader2 className="animate-spin" size={20} /> : 'Buy Startup Credit'}
-              </button>
+                Buy Startup Credit
+              </a>
             </div>
           </div>
 
@@ -321,6 +316,10 @@ export default function BillingPage() {
                 <li className="flex items-start gap-3 text-indigo-50 text-sm font-medium">
                   <CheckCircle2 size={20} className="text-indigo-300 shrink-0 mt-0.5" /> 
                   <span>Embed Jobs on Career Page</span>
+                </li>
+                <li className="flex items-start gap-3 text-indigo-50 text-sm font-medium">
+                  <CheckCircle2 size={20} className="text-indigo-300 shrink-0 mt-0.5" /> 
+                  <span>AI Job Description Generator</span>
                 </li>
               </ul>
               <button 

@@ -70,9 +70,9 @@ export default function ApplyPage() {
         const extractedLoc = match ? match[1].trim() : locString.replace(/Remote/i, '').trim();
 
         const parsedCountries = extractedLoc
-          .split(/[,&]|\band\b/i)
-          .map(c => c.trim())
-          .filter(Boolean); 
+  .split(/[,&]|\band\b/i)
+  .map((c: string) => c.trim()) // 👈 Type define kar di
+  .filter(Boolean);
 
         if (parsedCountries.length > 0) {
           setCountryOptions(parsedCountries); 

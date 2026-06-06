@@ -275,7 +275,7 @@ export default function BillingPage() {
                 </li>
               </ul>
               <a 
-                href={`https://hireskys.gumroad.com/l/startup-plan?url_params[employerId]=${userId}`} 
+                href={`https://hireskys.gumroad.com/l/startup-plan?employerId=${userId}`} 
                 data-gumroad-overlay-checkout="true"
                 className="block w-full py-4 text-center rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all duration-300 flex justify-center items-center mt-auto cursor-pointer"
               >

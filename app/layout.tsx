@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import Script from 'next/script';
 import SupportChat from '@/components/SupportChat';
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
   creator: "HireSkys Inc.",
   publisher: "HireSkys Inc.",
 other: {
-    "google-adsense-account": "ca-pub-1919758160460496"
+    "google-adsense-account": "ca-pub-7375069227835841"
   },
   // Social Sharing (Open Graph)
   openGraph: {
@@ -145,6 +146,12 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <Script
+  async
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7375069227835841"
+  crossOrigin="anonymous"
+  strategy="afterInteractive"
+/>
         <NextTopLoader 
           color="#6366f1"
           initialPosition={0.08}

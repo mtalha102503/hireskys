@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Script from 'next/script';
-import SupportChat from '@/components/SupportChat';
+import ConditionalChat from '@/components/ConditionalChat';
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
@@ -174,7 +174,7 @@ export default function RootLayout({
           </div>
           
           <ConsentBanner />
-          <SupportChat />
+          <ConditionalChat />
         </ThemeProvider>
         <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />

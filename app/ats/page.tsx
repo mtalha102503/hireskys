@@ -207,7 +207,7 @@ export default function ATSLandingPage() {
               <ul className="space-y-4 mb-8 flex-1">
                 <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300 text-sm font-medium">
                   <CheckCircle2 size={20} className="text-emerald-500 shrink-0 mt-0.5" /> 
-                  <span>5 Free Job Posts</span>
+                  <span>2 Free Job Posts</span>
                 </li>
                 <li className="flex items-start gap-3 text-slate-700 dark:text-slate-300 text-sm font-medium">
                   <CheckCircle2 size={20} className="text-emerald-500 shrink-0 mt-0.5" /> 

@@ -71,6 +71,15 @@ const BLOG_POSTS = [
     author: 'Muhammad Talha',
     category: 'Guides & Tutorials',
     image: '/hireskys-ats-guide.webp'
+  },
+  {
+    slug: 'zero-budget-hiring-guide',
+    title: 'Zero Budget Hiring: Manage & Promote Your Remote Jobs for Free',
+    excerpt: 'Discover how you can use the HireSkys ATS to manage candidates for free, and our ultimate hack to promote your open roles without spending a single penny.',
+    date: 'June 10, 2026',
+    author: 'Muhammad Talha',
+    category: 'Growth Hacks & Hiring',
+    image: '/blog-zero-budget.jpg'
   }
 ];
 

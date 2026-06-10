@@ -284,10 +284,6 @@ export default function ATSLandingPage() {
                   <CheckCircle2 size={20} className="text-indigo-300 shrink-0 mt-0.5" /> 
                   <span>Embed Jobs on Career Page</span>
                 </li>
-                <li className="flex items-start gap-3 text-indigo-50 text-sm font-medium">
-                  <CheckCircle2 size={20} className="text-indigo-300 shrink-0 mt-0.5" /> 
-                  <span>AI Job Description Generator</span>
-                </li>
               </ul>
               <Link href="/login?plan=scale" className="block w-full py-4 text-center rounded-xl font-black bg-white text-indigo-600 hover:bg-slate-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.03] mt-auto">
                 Select Scale Plan

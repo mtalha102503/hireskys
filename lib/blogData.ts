@@ -11,6 +11,7 @@ export interface BlogPost {
   category: string;
   image: string;
   content: string; // HTML Content
+  toc?: { id: string, title: string }[];
 }
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -742,6 +743,126 @@ export const BLOG_POSTS: BlogPost[] = [
                 </a>
             </div>
           </div>
+      </div>
+    `
+  },
+  {
+    slug: 'how-hireskys-ats-works',
+    title: 'The Ultimate Guide to HireSkys ATS: Quality, Safety & Rules',
+    excerpt: 'Learn how our Applicant Tracking System works, why we manually approve jobs, and how our strict anti-spam rules protect both employers and candidates.',
+    date: 'Jun 10, 2026', 
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png', 
+    category: 'Guides & Tutorials',
+    image: '/hireskys-ats-guide.webp', 
+    toc: [
+      { id: "strictly-remote", title: "100% Remote Jobs Only" }, // 🟢 Naya TOC item add kiya
+      { id: "locked-fields", title: "Why are Fields Locked?" },
+      { id: "pending-approval", title: "Job Approval Process" }
+    ],
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Welcome to the HireSkys Applicant Tracking System (ATS). We built this platform to make remote hiring incredibly fast, safe, and spam-free for everyone. 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Before we dive into the rules, we want you to experience the full power of our ATS without any risk. That is why we give every new employer <strong>2 Free Job Credits</strong> as soon as they sign up. You can post real jobs, manage candidates in the Kanban board, and test our features completely free.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
+        And when you are ready to scale, remember: upgrading to our <strong>Urgent Plan</strong> doesn't just give you premium ATS features. We actively promote your job across our main job board and social channels to bring you the top 1% of global remote talent.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="strictly-remote" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        100% Remote Jobs Only
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        HireSkys is built exclusively for the modern workforce. Our platform is strictly a <strong>remote-only job board</strong>. When you use our ATS to publish an open position, it must be a fully remote role. 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Whether the position is restricted to a specific time zone, a certain country, or open to candidates anywhere in the world (Global), it must not require the employee to commute to a physical office. Hybrid or on-site job postings are not permitted and will be automatically rejected during our manual review process.
+      </p>
+
+      <div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-blue-800 dark:text-blue-300 m-0 text-lg">
+            This strict remote-only policy ensures that top global talent can trust the listings on HireSkys, saving valuable time for both employers and candidates.
+        </p>
+      </div>
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="locked-fields" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Why are Job Titles and Categories Locked?
+      </h2>
+      
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        If you try to edit your job after posting it, you will notice that the <strong>Job Title</strong> and <strong>Category</strong> are greyed out and locked. We do this for a very specific reason: <em>to prevent system abuse.</em>
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        On older job boards, a scammer could post a job for a "Frontend Developer", collect a bunch of resumes, and then edit the exact same job post to say "Sales Manager" to trick more people without paying for a new job credit. 
+      </p>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            By locking the core details, we ensure that every job on HireSkys remains authentic and true to its original purpose. You can still edit your job description, salary, and location at any time!
+        </p>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="pending-approval" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        The Job Approval Process (Pending Status)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        When you submit a new job, it doesn't go live instantly. Instead, its status changes to <strong>"Pending Review"</strong>. This is because HireSkys is a premium, curated platform. 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        During this pending stage, our quality assurance team manually checks your job post. We do this to:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Fix Formatting:</strong> We clean up the text, fix any broken bullet points, and make sure your job description looks highly professional and attractive to top candidates.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Verify Legitimacy:</strong> We ensure the job is a real remote opportunity and meets our quality standards.</span>
+          </li>
+      </ul>
+
+      <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">What happens if a job is rejected?</h3>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        We have a zero-tolerance policy for spam, MLM schemes, unpaid internships disguised as jobs, or inappropriate content. If our team finds that a job violates our trust guidelines, it will be rejected. 
+      </p>
+
+      <div class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800 p-6 my-8 rounded-xl shadow-sm">
+        <p class="font-bold text-emerald-800 dark:text-emerald-300 m-0 text-lg flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            Our Refund Guarantee
+        </p>
+        <p class="text-emerald-700 dark:text-emerald-400 mt-2">
+            If your job is rejected for any reason, you do not lose your money. <strong>Your 1 Job Credit is automatically refunded back to your account</strong> so you can try again with a compliant job post.
+        </p>
+      </div>
+
+      <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-xl">
+          <h3 class="text-2xl font-black text-white mb-4">Ready to hire the best?</h3>
+          <p class="text-slate-400 mb-8 text-lg">Use your free credits and post your first job today.</p>
+          <a href="/employer/jobs/create" class="inline-flex justify-center items-center px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-1 shadow-lg no-underline">
+              Post a Job Now
+          </a>
       </div>
     `
   }

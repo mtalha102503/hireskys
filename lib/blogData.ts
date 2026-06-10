@@ -865,5 +865,123 @@ export const BLOG_POSTS: BlogPost[] = [
           </a>
       </div>
     `
-  }
+  },
+  {
+    slug: 'zero-budget-hiring-guide',
+    title: 'Zero Budget Hiring: Manage & Promote Your Remote Jobs for Free',
+    excerpt: 'Discover how you can use the HireSkys ATS to manage candidates for free, and our ultimate hack to promote your open roles without spending a single penny.',
+    date: 'Jun 10, 2026', 
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png', 
+    category: 'Growth Hacks & Hiring',
+    image: '/blog-zero-budget.jpg', 
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Hiring top-tier remote talent shouldn't bankrupt your startup. At HireSkys, we believe that every growing company deserves access to enterprise-grade hiring tools, even if they have zero budget right now.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
+        Whether you are a bootstrapped founder, a lean agency, or a fast-growing startup, we have built a loophole specifically for you. Read on to discover how you can manage candidates like a Fortune 500 company and promote your jobs—completely for free.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="the-trap" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        The Expensive Industry Trap
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Let's face it: the recruitment software industry is broken. Traditional Applicant Tracking Systems (ATS) lock your candidate data behind massive paywalls, often charging upwards of $299 per month just to keep your account active. 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        When you are trying to scale a business, paying hundreds of dollars a month just to read resumes is a massive waste of resources. That is exactly why we created the HireSkys ATS—a lightning-fast, pay-per-post platform with zero recurring fees.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="free-ats" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="m9 12 2 2 4-4"/></svg>
+        Step 1: Manage for Free (Claim 2 Credits)
+      </h2>
+      
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        We want you to experience the power of a clutter-free hiring pipeline without any risk. The moment you create an employer account on HireSkys, we instantly credit your account with <strong>2 Free Job Posts</strong>.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        These aren't limited trial posts. You get full access to our premium suite:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div class="bg-white dark:bg-[#111625] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-2">Drag & Drop Kanban</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Move candidates from "New" to "Hired" instantly without refreshing the page.</p>
+        </div>
+        <div class="bg-white dark:bg-[#111625] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-2">Integrated CV Viewer</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Read cover letters and screening answers in a clean popup. No messy downloads.</p>
+        </div>
+      </div>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            By using your free credits, you instantly get a highly professional, mobile-friendly application link (e.g., <em>hireskys.com/jobs/your-role/apply</em>) to collect resumes safely.
+        </p>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="free-promotion" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
+        Step 2: The Ultimate Hack (Promote for Free)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        So, you have created your beautiful job post on our ATS, but you don't have the budget to run ads or buy premium promotions. <strong>Here is the secret hack to get free traffic:</strong>
+      </p>
+
+      <ul class="space-y-6 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm shrink-0">1</span>
+              <div>
+                <strong>Copy your ATS Link:</strong> Go to your Employer Dashboard, find the job you just created with your free credit, and copy its public application link.
+              </div>
+          </li>
+          <li class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm shrink-0">2</span>
+              <div>
+                <strong>Head to the Main Job Board:</strong> Go to the free job posting section of HireSkys (outside the ATS dashboard).
+              </div>
+          </li>
+          <li class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm shrink-0">3</span>
+              <div>
+                <strong>Paste & Relax:</strong> Fill in the basic job details, and in the "How to Apply (URL)" field, paste your HireSkys ATS link! 
+              </div>
+          </li>
+      </ul>
+
+      <div class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800 p-6 my-8 rounded-xl shadow-sm">
+        <p class="font-bold text-emerald-800 dark:text-emerald-300 m-0 text-lg flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            The Result
+        </p>
+        <p class="text-emerald-700 dark:text-emerald-400 mt-2 leading-relaxed">
+            Your job is now live on our main public board, capturing free traffic from thousands of remote workers. When they click "Apply", they are smoothly redirected into your private, highly organized ATS pipeline. <strong>You just managed and promoted your job for $0.</strong>
+        </p>
+      </div>
+
+      <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+          <h3 class="text-2xl md:text-3xl font-black text-white mb-4 relative z-10">Stop managing CVs in your inbox.</h3>
+          <p class="text-slate-400 mb-8 text-lg relative z-10">Claim your 2 free credits today and upgrade your hiring process instantly.</p>
+          <a href="/login" class="inline-flex justify-center items-center px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] hover:-translate-y-1 no-underline relative z-10">
+              Create Free Account
+          </a>
+      </div>
+    `
+}
 ];

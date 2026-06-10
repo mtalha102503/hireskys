@@ -66,7 +66,7 @@ const BLOG_POSTS = [
     {
     slug: 'how-hireskys-ats-works',
     title: 'The Ultimate Guide to HireSkys ATS: Quality, Safety & Rules',
-    excerpt: 'Scammers are getting smarter. Here is exactly how to spot fake jobs, protect your bank account, and verify clients before writing a single line of code.',
+    excerpt: 'Learn how our Applicant Tracking System works, why we manually approve jobs, and how our strict anti-spam rules protect both employers and candidates.',
     date: 'June 10, 2026',
     author: 'Muhammad Talha',
     category: 'Guides & Tutorials',

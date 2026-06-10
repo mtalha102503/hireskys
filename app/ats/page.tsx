@@ -185,7 +185,7 @@ export default function ATSLandingPage() {
             <div className="p-8 border-b border-slate-100 dark:border-slate-800 bg-emerald-50/50 dark:bg-emerald-900/10 transition-colors duration-500">
               <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Free Trial</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 min-h-[40px]">
-                Test our platform risk-free. Get 5 credits to start hiring immediately.
+                Test our platform risk-free. Get 2 credits to start hiring immediately.
               </p>
               <div className="mt-6 flex items-end gap-1">
                 <span className="text-5xl font-black text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">$0</span>
@@ -208,7 +208,7 @@ export default function ATSLandingPage() {
                 </li>
               </ul>
               <Link href="/login?plan=trial" className="block w-full py-4 text-center rounded-xl font-bold bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 transition-all duration-300 mt-auto">
-                Claim 5 Credits
+                Claim 2 Credits
               </Link>
             </div>
           </div>

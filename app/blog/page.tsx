@@ -58,10 +58,19 @@ const BLOG_POSTS = [
     slug: 'ultimate-guide-remote-job-safety-2026',
     title: 'The Dark Side of Remote Work: 3 Safety Rules Every Freelancer Must Know',
     excerpt: 'Scammers are getting smarter. Here is exactly how to spot fake jobs, protect your bank account, and verify clients before writing a single line of code.',
-    date: 'May 31, 2026',
+    date: 'May 30, 2026',
     author: 'Muhammad Talha',
     category: 'Career Advice',
     image: '/blog-safety-guide.jpg'
+  },
+    {
+    slug: 'how-hireskys-ats-works',
+    title: 'The Ultimate Guide to HireSkys ATS: Quality, Safety & Rules',
+    excerpt: 'Scammers are getting smarter. Here is exactly how to spot fake jobs, protect your bank account, and verify clients before writing a single line of code.',
+    date: 'June 10, 2026',
+    author: 'Muhammad Talha',
+    category: 'Guides & Tutorials',
+    image: '/hireskys-ats-guide.webp'
   }
 ];
 

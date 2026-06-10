@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import { 
   Layout, CheckCircle2, ArrowRight, Bot, Globe, 
   CreditCard, Briefcase, X, Star, Sparkles, TrendingUp,
-  FileText, Building2, Zap, AlertOctagon, Layers
+  FileText, Building2, Zap, AlertOctagon, Layers,HelpCircle
 } from 'lucide-react';
 
 export default function ATSLandingPage() {
@@ -144,6 +144,17 @@ export default function ATSLandingPage() {
               <p className="text-indigo-100 text-lg font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
                 Other platforms lock your hiring data behind expensive, recurring monthly subscriptions. With HireSkys, you get full enterprise-level ATS power with <strong className="text-white underline decoration-pink-500 underline-offset-4 decoration-2">zero recurring fees</strong>.
               </p>
+
+              {/* 🟢 VIP JADOO: Naya Growth Hack Link yahan add kiya */}
+              <div className="mt-6 text-center lg:text-left">
+                <Link 
+                  href="/blog/zero-budget-hiring-guide" 
+                  className="inline-flex items-center gap-2 text-sm font-black text-white hover:text-pink-200 bg-white/10 hover:bg-white/20 px-4 py-2.5 rounded-full transition-all border border-white/10 shadow-sm"
+                >
+                  <Sparkles size={14} className="text-pink-400 animate-pulse" />
+                  Read our Zero-Budget Hiring Guide &rarr;
+                </Link>
+              </div>
             </div>
 
             <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4 shrink-0">
@@ -207,6 +218,14 @@ export default function ATSLandingPage() {
                   <span>No Premium Features</span>
                 </li>
               </ul>
+              <div className="mb-4 text-center">
+                <Link 
+                  href="/blog/zero-budget-hiring-guide" 
+                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                >
+                  <HelpCircle size={12} /> Learn how to promote for 100% free
+                </Link>
+              </div>
               <Link href="/login?plan=trial" className="block w-full py-4 text-center rounded-xl font-bold bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 transition-all duration-300 mt-auto">
                 Claim 2 Credits
               </Link>

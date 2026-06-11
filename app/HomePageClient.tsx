@@ -2379,7 +2379,7 @@ return (
                     
                     {/* Categories Map */}
                     {visibleCategories.map(([name, data], index) => {
-        const Icon = data.icon;
+        const Icon = (data as any).icon;
         const isActive = activeCategory === name;
         return (
             <Link 
@@ -2682,7 +2682,13 @@ return (
                                                     <div key={index} className="flex items-center gap-1">
                                                         {index > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
                                                         {locItem.isImage ? (
-                                                            <img src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} alt={locItem.name} className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" />
+                                                            <Image 
+    src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} 
+    alt={locItem.name} 
+    width={20} 
+    height={15} 
+    className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" 
+/>
                                                         ) : (
                                                             <span className="text-base leading-none">🌍</span>
                                                         )}
@@ -2713,7 +2719,13 @@ return (
                                     <div className="flex-shrink-0">
                                         {companyLogoUrl ? (
                                             <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1 md:p-1.5 border border-amber-100 dark:border-slate-700 shadow-sm flex items-center justify-center">
-                                                <img src={companyLogoUrl} alt={job.source} className="h-full w-full object-contain" />
+                                                <Image 
+    src={companyLogoUrl} 
+    alt={job.source || "Company Logo"} 
+    width={64} 
+    height={64} 
+    className="h-full w-full object-contain" 
+/>
                                             </div>
                                         ) : (
                                             <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-amber-50 dark:bg-slate-800 flex items-center justify-center border border-amber-100 dark:border-slate-700">
@@ -2814,7 +2826,13 @@ return (
                                      <div key={i} className="flex items-center gap-1">
                                          {i > 0 && <span className="text-slate-300 dark:text-slate-600 mr-1">,</span>}
                                          {locItem.isImage ? (
-                                             <img src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} alt={locItem.name} className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" />
+                                             <Image 
+    src={`https://flagcdn.com/w40/${locItem.code.toLowerCase()}.png`} 
+    alt={locItem.name} 
+    width={20} 
+    height={15} 
+    className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" 
+/>
                                          ) : (
                                              <span className="text-base leading-none">🌍</span>
                                          )}
@@ -2855,7 +2873,13 @@ return (
                       <div className="flex-shrink-0">
                           {companyLogoUrl ? (
                               <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1 md:p-1.5 border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-center">
-                                  <img src={companyLogoUrl} alt={job.source} className="h-full w-full object-contain" />
+                                  <Image 
+    src={companyLogoUrl} 
+    alt={job.source || "Company Logo"} 
+    width={64} 
+    height={64} 
+    className="h-full w-full object-contain" 
+/>
                               </div>
                           ) : (
                               <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-indigo-50 dark:bg-slate-800 flex items-center justify-center border border-indigo-100 dark:border-slate-700">

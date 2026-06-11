@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { 
   Users, Search, Clock, Globe,Lock, FileText, 
-  Mail, Loader2, ChevronDown, ChevronRight, X, Link as LinkIcon, Save,Phone, Linkedin, HelpCircle // 👈 Save add kiya
+  Mail, Loader2, ChevronDown,CheckCircle, AlertCircle, ChevronRight, X, Link as LinkIcon, Save,Phone, Linkedin, HelpCircle // 👈 Save add kiya
 } from 'lucide-react';
 
 const COLUMNS = [
@@ -27,7 +27,14 @@ export default function CandidatesBoard() {
   // 🟢 VIP JADOO: Private Notes State
   const [noteText, setNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
+// 🟢 Custom Notification State
+  const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' | 'warning' } | null>(null);
 
+  // Helper function to show notifications that auto-hide after 4 seconds
+  const showNotification = (message: string, type: 'success' | 'error' | 'warning' = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 4000);
+  };
   // Jab candidate Modal open ho, uske purane notes load karlo
   useEffect(() => {
     if (selectedCandidate) {
@@ -51,24 +58,25 @@ export default function CandidatesBoard() {
       if (session?.user) {
         const { data: compData } = await supabase
           .from('companies')
-          .select('plan_tier')
+          .select('name, plan_tier')
           .eq('employer_id', session.user.id)
           .single();
         setCompany(compData);
+
+        // 3. 🟢 THE FIX: Candidates fetch karo (SIRF IS EMPLOYER KE JOBS KE)
+        const { data, error } = await supabase
+          .from('applications')
+          .select(`
+            *,
+            profiles!candidate_id ( full_name, avatar_url, country ),
+            jobs!inner ( title, employer_id ) 
+          `)
+          .eq('jobs.employer_id', session.user.id) // 👈 YE SECURITY FILTER MISSING THA!
+          .order('applied_at', { ascending: false });
+
+        if (error) throw error;
+        setCandidates(data || []);
       }
-
-      // 3. Candidates fetch karo (Tumhara purana code)
-      const { data, error } = await supabase
-        .from('applications')
-        .select(`
-          *,
-          profiles!candidate_id ( full_name, avatar_url, country ),
-          jobs ( title )
-        `)
-        .order('applied_at', { ascending: false });
-
-      if (error) throw error;
-      setCandidates(data || []);
     } catch (error) {
       console.error("Error fetching candidates:", error);
     } finally {
@@ -79,8 +87,52 @@ export default function CandidatesBoard() {
   // 🟢 VIP LOGIC: Check karo ke kya user ke paas Scale ya us se bara plan hai?
   const hasScalePlan = ['Scale', 'Urgent', 'Bulk 5 Pack', 'Bulk 10 Pack'].includes(company?.plan_tier);
 
+// Trigger the Email API
+  async function sendInterviewInvite(candidateData: any) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      const candidateName = candidateData.profiles?.full_name || candidateData.full_name || 'Candidate';
+      const companyName = company?.name || 'Our Company'; 
+      const jobTitle = candidateData.jobs?.title || 'the applied role';
+
+      const response = await fetch('/api/email/interview-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          candidateEmail: candidateData.email,
+          candidateName: candidateName,
+          companyName: companyName,
+          jobTitle: jobTitle,
+          employerId: session.user.id
+        })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        if (data.error === "NO_LINK_FOUND") {
+           showNotification("Candidate moved to Interview, but no scheduling link was sent. Set up your link in Integrations.", "warning");
+        } else {
+           showNotification(data.error || "Failed to send interview email.", "error");
+        }
+      } else {
+        showNotification(`Interview invitation successfully sent to ${candidateName}.`, "success");
+      }
+      
+    } catch (error) {
+      console.error("Email API trigger failed:", error);
+      showNotification("An unexpected error occurred while sending the email.", "error");
+    }
+  }
+
+  // Update Status in Database and Trigger Email if applicable
   async function updateStatus(applicationId: string, newStatus: string) {
     try {
+      const targetCandidate = candidates.find(c => c.id === applicationId);
+
+      // Optimistic UI update
       setCandidates(candidates.map(c => 
         c.id === applicationId ? { ...c, status: newStatus } : c
       ));
@@ -91,14 +143,23 @@ export default function CandidatesBoard() {
         .eq('id', applicationId);
 
       if (error) {
-        alert("Status update fail ho gaya: " + error.message);
-        fetchApplications();
+        showNotification(`Failed to update status: ${error.message}`, "error");
+        fetchApplications(); // Revert UI if database fails
+        return;
       }
+
+      // 🚀 Trigger the email only if the new status is 'Interview' and it wasn't already in 'Interview'
+      if (newStatus === 'Interview' && targetCandidate && targetCandidate.status !== 'Interview') {
+        await sendInterviewInvite(targetCandidate);
+      }
+
     } catch (error) {
       console.error("Update error:", error);
+      showNotification("An unexpected error occurred.", "error");
     }
   }
-// 🟢 VIP JADOO: Save Private Note Function
+
+  // Save Private Notes
   async function saveNote() {
     if (!selectedCandidate) return;
     setSavingNote(true);
@@ -110,14 +171,15 @@ export default function CandidatesBoard() {
 
       if (error) throw error;
       
-      // Local state update taake modal band karke kholne par wapas aa jaye
       setCandidates(candidates.map(c => 
         c.id === selectedCandidate.id ? { ...c, employer_notes: noteText } : c
       ));
       setSelectedCandidate({ ...selectedCandidate, employer_notes: noteText });
       
+      showNotification("Private notes saved successfully.", "success");
+      
     } catch (error: any) {
-      alert("Note save fail ho gaya: " + error.message);
+      showNotification(`Failed to save notes: ${error.message}`, "error");
     } finally {
       setSavingNote(false);
     }
@@ -504,7 +566,31 @@ export default function CandidatesBoard() {
           </div>
         </div>
       )}
-
+{/* 🟢 Custom Notification Popup (Toast) */}
+      {notification && (
+        <div className="fixed top-6 right-6 z-[100] animate-in slide-in-from-top-5 fade-in duration-300">
+          <div className={`flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl border ${
+            notification.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50 text-emerald-800 dark:text-emerald-300' :
+            notification.type === 'warning' ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50 text-amber-800 dark:text-amber-300' :
+            'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800/50 text-rose-800 dark:text-rose-300'
+          }`}>
+            {notification.type === 'success' ? (
+              <CheckCircle size={20} className="text-emerald-500" />
+            ) : notification.type === 'warning' ? (
+              <AlertCircle size={20} className="text-amber-500" />
+            ) : (
+              <AlertCircle size={20} className="text-rose-500" />
+            )}
+            <p className="text-sm font-bold">{notification.message}</p>
+            <button 
+              onClick={() => setNotification(null)}
+              className="ml-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -8,11 +8,15 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   const pathname = usePathname(); // 🟢 2. CURRENT URL GET KIYA
 
-  // 🟢 3. THE MAGIC: Agar URL /embed ya /p/ (talent profiles) se shuru ho raha hai, toh Footer gayab
-  if (pathname?.startsWith('/embed') || pathname?.startsWith('/p/')) {
+  // 🟢 3. THE MAGIC: Agar URL /embed, /p/ (talent profiles), ya /companies/ se shuru ho raha hai, toh Footer gayab
+  if (
+    pathname?.startsWith('/embed') || 
+    pathname?.startsWith('/p/') || 
+    pathname?.startsWith('/community')||
+    pathname?.startsWith('/employer')
+  ) {
     return null;
   }
-
   return (
     <footer className="w-full bg-white dark:bg-[#0B0F19] border-t border-slate-200 dark:border-slate-800 pt-16 pb-8">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -81,7 +85,6 @@ export default function Footer() {
             <h3 className="font-bold text-slate-900 dark:text-white mb-4">Legal</h3>
             <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
               <li><Link href="/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy Policy</Link></li>
-              <li><Link href="/refund-policy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Refund & Cancellation</Link></li>
               <li><Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms of Service</Link></li>
               <li><Link href="/cookie-policy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Cookie Policy</Link></li>
               <li><Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About Us</Link></li>

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react'; // 🟢 Suspense import kiya hai
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Users, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 
-export default function AcceptInvitePage() {
+// 🟢 STEP 1: Saari logic ek alag component (InviteContent) mein nikal li
+function InviteContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token'); // URL se token (ID) nikalenge
@@ -117,5 +118,15 @@ export default function AcceptInvitePage() {
 
       </div>
     </div>
+  );
+}
+
+// 🟢 STEP 2: Main page mein us logic ko Suspense ke sath render kiya hai
+export default function AcceptInvitePage() {
+  return (
+    // Yeh Suspense Next.js ko btata hai ke URL parameters ka wait kare
+    <Suspense fallback={<div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-indigo-600" size={40} /></div>}>
+      <InviteContent />
+    </Suspense>
   );
 }

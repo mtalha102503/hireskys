@@ -25,6 +25,8 @@ export default function CandidatesBoard() {
   // 🟢 NAYA JADOO: Selected Candidate for Modal
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
   
+  // 👇 YAHAN YE NAYI STATE ADD KARO 👇
+  const [showResume, setShowResume] = useState(false);
   // 🟢 VIP JADOO: Private Notes State
   const [noteText, setNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
@@ -523,13 +525,16 @@ export default function CandidatesBoard() {
                   <LinkIcon size={18} className="text-teal-500" /> Attachments & Links
                 </h3>
                 
-                {/* Resume */}
-                {selectedCandidate.resume_url && (
-                  <a href={selectedCandidate.resume_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 rounded-xl border border-indigo-100 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-900/10 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors group shadow-sm">
-                    <span className="text-sm font-bold text-indigo-700 dark:text-indigo-400 flex items-center gap-2"><FileText size={16}/> View Resume / CV</span>
-                    <ChevronRight size={18} className="text-indigo-400 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                )}
+                {/* Resume Button */}
+  {selectedCandidate.resume_url && (
+    <button 
+      onClick={() => setShowResume(true)} 
+      className="w-full flex items-center justify-between p-4 rounded-xl border border-indigo-100 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-900/10 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors group shadow-sm"
+    >
+      <span className="text-sm font-bold text-indigo-700 dark:text-indigo-400 flex items-center gap-2"><FileText size={16}/> View Resume / CV</span>
+      <ChevronRight size={18} className="text-indigo-400 group-hover:translate-x-1 transition-transform" />
+    </button>
+  )}
                 
                 {/* LinkedIn */}
                 {selectedCandidate.linkedin_url && (
@@ -574,6 +579,45 @@ export default function CandidatesBoard() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {showResume && selectedCandidate?.resume_url && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8 bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0B0F19] w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            
+            {/* Header */}
+            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
+              <h3 className="text-lg font-black flex items-center gap-2 text-slate-900 dark:text-white">
+                <FileText size={20} className="text-indigo-500" /> Resume: {selectedCandidate.full_name || selectedCandidate.profiles?.full_name}
+              </h3>
+              <div className="flex items-center gap-2">
+                <a 
+                  href={selectedCandidate.resume_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="px-3 py-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors border border-indigo-200 dark:border-indigo-800/50 hidden sm:block"
+                >
+                  Open in New Tab
+                </a>
+                <button 
+                  onClick={() => setShowResume(false)} 
+                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            </div>
+
+            {/* Iframe Viewer */}
+            <div className="flex-1 w-full bg-slate-100 dark:bg-slate-800 relative">
+              <iframe 
+                src={`${selectedCandidate.resume_url}#view=FitH`} 
+                className="w-full h-full border-none absolute inset-0"
+                title="Resume Viewer"
+              />
+            </div>
+
           </div>
         </div>
       )}

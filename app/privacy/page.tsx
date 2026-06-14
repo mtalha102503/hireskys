@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar';
 import { ShieldCheck, Lock, Eye, Mail, Server, Cookie, FileText } from 'lucide-react';
 
 export default function PrivacyPolicy() {
-  const lastUpdated = "December 21, 2025";
+  const lastUpdated = "June 14, 2026";
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100">
@@ -82,14 +82,36 @@ export default function PrivacyPolicy() {
               </div>
             </div>
           </section>
-
+          {/* 3. GOOGLE API USAGE (NEW FOR VERIFICATION) */}
+          <section className="space-y-4">
+            <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
+              <div className="p-2 bg-rose-100 dark:bg-rose-900/50 rounded-lg text-rose-600 shrink-0">
+                <ShieldCheck size={20} className="md:w-6 md:h-6" />
+              </div>
+              3. Google API Data Usage
+            </h2>
+            <div className="pl-0 md:pl-14 text-slate-600 dark:text-slate-400 text-sm md:text-base space-y-3">
+              <p>
+                HireSkys uses Google APIs (specifically the Gmail/Calendar API) to allow employers to send interview invitations directly from their own email accounts and generate Google Meet/Calendar links.
+              </p>
+              <p>
+                <strong>We strictly comply with the Google API Services User Data Policy, including the Limited Use requirements.</strong> Specifically:
+              </p>
+              <ul className="list-disc space-y-2 pl-5">
+                <li>We only use the requested access to send interview scheduling emails on your behalf.</li>
+                <li>We <strong>do not</strong> read, read, store, or sell any of your personal emails or calendar events.</li>
+                <li>We <strong>do not</strong> share this data with any third-party tools or AI models.</li>
+                <li>Your OAuth tokens are securely encrypted and stored in our database, strictly for the purpose of sending your approved interview templates.</li>
+              </ul>
+            </div>
+          </section>
           {/* 3. COOKIES */}
           <section className="space-y-4">
             <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
               <div className="p-2 bg-orange-100 dark:bg-orange-900/50 rounded-lg text-orange-600 shrink-0">
                 <Cookie size={20} className="md:w-6 md:h-6" />
               </div>
-              3. Cookies and Tracking
+              4. Cookies and Tracking
             </h2>
             <div className="pl-0 md:pl-14 text-slate-600 dark:text-slate-400 space-y-3 text-sm md:text-base">
               <p>
@@ -104,7 +126,7 @@ export default function PrivacyPolicy() {
               <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg text-green-600 shrink-0">
                 <Lock size={20} className="md:w-6 md:h-6" />
               </div>
-              4. Data Security
+              5. Data Security
             </h2>
             <div className="pl-0 md:pl-14 text-slate-600 dark:text-slate-400 text-sm md:text-base">
               <p>
@@ -119,7 +141,7 @@ export default function PrivacyPolicy() {
               <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg text-purple-600 shrink-0">
                 <Server size={20} className="md:w-6 md:h-6" />
               </div>
-              5. Third-Party Services
+              6. Third-Party Services
             </h2>
             <div className="pl-0 md:pl-14 text-slate-600 dark:text-slate-400 text-sm md:text-base">
               <ul className="list-disc pl-5 space-y-1">
@@ -136,7 +158,7 @@ export default function PrivacyPolicy() {
             </h2>
             <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-700 block md:inline-block md:pr-12 w-full md:w-auto">
               <p className="font-bold text-slate-900 dark:text-white text-sm">By Email:</p>
-              <a href="mailto:contact@hireskys.com" className="text-indigo-600 hover:text-indigo-500 font-medium text-sm md:text-base break-all">contact@hireskys.com</a>
+              <a href="mailto:support@hireskys.com" className="text-indigo-600 hover:text-indigo-500 font-medium text-sm md:text-base break-all">support@hireskys.com</a>
             </div>
           </section>
 
@@ -144,5 +166,4 @@ export default function PrivacyPolicy() {
       </main>
     </div>
   );
-
 }

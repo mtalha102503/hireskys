@@ -232,22 +232,17 @@ export default function EmployerSettingsPage() {
   const isFirstLoad = useRef(true);
   const [tourStep, setTourStep] = useState(0);
    // 🟢 NAYA JADOO: Tour Steps Data
+// 🟢 NAYA JADOO: Tour Steps Data (Ab Sirf 2 Steps Hain)
   const integrationTourSteps = [
     {
-      title: "Step 1: Connect Your Calendar 📅",
-      desc: "Link your Google or Microsoft Outlook account. This allows HireSkys to sync your availability and automatically generate secure interview slots for candidates.",
-      icon: <CalendarDays size={48} className="text-indigo-500" />,
-      color: "bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200"
-    },
-    {
-      title: "Step 2: Universal Booking Links 🔗",
-      desc: "Prefer Calendly or Cal.com? No problem! Just paste your personal scheduling link here. The system will prioritize this link when inviting candidates.",
+      title: "Step 1: Choose Booking Tool 🔗",
+      desc: "Paste your Calendly, Cal.com, or any custom booking link here. We'll use this automatically when inviting candidates.",
       icon: <LinkIcon size={48} className="text-blue-500" />,
       color: "bg-blue-50 dark:bg-blue-900/20 border-blue-200"
     },
     {
-      title: "Step 3: Auto-Email Triggers ✉️",
-      desc: "Customize your Interview Template. Now, whenever you drag a candidate to the 'Interviewing' column on your Kanban board, this exact email will be sent automatically with your booking link attached!",
+      title: "Step 2: Auto-Email Triggers ✉️",
+      desc: "Customize this message. Whenever you drag a candidate to the 'Interviewing' column, this email is sent instantly!",
       icon: <Mail size={48} className="text-fuchsia-500" />,
       color: "bg-fuchsia-50 dark:bg-fuchsia-900/20 border-fuchsia-200"
     }
@@ -307,21 +302,22 @@ useEffect(() => {
   };
 
 // Floating Tooltip Box
+ // Floating Tooltip Box
   const renderTourTooltip = (step: number) => {
     if (tourStep !== step) return null;
     const stepData = integrationTourSteps[step - 1];
     
-    // 🟢 Step 3 ke liye wapas 'upper' wala logic (Tumhari demand ke mutabiq)
-    const isStep3 = step === 3;
+    // 🟢 Ab aakhri step '2' hai
+    const isLastStep = step === 2;
 
     return (
       <div className={`absolute right-0 md:right-4 w-[320px] bg-white dark:bg-[#111625] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] border-2 border-indigo-500 p-5 z-[120] animate-in fade-in duration-300 ${
-        isStep3 ? 'bottom-full mb-4 slide-in-from-bottom-4' : 'top-full mt-6 slide-in-from-top-4'
+        isLastStep ? 'bottom-full mb-4 slide-in-from-bottom-4' : 'top-full mt-6 slide-in-from-top-4'
       }`}>
          
          {/* 🟢 Arrow pointer */}
          <div className={`absolute right-10 w-5 h-5 bg-white dark:bg-[#111625] border-indigo-500 rotate-45 ${
-           isStep3 ? '-bottom-2.5 border-b-2 border-r-2' : '-top-2.5 border-t-2 border-l-2'
+           isLastStep ? '-bottom-2.5 border-b-2 border-r-2' : '-top-2.5 border-t-2 border-l-2'
          }`}></div>
          
          <div className="flex items-center gap-3 mb-3 relative z-10">
@@ -334,7 +330,7 @@ useEffect(() => {
          
          <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 relative z-10">
            <span className="text-[10px] font-black tracking-widest text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md uppercase">
-             {step}/3
+             {step}/2
            </span>
            <div className="flex gap-2">
              <button type="button" onClick={closeTour} className="px-3 py-1.5 text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Skip</button>
@@ -344,24 +340,21 @@ useEffect(() => {
                   e.preventDefault();
                   e.stopPropagation();
                   
-                  if (step === 3) {
+                  if (step === 2) {
                     closeTour();
                   } else {
                     setTourStep(prev => prev + 1);
-                    
-                    // 🚀 FIXED JADOO: Scroll ko hamesha center me rakho taake upar/neeche se na kate
-setTimeout(() => {
-  const element = document.querySelector('.ring-indigo-500');
-  if (element) {
-    // Hamesha center mein scroll karo
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-}, 250);
+                    setTimeout(() => {
+                      const element = document.querySelector('.ring-indigo-500');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }, 250);
                   }
                 }} 
                 className="px-4 py-1.5 bg-indigo-600 text-white text-[11px] font-black rounded-lg hover:bg-indigo-700 transition-all shadow-md active:scale-95"
              >
-               {step === 3 ? 'Finish' : 'Next'}
+               {step === 2 ? 'Finish' : 'Next'}
              </button>
            </div>
          </div>
@@ -1084,7 +1077,7 @@ setTimeout(() => {
               </div>
             </div>
           )}
-          {/* 🟢 TAB 3: INTEGRATIONS (OAUTH) */}
+         {/* 🟢 TAB 3: INTEGRATIONS (OAUTH FREE & PROFESSIONAL) */}
           {activeTab === 'integrations' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500 relative pb-64">
               
@@ -1096,318 +1089,128 @@ setTimeout(() => {
                    </div>
                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Unlock Automations</h3>
                    <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-sm text-sm font-medium">
-                     Upgrade to the <strong className="text-indigo-600 dark:text-indigo-400">Startup Plan</strong> to connect your calendar and automate interview scheduling.
+                     Upgrade to the <strong className="text-indigo-600 dark:text-indigo-400">Startup Plan</strong> to automate interview scheduling.
                    </p>
                    
-                   {/* 🟢 NAYA JADOO: 2 Buttons (Upgrade + Learn) */}
                    <div className="flex flex-col sm:flex-row items-center gap-3">
                      <Link href="/employer/billing" className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition-all flex items-center gap-2 hover:-translate-y-0.5">
                        <Sparkles size={16} /> Upgrade to Startup
                      </Link>
-                     
                      <Link href="/blog/how-hireskys-ats-works#integrations" target="_blank" className="px-6 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2 hover:-translate-y-0.5 shadow-sm">
                        <Info size={16} className="text-indigo-500" /> See How it Works
                      </Link>
                    </div>
-
                 </div>
               )}
 
-              {/* 🟢 ORIGINAL CONTENT (Blur agar access nahi) */}
+              {/* 🟢 ORIGINAL CONTENT */}
               <div className={`bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-sm transition-all duration-300 ${!hasStartupAccess ? 'opacity-30 pointer-events-none select-none blur-[2px]' : ''}`}>
                 
                 {/* Header Section */}
-                <div className="mb-8">
+                <div className="mb-8 border-b border-slate-100 dark:border-slate-800 pb-6">
                   <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                    <CalendarDays className="text-indigo-500" size={24} /> Interview Scheduling
+                    <CalendarDays className="text-indigo-500" size={24} /> Automated Scheduling
                   </h2>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium max-w-2xl">
-                    Connect your calendar to let candidates book interview slots automatically. We'll generate a secure booking link whenever you move a candidate to the "Interview" stage.
+                    Add your booking link below. We'll generate a secure, personalized email and send it to candidates automatically whenever you move them to the "Interviewing" stage.
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-8">
                   
-                  {/* 🚀 1. GOOGLE CALENDAR CARD (PREMIUM UI) */}
-                  <div className={`p-5 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 ${
-                    isCalendarConnected 
-                    ? 'bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/50' 
-                    : 'bg-slate-50 dark:bg-[#0B0F19] border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700/50 hover:shadow-md'
-                  } ${getHighlightClass(1)}`}>
+                  {/* 🚀 STEP 1: BOOKING LINKS (Teeno cards ko ek group mein daal diya) */}
+                  <div className={`space-y-4 ${getHighlightClass(1)} p-4 -m-4 rounded-3xl`}>
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-2 flex items-center gap-2">
+                      <LinkIcon className="text-blue-500" size={16}/> 1. Choose Your Booking Tool
+                    </h3>
                     
-                    <div className="flex items-center gap-4">
-                      {/* Beautiful Icon Wrapper */}
-                      <div className="w-14 h-14 bg-white dark:bg-[#151b2e] rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700/50 shrink-0">
-                        {/* Bulletproof Inline SVG for Google */}
-                        <svg className="w-7 h-7" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M23.49 12.275c0-.85-.075-1.675-.225-2.475h-11.2v4.675h6.425c-.275 1.5-1.125 2.775-2.4 3.625v3.025h3.875c2.275-2.1 3.525-5.2 3.525-8.85z" fill="#4285F4"/>
-                          <path d="M12.065 24c3.225 0 5.925-1.075 7.9-2.925l-3.875-3.025c-1.075.725-2.45 1.15-4.025 1.15-3.1 0-5.725-2.1-6.65-4.925h-4.025v3.1C3.34 21.25 7.39 24 12.065 24z" fill="#34A853"/>
-                          <path d="M5.415 14.275c-.25-.725-.375-1.5-.375-2.275s.125-1.55.375-2.275v-3.1h-4.025C.54 8.125 0 10.025 0 12s.54 3.875 1.39 5.375l4.025-3.1z" fill="#FBBC05"/>
-                          <path d="M12.065 4.8c1.75 0 3.325.6 4.575 1.775l3.425-3.425C17.965 1.175 15.265 0 12.065 0 7.39 0 3.34 2.75 1.39 6.625l4.025 3.1c.925-2.825 3.55-4.925 6.65-4.925z" fill="#EA4335"/>
-                        </svg>
-                      </div>
-                      
-                      {/* Text & Status */}
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white text-base">Google Calendar</h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="relative flex h-2.5 w-2.5">
-                            {isCalendarConnected ? (
-                              <><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></>
-                            ) : (
-                              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-300 dark:bg-slate-600"></span>
-                            )}
-                          </span>
-                          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                            {checkingCalendar 
-                              ? 'Checking status...' 
-                              : isCalendarConnected 
-                                ? <span className="text-emerald-700 dark:text-emerald-400">Connected ({calendarEmail})</span> 
-                                : 'Not connected'
-                            }
-                          </p>
+                    {/* CALENDLY CARD */}
+                    <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] hover:border-blue-300 dark:hover:border-blue-700/50 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                      <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="w-14 h-14 bg-white dark:bg-[#151b2e] rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700/50 shrink-0">
+                           <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" fill="#006BFF"/>
+                              <path d="M11 7C11 6.44772 11.4477 6 12 6C12.5523 6 13 6.44772 13 7V12.5L16.2929 15.7929C16.6834 16.1834 16.6834 16.8166 16.2929 17.2071C15.9024 17.5976 15.2692 17.5976 14.8787 17.2071L11.2929 13.6213C11.1054 13.4338 11 13.1795 11 12.9142V7Z" fill="white"/>
+                           </svg>
                         </div>
+                        <div className="flex-1 w-full">
+                          <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                            Calendly <span className="px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-[10px] uppercase tracking-wider">Most Popular</span>
+                          </h3>
+                          <p className="text-sm font-medium text-slate-500 mt-1">Paste your booking link to automatically schedule interviews.</p>
+                        </div>
+                      </div>
+                      <div className="w-full md:w-1/3 mt-3 md:mt-0 relative group">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <LinkIcon className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <input type="url" value={formData.calendly_url} onChange={(e) => setFormData({...formData, calendly_url: e.target.value})} placeholder="https://calendly.com/your-link" className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
                       </div>
                     </div>
 
-                    {/* Action Button */}
-                    <div className="w-full md:w-auto">
-                      {checkingCalendar ? (
-                        <button disabled className="w-full md:w-auto px-6 py-2.5 text-sm font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center gap-2">
-                          <Loader2 size={16} className="animate-spin" /> Checking...
-                        </button>
-                      ) : isCalendarConnected ? (
-                        <button
-                          onClick={() => {
-  showConfirm(
-    "Disconnect Google Calendar", 
-    "Are you sure you want to disconnect? Automated interview scheduling will stop working.",
-    async () => {
-      await supabase.from('calendar_integrations').delete().eq('employer_id', user.id).eq('provider', 'google');
-      setIsCalendarConnected(false);
-      setCalendarEmail('');
-      setSuccessMsg('Google Calendar disconnected!');
-    }
-  );
-}}
-                          className="w-full md:w-auto px-6 py-2.5 text-sm font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/40 rounded-xl transition-all border border-rose-100 dark:border-rose-900/50 text-center"
-                        >
-                          Disconnect
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => window.location.href = `/api/auth/google?userId=${user.id}`}
-                          className="w-full md:w-auto px-6 py-2.5 text-sm font-bold text-slate-700 dark:text-white bg-white dark:bg-[#1A2235] hover:bg-slate-50 dark:hover:bg-[#1E273C] rounded-xl transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
-                        >
-                          Connect Account
-                        </button>
-                      )}
+                    {/* CAL.COM CARD */}
+                    <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                      <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="w-14 h-14 bg-black dark:bg-[#151b2e] rounded-2xl flex items-center justify-center shadow-sm border border-slate-800 dark:border-slate-700/50 shrink-0">
+                           <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM6.5 12C6.5 8.96243 8.96243 6.5 12 6.5C13.6845 6.5 15.1915 7.25883 16.1953 8.44185L14.7811 9.85607C14.103 9.02293 13.1042 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5C13.1042 15.5 14.103 14.9771 14.7811 14.1439L16.1953 15.5582C15.1915 16.7412 13.6845 17.5 12 17.5C8.96243 17.5 6.5 15.0376 6.5 12Z" fill="white"/>
+                           </svg>
+                        </div>
+                        <div className="flex-1 w-full">
+                          <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                            Cal.com <span className="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] uppercase tracking-wider font-bold">Open Source</span>
+                          </h3>
+                          <p className="text-sm font-medium text-slate-500 mt-1">The modern scheduling alternative. Drop your link here.</p>
+                        </div>
+                      </div>
+                      <div className="w-full md:w-1/3 mt-3 md:mt-0 relative group">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <LinkIcon className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <input type="url" value={formData.cal_url} onChange={(e) => setFormData({...formData, cal_url: e.target.value})} placeholder="https://cal.com/your-link" className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-colors" />
+                      </div>
+                    </div>
+
+                    {/* CUSTOM BOOKING LINK CARD */}
+                    <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] hover:border-purple-300 dark:hover:border-purple-700/50 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                      <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-md shrink-0">
+                           <LinkIcon className="text-white w-6 h-6" />
+                        </div>
+                        <div className="flex-1 w-full">
+                          <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                            Custom Link <span className="px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-[10px] uppercase tracking-wider font-bold">Universal</span>
+                          </h3>
+                          <p className="text-sm font-medium text-slate-500 mt-1">Using HubSpot, TidyCal, or Zoho? Paste any scheduling link here.</p>
+                        </div>
+                      </div>
+                      <div className="w-full md:w-1/3 mt-3 md:mt-0 relative group">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Globe2 className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <input type="url" value={formData.custom_booking_url} onChange={(e) => setFormData({...formData, custom_booking_url: e.target.value})} placeholder="https://your-booking-tool.com/link" className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors" />
+                      </div>
                     </div>
                     {renderTourTooltip(1)}
                   </div>
 
-                  {/* 🚀 2. MICROSOFT OUTLOOK CARD (LIVE & ACTIVE) */}
-                  <div className={`p-5 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 ${
-                    isOutlookConnected 
-                    ? 'bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/50' 
-                    : 'bg-slate-50 dark:bg-[#0B0F19] border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700/50 hover:shadow-md'
-                  }`}>
-                    
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-white dark:bg-[#151b2e] rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700/50 shrink-0">
-                         {/* Microsoft Logo SVG */}
-                         <svg className="w-6 h-6" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="#f35325" d="M0 0h11v11H0z"/>
-                            <path fill="#81bc06" d="M12 0h11v11H12z"/>
-                            <path fill="#05a6f0" d="M0 12h11v11H0z"/>
-                            <path fill="#ffba08" d="M12 12h11v11H12z"/>
-                         </svg>
-                      </div>
-                      
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white text-base">Microsoft Outlook</h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="relative flex h-2.5 w-2.5">
-                            {isOutlookConnected ? (
-                              <><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></>
-                            ) : (
-                              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-300 dark:bg-slate-600"></span>
-                            )}
-                          </span>
-                          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                            {checkingOutlook 
-                              ? 'Checking status...' 
-                              : isOutlookConnected 
-                                ? <span className="text-emerald-700 dark:text-emerald-400">Connected ({outlookEmail})</span> 
-                                : 'Not connected'
-                            }
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <div className="w-full md:w-auto">
-                      {checkingOutlook ? (
-                        <button disabled className="w-full md:w-auto px-6 py-2.5 text-sm font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center gap-2">
-                          <Loader2 size={16} className="animate-spin" /> Checking...
-                        </button>
-                      ) : isOutlookConnected ? (
-                        <button
-                          onClick={() => {
-  showConfirm(
-    "Disconnect Microsoft Outlook", 
-    "Are you sure you want to disconnect? Automated interview scheduling will stop working.",
-    async () => {
-      await supabase.from('calendar_integrations').delete().eq('employer_id', user.id).eq('provider', 'microsoft');
-      setIsOutlookConnected(false);
-      setOutlookEmail('');
-      setSuccessMsg('Outlook disconnected!');
-    }
-  );
-}}
-                          className="w-full md:w-auto px-6 py-2.5 text-sm font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/40 rounded-xl transition-all border border-rose-100 dark:border-rose-900/50 text-center"
-                        >
-                          Disconnect
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => window.location.href = `/api/auth/microsoft?userId=${user.id}`}
-                          className="w-full md:w-auto px-6 py-2.5 text-sm font-bold text-slate-700 dark:text-white bg-white dark:bg-[#1A2235] hover:bg-slate-50 dark:hover:bg-[#1E273C] rounded-xl transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
-                        >
-                          Connect Account
-                        </button>
-                      )}
-                    </div>
-                  </div>
-              </div>
-            </div>
-            {/* 🚀 3. CALENDLY CARD */}
-                  <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] hover:border-blue-300 dark:hover:border-blue-700/50 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-                    
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                      <div className="w-14 h-14 bg-white dark:bg-[#151b2e] rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700/50 shrink-0">
-                         {/* Calendly Inline SVG */}
-                         <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" fill="#006BFF"/>
-                            <path d="M11 7C11 6.44772 11.4477 6 12 6C12.5523 6 13 6.44772 13 7V12.5L16.2929 15.7929C16.6834 16.1834 16.6834 16.8166 16.2929 17.2071C15.9024 17.5976 15.2692 17.5976 14.8787 17.2071L11.2929 13.6213C11.1054 13.4338 11 13.1795 11 12.9142V7Z" fill="white"/>
-                         </svg>
-                      </div>
-                      
-                      <div className="flex-1 w-full">
-                        <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                          Calendly <span className="px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-[10px] uppercase tracking-wider">Most Popular</span>
-                        </h3>
-                        <p className="text-sm font-medium text-slate-500 mt-1">
-                          Paste your booking link to automatically schedule interviews.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Input Field for URL */}
-                    <div className="w-full md:w-1/3 mt-3 md:mt-0 relative group">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <LinkIcon className="h-4 w-4 text-slate-400" />
-                      </div>
-                      <input 
-                        type="url" 
-                        value={formData.calendly_url} 
-                        onChange={(e) => setFormData({...formData, calendly_url: e.target.value})} 
-                        placeholder="https://calendly.com/your-link" 
-                        className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
-                      />
-                    </div>
-                  </div>
-                  {/* 🚀 4. CAL.COM CARD */}
-                  <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-                    
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                      <div className="w-14 h-14 bg-black dark:bg-[#151b2e] rounded-2xl flex items-center justify-center shadow-sm border border-slate-800 dark:border-slate-700/50 shrink-0">
-                         {/* Cal.com Minimalist SVG */}
-                         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM6.5 12C6.5 8.96243 8.96243 6.5 12 6.5C13.6845 6.5 15.1915 7.25883 16.1953 8.44185L14.7811 9.85607C14.103 9.02293 13.1042 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5C13.1042 15.5 14.103 14.9771 14.7811 14.1439L16.1953 15.5582C15.1915 16.7412 13.6845 17.5 12 17.5C8.96243 17.5 6.5 15.0376 6.5 12Z" fill="white"/>
-                         </svg>
-                      </div>
-                      
-                      <div className="flex-1 w-full">
-                        <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                          Cal.com <span className="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] uppercase tracking-wider font-bold">Open Source</span>
-                        </h3>
-                        <p className="text-sm font-medium text-slate-500 mt-1">
-                          The modern scheduling alternative. Drop your link here.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Input Field for URL */}
-                    <div className="w-full md:w-1/3 mt-3 md:mt-0 relative group">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <LinkIcon className="h-4 w-4 text-slate-400" />
-                      </div>
-                      <input 
-                        type="url" 
-                        value={formData.cal_url} 
-                        onChange={(e) => setFormData({...formData, cal_url: e.target.value})} 
-                        placeholder="https://cal.com/your-link" 
-                        className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-colors"
-                      />
-                    </div>
-                  </div>
-                  {/* 🚀 5. CUSTOM BOOKING LINK CARD */}
-                  <div className={`p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] hover:border-purple-300 dark:hover:border-purple-700/50 hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 ${getHighlightClass(2)}`}>
-                    
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                      <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-md shrink-0">
-                         {/* Universal Link Icon from Lucide */}
-                         <LinkIcon className="text-white w-6 h-6" />
-                      </div>
-                      
-                      <div className="flex-1 w-full">
-                        <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                          Custom Booking Link <span className="px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-[10px] uppercase tracking-wider font-bold">Universal</span>
-                        </h3>
-                        <p className="text-sm font-medium text-slate-500 mt-1">
-                          Using HubSpot, TidyCal, or Zoho? Paste any scheduling link here.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Input Field for URL */}
-                    <div className="w-full md:w-1/3 mt-3 md:mt-0 relative group">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Globe2 className="h-4 w-4 text-slate-400" />
-                      </div>
-                      <input 
-                        type="url" 
-                        value={formData.custom_booking_url} 
-                        onChange={(e) => setFormData({...formData, custom_booking_url: e.target.value})} 
-                        placeholder="https://your-booking-tool.com/link" 
-                        className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
-                      />
-                    </div>
-                    {renderTourTooltip(2)}
-                  </div>
-                  {/* 🚀 6. EMAIL TEMPLATE CUSTOMIZATION (PRO FEATURE) */}
-                  <div className={`mt-8 border-t border-slate-200 dark:border-slate-800 pt-8 p-4 rounded-3xl ${getHighlightClass(3)}`}>
-  <div className="mb-6">
+                  {/* 🚀 STEP 2: EMAIL TEMPLATE CUSTOMIZATION */}
+                  <div className={`border-t border-slate-200 dark:border-slate-800 pt-8 p-4 -mx-4 rounded-3xl ${getHighlightClass(2)}`}>
+                    <div className="mb-6">
                       <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-                        <Code2 className="text-fuchsia-500" size={20} /> Custom Email Template
+                        <Code2 className="text-fuchsia-500" size={20} /> 2. Custom Email Template
                       </h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                         Personalize the email that gets sent when you move a candidate to the "Interviewing" stage. 
                       </p>
                     </div>
-                    {renderTourTooltip(3)}
                     <div className="bg-slate-50 dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 relative">
-                      {/* Helper Variables Box */}
                       <div className="flex flex-wrap items-center gap-2 mb-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-xl">
                         <span className="text-xs font-bold text-indigo-800 dark:text-indigo-300 mr-2">Smart Variables:</span>
                         <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800">{"{{candidate_name}}"}</code>
-  <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800">{"{{job_title}}"}</code>
-  <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800">{"{{company_name}}"}</code>
-</div>
-
-                      {/* Textarea */}
+                        <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800">{"{{job_title}}"}</code>
+                        <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm border border-indigo-100 dark:border-indigo-800">{"{{company_name}}"}</code>
+                      </div>
                       <textarea 
                         value={formData.interview_template}
                         onChange={(e) => setFormData({...formData, interview_template: e.target.value})}
@@ -1418,9 +1221,12 @@ setTimeout(() => {
                         <Info size={12}/> The booking link button will be attached automatically at the bottom.
                       </p>
                     </div>
+                    {renderTourTooltip(2)}
                   </div>
+
+                </div>
+              </div>
             </div>
-            
           )}
           {/* 🟢 TAB 4: TEAM ACCESS (MULTI-USER) */}
           {activeTab === 'team' && (

@@ -291,7 +291,7 @@ export default function ATSLandingPage() {
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white">Automated Interviews</h3>
                   </div>
                   <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                    Connect Google Calendar, Outlook, or Calendly. Drag a candidate to "Interviewing" and our system will automatically email them your booking link.
+                    Connect Calendly , Cal, Hubspot or other booking links. Drag a candidate to "Interviewing" and our system will automatically email them your booking link.
                   </p>
                 </div>
               </div>

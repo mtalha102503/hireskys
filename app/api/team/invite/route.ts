@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     }
 
     // 4. Magic Invite Link Generate karo
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hireskys.com';
     const inviteLink = `${baseUrl}/accept-invite?token=${newInvite.id}`;
 
     // 5. 🟢 Nodemailer SMTP Transporter Setup

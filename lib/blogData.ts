@@ -891,7 +891,7 @@ export const BLOG_POSTS: BlogPost[] = [
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Inside your ATS settings, you can securely connect your <strong>Google Calendar</strong> or <strong>Microsoft Outlook</strong> account with a single click. If you prefer using other tools, you can simply paste your public booking link from Calendly, Cal.com, HubSpot, or Zoho. 
+        Inside your ATS settings, you can securely connect your <strong>Calendly</strong> , <strong>Cal</strong> or other booking links like hubspot , zoho by using our custom booking links setup.
       </p>
 
       <div class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 my-8 shadow-sm">

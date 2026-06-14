@@ -759,7 +759,9 @@ export const BLOG_POSTS: BlogPost[] = [
     toc: [
       { id: "strictly-remote", title: "100% Remote Jobs Only" }, // 🟢 Naya TOC item add kiya
       { id: "locked-fields", title: "Why are Fields Locked?" },
-      { id: "pending-approval", title: "Job Approval Process" }
+      { id: "pending-approval", title: "Job Approval Process" },
+      { id: "team-access", title: "Team Collaboration" },
+      { id: "integrations", title: "Automated Interviews" }
     ],
     content: `
       <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
@@ -794,6 +796,7 @@ export const BLOG_POSTS: BlogPost[] = [
             This strict remote-only policy ensures that top global talent can trust the listings on HireSkys, saving valuable time for both employers and candidates.
         </p>
       </div>
+
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 id="locked-fields" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
@@ -841,12 +844,6 @@ export const BLOG_POSTS: BlogPost[] = [
           </li>
       </ul>
 
-      <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">What happens if a job is rejected?</h3>
-
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        We have a zero-tolerance policy for spam, MLM schemes, unpaid internships disguised as jobs, or inappropriate content. If our team finds that a job violates our trust guidelines, it will be rejected. 
-      </p>
-
       <div class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800 p-6 my-8 rounded-xl shadow-sm">
         <p class="font-bold text-emerald-800 dark:text-emerald-300 m-0 text-lg flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -857,6 +854,53 @@ export const BLOG_POSTS: BlogPost[] = [
         </p>
       </div>
 
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="team-access" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-fuchsia-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team Access: Because Hiring is a Team Sport
+      </h2>
+
+      <img src="/team-access.png" alt="Team Collaboration on HireSkys" class="w-full rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 my-8 object-cover" />
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        If your company is growing, you shouldn't have to review hundreds of resumes all by yourself. That is exactly why we built <strong>Team Collaboration</strong> directly into our ATS. It lets you bring your co-founders, HR managers, and technical leads into your private workspace so you can make decisions together.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Setting it up is incredibly simple. Just enter your colleague's email address and select their role. You can make them an <strong>Admin</strong> (who has full control over job posts and billing) or an <strong>Interviewer</strong> (who can only view candidates and move them across the Kanban board).
+      </p>
+
+      <div class="bg-fuchsia-50 dark:bg-fuchsia-900/10 border-l-4 border-fuchsia-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-fuchsia-800 dark:text-fuchsia-300 m-0 text-lg">
+            Once you send the invite, they receive a secure, branded email to join your workspace instantly. It keeps everyone on the same page and helps you hire the best person, faster.
+        </p>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="integrations" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Integrations & Automated Interview Scheduling
+      </h2>
+
+      <img src="/integrations-panel.png" alt="Automated Scheduling Integrations" class="w-full rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 my-8 object-cover" />
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Think about how much time you waste emailing a candidate back and forth just to find a good time for a quick 15-minute interview. It is frustrating, right? Our <strong>Integrations</strong> feature completely eliminates this headache.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Inside your ATS settings, you can securely connect your <strong>Google Calendar</strong> or <strong>Microsoft Outlook</strong> account with a single click. If you prefer using other tools, you can simply paste your public booking link from Calendly, Cal.com, HubSpot, or Zoho. 
+      </p>
+
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 my-8 shadow-sm">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">✉️ The Real Magic: Auto-Email Triggers</h3>
+        <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-0">
+          Here is where the real magic happens. You can write a customized "Interview Template" in your settings. Now, whenever you review a candidate on your Kanban board and simply drag their card into the <strong>"Interviewing"</strong> column, our system wakes up. It automatically takes your custom email, attaches your calendar booking link at the very bottom, and sends it directly to the candidate. Zero manual work required!
+        </p>
+      </div>
+   <img src="/email-template.png" alt="Custom Email Templates" class="w-full rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 my-8 object-cover" />
       <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-xl">
           <h3 class="text-2xl font-black text-white mb-4">Ready to hire the best?</h3>
           <p class="text-slate-400 mb-8 text-lg">Use your free credits and post your first job today.</p>
@@ -973,7 +1017,7 @@ export const BLOG_POSTS: BlogPost[] = [
             Your job is now live on our main public board, capturing free traffic from thousands of remote workers. When they click "Apply", they are smoothly redirected into your private, highly organized ATS pipeline. <strong>You just managed and promoted your job for $0.</strong>
         </p>
       </div>
-
+      
       <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-xl relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none"></div>
           <h3 class="text-2xl md:text-3xl font-black text-white mb-4 relative z-10">Stop managing CVs in your inbox.</h3>

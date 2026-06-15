@@ -469,7 +469,7 @@ useEffect(() => {
   }
   
 
-  useEffect(() => {
+ useEffect(() => {
     const checkPlans = async () => {
       if (!workspaceId) return;
       const { data: comp } = await supabase
@@ -478,9 +478,17 @@ useEffect(() => {
         .eq('employer_id', workspaceId)
         .single();
         
-      const plan = comp?.plan_tier || 'Free Trial';
-      setHasStartupAccess(['Startup', 'Scale', 'Urgent', 'Bulk 5 Pack', 'Bulk 10 Pack'].includes(plan));
-      setHasScaleAccess(['Scale', 'Urgent', 'Bulk 5 Pack', 'Bulk 10 Pack'].includes(plan));
+      // 🟢 VIP JADOO: Smart Tier Hierarchy Logic (Case Insensitive)
+      const currentPlan = (comp?.plan_tier || 'Free Trial').toLowerCase();
+
+      // 1. Startup Access (Startup aur us se oopar saare plans)
+      const startupAccess = ['startup', 'scale', 'urgent', 'bulk 5', 'bulk 10'].some(tier => currentPlan.includes(tier));
+      
+      // 2. Scale Access (Sirf Scale, Urgent, aur Bulk plans)
+      const scaleAccess = ['scale', 'urgent', 'bulk 5', 'bulk 10'].some(tier => currentPlan.includes(tier));
+
+      setHasStartupAccess(startupAccess);
+      setHasScaleAccess(scaleAccess);
     };
     checkPlans();
   }, [workspaceId]);

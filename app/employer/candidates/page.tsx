@@ -319,8 +319,9 @@ const getCountryCode = (countryName: string) => {
   }
   return null; 
 };
-  // 🟢 VIP LOGIC: Check karo ke kya user ke paas Scale ya us se bara plan hai?
-  const hasScalePlan = ['Scale', 'Urgent', 'Bulk 5 Pack', 'Bulk 10 Pack'].includes(company?.plan_tier);
+// 🟢 VIP JADOO: Smart Tier Hierarchy Logic (Case Insensitive)
+  const currentPlan = (company?.plan_tier || 'Free Trial').toLowerCase();
+  const hasScalePlan = ['scale', 'urgent', 'bulk 5', 'bulk 10'].some(tier => currentPlan.includes(tier));
 
 // Trigger the Email API
   async function sendInterviewInvite(candidateData: any) {

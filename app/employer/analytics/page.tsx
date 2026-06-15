@@ -45,8 +45,11 @@ async function fetchAnalytics() {
         .eq('employer_id', workspaceId) // 👈 Yahan workspaceId lagaya
         .single();
 
-      const plan = compData?.plan_tier || 'Free';
-      const hasAccess = ['Scale', 'Urgent', 'Bulk 5 Pack', 'Bulk 10 Pack'].includes(plan);
+      // 🟢 VIP JADOO: Smart Tier Hierarchy Logic (Case Insensitive)
+      const currentPlan = (compData?.plan_tier || 'Free').toLowerCase();
+      
+      // Scale aur us se oopar wale tamam plans ko analytics ka access hai
+      const hasAccess = ['scale', 'urgent', 'bulk 5', 'bulk 10'].some(tier => currentPlan.includes(tier));
       
       setIsPremium(hasAccess);
 

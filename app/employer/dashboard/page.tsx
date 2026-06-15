@@ -72,9 +72,15 @@ const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
       setSavingNote(false);
     }
   }
-  // 🟢 1. YAHAN HONA CHAHIYE PREMIUM CHECK!
-  // Component ke re-render hone par yeh khud update ho jayega
-  const hasPremiumFeatures = ['Scale', 'Urgent', 'Bulk 5 Pack', 'Bulk 10 Pack'].includes(company?.plan_tier);
+  // 🟢 VIP JADOO: Smart Tier Hierarchy Logic (Case Insensitive & Inclusive)
+  const currentPlan = (company?.plan_tier || 'free').toLowerCase();
+
+  // 1. Startup Level Features (Startup aur us se oopar saare plans ko milenge)
+  const hasStartupFeatures = ['startup', 'scale', 'urgent', 'bulk 5', 'bulk 10'].some(tier => currentPlan.includes(tier));
+
+  // 2. Scale Level Features (Scale, Urgent, aur Bulk walon ko milenge - Embeds & AI)
+  // Note: Startup walon ko ye nahi milega
+  const hasPremiumFeatures = ['scale', 'urgent', 'bulk 5', 'bulk 10'].some(tier => currentPlan.includes(tier));
 
   const handleCopyCode = () => {
     if (!company?.slug) return;

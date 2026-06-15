@@ -8,63 +8,97 @@ export async function POST(req: Request) {
     const payload = Object.fromEntries(formData.entries());
 
     // Gumroad se bhejey gaye data ko nikalna
-    const employerId = payload.employerId as string;
+    const employerId = payload.employerId as string; // Make sure your Gumroad button sends this!
     const buyerEmail = payload.email as string;
-    const saleId = payload.sale_id as string;
     const isRefunded = payload.refunded === 'true';
+    
+    // 🟢 VIP JADOO: Gumroad bhejta hai ke product ka naam kya tha
+    const productName = (payload.product_name as string || '').toLowerCase(); 
 
-    console.log(`Gumroad Webhook Received for User: ${employerId}, Email: ${buyerEmail}`);
+    console.log(`Gumroad Webhook Received | User: ${employerId} | Product: ${productName} | Refunded: ${isRefunded}`);
 
     // Verification check
     if (!employerId) {
       return NextResponse.json({ error: "Missing Employer ID" }, { status: 400 });
     }
 
-    // Agar user ne refund le liya hai toh credit kam kar do (Optional but safe)
-    if (isRefunded) {
-      // Puraane credits read karein
-      const { data: company } = await supabase
-        .from('companies')
-        .select('job_credits')
-        .eq('employer_id', employerId)
-        .single();
-
-      const currentCredits = company?.job_credits || 0;
-      const newCredits = Math.max(0, currentCredits - 1);
-
-      await supabase
-        .from('companies')
-        .update({ job_credits: newCredits })
-        .eq('employer_id', employerId);
-
-      return NextResponse.json({ success: true, message: "Refund processed" });
-    }
-
-    // 🟢 SUCCESSFUL PAYMENT: Credits barhana
-    // Pehle mojooda credits check karein
+    // Pehle mojooda company ka data nikalo taake purane credits pata chal sakein
     const { data: company, error: fetchError } = await supabase
       .from('companies')
-      .select('job_credits')
+      .select('paid_credits, urgent_credits, plan_tier')
       .eq('employer_id', employerId)
       .single();
 
-    if (fetchError) throw fetchError;
+    if (fetchError || !company) throw new Error("Company not found in database");
 
-    const currentCredits = company?.job_credits || 0;
-    const newCredits = currentCredits + 1; // Startup plan mein 1 credit milta hai
+    // 🔴 REFUND LOGIC (Ab paid_credits se minus hoga)
+    if (isRefunded) {
+      let updateData: any = {};
+      
+      // Agar urgent refund hua hai toh urgent se kato, warna paid se
+      if (productName.includes('urgent')) {
+        updateData = { urgent_credits: Math.max(0, (company.urgent_credits || 0) - 1) };
+      } else {
+        // Bulk packs refund hue hain toh zyada kato, warna 1
+        let deduction = 1;
+        if (productName.includes('bulk 5')) deduction = 5;
+        if (productName.includes('bulk 10')) deduction = 10;
+        
+        updateData = { paid_credits: Math.max(0, (company.paid_credits || 0) - deduction) };
+      }
 
-    // Database mein update karein
+      await supabase.from('companies').update(updateData).eq('employer_id', employerId);
+      return NextResponse.json({ success: true, message: "Refund processed securely" });
+    }
+
+    // 🟢 SUCCESSFUL PAYMENT LOGIC
+    let newPlanTier = null;
+    let creditsToAdd = 0;
+    let isUrgentToken = false;
+
+    // Check karo product name mein kya likha hai
+    if (productName.includes('startup')) {
+      newPlanTier = 'Startup';
+      creditsToAdd = 1;
+    } else if (productName.includes('scale')) {
+      newPlanTier = 'Scale';
+      creditsToAdd = 1;
+    } else if (productName.includes('urgent')) {
+      creditsToAdd = 1;
+      isUrgentToken = true;
+      // Urgent pack par plan upgrade nahi karte, jo hai wahi rehta hai
+    } else if (productName.includes('bulk 5')) {
+      creditsToAdd = 5;
+    } else if (productName.includes('bulk 10')) {
+      creditsToAdd = 10;
+    } else {
+      creditsToAdd = 1; // Default
+    }
+
+    // 🛠️ Prepare the payload for Supabase
+    let updatePayload: any = {};
+
+    // Sahi balti mein credits daalo
+    if (isUrgentToken) {
+      updatePayload.urgent_credits = (company.urgent_credits || 0) + creditsToAdd;
+    } else {
+      updatePayload.paid_credits = (company.paid_credits || 0) + creditsToAdd;
+    }
+
+    // Agar plan badalna hai toh payload mein daal do
+    if (newPlanTier) {
+      updatePayload.plan_tier = newPlanTier;
+    }
+
+    // Database mein final update fire kardo!
     const { error: updateError } = await supabase
       .from('companies')
-      .update({ 
-        job_credits: newCredits,
-        plan_tier: 'Startup'
-      })
+      .update(updatePayload)
       .eq('employer_id', employerId);
 
     if (updateError) throw updateError;
 
-    return NextResponse.json({ success: true, message: "Credits updated successfully!" });
+    return NextResponse.json({ success: true, message: `Payment processed: ${productName} - Tier updated to ${newPlanTier || company.plan_tier}` });
 
   } catch (error: any) {
     console.error("Gumroad Webhook Error:", error.message);

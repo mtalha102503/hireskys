@@ -20,6 +20,8 @@ export default function EmployerDashboard() {
   const [recentApplicants, setRecentApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  // 🟢 VIP JADOO: Alert Dismiss State
+  const [dismissAlert, setDismissAlert] = useState(false);
 const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
   const [noteText, setNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
@@ -193,14 +195,42 @@ const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
         </div>
       </div>
 
-      {/* 🔔 SMART ALERT: Needs Attention */}
-      {stats.pending > 0 && (
-        <div className="bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800/50 p-4 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-4 duration-500">
-          <div className="flex items-center gap-3 text-orange-700 dark:text-orange-400">
-            <AlertCircle size={20} />
-            <p className="text-sm font-bold">You have <span className="underline">{stats.pending} new candidates</span> waiting for your review!</p>
+      {/* 🔔 VIP JADOO SMART ALERT: Dismissible & Dynamic */}
+      {stats.pending > 0 && !dismissAlert && (
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/10 border border-orange-200 dark:border-orange-800/50 p-4 md:p-5 rounded-[1.5rem] flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500 relative overflow-hidden group shadow-sm">
+          
+          {/* Side Indicator Line */}
+          <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-orange-400 to-amber-500"></div>
+
+          <div className="flex items-center gap-4 pl-2">
+            <div className="p-3 bg-white dark:bg-orange-950/50 rounded-2xl shadow-sm animate-bounce-slow border border-orange-100 dark:border-orange-800/50">
+              <Zap size={22} className="text-orange-500" fill="currentColor" />
+            </div>
+            <div>
+              <p className="text-base font-black text-slate-900 dark:text-white tracking-tight">
+                {stats.pending === 1 ? '1 candidate is' : `${stats.pending} candidates are`} waiting for your review! 🔥
+              </p>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+                Top talent usually gets hired within 48 hours. Don't miss out.
+              </p>
+            </div>
           </div>
-          <Link href="/employer/candidates?status=New" className="text-xs font-black bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-orange-200 dark:border-orange-800 shadow-sm hover:bg-orange-100 transition-colors uppercase">Review Now</Link>
+
+          <div className="flex items-center gap-2 pl-2 sm:pl-0 w-full sm:w-auto">
+            <Link 
+              href="/employer/candidates?status=New" 
+              className="flex-1 sm:flex-none text-center text-xs font-black bg-orange-500 text-white px-6 py-3 rounded-xl shadow-md shadow-orange-500/20 hover:bg-orange-600 hover:-translate-y-0.5 transition-all uppercase tracking-wider"
+            >
+              Review Now
+            </Link>
+            <button 
+              onClick={() => setDismissAlert(true)}
+              className="p-2.5 text-slate-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 hover:text-orange-500 rounded-xl transition-colors"
+              title="Dismiss for now"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
       )}
 

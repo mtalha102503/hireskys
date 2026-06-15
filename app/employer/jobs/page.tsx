@@ -18,7 +18,31 @@ import { createSlug } from '@/lib/utils'; // Agar slug function tumhare paas lib
 export default function EmployerJobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+// 🟢 VIP JADOO: Job Status Updater
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
+  const handleStatusChange = async (jobId: string, newStatus: string) => {
+    setUpdatingId(jobId);
+    try {
+      // 1. Database Update
+      const { error } = await supabase
+        .from('jobs')
+        .update({ job_status: newStatus }) // ⚠️ Note: Ensure 'job_status' column exists in your jobs table
+        .eq('id', jobId);
+
+      if (error) throw error;
+
+      // 2. Optimistic UI Update (Fauran screen pe change ho jaye)
+      setJobs(jobs.map(job => 
+        job.id === jobId ? { ...job, job_status: newStatus } : job
+      ));
+
+    } catch (error: any) {
+      alert("Failed to update status: " + error.message);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
   // 🟢 Component load hote hi data fetch karega
   useEffect(() => {
     fetchMyJobs();
@@ -38,7 +62,7 @@ export default function EmployerJobsPage() {
       // 🟢 NAYA VIP LOGIC: Workspace ID nikalo
       const { workspaceId } = await getActiveWorkspaceId(user.id);
 
-      // 2. 🟢 SECURE QUERY: Workspace ki jobs nikal lao
+     // 2. 🟢 SECURE QUERY: Workspace ki jobs nikal lao
       const { data, error } = await supabase
         .from('jobs')
         .select(`
@@ -52,6 +76,7 @@ export default function EmployerJobsPage() {
           date_posted,
           approved, 
           ats_approved,
+          job_status, 
           applications ( count )
         `)
         .eq('employer_id', workspaceId) // 👈 Ab yahan workspaceId aayega!
@@ -76,7 +101,17 @@ export default function EmployerJobsPage() {
       </div>
     );
   }
-
+const handleDeleteJob = async (jobId: string) => {
+    if (!confirm("Are you sure you want to delete this job permanently? All related candidates will lose their job reference.")) return;
+    
+    try {
+      const { error } = await supabase.from('jobs').delete().eq('id', jobId);
+      if (error) throw error;
+      setJobs(jobs.filter(job => job.id !== jobId)); // UI se hatao
+    } catch (error: any) {
+      alert("Failed to delete job: " + error.message);
+    }
+  };
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       
@@ -141,15 +176,38 @@ export default function EmployerJobsPage() {
                     </div>
                   </div>
 
-                  {/* Status Badge (Approved/Pending) */}
+                  {/* 🟢 VIP JADOO: Interactive Status Dropdown */}
                   <div className="col-span-1 md:col-span-2 flex justify-start md:justify-center mt-2 md:mt-0">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                      job.ats_approved 
-                      ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' 
-                      : 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20'
-                    }`}>
-                      {job.ats_approved ? 'Active' : 'Pending Review'}
-                    </span>
+                    {!job.ats_approved ? (
+                      // Agar ATS ki taraf se pending hai toh disable rakho
+                      <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400">
+                        Pending Approval
+                      </span>
+                    ) : (
+                      // Agar approved hai toh interactive dropdown dikhao
+                      <div className="relative">
+                        <select 
+                          disabled={updatingId === job.id}
+                          value={job.job_status || 'Active'} 
+                          onChange={(e) => handleStatusChange(job.id, e.target.value)}
+                          className={`appearance-none outline-none pl-3 pr-8 py-1.5 rounded-full text-xs font-bold border cursor-pointer shadow-sm transition-colors ${
+                            updatingId === job.id ? 'opacity-50 cursor-wait' : ''
+                          } ${
+                            (job.job_status || 'Active') === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400' : 
+                            job.job_status === 'Paused' ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400' : 
+                            'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400'
+                          }`}
+                        >
+                          <option value="Active">🟢 Active</option>
+                          <option value="Paused">⏸️ Paused</option>
+                          <option value="Closed">⛔ Closed</option>
+                        </select>
+                        {/* Custom Dropdown Arrow */}
+                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                          {updatingId === job.id ? <Loader2 size={12} className="animate-spin text-slate-400" /> : <span className="text-[10px] text-slate-400">▼</span>}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Real Applicant Count */}
@@ -183,9 +241,6 @@ export default function EmployerJobsPage() {
 >
   <Edit size={18} />
 </Link>
-                    <button className="p-2 text-slate-400 hover:text-red-600 bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Close Job">
-                      <Trash2 size={18} />
-                    </button>
                   </div>
 
                 </div>

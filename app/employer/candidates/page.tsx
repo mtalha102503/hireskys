@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getActiveWorkspaceId } from '@/lib/workspace';
 import { 
   Users, Search, Clock, Globe,Lock, FileText, 
-  Mail, Loader2, ChevronDown,CheckCircle, Bookmark,Star,LayoutGrid, List, CheckSquare,AlertCircle,Calendar, ChevronRight, X, Link as LinkIcon, Save,Phone, Linkedin, HelpCircle // 👈 Save add kiya
+  Mail, Loader2, ChevronDown,CheckCircle, Bookmark,Star,LayoutGrid, List, CheckSquare,AlertCircle,Calendar, ChevronRight, X, Link as LinkIcon, Save,Phone, Linkedin, HelpCircle, Download, History, GitCommit // 👈 Download, History, GitCommit add kiya
 } from 'lucide-react';
 
 const COLUMNS = [
@@ -582,9 +582,65 @@ const getCountryCode = (countryName: string) => {
     } catch (error: any) {
       showNotification(`Failed to save date: ${error.message}`, "error");
     } finally {
+
+
       setSavingDate(false);
     }
   }
+      // 🟢 VIP JADOO: Export to CSV Logic
+  const handleExportCSV = () => {
+    // Sirf wahi candidates nikalenge jo screen par filter ho kar show ho rahe hain
+    const filteredCandidates = candidates
+      .filter(c => selectedJob === "All" || c.jobs?.title === selectedJob)
+      .filter(c => {
+        const name = c.profiles?.full_name || c.full_name || 'Unknown';
+        return name.toLowerCase().includes(searchTerm.toLowerCase());
+      })
+      .filter(c => {
+        if (candidateFilter === 'pooled') return c.is_pooled === true;
+        if (candidateFilter === 'rated') return (c.overall_rating || 0) > 0;
+        if (candidateFilter === 'scheduled') return !!c.interview_date;
+        if (candidateFilter === 'unrated') return !(c.overall_rating && c.overall_rating > 0);
+        return true;
+      });
+
+    if (filteredCandidates.length === 0) {
+      showNotification("No candidates to export!", "warning");
+      return;
+    }
+
+    // CSV Headers
+    const headers = ["Name", "Email", "Phone", "Job Role", "Match Score", "Rating", "Status", "Country", "Applied Date"];
+    
+    // CSV Rows mapping
+    const csvRows = filteredCandidates.map(c => {
+      const name = c.profiles?.full_name || c.full_name || 'Anonymous';
+      return [
+        `"${name}"`,
+        `"${c.email || ''}"`,
+        `"${c.phone || ''}"`,
+        `"${c.jobs?.title || ''}"`,
+        `"${c.ai_match_score || 0}%"`,
+        `"${c.overall_rating || 0}/5"`,
+        `"${c.status || ''}"`,
+        `"${c.country || c.profiles?.country || 'Remote'}"`,
+        `"${new Date(c.applied_at).toLocaleDateString()}"`
+      ].join(",");
+    });
+
+    // Create and Download Blob
+    const csvContent = [headers.join(","), ...csvRows].join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `HireSkys_Candidates_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showNotification("Exported successfully to CSV! 📊", "success");
+  };
   return (
     <div className="space-y-6 animate-in fade-in duration-500 h-full flex flex-col relative">
       
@@ -654,6 +710,15 @@ const getCountryCode = (countryName: string) => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+
+          {/* 🟢 VIP JADOO: Export CSV Button */}
+          <button 
+            onClick={handleExportCSV}
+            className="hidden md:flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 hover:text-emerald-700 dark:hover:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-800/50 px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm active:scale-95"
+            title="Download Filtered Candidates"
+          >
+            <Download size={16} /> Export
+          </button>
         </div>
       </div>
     {/* 🟢 VIP JADOO: BULK ACTION BAR (Sirf tab dikhegi jab koi select hoga) */}
@@ -688,8 +753,8 @@ const getCountryCode = (countryName: string) => {
         </div>
       )}
       {/* 📌 Kanban Board Container */}
-      {/* 📌 MAIN VIEWS (Board ya List) */}
-      <div className="flex-1 overflow-x-auto pb-4">
+      {/* 📌 MAIN VIEWS (Board ya List) + Custom Thin Scrollbar */}
+      <div className="flex-1 overflow-x-auto pb-6 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
         {viewMode === 'kanban' ? (
           /* ================================== */
           /* 🟢 KANBAN BOARD VIEW               */
@@ -708,21 +773,28 @@ const getCountryCode = (countryName: string) => {
                   }
                 }}
               >
-                <div className={`flex items-center justify-between p-3 rounded-xl border-t-2 ${column.color} bg-white dark:bg-[#111625] shadow-sm`}>
-                  <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm">{column.title}</h3>
-                  <span className={`text-xs font-black px-2.5 py-1 rounded-full ${column.bg}`}>
+                {/* 🟢 VIP UI: Kanban Column Header with colored border-top */}
+                <div className={`flex items-center justify-between p-3 md:p-4 rounded-t-2xl rounded-b-xl border-t-[4px] ${column.color} bg-white dark:bg-[#111625] shadow-sm border-x border-b border-slate-100 dark:border-slate-800`}>
+                  <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">{column.title}</h3>
+                  <span className={`text-[10px] font-black px-2.5 py-1 rounded-full shadow-inner ${column.bg}`}>
                     {candidates.filter(c => c.status === column.id).length}
                     
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-3 min-h-[200px]">
-                  {/* 🟢 EMPTY STATE */}
+                  {/* 🟢 VIP UI: Cute Empty State */}
                   {candidates.filter(c => c.status === column.id).length === 0 && (
-                    <div className="flex flex-col items-center justify-center p-6 mt-2 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-xl bg-slate-50/50 dark:bg-[#111625]/50">
-                      <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Empty</p>
+                    <div className="flex flex-col items-center justify-center p-8 mt-2 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-2xl bg-slate-50/50 dark:bg-[#0B0F19]/30 transition-all duration-500">
+                      {/* Ghost/Empty Icon */}
+                      <div className="w-12 h-12 mb-3 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center text-slate-300 dark:text-slate-600">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                          <line x1="9" x2="15" y1="12" y2="12"/>
+                        </svg>
+                      </div>
+                      <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">No Candidates</p>
                     </div>
-                    
                   )}
 
                   {/* 🟢 CANDIDATE CARDS */}
@@ -906,9 +978,32 @@ const getCountryCode = (countryName: string) => {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
                 {candidates
                   .filter(c => selectedJob === "All" || c.jobs?.title === selectedJob)
+                  // 🚀 VIP JADOO: Deep Keyword Search Engine
                   .filter(c => {
-                    const name = c.profiles?.full_name || 'Unknown';
-                    return name.toLowerCase().includes(searchTerm.toLowerCase());
+                    if (!searchTerm) return true; // Agar search khali hai toh sab dikhao
+                    const term = searchTerm.toLowerCase().trim();
+                    
+                    // 1. Basic Info
+                    const name = (c.full_name || c.profiles?.full_name || '').toLowerCase();
+                    const jobTitle = (c.jobs?.title || '').toLowerCase();
+                    const location = `${c.city || ''} ${c.country || c.profiles?.country || ''}`.toLowerCase();
+                    
+                    // 2. Deep Content
+                    const coverLetter = (c.cover_letter || '').toLowerCase();
+                    const privateNotes = (c.employer_notes || '').toLowerCase();
+                    
+                    // 3. Screening Answers (Saare answers ko ek string bana kar search karo)
+                    const answers = c.screening_answers 
+                      ? Object.values(c.screening_answers).join(' ').toLowerCase() 
+                      : '';
+
+                    // Check karo kya search term in mein se kisi mein bhi mojood hai?
+                    return name.includes(term) || 
+                           jobTitle.includes(term) || 
+                           location.includes(term) || 
+                           coverLetter.includes(term) || 
+                           answers.includes(term) ||
+                           privateNotes.includes(term);
                   })
                   .filter(c => {
                     if (candidateFilter === 'pooled') return c.is_pooled === true;
@@ -1324,6 +1419,58 @@ const getCountryCode = (countryName: string) => {
                       {savingNote ? 'Saving...' : 'Save Notes'}
                     </button>
                   </div>
+                  {/* 🟢 VIP JADOO: Activity Log / Timeline */}
+              <div className="mt-8 border-t border-slate-200 dark:border-slate-800 pt-6">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2">
+                  <History size={18} className="text-indigo-500" /> Candidate Journey
+                </h3>
+                
+                <div className="relative pl-3 space-y-6 before:absolute before:inset-y-0 before:left-[19px] before:w-[2px] before:bg-slate-100 dark:before:bg-slate-800">
+                  
+                  {/* Timeline Item 1: Application Received */}
+                  <div className="relative flex gap-4 items-start group">
+                    <div className="absolute left-[-1px] bg-white dark:bg-[#0B0F19] w-4 h-4 rounded-full border-4 border-indigo-500 z-10 shadow-[0_0_10px_rgba(99,102,241,0.4)] group-hover:scale-125 transition-transform"></div>
+                    <div className="pl-6">
+                      <p className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-none">Application Received</p>
+                      <p className="text-[11px] font-medium text-slate-400 mt-1">
+                        Applied for {selectedCandidate.jobs?.title}
+                      </p>
+                      <span className="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 mt-1.5 inline-block bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md border border-indigo-100 dark:border-indigo-800">
+                        {new Date(selectedCandidate.applied_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Timeline Item 2: AI Screened */}
+                  <div className="relative flex gap-4 items-start group">
+                    <div className="absolute left-[-1px] bg-white dark:bg-[#0B0F19] w-4 h-4 rounded-full border-4 border-emerald-500 z-10 shadow-[0_0_10px_rgba(16,185,129,0.4)] group-hover:scale-125 transition-transform"></div>
+                    <div className="pl-6">
+                      <p className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-none">AI Match Completed</p>
+                      <p className="text-[11px] font-medium text-slate-400 mt-1">
+                        System generated an AI match score of {selectedCandidate.ai_match_score || 0}%
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Timeline Item 3: Current Status / Interview (Dynamic) */}
+                  <div className="relative flex gap-4 items-start group">
+                    <div className="absolute left-[1px] bg-white dark:bg-[#0B0F19] z-10 text-slate-400 group-hover:text-fuchsia-500 transition-colors">
+                      <GitCommit size={14} className="-ml-1" />
+                    </div>
+                    <div className="pl-6">
+                      <p className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-none">
+                        Status Updated: <span className="text-fuchsia-600 dark:text-fuchsia-400">{selectedCandidate.status}</span>
+                      </p>
+                      {selectedCandidate.interview_date && (
+                        <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 mt-2 inline-block bg-purple-50 dark:bg-purple-900/20 px-2 py-0.5 rounded-md border border-purple-100 dark:border-purple-800">
+                          Interview Set: {new Date(selectedCandidate.interview_date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+              </div>
                 </div>
               </div>
             </div>

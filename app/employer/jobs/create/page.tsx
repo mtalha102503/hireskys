@@ -169,7 +169,7 @@ const handleReviewClick = (e: React.FormEvent) => {
     return;
   }
 
-  if (!company || company.job_credits <= 0) {
+  if (!company || ((company.free_credits || 0) + (company.paid_credits || 0) + (company.urgent_credits || 0)) <= 0) {
     alert("You are out of credits! Please buy a plan.");
     return;
   }
@@ -229,9 +229,16 @@ const formatLocation = (loc: string) => {
         throw new Error(resData.error || "Failed to post job.");
       }
 
-      // 🟢 OPTIMISTIC UI UPDATE: Front-end par temporarily total credits minus kardo taake reload kiye bina UI theek dikhay
-      const newCreditBalance = Math.max(0, company.job_credits - 1); 
-      setCompany({ ...company, job_credits: newCreditBalance });
+      // 🟢 OPTIMISTIC UI UPDATE: Sahi balti (bucket) se minus karo
+      let updatedCompany = { ...company };
+      if (isUrgentCheckbox && updatedCompany.urgent_credits > 0) {
+          updatedCompany.urgent_credits -= 1;
+      } else if (!isUrgentCheckbox && updatedCompany.free_credits > 0) {
+          updatedCompany.free_credits -= 1;
+      } else if (!isUrgentCheckbox && updatedCompany.paid_credits > 0) {
+          updatedCompany.paid_credits -= 1;
+      }
+      setCompany(updatedCompany);
       
       setSuccess(true);
       window.scrollTo(0, 0);
@@ -266,8 +273,11 @@ const formatLocation = (loc: string) => {
     );
   }
 
+  // 🟢 VIP JADOO: Naye columns ko plus karke Total Credits nikalo
+  const totalCredits = (company.free_credits || 0) + (company.paid_credits || 0) + (company.urgent_credits || 0);
+
   // 🟢 NEW BLOCK: Agar Credits 0 hain
-  if (company.job_credits <= 0) {
+  if (totalCredits <= 0) {
     return (
       <div className="max-w-2xl mx-auto mt-20 p-8 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/50 rounded-3xl text-center animate-in fade-in zoom-in duration-500">
         <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -372,7 +382,7 @@ const formatLocation = (loc: string) => {
         <div className="inline-flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 px-4 py-2 rounded-xl">
           <Zap className="text-indigo-500" size={18} />
           <span className="text-sm font-bold text-indigo-900 dark:text-indigo-200">
-            {company.job_credits} Credit{company.job_credits !== 1 ? 's' : ''} Available
+            {totalCredits} Credit{totalCredits !== 1 ? 's' : ''} Available
           </span>
         </div>
       </div>
@@ -800,15 +810,7 @@ const formatLocation = (loc: string) => {
               {loading ? <Loader2 className="animate-spin" /> : (isUrgentCheckbox ? 'Post Urgent Job' : 'Post Job')}
             </button>
           </div>
-          <div className="flex justify-end pt-4">
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="px-8 py-4 bg-indigo-600 text-white text-lg font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-xl hover:-translate-y-1 flex items-center justify-center gap-3 disabled:opacity-70"
-            >
-              {loading ? <Loader2 className="animate-spin" /> : 'Post Job (-1 Credit)'}
-            </button>
-          </div>
+          
 
         </form>
       )}

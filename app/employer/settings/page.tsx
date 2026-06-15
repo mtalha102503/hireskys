@@ -279,6 +279,7 @@ export default function EmployerSettingsPage() {
     company_retreats: 'No retreats currently',
     calendly_url: '',
     interview_template: '',
+    rejection_template: '',
     cal_url: '',
     custom_booking_url: ''
   }); 
@@ -454,7 +455,8 @@ useEffect(() => {
           calendly_url: company.calendly_url || '',
           cal_url: company.cal_url || '',
           custom_booking_url: company.custom_booking_url || '',
-        interview_template: company.interview_template || '' 
+        interview_template: company.interview_template || '',
+        rejection_template: company.rejection_template || '', 
         });
       // Data load hone ke baad isDirty ko false kar do
         setTimeout(() => setIsDirty(false), 100);
@@ -626,7 +628,8 @@ useEffect(() => {
         calendly_url: formData.calendly_url,
         cal_url: formData.cal_url,
         custom_booking_url: formData.custom_booking_url,
-        interview_template: formData.interview_template
+        interview_template: formData.interview_template,
+        rejection_template: formData.rejection_template
       };
 
       let error;
@@ -1223,7 +1226,35 @@ useEffect(() => {
                     </div>
                     {renderTourTooltip(2)}
                   </div>
+{/* 🚀 ANTI-GHOSTING: REJECTION EMAIL TEMPLATE */}
+                    <div className="mt-10 border-t border-slate-100 dark:border-slate-800/50 pt-8">
+                      <div className="mb-6">
+                        <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                          <Mail className="text-rose-500" size={20} /> Rejection Email Template <span className="px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 text-[10px] uppercase tracking-wider font-bold">Anti-Ghosting</span>
+                        </h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                          Send a polite closure email automatically when you move a candidate to the "Rejected" stage. Keeps your employer brand strong!
+                        </p>
+                      </div>
 
+                      <div className="bg-slate-50 dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 relative">
+                        {/* Helper Variables Box */}
+                        <div className="flex flex-wrap items-center gap-2 mb-4 p-3 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800/50 rounded-xl">
+                          <span className="text-xs font-bold text-rose-800 dark:text-rose-300 mr-2">Smart Variables:</span>
+                          <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-rose-600 dark:text-rose-400 rounded-lg shadow-sm border border-rose-100 dark:border-rose-800">{"{{candidate_name}}"}</code>
+                          <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-rose-600 dark:text-rose-400 rounded-lg shadow-sm border border-rose-100 dark:border-rose-800">{"{{job_title}}"}</code>
+                          <code className="text-[10px] font-bold px-2 py-1 bg-white dark:bg-[#111625] text-rose-600 dark:text-rose-400 rounded-lg shadow-sm border border-rose-100 dark:border-rose-800">{"{{company_name}}"}</code>
+                        </div>
+
+                        {/* Textarea */}
+                        <textarea 
+                          value={formData.rejection_template}
+                          onChange={(e) => setFormData({...formData, rejection_template: e.target.value})}
+                          placeholder="Hi {{candidate_name}},&#10;&#10;Thank you for taking the time to apply for the {{job_title}} position at {{company_name}}.&#10;&#10;While we were impressed by your background, we have decided to move forward with other candidates whose experience better aligns with our current needs.&#10;&#10;We wish you the best of luck in your job search!"
+                          className="w-full h-48 px-4 py-3 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-colors resize-none custom-scrollbar"
+                        />
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>

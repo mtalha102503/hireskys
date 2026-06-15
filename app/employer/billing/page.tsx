@@ -37,14 +37,19 @@ export default function BillingPage() {
         return;
       }
 
+      // 🟢 VIP JADOO: Naye columns fetch karo
       const { data, error } = await supabase
         .from('companies')
-        .select('job_credits')
+        .select('free_credits, paid_credits, urgent_credits, plan_tier')
         .eq('employer_id', session.user.id)
         .single();
 
       if (error) throw error;
-      if (data) setCredits(data.job_credits || 0);
+      if (data) {
+        // Total credits = free + paid + urgent
+        const total = (data.free_credits || 0) + (data.paid_credits || 0) + (data.urgent_credits || 0);
+        setCredits(total);
+      }
       setUserId(session.user.id);
     } catch (error: any) {
       console.error("Error fetching credits:", error.message);
@@ -76,12 +81,12 @@ export default function BillingPage() {
       }
 
       // 🛠️ YAHAN CHANGE KIYA HAI: + 5 ki jagah + 2 kar diya
-      const newCredits = (company?.job_credits || 0) + 2; 
+      const newFreeCredits = ((company as any)?.free_credits || 0) + 2;
       
       const { error: updateError } = await supabase
         .from('companies')
         .update({ 
-          job_credits: newCredits,
+          free_credits: newFreeCredits, // 👈 Yahan free_credits aayega
           plan_tier: 'Free Trial',
           has_used_trial: true 
         })
@@ -91,7 +96,7 @@ export default function BillingPage() {
 
       // 🛠️ YAHAN CHANGE KIYA HAI: Popup message mein 5 ki jagah 2 kar diya
       setPopup({ show: true, type: 'success', message: "🎉 2 Free Credits added to your account successfully!" });
-      setCredits(newCredits); 
+      setCredits(newFreeCredits);
 
     } catch (error: any) {
       // 🔴 Teesra Alert Replaced

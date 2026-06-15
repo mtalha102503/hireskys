@@ -38,6 +38,8 @@ export default function CreateInternalJob() {
   const [postedJobId, setPostedJobId] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
   const [company, setCompany] = useState<any>(null);
+  // 🟢 VIP JADOO: Urgent Job State
+  const [isUrgentCheckbox, setIsUrgentCheckbox] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [showReviewPopup, setShowReviewPopup] = useState(false);
   const [formData, setFormData] = useState({
@@ -181,7 +183,8 @@ const formatLocation = (loc: string) => {
   if (cleanLoc === '') return 'Remote';
   return `Remote (${cleanLoc})`;
 };
-const confirmAndSubmit = async () => {
+// 🟢 VIP JADOO: Secure API Calling Function
+  const confirmAndSubmit = async () => {
     setShowReviewPopup(false); 
     setLoading(true); 
 
@@ -193,64 +196,43 @@ const confirmAndSubmit = async () => {
       return;
     }
 
-    if (!company || company.job_credits <= 0) {
-      alert("You are out of credits! Please buy a plan.");
-      setLoading(false);
-      return;
-    }
-
     try {
       const sanitizedDescription = formData.description
         .replace(/background-color\s*:[^;]+;/gi, '')
         .replace(/background\s*:[^;]+;/gi, '')
         .replace(/color\s*:[^;]+;/gi, '');
 
-      // 1. Temporary Slug banate hain
+      // Temporary Slug
       const tempSlug = generateSlug(formData.title);
 
-      // 🟢 THE MAGIC STEP 1: Insert karo aur .select().single() se DB ka final data wapis mangwao!
-      const { data: insertedJob, error } = await supabase.from('jobs').insert([
-        {
-          employer_id: user.id, 
-          title: formData.title,
-          source: company?.name || 'Confidential', 
-          slug: tempSlug,  // Temporary slug bheja
-          link: `https://hireskys.com/jobs/${tempSlug}/apply`, // Temporary link bheja
-          category: formData.category,
-          tags: formData.tags,
-          description: sanitizedDescription, 
-          screening_questions: formData.screeningQuestions,
-          location: formatLocation(formData.location),
-          salary_range: formData.salary,
-          job_type: formData.jobType,
-          experience_level: formData.experience,
-          contact_email: user.email, 
-          date_posted: new Date().toISOString().split('.')[0] + '.000000+00:00',
-          approved: false, 
-          ats_approved: false,
-          is_verified: true,
-          form_config: formData.formConfig   
-        }
-      ]).select().single(); // 👈 Ye trigger hone ke baad wala Real data wapis layega!
+      // 🚀 YAHAN API CALL JAYEGI
+      const response = await fetch('/api/jobs/post-job', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          employerId: user.id, 
+          companyName: company?.name || 'Confidential',
+          contactEmail: user.email,
+          isUrgent: isUrgentCheckbox, // 👈 Ab dynamic ho gaya!
+          jobData: {
+            ...formData,
+            description: sanitizedDescription,
+            slug: tempSlug,
+            location: formatLocation(formData.location)
+          }
+        })
+      });
 
-      if (error) throw error;
+      const resData = await response.json();
 
-      // 🟢 THE MAGIC STEP 2: Database ne jo final slug (e.g. nodejs-8529) banaya hai, us se Link update karo!
-      const realDatabaseSlug = insertedJob.slug;
-      const finalPerfectLink = `https://hireskys.com/jobs/${realDatabaseSlug}/apply`;
+      if (!response.ok) {
+        throw new Error(resData.error || "Failed to post job.");
+      }
 
-      await supabase.from('jobs').update({ link: finalPerfectLink }).eq('id', insertedJob.id);
-
-      // 3. DEDUCT CREDIT (Baqi code same)
-      const newCreditBalance = company.job_credits - 1;
-      const { error: deductError } = await supabase
-        .from('companies')
-        .update({ job_credits: newCreditBalance })
-        .eq('employer_id', user.id);
-      
-      if (deductError) console.error("Error deducting credit:", deductError);
-
+      // 🟢 OPTIMISTIC UI UPDATE: Front-end par temporarily total credits minus kardo taake reload kiye bina UI theek dikhay
+      const newCreditBalance = Math.max(0, company.job_credits - 1); 
       setCompany({ ...company, job_credits: newCreditBalance });
+      
       setSuccess(true);
       window.scrollTo(0, 0);
 
@@ -771,12 +753,53 @@ const confirmAndSubmit = async () => {
 
             </div>
           </div>
-          {/* 🟢 NEW: Credit Warning Message */}
-          <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 flex items-center gap-3 text-amber-700 dark:text-amber-400 text-sm font-medium mb-6">
-            <Zap size={18} className="shrink-0" /> Posting this job will consume 1 credit from your balance.
+         {/* 🚨 VIP JADOO: URGENT POST BANNER */}
+          <div 
+            onClick={() => setIsUrgentCheckbox(!isUrgentCheckbox)}
+            className={`p-5 md:p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer flex items-start gap-4 mb-6 group ${
+              isUrgentCheckbox 
+              ? 'bg-amber-50 dark:bg-amber-500/10 border-amber-500 shadow-lg shadow-amber-500/20 scale-[1.01]' 
+              : 'bg-white dark:bg-[#111625] border-slate-200 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-700'
+            }`}
+          >
+            <div className="relative flex items-center justify-center mt-1 shrink-0">
+              <input 
+                type="checkbox" 
+                checked={isUrgentCheckbox} 
+                readOnly 
+                className="peer appearance-none w-6 h-6 border-2 border-slate-300 dark:border-slate-600 rounded-lg checked:bg-amber-500 checked:border-amber-500 transition-all cursor-pointer" 
+              />
+              <CheckCircle size={16} className="text-white absolute opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" strokeWidth={3} />
+            </div>
+            <div>
+              <h4 className="text-base md:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+                <Zap size={20} className={isUrgentCheckbox ? "text-amber-500 animate-pulse" : "text-slate-400 group-hover:text-amber-500"} fill={isUrgentCheckbox ? "currentColor" : "none"} />
+                Make this an Urgent Post
+              </h4>
+              <p className="text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                Highlight your job at the top of the board with a special badge to get applicants 5x faster. Consumes <strong className="text-amber-600 dark:text-amber-400">1 Urgent Credit</strong>.
+              </p>
+            </div>
+          </div>
+
+          {/* 🟢 DYNAMIC Credit Warning Message */}
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3 text-slate-600 dark:text-slate-300 text-sm font-medium mb-6">
+            <Layers size={18} className="text-slate-400 shrink-0" /> 
+            Posting this job will consume {isUrgentCheckbox ? <strong className="text-amber-600 dark:text-amber-400">1 Urgent Credit</strong> : <strong className="text-indigo-600 dark:text-indigo-400">1 Standard Credit</strong>} from your balance.
           </div>
 
           {/* SUBMIT BUTTON */}
+          <div className="flex justify-end pt-4">
+            <button 
+              type="submit" 
+              disabled={loading}
+              className={`px-8 py-4 text-white text-lg font-bold rounded-2xl transition-all shadow-xl hover:-translate-y-1 flex items-center justify-center gap-3 disabled:opacity-70 w-full sm:w-auto ${
+                isUrgentCheckbox ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/30' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/30'
+              }`}
+            >
+              {loading ? <Loader2 className="animate-spin" /> : (isUrgentCheckbox ? 'Post Urgent Job' : 'Post Job')}
+            </button>
+          </div>
           <div className="flex justify-end pt-4">
             <button 
               type="submit" 

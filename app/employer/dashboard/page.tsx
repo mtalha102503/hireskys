@@ -112,12 +112,16 @@ const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
         .single();
       setCompany(compData);
 
+      // 👇 NAYA VIP LOGIC: job_status aur ats_approved dono mangwao
       const { data: jobs } = await supabase
         .from('jobs')
-        .select('id, approved')
-        .eq('employer_id', workspaceId); // 👈 Yahan workspaceId lagaya
+        .select('id, ats_approved, job_status') 
+        .eq('employer_id', workspaceId); 
       
-      const activeJobsCount = jobs?.filter(j => j.approved).length || 0;
+      // 🟢 FIX: Active job sirf wo hai jo ATS se approved ho AUR uska status 'Active' ho
+      const activeJobsCount = jobs?.filter(j => 
+        j.ats_approved && (j.job_status === 'Active' || !j.job_status)
+      ).length || 0;
 
       const { data: applications, error } = await supabase
         .from('applications')

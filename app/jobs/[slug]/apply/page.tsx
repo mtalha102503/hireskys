@@ -146,7 +146,36 @@ export default function ApplyPage() {
         .getPublicUrl(filePath);
 
       const realResumeUrl = publicUrlData.publicUrl;
+      const candidateFullData = {
+        city: formData.city,
+        country: formData.country,
+        linkedinUrl: formData.linkedinUrl,
+        portfolioUrl: formData.portfolioUrl,
+        coverLetter: formData.coverLetter,
+        screeningAnswers: screeningAnswers
+      };
+      let aiScore = 50; // Default fallback score
+      try {
+        const aiRes = await fetch('/api/ai/match-score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jobTitle: job.title,
+            jobDescription: job.description,
+            candidateData: candidateFullData
+          })
+        });
+        const aiData = await aiRes.json();
+        if (aiData.score) aiScore = aiData.score;
+      } catch (e) {
+        console.error("AI call failed, using default score", e);
+      }
 
+      // 🟢 AUTO-REJECT LOGIC (Strict 25% Rule)
+      let finalStatus = 'New';
+      if (aiScore <= 25) {
+        finalStatus = 'Rejected';
+      }
       // 3️⃣ Database mein Application Entry daalo
       const { error: appError } = await supabase
         .from('applications')
@@ -163,10 +192,11 @@ export default function ApplyPage() {
           country: formData.country, 
           city: formData.city, 
           legal_authorization: showLegalAuth ? formData.legalAuth : 'Not Required',
-          status: 'New', 
+          status: finalStatus,
           authorized_country: formData.authorizedCountry,
           screening_answers: screeningAnswers,
-          ai_match_score: Math.floor(Math.random() * 40) + 50 
+          ai_match_score: aiScore
+
         });
 
       if (appError) throw appError;

@@ -64,12 +64,14 @@ export async function POST(req: Request) {
       newPlanTier = 'Scale';
       creditsToAdd = 1;
     } else if (productName.includes('urgent')) {
+      newPlanTier = 'Urgent'; // 👈 VIP JADOO: Plan update karna zaroori hai!
       creditsToAdd = 1;
       isUrgentToken = true;
-      // Urgent pack par plan upgrade nahi karte, jo hai wahi rehta hai
     } else if (productName.includes('bulk 5')) {
+      newPlanTier = 'Bulk 5 Pack'; // 👈 VIP JADOO: Plan update karna zaroori hai!
       creditsToAdd = 5;
     } else if (productName.includes('bulk 10')) {
+      newPlanTier = 'Bulk 10 Pack'; // 👈 VIP JADOO: Plan update karna zaroori hai!
       creditsToAdd = 10;
     } else {
       creditsToAdd = 1; // Default

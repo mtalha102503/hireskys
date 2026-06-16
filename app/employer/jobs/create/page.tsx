@@ -213,7 +213,7 @@ const formatLocation = (loc: string) => {
           employerId: user.id, 
           companyName: company?.name || 'Confidential',
           contactEmail: user.email,
-          isUrgent: isUrgentCheckbox, // 👈 Ab dynamic ho gaya!
+          isUrgent: isUrgentCheckbox, 
           jobData: {
             ...formData,
             description: sanitizedDescription,
@@ -222,7 +222,12 @@ const formatLocation = (loc: string) => {
           }
         })
       });
-
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const textError = await response.text();
+        console.error("Server returned HTML instead of JSON:", textError);
+        throw new Error("Server error: The API route returned an HTML page. Check your network tab or server logs.");
+      }
       const resData = await response.json();
 
       if (!response.ok) {
@@ -780,15 +785,6 @@ const formatLocation = (loc: string) => {
                 className="peer appearance-none w-6 h-6 border-2 border-slate-300 dark:border-slate-600 rounded-lg checked:bg-amber-500 checked:border-amber-500 transition-all cursor-pointer" 
               />
               <CheckCircle size={16} className="text-white absolute opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" strokeWidth={3} />
-            </div>
-            <div>
-              <h4 className="text-base md:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
-                <Zap size={20} className={isUrgentCheckbox ? "text-amber-500 animate-pulse" : "text-slate-400 group-hover:text-amber-500"} fill={isUrgentCheckbox ? "currentColor" : "none"} />
-                Make this an Urgent Post
-              </h4>
-              <p className="text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Highlight your job at the top of the board with a special badge to get applicants 5x faster. Consumes <strong className="text-amber-600 dark:text-amber-400">1 Urgent Credit</strong>.
-              </p>
             </div>
           </div>
 

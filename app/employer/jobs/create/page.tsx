@@ -768,25 +768,6 @@ const formatLocation = (loc: string) => {
 
             </div>
           </div>
-         {/* 🚨 VIP JADOO: URGENT POST BANNER */}
-          <div 
-            onClick={() => setIsUrgentCheckbox(!isUrgentCheckbox)}
-            className={`p-5 md:p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer flex items-start gap-4 mb-6 group ${
-              isUrgentCheckbox 
-              ? 'bg-amber-50 dark:bg-amber-500/10 border-amber-500 shadow-lg shadow-amber-500/20 scale-[1.01]' 
-              : 'bg-white dark:bg-[#111625] border-slate-200 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-700'
-            }`}
-          >
-            <div className="relative flex items-center justify-center mt-1 shrink-0">
-              <input 
-                type="checkbox" 
-                checked={isUrgentCheckbox} 
-                readOnly 
-                className="peer appearance-none w-6 h-6 border-2 border-slate-300 dark:border-slate-600 rounded-lg checked:bg-amber-500 checked:border-amber-500 transition-all cursor-pointer" 
-              />
-              <CheckCircle size={16} className="text-white absolute opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" strokeWidth={3} />
-            </div>
-          </div>
 
           {/* 🟢 DYNAMIC Credit Warning Message */}
           <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3 text-slate-600 dark:text-slate-300 text-sm font-medium mb-6">

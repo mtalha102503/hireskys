@@ -51,6 +51,7 @@ type Job = {
   company_logo_url?: string;
   featured_until?: string;
   brand_color?: string;
+  application_count?: number;
 };
 
 
@@ -650,12 +651,16 @@ const COUNTRIES = [
   const jobsSectionRef = useRef<HTMLDivElement>(null);
   const [isFallback, setIsFallback] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  // 🟢 VIP JADOO: Sort Dropdown State & Ref
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const sortDropdownRef = useRef(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
   const [filterJobType, setFilterJobType] = useState(searchParams.get('type') || ''); 
   const [filterDate, setFilterDate] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  const [sortOrder, setSortOrder] = useState<'new' | 'trending'>('new');
   const categoryEntries = Object.entries(CATEGORIES);
   const subTagsRef = useRef<HTMLDivElement>(null);
   const [filterCountry, setFilterCountry] = useState(seoLocation || searchParams.get('location') || '');
@@ -791,6 +796,10 @@ useEffect(() => {
         setShowJobTypeDropdown(false);
         setShowDateDropdown(false);
         setShowCountryDropdown(false);
+      }
+      // 👇 Sort Dropdown ko bhi bahar click hone par band karo
+      if (sortDropdownRef.current && !(sortDropdownRef.current as any).contains(event.target)) {
+        setShowSortDropdown(false);
       }
     }
 
@@ -938,7 +947,7 @@ useEffect(() => {
       }
   }, [activeSubTag]);
 
-  // 1. ORIGINAL FETCH JOBS (Sirf API call karega, URL ko nahi chairay ga)
+  // 1. ORIGINAL FETCH JOBS
   useEffect(() => {
     if (searchType === 'jobs') {
         const timer = setTimeout(() => {
@@ -947,7 +956,7 @@ useEffect(() => {
         }, 500);
         return () => clearTimeout(timer);
     }
-  }, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry]);
+  }, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry, sortOrder]); // 👈 sortOrder yahan add kiya
 
 
   // 2. 🚀 THE SMART TYPING SYNC (Yeh sirf tab chalega jab tum text likhoge)
@@ -1201,13 +1210,27 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
     const to = from + JOBS_PER_PAGE - 1;
    // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
     // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
+   // 🟢 1. Base Query (Added application_count for trending sorting)
    let query = supabase
-  .from('jobs')
-  // 👇 Naye columns (featured_until, brand_color) add kiye
-  .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color', { count: 'exact' })
-  // 👇 Pehle featured jobs ko top pe laaye, phir date ke hisaab se
-  .order('featured_until', { ascending: false, nullsFirst: false }) 
-  .order('date_posted', { ascending: false });
+     .from('jobs')
+     .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count', { count: 'exact' });
+
+   // 🟢 2. DYNAMIC SORTING LOGIC (Trending vs New)
+   if (sortOrder === 'trending') {
+     // Trending Logic: Sort by application count, restricted to last 30 days
+     const thirtyDaysAgo = new Date();
+     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+     
+     query = query
+       .gte('date_posted', thirtyDaysAgo.toISOString()) // Sirf last 30 din ki
+       .order('application_count', { ascending: false }) // Sab se zyada apply hui
+       .order('date_posted', { ascending: false });
+   } else {
+     // New Logic: Default sorting
+     query = query
+       .order('featured_until', { ascending: false, nullsFirst: false }) 
+       .order('date_posted', { ascending: false });
+   }
 
     // 🟢 2. POWERFUL SEARCH LOGIC (NOW POWERED BY TYPESENSE ⚡)
     if (searchQuery && searchQuery.trim().length > 1) {
@@ -1312,12 +1335,12 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
          setTotalCount(data ? data.length : 0);
     }
 
-  if ((!data || data.length === 0) && searchQuery && reset) {
+ if ((!data || data.length === 0) && searchQuery && reset) {
     setIsFallback(true); 
     const { data: fallbackData } = await supabase
     .from('jobs')
-    // 👇 Yahan bhi naye columns add karein
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color') 
+    // 👇 Yahan end par 'application_count' add kar diya hai
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count') 
     .eq('approved', true)
             
         data = fallbackData || []; 
@@ -1550,10 +1573,6 @@ return (
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl text-left space-y-3 border border-slate-100 dark:border-slate-800">
-                        <div className="flex items-center gap-3">
-                            <CheckCircle size={20} className="text-green-500 flex-shrink-0" />
-                            <span className="font-medium">Get Verified <span className="text-green-500">Green Badge</span></span>
-                        </div>
                         <div className="flex items-center gap-3">
                             <CheckCircle size={20} className="text-green-500 flex-shrink-0" />
                             <span className="font-medium">Save Jobs & Apply Later</span>
@@ -2490,82 +2509,69 @@ return (
   </div>
 )}
       {/* WHY JOIN SECTION (Animated & Interactive) */}
+      {/* WHY JOIN SECTION (Animated & Interactive) */}
       {!currentUser && (
-        <div className="bg-white dark:bg-[#111625] border-y border-slate-200 dark:border-slate-800 py-16">
+        <div className="bg-white dark:bg-[#111625] border-y border-slate-200 dark:border-slate-800 py-16 md:py-24">
             <div className="container mx-auto px-4 max-w-6xl">
                 
                 {/* Section Header */}
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
                         Why create an account?
                     </h2>
-                    <p className="text-slate-500 mt-3 text-lg">Join elite freelancers getting hired faster.</p>
+                    <p className="text-slate-500 mt-4 text-lg md:text-xl font-medium">Join elite freelancers getting hired faster.</p>
                 </div>
 
-                {/* Animated Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {/* Animated Grid (3 Columns for better proportions) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     
-                    {/* Card 1: Verified Badge */}
+                    {/* Card 1: Public Profile */}
                     <motion.div 
-                        whileHover={{ y: -10, scale: 1.02 }}
-                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 group cursor-default"
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className="p-8 md:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-all duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-indigo-500/50 hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.1)] group cursor-default h-full flex flex-col justify-center"
                     >
-                        <div className="w-14 h-14 mx-auto bg-green-100 dark:bg-green-900/30 text-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                            <Award size={28} className="fill-current" />
+                        <div className="w-20 h-20 mx-auto bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-sm border border-indigo-200/50 dark:border-indigo-800/50">
+                            <IdCard size={40} />
                         </div>
-                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Get Verified Badge</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Pass skill tests to earn the coveted <span className="text-green-600 font-bold">Green Badge</span>.
-                        </p>
-                    </motion.div>
-
-                    {/* Card 2: Public Profile */}
-                    <motion.div 
-                        whileHover={{ y: -10, scale: 1.02 }}
-                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10 group cursor-default"
-                    >
-                        <div className="w-14 h-14 mx-auto bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                            <IdCard size={28} />
-                        </div>
-                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Public Profile</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <h3 className="font-black text-2xl mb-4 text-slate-900 dark:text-white">Public Profile</h3>
+                        <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                             Create a professional portfolio page to share directly with clients.
                         </p>
                     </motion.div>
 
-                    {/* Card 3: Instant Alerts (UPDATED) */}
+                    {/* Card 2: Instant Alerts */}
                     <motion.div 
-                        whileHover={{ y: -10, scale: 1.02 }}
-                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 group cursor-default"
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className="p-8 md:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-all duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-amber-500/50 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.1)] group cursor-default h-full flex flex-col justify-center"
                     >
-                        <div className="w-14 h-14 mx-auto bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                            <Bell size={28} />
+                        <div className="w-20 h-20 mx-auto bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 shadow-sm border border-amber-200/50 dark:border-amber-800/50">
+                            <Bell size={40} />
                         </div>
-                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Instant Alerts</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <h3 className="font-black text-2xl mb-4 text-slate-900 dark:text-white">Instant Alerts</h3>
+                        <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                             Get notified via <strong className="text-slate-700 dark:text-slate-300">Telegram & WhatsApp</strong> the millisecond a new job drops.
                         </p>
                     </motion.div>
 
-                    {/* Card 4: Save Jobs */}
+                    {/* Card 3: Save Jobs */}
                     <motion.div 
-                        whileHover={{ y: -10, scale: 1.02 }}
-                        className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-colors duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-500/10 group cursor-default"
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className="p-8 md:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-all duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-red-500/50 hover:shadow-[0_20px_40px_-15px_rgba(239,68,68,0.1)] group cursor-default h-full flex flex-col justify-center"
                     >
-                        <div className="w-14 h-14 mx-auto bg-red-100 dark:bg-red-900/30 text-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                            <Bookmark size={28} className="fill-current" />
+                        <div className="w-20 h-20 mx-auto bg-red-100 dark:bg-red-900/30 text-red-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-sm border border-red-200/50 dark:border-red-800/50">
+                            <Bookmark size={40} className="fill-current" />
                         </div>
-                        <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">Save Jobs</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <h3 className="font-black text-2xl mb-4 text-slate-900 dark:text-white">Save Jobs</h3>
+                        <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                             Bookmark interesting roles and apply when you are ready.
                         </p>
                     </motion.div>
 
                 </div>
 
-                {/* Call to Action */}
-                <div className="text-center mt-12">
-                    <Link href="/login?view=signup" className="inline-flex items-center gap-2 px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg rounded-full shadow-xl shadow-indigo-500/30 transition transform hover:-translate-y-1">
+                {/* Call to Action (Fixed button shadow) */}
+                <div className="text-center mt-16">
+                    <Link href="/login?view=signup" className="inline-flex items-center gap-3 px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg rounded-full shadow-[0_10px_30px_-10px_rgba(79,70,229,0.6)] transition transform hover:-translate-y-1">
                         Create Free Account <ArrowRight size={20}/>
                     </Link>
                 </div>
@@ -2611,19 +2617,65 @@ return (
             </div>
         )}
         <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 gap-3">
-          <h2 className="flex-1 min-w-0 text-base md:text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
-            <Briefcase size={20} className="text-indigo-500 flex-shrink-0" />
-            <span className="truncate">
-               {activeCategory === 'All' && !searchQuery ? (
-                  <>
-                    <span className="sm:hidden">Latest Opportunities</span>
-                    <span className="hidden sm:inline">Latest Remote Opportunities</span>
-                  </>
-               ) : 'Search Results'}
-            </span>
-          </h2>
+          
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            {/* 🟢 VIP JADOO: PREMIUM CUSTOM DROPDOWN HEADER */}
+            {activeCategory === 'All' && !searchQuery ? (
+              <div className="relative inline-block text-left" ref={sortDropdownRef}>
+                {/* 1. Main Button (Looks clickable and obvious) */}
+                <button
+                  onClick={() => setShowSortDropdown(!showSortDropdown)}
+                  className="flex items-center gap-2 md:gap-3 px-4 py-2 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-all shadow-sm group"
+                >
+                  <span className="text-sm md:text-lg font-black text-slate-800 dark:text-white">
+                    {sortOrder === 'trending' ? '🔥 Trending Opportunities' : '✨ Latest Opportunities'}
+                  </span>
+                  <ChevronDown size={18} className={`text-slate-400 group-hover:text-indigo-500 transition-transform duration-300 ${showSortDropdown ? 'rotate-180 text-indigo-500' : ''}`} strokeWidth={3} />
+                </button>
 
-          <div className="flex-shrink-0 relative group">
+                {/* 2. Animated Menu */}
+                <AnimatePresence>
+                  {showSortDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute left-0 mt-3 w-64 md:w-72 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-50 p-2"
+                    >
+                      <button
+                        onClick={() => { setSortOrder('new'); setShowSortDropdown(false); }}
+                        className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold transition-colors ${sortOrder === 'new' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Sparkles size={18} className={sortOrder === 'new' ? 'text-indigo-500' : 'text-slate-400'} />
+                          Latest Opportunities
+                        </div>
+                        {sortOrder === 'new' && <Check size={16} />}
+                      </button>
+
+                      <button
+                        onClick={() => { setSortOrder('trending'); setShowSortDropdown(false); }}
+                        className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold transition-colors mt-1 ${sortOrder === 'trending' ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <TrendingUp size={18} className={sortOrder === 'trending' ? 'text-orange-500' : 'text-slate-400'} />
+                          Trending Jobs 🔥
+                        </div>
+                        {sortOrder === 'trending' && <Check size={16} />}
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <h2 className="text-base md:text-xl font-bold text-slate-800 dark:text-white truncate">
+                Search Results
+              </h2>
+            )}
+          </div>
+
+          <div className="flex-shrink-0 relative group hidden sm:block">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
             <div className="relative flex items-center gap-2.5 px-3 py-1.5 md:px-4 md:py-2 bg-white dark:bg-[#0B0F19] border border-slate-100 dark:border-slate-800 rounded-full shadow-sm">
                 <span className="relative flex h-2.5 w-2.5">

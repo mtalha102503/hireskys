@@ -73,13 +73,6 @@ export default function EmployerNavbar() {
           {/* DESKTOP RIGHT SIDE */}
           <div className="hidden md:flex items-center gap-4">
             
-            <Link 
-              href="/" 
-              className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
-            >
-              <ArrowLeft size={16} /> Back to Main Site
-            </Link>
-
             <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
 
 

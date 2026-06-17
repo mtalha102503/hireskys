@@ -1,9 +1,9 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart } from 'lucide-react';
+import { Heart,} from 'lucide-react';
 import { usePathname } from 'next/navigation';
-
+import { FaThreads } from "react-icons/fa6";
 // Custom Official SVGs for a Professional Look
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
@@ -28,7 +28,12 @@ const TelegramIcon = ({ className }: { className?: string }) => (
     <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
   </svg>
 );
-
+const MailIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 7.00005L10.2 11.65C11.2667 12.45 12.7333 12.45 13.8 11.65L20 7" />
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+  </svg>
+);
 // 🟢 NEW: Category Data Array mapped directly to your correct slugs
 const jobCategories = [
   { name: "Development", path: "development" },
@@ -47,7 +52,15 @@ const jobCategories = [
   { name: "Data Science & Analytics", path: "data-science-analytics" },
   { name: "Engineering & Architecture", path: "engineering-architecture" }
 ];
-
+// Upar data array bana lo
+const trendingSearches = [
+  { name: "Remote Finance Jobs", path: "/remote-jobs/all/finance" },
+  { name: "Global AI Remote Jobs", path: "/remote-jobs/all/global-work-ai" },
+  { name: "Remote Data Entry Jobs", path: "/remote-jobs/all/data-entry" },
+  { name: "Remote HR Jobs", path: "/remote-jobs/all/hr" },
+  { name: "Remote Customer Support Jobs", path: "/remote-jobs/all/customer-support" },
+  { name: "Remote Software Engineer Jobs", path: "/remote-jobs/all/software-engineer" }
+];
 // Location Data Array for cleaner code
 const remoteLocations = [
   { name: "United States", path: "/united-states/all" },
@@ -110,19 +123,27 @@ export default function Footer() {
               Your gateway to elite remote work. We connect top talent with verified work-from-anywhere opportunities and freelance contracts.
             </p>
             
-            {/* SOCIAL & COMMUNITY ICONS */}
-            <div className="flex gap-3 pt-2">
-              <a href="https://x.com/hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-black-50 dark:hover:bg-black-900/30 dark:hover:text-black-400 transition-all duration-300">
+           {/* SOCIAL & COMMUNITY ICONS */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              <a href="https://x.com/hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-slate-200 dark:hover:bg-slate-800 dark:hover:text-indigo-400 transition-all duration-300">
                 <XIcon className="w-4 h-4" />
               </a>
-              <a href="https://www.instagram.com/hireskys/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all duration-300">
+              <a href="https://www.instagram.com/hireskys/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#E1306C] hover:bg-[#E1306C]/10 dark:hover:bg-[#E1306C]/20 dark:hover:text-[#E1306C] transition-all duration-300">
                 <InstagramIcon className="w-4 h-4" />
               </a>
+              {/* 🟢 UPDATED: THREADS LINK */}
+<a href="https://www.threads.net/@hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-black hover:bg-slate-200 dark:hover:bg-white/10 dark:hover:text-white transition-all duration-300">
+  <FaThreads className="w-4 h-4" />
+</a>
               <a href="https://discord.gg/BmfgGfX5" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#5865F2] hover:bg-[#5865F2]/10 dark:hover:bg-[#5865F2]/20 dark:hover:text-[#5865F2] transition-all duration-300">
                 <DiscordIcon className="w-4 h-4" />
               </a>
               <a href="https://t.me/hireskys_jobs" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#0088cc] hover:bg-[#0088cc]/10 dark:hover:bg-[#0088cc]/20 dark:hover:text-[#0088cc] transition-all duration-300">
                 <TelegramIcon className="w-4 h-4" />
+              </a>
+              {/* 🟢 NEW: EMAIL LINK */}
+              <a href="mailto:contact@hireskys.com" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all duration-300">
+                <MailIcon className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -167,12 +188,33 @@ export default function Footer() {
               <li><Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms of Service</Link></li>
               <li><Link href="/cookie-policy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Cookie Policy</Link></li>
               <li><Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About Us</Link></li>
+              <li><Link href="/refund-policy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Refund and Cancellation</Link></li>
               <li><Link href="/sitemap.xml" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Sitemap</Link></li>
             </ul>
           </div>
 
         </div>
+        
+        <hr className="my-12 border-slate-200 dark:border-slate-800/60" />
 
+{/* 🟢 NEW: TRENDING SEARCHES SECTION */}
+<div>
+  <h4 className="text-xs font-bold tracking-[0.15em] text-slate-400 dark:text-slate-500 uppercase mb-6">
+    Trending Remote Searches
+  </h4>
+  <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-8 text-sm text-slate-500 dark:text-slate-400">
+    {trendingSearches.map((search) => (
+      <li key={search.path}>
+        <Link 
+          href={search.path} 
+          className="hover:text-indigo-600 dark:hover:text-slate-200 transition-colors"
+        >
+          {search.name}
+        </Link>
+      </li>
+    ))}
+  </ul>
+</div>
         {/* 🟢 REMOTE.IO STYLE SEO DIRECTORY SECTION */}
         <div className="w-full flex flex-col gap-10 pt-12 mt-12 border-t border-slate-200 dark:border-slate-800">
           

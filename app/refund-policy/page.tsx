@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 
 export default function RefundPolicy() {
-  const lastUpdated = "May 17, 2026";
+  const lastUpdated = "June 17, 2026";
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100">
@@ -92,10 +92,10 @@ export default function RefundPolicy() {
             </h2>
             <div className="pl-0 md:pl-14 text-slate-600 dark:text-slate-400 text-sm md:text-base space-y-3">
               <p>
-                Our order process is conducted by our online reseller <strong>FastSpring</strong>. FastSpring is the designated Merchant of Record for all our orders. 
+                Our order process is conducted by our online reseller <strong>Gumroad</strong>. Gumroad is the designated Merchant of Record for all our orders. 
               </p>
               <p>
-                FastSpring handles all payment processing, secure transactions, global compliance, and local tax collection. All refund requests are ultimately processed through FastSpring's secure gateway in accordance with this policy.
+                Gumroad handles all payment processing, secure transactions, global compliance, and local tax collection. All refund requests are ultimately processed through Gumroad's secure gateway in accordance with this policy.
               </p>
             </div>
           </section>
@@ -132,8 +132,8 @@ export default function RefundPolicy() {
 
           {/* ACCEPTANCE FOOTER */}
           <section className="pt-8 border-t border-slate-200 dark:border-slate-800 text-center flex flex-col items-center gap-4">
-            <div className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-              <ShieldCheck size={16} /> Secure billing provided by FastSpring
+            <div className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-medium">
+              <ShieldCheck size={16} className="text-emerald-500" /> Secure billing provided by Gumroad
             </div>
             <div className="inline-flex items-center gap-2 text-green-600 dark:text-green-400 font-bold bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-full text-sm md:text-base">
               <CheckCircle size={18} />

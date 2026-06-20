@@ -138,7 +138,8 @@ useEffect(() => {
     <div className="w-full flex flex-col font-sans relative">
       {/* 🔵 NAVBAR START */}
     <nav className="w-full border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-[#0B0F19]/90 backdrop-blur-md shadow-sm relative z-40">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-5xl">
+      {/* 🚀 THE FIX: max-w-5xl ko max-w-7xl kar diya taake Hero section ke elements ke saath theek se align ho */}
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-7xl lg:px-8">
         
         <Link href="/" className="flex items-center gap-5 md:gap-5" onClick={() => setIsOpen(false)}>
           <Image 
@@ -166,6 +167,8 @@ useEffect(() => {
             </div>
           </div>
         </Link>
+        
+        {/* Baqi sab code as it is... */}
 
         {/* DESKTOP MENU */}
         <div className="hidden md:flex items-center gap-4">

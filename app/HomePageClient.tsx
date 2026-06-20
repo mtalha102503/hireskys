@@ -681,6 +681,25 @@ const COUNTRIES = [
       return false;
   });
 const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); 
+// 🚀 DYNAMIC HERO IMAGES SETUP
+  const HERO_IMAGES = [
+    "/hero-person-14.png",
+    "/hero-person-12.png",
+    "/hero-person-8.png",
+    "/hero-person-9.png",
+    "/hero-person-7.png",
+  ];
+  
+  // Default image pehli wali rakhi hai taake server aur client mismatch na ho
+  const [currentHeroImage, setCurrentHeroImage] = useState(HERO_IMAGES[0]);
+  const [isImageMounted, setIsImageMounted] = useState(false);
+
+  useEffect(() => {
+    // Page load hote hi randomly ek image pick karega
+    const randomIndex = Math.floor(Math.random() * HERO_IMAGES.length);
+    setCurrentHeroImage(HERO_IMAGES[randomIndex]);
+    setIsImageMounted(true); // Hydration error se bachne ke liye
+  }, []);
   useEffect(() => {
       if (typeof window !== 'undefined') {
           sessionStorage.setItem('categories_expanded', showAll.toString());
@@ -1417,41 +1436,38 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
   const hasTag = !!activeSubTag;
   const hasLocation = !!filterCountry;
   const hasSearch = searchQuery && searchQuery.trim().length > 0;
-  const hasFilters = hasCategory || hasTag || hasLocation || hasSearch; // Search ko filters mein add kar diya
+  const hasFilters = hasCategory || hasTag || hasLocation || hasSearch;
 
-  const highlight = "text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600";
+  // 🚀 FIX: Aapka apna original gradient color!
+  // Ye blue aur dark dono par chamkega ✨
+  const highlight = "text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-emerald-300";
 
   const DynamicTitle = () => {
       const locData = getSmartLocationUI(filterCountry);
-      // 🚀 FIX: Array mein se pehla match nikal lo
       const topMatch = locData.matched && locData.matched.length > 0 ? locData.matched[0] : null;
-      
-      // 🏆 PRIORITY LOGIC: Pehle Search Query dikhao, warna SubTag, warna Category
       const keyword = searchQuery.trim() || activeSubTag || (hasCategory ? activeCategory : null);
 
       return (
-          <span className="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-              <span className="text-slate-900 dark:text-white">Remote</span>
+          // 👇 FIX: "justify-center" ko "justify-start" se replace kar diya aur gap-y-2 kar diya taake line break pyara lagay
+          <span className="inline-flex flex-wrap items-center justify-start gap-x-3 gap-y-2 lg:gap-y-3">
+              <span>Remote</span>
               
               {keyword && (
                   <span className={highlight}>
-                      {/* Agar search query hai toh usko Capitalize karke dikhao */}
                       {keyword.replace(/\b\w/g, (char) => char.toUpperCase())}
                   </span>
               )}
               
-              <span className="text-slate-900 dark:text-white">Jobs</span>
+              <span>Jobs</span>
               
               {hasLocation && (
                   <>
-                      {/* 🚀 UX MAGIC: Agar Worldwide hai toh 'in' mat lagao */}
                       {filterCountry !== 'Worldwide' && (
-                          <span className="text-slate-900 dark:text-white">in</span>
+                          <span>in</span>
                       )}
                       
                       <span className={highlight}>{filterCountry}</span>
                       
-                      {/* 🚀 FIX: Ab yahan locData.code ki jagah topMatch.code aayega */}
                       {filterCountry === 'Worldwide' ? (
                           <span className="text-4xl md:text-5xl ml-1 md:ml-2">🌍</span>
                       ) : topMatch && topMatch.code && (
@@ -1466,20 +1482,20 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
           </span>
       );
   };
+
+  // 1. FOR LOGGED-OUT USER
   // 1. FOR LOGGED-OUT USER
   const loggedOutTitle = hasFilters ? <DynamicTitle /> : (
       <>
           Find High-Paying <br className="hidden md:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
-              Remote & Freelance Work
-          </span>
+          Remote & Freelance Work
       </>
   );
 
   // 2. FOR LOGGED-IN USER
   const loggedInTitle = hasFilters ? <DynamicTitle /> : (
       <>
-          Welcome back, <span className={highlight}>{userProfile?.full_name?.split(' ')[0] || 'Creator'}!</span> 👋
+          Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500 dark:from-indigo-400 dark:to-pink-400">{userProfile?.full_name?.split(' ')[0] || 'Creator'}!</span> 👋
       </>
   );
   // --- END: MASTER TITLE ENGINE ---
@@ -1597,96 +1613,77 @@ return (
       )}
 
       {currentUser ? (
-        // LOGGED IN DASHBOARD HEADER
-        <header className="relative pt-24 pb-12 px-4 bg-white dark:bg-[#0B0F19] border-b border-slate-200 dark:border-slate-800 overflow-visible">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
-                    <div className="space-y-2 w-full md:w-auto">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">
-                            <Sparkles size={14} /> User Dashboard
+        // 🚀 RESTORED & CLEAN LOGGED-IN DASHBOARD HEADER
+        <header className="relative pt-24 pb-8 md:pt-28 md:pb-12 px-4 text-center md:text-left bg-white dark:bg-[#0B0F19] overflow-visible">
+            
+            {/* Subtle Background Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-[1000px] h-[300px] md:h-[500px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="max-w-5xl mx-auto relative z-10">
+                
+                {/* 🌟 1. AVATAR + WELCOME + STATS ROW */}
+                <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 mb-10 md:mb-12 w-full">
+                    
+                    {/* Left: Avatar & Text */}
+                    <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-6 flex-1">
+                        {/* 🚀 AVATAR */}
+                        <div className="flex-shrink-0 relative">
+                            {userProfile?.avatar_url ? (
+                                <img 
+                                    src={userProfile.avatar_url} 
+                                    alt={`${userProfile.full_name || 'User'}'s profile`} 
+                                    className="w-20 h-20 md:w-24 md:h-24 rounded-3xl object-cover border-4 border-white dark:border-[#151b2d] shadow-xl shadow-indigo-500/10"
+                                />
+                            ) : (
+                                <img 
+                                    src={`https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(userProfile?.full_name || currentUser?.id || 'HireSkys')}&backgroundColor=e2e8f0`} 
+                                    alt="Default Avatar" 
+                                    className="w-20 h-20 md:w-24 md:h-24 rounded-3xl object-cover border-4 border-white dark:border-[#151b2d] shadow-xl shadow-indigo-500/10 bg-slate-100 dark:bg-slate-800"
+                                />
+                            )}
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white capitalize">
-    {loggedInTitle}
-</h1>
-{/* 🆕 VVIP Contextual Description (UX Magic) */}
-<p className="mt-2 text-base md:text-lg text-slate-600 dark:text-slate-400 font-medium">
-    {loggedInDescription}
-</p> 
-                    </div>
- 
-                    {/* --- RIGHT SIDE: STATS & ALERTS ROW --- */}
-{/* 🚀 FIXED FOR MOBILE: Grid on Mobile, Flex on Desktop */}
-<div className="grid grid-cols-2 md:flex md:flex-nowrap items-stretch gap-3 w-full md:w-auto justify-start md:justify-end mt-4 md:mt-0">
+
+                        {/* 🚀 WELCOME TEXT */}
+<div className="flex-1 text-center md:text-left min-w-0">
+    <div className="inline-flex items-center gap-2 px-3 py-1 mb-2 md:mb-3 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-[10px] font-black uppercase tracking-widest border border-indigo-100/50 dark:border-indigo-800/50 shadow-sm">
+        <Sparkles size={14} className="text-indigo-500" /> User Dashboard
+    </div>
     
-    {/* 🚨 1. FOMO BANNER (DANGER / RED THEME) */}
-{(!userProfile?.telegram_chat_id) && (
-        <div className="col-span-2 md:w-auto w-full relative group p-3.5 bg-gradient-to-br from-red-600 via-red-500 to-rose-600 rounded-2xl border border-red-400 shadow-[0_0_20px_rgba(220,38,38,0.5)] flex flex-col justify-center min-w-[230px] transition-transform hover:-translate-y-1">
-            <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-1.5 text-white">
-                    <AlertTriangle size={16} className="text-yellow-300 animate-pulse drop-shadow-md" />
-                    <span className="text-[11px] font-black uppercase tracking-wider text-white drop-shadow-md">Action Required</span>
-                </div>
-                <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-200 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white shadow-sm"></span>
-                </span>
-            </div>
-            <div className="text-[9px] font-bold text-red-100 mb-2.5 leading-tight opacity-90">
-                You're missing VIP job alerts! Connect now.
-            </div>
-            <div className="flex gap-2">
-                <a 
-                    href={`https://t.me/hireskys_bot?start=${currentUser?.id}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="w-full bg-white hover:bg-slate-50 text-red-600 text-[10px] font-black py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 shadow-lg transition-all transform active:scale-95"
-                >
-                    <Send size={12} className="fill-red-100"/> Telegram
-                </a>
-            </div>
-        </div>
-    )}
-
-    {/* 🔵 3. TELEGRAM ACTIVE */}
-{(userProfile?.telegram_chat_id) && (
-        <div className="col-span-2 md:w-auto w-full relative p-3.5 bg-white dark:bg-[#151b2d] rounded-2xl border border-blue-500/30 dark:border-blue-500/20 min-w-[200px] flex flex-col justify-center shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-transform hover:-translate-y-1">
-            <div className="flex items-center gap-2 mb-2.5">
-                <div className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
-                </div>
-                <span className="text-[11px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-wider flex items-center gap-1.5">
-                    <Send size={14} className="fill-blue-500/20" /> Telegram Active
-                </span>
-            </div>
-            <div className="flex items-center justify-center w-full bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1.5 rounded-lg border border-blue-100 dark:border-blue-800">
-    <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-        <CheckCircle size={12} /> Receiving VIP Alerts
-    </span>
+    {/* 👇 FIX: Font size kam kar diya (3xl/4xl) taake ek line me pyara lagay */}
+    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-black text-slate-900 dark:text-white capitalize leading-tight mb-1 md:mb-2 lg:whitespace-nowrap">
+        {loggedInTitle}
+    </h1>
+    
+    <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 font-medium">
+        {loggedInDescription}
+    </p>
 </div>
-        </div>
-    )}
+                    </div>
 
-    {/* 📌 ORIGINAL SAVED CARD */}
-    <Link href="/profile?tab=saved" className="col-span-1 md:w-auto w-full group relative p-3 bg-white dark:bg-[#151b2d] rounded-2xl border border-slate-200 dark:border-slate-800 min-w-[90px] flex flex-col justify-center items-center cursor-pointer transition-all hover:bg-indigo-600 hover:border-indigo-600 hover:-translate-y-1 active:scale-95 shadow-sm">
-        <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white leading-none mb-1">
-            {savedJobIds.length}
-        </div>
-        <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-indigo-100 tracking-wide">
-            Saved
-        </div>
-    </Link>
+                    {/* 🚀 Right: SAVED & SKILLS BUTTONS (Restored & Clickable) */}
+                    <div className="flex items-center justify-center md:justify-end gap-3 md:gap-4 mt-2 md:mt-0 w-full md:w-auto">
+                        
+                        {/* 📌 SAVED CARD */}
+                        <Link href="/profile?tab=saved" className="group relative p-3 md:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 min-w-[90px] md:min-w-[100px] flex flex-col justify-center items-center cursor-pointer transition-all hover:bg-indigo-600 hover:border-indigo-600 hover:-translate-y-1 active:scale-95 shadow-sm">
+                            <div className="text-2xl md:text-3xl font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white leading-none mb-1 transition-colors">
+                                {savedJobIds.length}
+                            </div>
+                            <div className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 group-hover:text-indigo-100 tracking-widest transition-colors">
+                                Saved
+                            </div>
+                        </Link>
 
-    {/* 📌 ORIGINAL SKILLS CARD */}
-    <Link href="/profile?tab=details" className="col-span-1 md:w-auto w-full group relative p-3 bg-white dark:bg-[#151b2d] rounded-2xl border border-slate-200 dark:border-slate-800 min-w-[90px] flex flex-col justify-center items-center cursor-pointer transition-all hover:bg-emerald-600 hover:border-emerald-600 hover:-translate-y-1 active:scale-95 shadow-sm">
-        <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 group-hover:text-white leading-none mb-1">
-            {userProfile?.skills?.length || 0}
-        </div>
-        <div className="text-[10px] font-bold uppercase text-slate-500 group-hover:text-emerald-100 tracking-wide">
-            Skills
-        </div>
-    </Link>
+                        {/* 📌 SKILLS CARD */}
+                        <Link href="/profile?tab=details" className="group relative p-3 md:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 min-w-[90px] md:min-w-[100px] flex flex-col justify-center items-center cursor-pointer transition-all hover:bg-emerald-600 hover:border-emerald-600 hover:-translate-y-1 active:scale-95 shadow-sm">
+                            <div className="text-2xl md:text-3xl font-black text-emerald-600 dark:text-emerald-400 group-hover:text-white leading-none mb-1 transition-colors">
+                                {userProfile?.skills?.length || 0}
+                            </div>
+                            <div className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 group-hover:text-emerald-100 tracking-widest transition-colors">
+                                Skills
+                            </div>
+                        </Link>
+                    </div>
 
-</div>
                 </div>
 
                 <div className="max-w-5xl mx-auto w-full mt-10 space-y-8 relative z-40">
@@ -1710,37 +1707,7 @@ return (
 
                   {/* --- 🔥 NEW: HYRIZON AI BUTTON (Google Style) --- */}
                   {/* --- ✨ HYRIZON AI BUTTON (With Blue Loading Bar Fix) ✨ --- */}
-<div className="hidden sm:flex items-center pl-2 pr-2 relative z-20">
-    <Link
-        href={hyrizonUrl} // 👈 Ab ye router.push ki jagah Link use kar raha hai
-        className="group relative p-[1.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-        title="Ask Hyrizon AI"
-    >
-        {/* 🔥 SPINNING ANIMATION (Same as before) */}
-        <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7c3aed_0%,#d946ef_50%,#06b6d4_100%)]" />
 
-        {/* 🌑 INNER CONTENT */}
-        <div className="relative flex items-center gap-2 px-3 py-2 rounded-[10px] z-10 bg-white dark:bg-[#151b2d] transition-colors group-hover:bg-violet-50 dark:group-hover:bg-[#1e2538]">
-            
-            <div className="relative">
-                <Sparkles 
-                    size={16} 
-                    className="text-violet-600 dark:text-violet-300 relative z-10" 
-                />
-                 <div className="absolute inset-0 bg-violet-400/30 dark:bg-violet-400/20 rounded-full blur-md animate-pulse z-0"></div>
-            </div>
-            
-            <div className="flex flex-col items-start leading-none">
-                <span className="text-[9px] font-extrabold uppercase bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400 mb-0.5">
-                    HYRIZON
-                </span>
-                <span className="text-xs font-black tracking-wide text-slate-800 dark:text-white">
-                    Ask AI
-                </span>
-            </div>
-        </div>
-    </Link>
-</div>
                   {/* Mobile Only AI Button (Small Icon) */}
                   <button 
                     type="button"
@@ -1880,7 +1847,7 @@ return (
                                     <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 max-w-[85%]">
                                         <MapPin size={16} className="text-emerald-500 flex-shrink-0" />
                                         <span className="truncate block">
-                                            {filterCountry ? filterCountry : "Location / Country"}
+                                            {filterCountry ? filterCountry : "Country"}
                                         </span>
                                     </div>
                                     <ChevronDown size={14} className={`text-slate-400 flex-shrink-0 transition-transform duration-300 ${showCountryDropdown ? 'rotate-180 text-emerald-500' : ''}`} strokeWidth={3} />
@@ -1972,7 +1939,7 @@ return (
         <Filter size={18} /> All
     </Link>
                             {visibleCategories.map(([name, data], index) => {
-        const Icon = data.icon;
+        const Icon = (data as any).icon;
         const isActive = activeCategory === name;
         return (
             <Link 
@@ -2021,437 +1988,193 @@ return (
             </div>
         </header>
       ) : (
-        // LOGGED OUT HERO HEADER
-        <header className="relative pt-24 pb-8 md:pt-28 md:pb-12 px-4 text-center bg-white dark:bg-[#0B0F19] overflow-visible"> 
-          {/* Background Gradients */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] md:w-[1000px] h-[300px] md:h-[500px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+// 🚀 LOGGED OUT HERO HEADER (Remote.io Style 2-Column SaaS Layout)
+        <header className="w-full">
           
-          <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 relative z-10">
-            {/* --- NEW HERO SECTION --- */}
-            <div className="space-y-8 mb-14 relative z-10">
+          {/* ========================================= */}
+          {/* 1. TOP HERO SECTION (INDIGO BACKGROUND) */}
+          {/* ========================================= */}
+          {/* Search button wala exact color: bg-indigo-600 */}
+          <div className="relative pt-28 pb-0 md:pt-36 bg-indigo-600 dark:bg-[#0B0F19] overflow-hidden border-b border-indigo-700 dark:border-slate-800/50"> 
+            
+            {/* Subtle light glow behind text */}
+            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[500px] h-[500px] bg-white/10 rounded-full blur-[120px] pointer-events-none" />
+            
+            <div className="container mx-auto max-w-7xl px-4 relative z-20">
+              {/* 🚀 FIX: items-end lagaya taake image neeche zameen par touch kare */}
+              <div className="flex flex-col lg:flex-row items-end gap-12 lg:gap-8">
                 
-                {/* 1. BADGES ROW */}
-                <div className="flex flex-wrap justify-center gap-3">
+                {/* --- LEFT COLUMN: TEXT & SEARCH --- */}
+                {/* 🚀 FIX: Isko pb-16 (padding-bottom) diya taake text upar rahay, lekin image neechay zameen touch karti rahay */}
+                <div className="w-full lg:w-[55%] flex flex-col items-start text-left space-y-6 md:space-y-8 z-30 pb-16 md:pb-24">
+                  
+                  {/* 1. USP Badge */}
                   <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5 }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-500/30"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-white/10 border border-white/20 shadow-sm backdrop-blur-sm"
                   >
-                      <span className="relative flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600 dark:bg-emerald-400"></span>
-                      </span>
-                      <span className="text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest">
-                          100% Remote & Freelance Only
-                      </span>
+                    <ShieldCheck size={16} className="text-white" />
+                    <span className="text-[11px] md:text-sm font-bold text-white">
+                      100% Manually Verified Remote Jobs
+                    </span>
                   </motion.div>
 
+                  {/* 2. MAIN HEADING */}
+<motion.h1
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay: 0.2 }}
+    // 👇 Yahan sirf text-white kar diya hai
+    className="text-5xl md:text-7xl font-black tracking-tighter text-white leading-[1.1]"
+>
+    {loggedOutTitle}
+</motion.h1>
+
+                  {/* 3. DESCRIPTION */}
                   <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: 0.1 }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/30"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="text-base sm:text-lg md:text-xl text-indigo-100 font-medium max-w-2xl leading-relaxed"
                   >
-                      <Zap size={14} className="text-amber-600 dark:text-amber-400 fill-current" />
-                      <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
-                          1,240+ Fresh Gigs Added
-                      </span>
+                    HireSkys is the elite job radar for Developers, Designers, & Marketers.
                   </motion.div>
+
+                  {/* 4. MAIN SEARCH BAR */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="w-full relative z-40 mt-2"
+                  >
+                    <form onSubmit={handleManualSearch} className="flex items-center bg-white p-1.5 md:p-2 rounded-full shadow-2xl border-2 border-transparent focus-within:border-indigo-300 transition-all">
+                        
+                        <div className="pl-4 pr-2 text-slate-400 hidden sm:block">
+                            <Briefcase size={22} />
+                        </div>
+
+                        <input 
+                            type="text" 
+                            placeholder="Search roles (e.g. React Developer)..." 
+                            className="flex-1 h-12 md:h-14 pl-4 sm:pl-2 pr-2 bg-transparent outline-none text-base md:text-lg text-slate-900 placeholder:text-slate-400 min-w-0"
+                            value={searchQuery}
+                            onChange={(e) => { 
+                                setSearchQuery(e.target.value); 
+                                setForceExact(false); 
+                            }}
+                        />
+
+                        {/* 🚀 IMPORTANT: Background is Indigo, so button must be a contrasting color like Deep Slate or Pink */}
+                        {/* 🚀 TWEAK: Added dark:bg-indigo-600 and dark:hover:bg-indigo-500 */}
+<button type="submit" className="bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-6 md:px-10 h-12 md:h-14 rounded-full font-bold text-base md:text-lg transition flex items-center gap-2 transform active:scale-95 flex-shrink-0 ml-1">
+    <Search size={18} className="sm:hidden" />
+    <span className="hidden sm:inline">Search</span>
+</button>
+                    </form>
+                  </motion.div>
+
                 </div>
 
-                {/* 2. MAIN HEADING */}
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 dark:text-white leading-[1.1]"
+                {/* --- RIGHT COLUMN: HERO IMAGE (GROUNDED & DYNAMIC) --- */}
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.2 }}
+                  className="w-full lg:w-[50%] hidden lg:flex justify-end relative z-10"
                 >
-                    {loggedOutTitle}
-                </motion.h1>
+                   <div className="relative w-full max-w-[600px] h-[450px] md:h-[600px] lg:h-[650px] flex items-end justify-center">
+                       
+                       {/* 🚀 DYNAMIC BACKLIGHT GLOW (Hides the white edges by making them look like a light source) */}
+                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-indigo-500/20 rounded-full blur-[80px] -z-10"></div>
 
-                {/* 3. DESCRIPTION */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="max-w-4xl mx-auto flex flex-col gap-5"
-                >
-                    <p className="text-xl md:text-2xl text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
-      {uiDescription}
-  </p>
-                    
-                    <div className="text-lg md:text-xl text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-center gap-2">
-                        <span>Skip the office politics. Get verified</span>
-                        <span className="inline-flex items-center px-4 py-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300 font-bold text-base shadow-sm transform hover:scale-105 transition-transform cursor-default">
-                            Work from Home
-                        </span>
-                        <span>jobs instantly.</span>
-                    </div>
+                       {isImageMounted && (
+                           <Image 
+                             src={currentHeroImage} 
+                             alt="Remote Work Professional" 
+                             fill 
+                             className="object-contain object-bottom animate-in fade-in duration-1000 scale-110 lg:scale-[1.15] origin-bottom"
+                             priority
+                           />
+                       )}
+                   </div>
                 </motion.div>
 
+              </div>
             </div>
+          </div>
 
-            {/* --- SEARCH BAR SECTION --- */}
-            <div className="max-w-5xl mx-auto w-full px-4 relative z-30">
-
-              {/* --- SEARCH BAR WITH HYRIZON AI --- */}
-              <form onSubmit={handleManualSearch} className="relative group flex items-center bg-white dark:bg-[#151b2d] p-1.5 md:p-2 rounded-full shadow-2xl shadow-indigo-500/10 border border-slate-200 dark:border-slate-700 focus-within:border-indigo-500 transition-all transform md:hover:scale-[1.01]">
-                  
-                  {/* Left Icon (Briefcase Fixed) */}
-                  <div className="pl-3 pr-2 border-r border-slate-200 dark:border-slate-700 text-slate-400 flex items-center gap-2">
-                      <Briefcase size={18} />
-                      <span className="text-sm font-medium hidden sm:block capitalize">Jobs</span>
-                  </div>
-
-                  {/* Input Field (Placeholder Fixed) */}
-                  <input 
-                      type="text" 
-                      placeholder="Search roles (e.g. React Developer)..." 
-                      className="flex-1 h-10 md:h-12 pl-3 pr-2 bg-transparent outline-none text-base md:text-lg text-slate-800 dark:text-white placeholder:text-slate-400 min-w-0"
-                      value={searchQuery}
-                      onChange={(e) => { 
-                          setSearchQuery(e.target.value); 
-                          setForceExact(false); 
-                      }}
-                  />
-
-                  {/* --- 🔥 HYRIZON: HYRIZON AI BUTTON --- */}
-                  <div className="hidden sm:flex items-center pl-2 pr-2 relative z-20">
-                    <button
-                        type="button"
-                        onClick={handleAISearch}
-                        className="group relative p-[1.5px] rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-                        title="Ask Hyrizon AI"
-                    >
-                        <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7c3aed_0%,#d946ef_50%,#06b6d4_100%)]" />
-                        <div className="relative flex items-center gap-2 px-3 py-2 rounded-[10px] z-10 bg-white dark:bg-[#151b2d] transition-colors group-hover:bg-violet-50 dark:group-hover:bg-[#1e2538]">
-                            <div className="relative">
-                                <Sparkles size={16} className="text-violet-600 dark:text-violet-300 relative z-10" />
-                                 <div className="absolute inset-0 bg-violet-400/30 dark:bg-violet-400/20 rounded-full blur-md animate-pulse z-0"></div>
-                            </div>
-                            <div className="flex flex-col items-start leading-none">
-                                <span className="text-[9px] font-extrabold uppercase bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400 mb-0.5">
-                                    HYRIZON
-                                </span>
-                                <span className="text-xs font-black tracking-wide text-slate-800 dark:text-white">
-                                    Ask AI
-                                </span>
-                            </div>
+          {/* ========================================= */}
+          {/* 2. COMPANIES & CATEGORIES (LIGHT DEFAULT BACKGROUND) */}
+          {/* ========================================= */}
+          <div className="bg-slate-50 dark:bg-[#0B0F19]">
+            
+            {/* --- 🚀 BRAND TRUST BANNER --- */}
+            <div className="w-full pt-10 md:pt-16 pb-8 relative z-20">
+                <p className="text-center text-[10px] md:text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-6 md:mb-8">
+                    Top Companies Hiring Remotely
+                </p>
+                <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 lg:gap-24 px-4">
+                    {[
+                        { name: 'Supabase', domain: 'supabase.com' },
+                        { name: 'Stripe', domain: 'stripe.com' },
+                        { name: 'GitLab', domain: 'gitlab.com' },
+                        { name: 'Netflix', domain: 'netflix.com' },
+                        { name: 'Twilio', domain: 'twilio.com' },
+                        { name: 'ElevenLabs', domain: 'elevenlabs.io' },
+                        { name: 'Reddit', domain: 'reddit.com' },
+                    ].map((company, index) => (
+                        <div 
+                            key={company.domain}
+                            className={`opacity-50 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100 grayscale dark:grayscale-0 hover:grayscale-0 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center justify-center ${index === 4 ? 'hidden sm:flex' : 'flex'}`}
+                        >
+                            <Image 
+                                src={`https://img.logo.dev/${company.domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png`} 
+                                alt={company.name} 
+                                width={180} 
+                                height={80} 
+                                className="h-10 md:h-12 lg:h-14 w-auto object-contain" 
+                            />
                         </div>
-                    </button>
-                  </div>
-
-                  {/* Mobile Only AI Button (Small Icon) */}
-                  <button 
-                    type="button"
-                    onClick={handleAISearch}
-                    className="sm:hidden mr-2 p-2 text-violet-500 bg-violet-50 dark:bg-violet-900/20 rounded-full"
-                  >
-                    <Sparkles size={18} />
-                  </button>
-
-                  {/* Main Search Button */}
-                  <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 md:px-8 md:py-3 rounded-full font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-500/20 flex-shrink-0">
-                      <Search size={18} className="md:w-5 md:h-5" />
-                      <span className="hidden md:inline">Search</span>
-                  </button>
-              </form>
-
-             {/* --- SUPER SMOOTH CUSTOM FILTERS (LOGGED OUT FIX) --- */}
-              <motion.div 
-                  ref={dropdownRef}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="mt-6 md:mt-8 max-w-4xl mx-auto relative z-50"
-              >
-                  <div className="grid grid-cols-2 md:flex md:justify-center md:items-center gap-3">
-                      
-                      {/* CUSTOM FILTER 1: Job Type */}
-                      <div className="relative w-full md:w-auto md:min-w-[200px]">
-                          <button 
-                              onClick={() => { setShowJobTypeDropdown(!showJobTypeDropdown); setShowDateDropdown(false); setShowCountryDropdown(false); }}
-                              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold shadow-sm transition-all ${
-                                  showJobTypeDropdown 
-                                  ? 'bg-white dark:bg-[#151b2d] border-indigo-500 ring-2 ring-indigo-500/20' 
-                                  : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-indigo-300'
-                              }`}
-                          >
-                              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                                  <Briefcase size={16} className="text-indigo-500 flex-shrink-0" />
-                                  <span className="truncate">{filterJobType || "Job Type"}</span>
-                              </div>
-                              <ChevronDown size={14} className={`text-slate-400 flex-shrink-0 transition-transform duration-300 ${showJobTypeDropdown ? 'rotate-180 text-indigo-500' : ''}`} strokeWidth={3} />
-                          </button>
-
-                          <AnimatePresence>
-                              {showJobTypeDropdown && (
-                                  <motion.div
-                                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                      transition={{ duration: 0.2 }}
-                                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1"
-                                  >
-                                      {["Full-time", "Contract","Internship","Freelance", "Part-time"].map((type) => (
-                                          <button
-                                              key={type}
-                                              onClick={() => { 
-                                                  setFilterJobType(type); 
-                                                  setShowJobTypeDropdown(false); 
-                                                  updateURLParams('type', type); // 🚀 FIX: Add Type to URL
-                                              }}
-                                              className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors flex items-center justify-between group"
-                                          >
-                                              {type}
-                                              {filterJobType === type && <Check size={14} className="text-indigo-500" />}
-                                          </button>
-                                      ))}
-                                      {filterJobType && (
-                                           <button
-                                           onClick={() => { 
-                                               setFilterJobType(""); 
-                                               setShowJobTypeDropdown(false); 
-                                               updateURLParams('type', ''); // 🚀 FIX: Clear Type from URL
-                                           }}
-                                           className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
-                                       >
-                                           Clear Filter
-                                       </button>
-                                      )}
-                                  </motion.div>
-                              )}
-                          </AnimatePresence>
-                      </div>
-
-                     {/* CUSTOM FILTER 2: Date Posted */}
-                     <div className="relative w-full md:w-auto md:min-w-[200px]">
-                          <button 
-                              onClick={() => { setShowDateDropdown(!showDateDropdown); setShowJobTypeDropdown(false); setShowCountryDropdown(false); }}
-                              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold shadow-sm transition-all ${
-                                  showDateDropdown 
-                                  ? 'bg-white dark:bg-[#151b2d] border-pink-500 ring-2 ring-pink-500/20' 
-                                  : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-pink-300'
-                              }`}
-                          >
-                              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                                  <Clock size={16} className="text-pink-500 flex-shrink-0" />
-                                  <span className="truncate">{filterDate === "24h" ? "Last 24 Hours" : filterDate === "7d" ? "Last 7 Days" : filterDate === "30d" ? "Last Month" : "Date Posted"}</span>
-                              </div>
-                              <ChevronDown size={14} className={`text-slate-400 flex-shrink-0 transition-transform duration-300 ${showDateDropdown ? 'rotate-180 text-pink-500' : ''}`} strokeWidth={3} />
-                          </button>
-
-                          <AnimatePresence>
-                              {showDateDropdown && (
-                                  <motion.div
-                                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                      transition={{ duration: 0.2 }}
-                                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1"
-                                  >
-                                      {[
-                                          { val: "24h", label: "Last 24 Hours" },
-                                          { val: "7d", label: "Last 7 Days" },
-                                          { val: "30d", label: "Last Month" }
-                                      ].map((opt) => (
-                                          <button
-                                              key={opt.val}
-                                              onClick={() => { 
-                                                  setFilterDate(opt.val); 
-                                                  fetchJobs(); 
-                                                  setShowDateDropdown(false); 
-                                                  updateURLParams('date', opt.val); // 🚀 FIX: Add Date to URL
-                                              }}
-                                              className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-pink-900/30 hover:text-pink-600 dark:hover:text-pink-400 rounded-lg transition-colors flex items-center justify-between"
-                                          >
-                                              {opt.label}
-                                              {filterDate === opt.val && <Check size={14} className="text-pink-500" />}
-                                          </button>
-                                      ))}
-                                       {filterDate && (
-                                           <button
-                                           onClick={() => { 
-                                               setFilterDate(""); 
-                                               fetchJobs(); 
-                                               setShowDateDropdown(false); 
-                                               updateURLParams('date', ''); // 🚀 FIX: Clear Date from URL
-                                           }}
-                                           className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
-                                       >
-                                           Clear Filter
-                                       </button>
-                                      )}
-                                  </motion.div>
-                              )}
-                          </AnimatePresence>
-                      </div>
-
-                      {/* CUSTOM FILTER 3: Location / Country */}
-                      <div className="relative w-full col-span-2 md:col-auto md:w-auto md:min-w-[220px]">
-                          <button 
-                              onClick={() => { setShowCountryDropdown(!showCountryDropdown); setShowJobTypeDropdown(false); setShowDateDropdown(false); }}
-                              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold shadow-sm transition-all ${
-                                  showCountryDropdown 
-                                  ? 'bg-white dark:bg-[#151b2d] border-emerald-500 ring-2 ring-emerald-500/20' 
-                                  : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-emerald-300'
-                              }`}
-                          >
-                              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 max-w-[85%]">
-                                  <MapPin size={16} className="text-emerald-500 flex-shrink-0" />
-                                  <span className="truncate block">
-                                      {filterCountry ? filterCountry : "Location / Country"}
-                                  </span>
-                              </div>
-                              <ChevronDown size={14} className={`text-slate-400 flex-shrink-0 transition-transform duration-300 ${showCountryDropdown ? 'rotate-180 text-emerald-500' : ''}`} strokeWidth={3} />
-                          </button>
-
-                          <AnimatePresence>
-                              {showCountryDropdown && (
-                                  <motion.div
-                                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl z-50 overflow-hidden min-w-[220px]"
-                                  >
-                                      <div className="p-2 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20">
-                                          <div className="relative">
-                                              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/>
-                                              <input 
-                                                  type="text" 
-                                                  placeholder="Search country..." 
-                                                  value={countrySearch}
-                                                  onChange={(e) => setCountrySearch(e.target.value)}
-                                                  onClick={(e) => e.stopPropagation()} 
-                                                  autoFocus
-                                                  className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-[#151b2d] border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
-                                              />
-                                          </div>
-                                      </div>
-
-                                      {/* Scrollable Area */}
-    <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
-        {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).length > 0 ? (
-            COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
-                <Link
-                    key={country.name}
-                    href={getLocationUrl(country.name)}
-                    scroll={false}
-                    onClick={() => { 
-                        setFilterCountry(country.name); 
-                        setShowCountryDropdown(false); 
-                        setCountrySearch(""); 
-                    }}
-                    className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-colors flex items-center gap-2"
-                >
-                    <span className="text-lg flex-shrink-0">{country.flag}</span>
-                    <span className="truncate">{country.name}</span>
-                    {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
-                </Link>
-            ))
-        ) : (
-            <div className="p-4 text-center text-xs text-slate-400">
-                No country found
-            </div>
-        )}
-    </div>
-    
-    {filterCountry && (
-        <button
-            onClick={() => { 
-                setFilterCountry(""); 
-                setShowCountryDropdown(false); 
-                setCountrySearch(""); 
-                router.push(getLocationUrl(''), { scroll: false });
-            }}
-            className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
-        >
-            Clear Location
-        </button>
-    )}
-                                  </motion.div>
-                              )}
-                          </AnimatePresence>
-                      </div>
-
-                  </div>
-              </motion.div>
-            </div>
-
-           {/* CATEGORIES - LOGGED OUT SECTION */}
-            <div className="flex flex-col items-center pt-8 px-2 max-w-5xl mx-auto relative z-10">
-                <div className="flex flex-wrap justify-center gap-3">
-                
-                    {/* "All" Button */}
-                    <Link 
-        href={getCategoryUrl('All')}
-        scroll={false}
-        onClick={() => { 
-            setActiveCategory('All'); 
-            setActiveSubTag(''); 
-        }}
-        className={`flex items-center gap-2 px-6 py-3 rounded-full text-base font-semibold transform hover:scale-105 active:scale-95 transition-all border shadow-sm ${activeCategory === 'All' ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-500/25' : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
-    >
-        <Filter size={18} /> All
-    </Link>
-                    
-                    {/* Categories Map */}
-                    {visibleCategories.map(([name, data], index) => {
-        const Icon = (data as any).icon;
-        const isActive = activeCategory === name;
-        return (
-            <Link 
-                key={name} 
-                href={getCategoryUrl(name)}
-                scroll={false}
-                onClick={() => { 
-                    setActiveCategory(name); 
-                    setActiveSubTag(''); 
-                }}
-                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm md:text-base font-medium transform hover:scale-105 active:scale-95 transition-all border whitespace-nowrap shadow-sm ${isActive ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg' : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'}`}
-            >
-                <Icon size={18} /> {name}
-            </Link>
-        )
-    })}
+                    ))}
                 </div>
+            </div>
+            {/* --- CATEGORIES SECTION (Bottom of Hero) --- */}
+            <div className="w-full mt-16 md:mt-24 pt-8 border-t border-slate-200 dark:border-slate-800/50 relative z-10">
+               <div className="flex flex-col items-center px-2 max-w-5xl mx-auto">
+                   <div className="flex flex-wrap justify-center gap-3">
+                       <Link href={getCategoryUrl('All')} scroll={false} onClick={() => { setActiveCategory('All'); setActiveSubTag(''); }} className={`flex items-center gap-2 px-6 py-3 rounded-full text-base font-semibold transform hover:scale-105 active:scale-95 transition-all border shadow-sm ${activeCategory === 'All' ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-500/25' : 'bg-white dark:bg-[#151b2d] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}>
+                           <Filter size={18} /> All
+                       </Link>
+                       {visibleCategories.map(([name, data]) => {
+                           const Icon = (data as any).icon;
+                           const isActive = activeCategory === name;
+                           return (
+                               <Link key={name} href={getCategoryUrl(name)} scroll={false} onClick={() => { setActiveCategory(name); setActiveSubTag(''); }} className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm md:text-base font-medium transform hover:scale-105 active:scale-95 transition-all border whitespace-nowrap shadow-sm ${isActive ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg' : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'}`}>
+                                   <Icon size={18} /> {name}
+                               </Link>
+                           )
+                       })}
+                   </div>
 
-                {/* Show More / Show Less Button */}
-                {categoryEntries.length > 5 && (
-                    <button 
-                        onClick={() => setShowAll(!showAll)}
-                        className="mt-6 text-sm font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 hover:underline transition-all"
-                    >
-                        {showAll ? (
-                            <>Show Less <ChevronUp size={16}/></>
-                        ) : (
-                            <>View All Categories  <ChevronDown size={16}/></>
-                        )}
-                    </button>
-                )}
+                   {categoryEntries.length > 5 && (
+                       <button onClick={() => setShowAll(!showAll)} className="mt-6 text-sm font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 hover:underline transition-all">
+                           {showAll ? (<>Show Less <ChevronUp size={16}/></>) : (<>View All Categories <ChevronDown size={16}/></>)}
+                       </button>
+                   )}
+
+                   {activeCategory !== 'All' && CATEGORIES.hasOwnProperty(activeCategory) && (
+                       <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10 w-full">
+                           {((CATEGORIES as any)[activeCategory]?.sub || []).map((tag: any) => (
+                               <Link key={tag} href={getTagUrl(tag)} scroll={false} onClick={() => { const newTag = activeSubTag === tag ? '' : tag; setActiveSubTag(newTag); }} className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}>
+                                   {tag}
+                               </Link>
+                           ))}
+                       </motion.div>
+                   )}
+               </div>
             </div>
 
-            {/* Subtags */}
-                      {activeCategory !== 'All' && CATEGORIES.hasOwnProperty(activeCategory) && (
-    <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10 w-full">
-        {/* 🚀 FIX: Yahan humne ?.sub?.map lagaya hai aur ( || [] ) ka fallback diya hai taake kabhi crash na ho! */}
-        {((CATEGORIES as any)[activeCategory]?.sub || []).map((tag: any) => (
-            <Link 
-                key={tag} 
-                href={getTagUrl(tag)}
-                scroll={false}
-                onClick={() => {
-                    const newTag = activeSubTag === tag ? '' : tag;
-                    setActiveSubTag(newTag);
-                }} 
-                className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}
-            >
-                {tag}
-            </Link>
-        ))}
-    </motion.div>
-)}
           </div>
         </header>
 
@@ -2484,7 +2207,7 @@ return (
         {/* Middle: Content */}
         <div className="flex-1 text-center md:text-left">
           <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white mb-2">
-             {completedSteps === 1 ? "Start your professional journey! 🚀" : "Almost there, " + (userProfile?.full_name?.split(' ')[0] || 'User') + "! 🔥"}
+             {completedSteps === 1 ? "Start your professional journey!" : "Almost there, " + (userProfile?.full_name?.split(' ')[0] || 'User') + "! 🔥"}
           </h3>
           <p className="text-slate-500 dark:text-slate-400 font-medium">
   Complete your profile to <strong>boost your visibility by 5x</strong> and get matched with top remote jobs.
@@ -2509,80 +2232,15 @@ return (
   </div>
 )}
       {/* WHY JOIN SECTION (Animated & Interactive) */}
-      {/* WHY JOIN SECTION (Animated & Interactive) */}
-      {!currentUser && (
-        <div className="bg-white dark:bg-[#111625] border-y border-slate-200 dark:border-slate-800 py-16 md:py-24">
-            <div className="container mx-auto px-4 max-w-6xl">
-                
-                {/* Section Header */}
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-                        Why create an account?
-                    </h2>
-                    <p className="text-slate-500 mt-4 text-lg md:text-xl font-medium">Join elite freelancers getting hired faster.</p>
-                </div>
-
-                {/* Animated Grid (3 Columns for better proportions) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    {/* Card 1: Public Profile */}
-                    <motion.div 
-                        whileHover={{ y: -8, scale: 1.02 }}
-                        className="p-8 md:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-all duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-indigo-500/50 hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.1)] group cursor-default h-full flex flex-col justify-center"
-                    >
-                        <div className="w-20 h-20 mx-auto bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-sm border border-indigo-200/50 dark:border-indigo-800/50">
-                            <IdCard size={40} />
-                        </div>
-                        <h3 className="font-black text-2xl mb-4 text-slate-900 dark:text-white">Public Profile</h3>
-                        <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                            Create a professional portfolio page to share directly with clients.
-                        </p>
-                    </motion.div>
-
-                    {/* Card 2: Instant Alerts */}
-                    <motion.div 
-                        whileHover={{ y: -8, scale: 1.02 }}
-                        className="p-8 md:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-all duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-amber-500/50 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.1)] group cursor-default h-full flex flex-col justify-center"
-                    >
-                        <div className="w-20 h-20 mx-auto bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 shadow-sm border border-amber-200/50 dark:border-amber-800/50">
-                            <Bell size={40} />
-                        </div>
-                        <h3 className="font-black text-2xl mb-4 text-slate-900 dark:text-white">Instant Alerts</h3>
-                        <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                            Get notified via <strong className="text-slate-700 dark:text-slate-300">Telegram & WhatsApp</strong> the millisecond a new job drops.
-                        </p>
-                    </motion.div>
-
-                    {/* Card 3: Save Jobs */}
-                    <motion.div 
-                        whileHover={{ y: -8, scale: 1.02 }}
-                        className="p-8 md:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-center transition-all duration-300 hover:bg-white dark:hover:bg-[#151b2d] hover:border-red-500/50 hover:shadow-[0_20px_40px_-15px_rgba(239,68,68,0.1)] group cursor-default h-full flex flex-col justify-center"
-                    >
-                        <div className="w-20 h-20 mx-auto bg-red-100 dark:bg-red-900/30 text-red-600 rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-sm border border-red-200/50 dark:border-red-800/50">
-                            <Bookmark size={40} className="fill-current" />
-                        </div>
-                        <h3 className="font-black text-2xl mb-4 text-slate-900 dark:text-white">Save Jobs</h3>
-                        <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                            Bookmark interesting roles and apply when you are ready.
-                        </p>
-                    </motion.div>
-
-                </div>
-
-                {/* Call to Action (Fixed button shadow) */}
-                <div className="text-center mt-16">
-                    <Link href="/login?view=signup" className="inline-flex items-center gap-3 px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-lg rounded-full shadow-[0_10px_30px_-10px_rgba(79,70,229,0.6)] transition transform hover:-translate-y-1">
-                        Create Free Account <ArrowRight size={20}/>
-                    </Link>
-                </div>
-            </div>
-        </div>
-      )}
+      {/* WHY JOIN SECTION (Premium SaaS Redesign) */}
+      
 
       {/* MAIN CONTENT */}
-      <main id="jobs" ref={jobsSectionRef} className="container mx-auto px-4 pt-12 md:pt-16 pb-8 max-w-5xl scroll-mt-24">
+      <main id="jobs" ref={jobsSectionRef} className="container mx-auto px-4 pt-8 md:pt-12 pb-8 max-w-5xl scroll-mt-24">
+        
+        {/* Fallback Message */}
         {isFallback && (
-            <div className="mb-8 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center gap-3">
+            <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center gap-3">
                 <div className="bg-amber-100 p-2 rounded-full text-amber-600">
                     <Zap size={20} />
                 </div>
@@ -2593,10 +2251,10 @@ return (
                         Showing you the latest opportunities instead.
                     </p>
                 </div>
-                
             </div>
         )}
-{/* 🚀 GOOGLE STYLE "DID YOU MEAN" MESSAGE */}
+
+        {/* Suggested Term */}
         {suggestedTerm && searchQuery && !loading && jobs.length > 0 && (
             <div className="mb-6 flex flex-col items-start gap-1">
                 <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 rounded-xl text-sm md:text-base border border-indigo-100 dark:border-indigo-800/30 shadow-sm animate-in fade-in slide-in-from-top-2">
@@ -2616,83 +2274,155 @@ return (
                 </div>
             </div>
         )}
-        <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 gap-3">
-          
-          <div className="flex-1 min-w-0 flex items-center gap-2">
-            {/* 🟢 VIP JADOO: PREMIUM CUSTOM DROPDOWN HEADER */}
-            {activeCategory === 'All' && !searchQuery ? (
-              <div className="relative inline-block text-left" ref={sortDropdownRef}>
-                {/* 1. Main Button (Looks clickable and obvious) */}
-                <button
-                  onClick={() => setShowSortDropdown(!showSortDropdown)}
-                  className="flex items-center gap-2 md:gap-3 px-4 py-2 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-all shadow-sm group"
+
+{/* 🎛️ THE ULTIMATE CONTROL BAR (Filters + Sort + Count) */}
+<div ref={dropdownRef} className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 relative z-30">
+    
+    {/* 🛑 LEFT SIDE: Custom Filters (SIRF LOGGED-OUT USERS KO DIKHENGA) */}
+    {!currentUser && (
+        <div className="grid grid-cols-3 gap-2 w-full lg:flex lg:w-auto pb-2 lg:pb-0">
+            
+            {/* Filter 1: Job Type */}
+            <div className="relative w-full">
+                <button 
+                    onClick={() => { setShowJobTypeDropdown(!showJobTypeDropdown); setShowDateDropdown(false); setShowCountryDropdown(false); }}
+                    className={`w-full flex items-center justify-center lg:justify-between gap-1 sm:gap-2 px-1 sm:px-3 py-2 md:px-4 md:py-2.5 rounded-xl border text-[10px] sm:text-xs md:text-sm font-bold shadow-sm transition-all whitespace-nowrap ${
+                        showJobTypeDropdown ? 'bg-white dark:bg-[#151b2d] border-indigo-500 ring-2 ring-indigo-500/20' : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-indigo-300'
+                    }`}
                 >
-                  <span className="text-sm md:text-lg font-black text-slate-800 dark:text-white">
-                    {sortOrder === 'trending' ? '🔥 Trending Opportunities' : '✨ Latest Opportunities'}
-                  </span>
-                  <ChevronDown size={18} className={`text-slate-400 group-hover:text-indigo-500 transition-transform duration-300 ${showSortDropdown ? 'rotate-180 text-indigo-500' : ''}`} strokeWidth={3} />
+                    <Briefcase size={12} className="text-indigo-500 flex-shrink-0 md:w-3.5 md:h-3.5" />
+                    <span className="truncate">{filterJobType || "Job Type"}</span>
+                    <ChevronDown size={12} className={`text-slate-400 flex-shrink-0 transition-transform ${showJobTypeDropdown ? 'rotate-180 text-indigo-500' : ''}`} strokeWidth={3} />
                 </button>
-
-                {/* 2. Animated Menu */}
                 <AnimatePresence>
-                  {showSortDropdown && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute left-0 mt-3 w-64 md:w-72 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-50 p-2"
-                    >
-                      <button
-                        onClick={() => { setSortOrder('new'); setShowSortDropdown(false); }}
-                        className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold transition-colors ${sortOrder === 'new' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Sparkles size={18} className={sortOrder === 'new' ? 'text-indigo-500' : 'text-slate-400'} />
-                          Latest Opportunities
-                        </div>
-                        {sortOrder === 'new' && <Check size={16} />}
-                      </button>
-
-                      <button
-                        onClick={() => { setSortOrder('trending'); setShowSortDropdown(false); }}
-                        className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold transition-colors mt-1 ${sortOrder === 'trending' ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <TrendingUp size={18} className={sortOrder === 'trending' ? 'text-orange-500' : 'text-slate-400'} />
-                          Trending Jobs 🔥
-                        </div>
-                        {sortOrder === 'trending' && <Check size={16} />}
-                      </button>
-                    </motion.div>
-                  )}
+                    {showJobTypeDropdown && (
+                        <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} transition={{ duration: 0.2 }} className="absolute top-full left-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1 min-w-[180px]">
+                            {["Full-time", "Contract","Internship","Freelance", "Part-time"].map((type) => (
+                                <button key={type} onClick={() => { setFilterJobType(type); setShowJobTypeDropdown(false); updateURLParams('type', type); }} className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors flex items-center justify-between group">
+                                    {type} {filterJobType === type && <Check size={14} className="text-indigo-500" />}
+                                </button>
+                            ))}
+                            {filterJobType && (
+                                <button onClick={() => { setFilterJobType(""); setShowJobTypeDropdown(false); updateURLParams('type', ''); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1">Clear Filter</button>
+                            )}
+                        </motion.div>
+                    )}
                 </AnimatePresence>
-              </div>
-            ) : (
-              <h2 className="text-base md:text-xl font-bold text-slate-800 dark:text-white truncate">
-                Search Results
-              </h2>
-            )}
-          </div>
-
-          <div className="flex-shrink-0 relative group hidden sm:block">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-            <div className="relative flex items-center gap-2.5 px-3 py-1.5 md:px-4 md:py-2 bg-white dark:bg-[#0B0F19] border border-slate-100 dark:border-slate-800 rounded-full shadow-sm">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <div className="flex items-baseline gap-1.5">
-                    <span className="text-sm md:text-base font-black text-slate-900 dark:text-white leading-none">
-                        {totalCount > 0 ? totalCount.toLocaleString() : jobs.length}
-                    </span>
-                    <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                        Active Jobs
-                    </span>
-                </div>
             </div>
-          </div>
+
+            {/* Filter 2: Date Posted */}
+            <div className="relative w-full">
+                <button 
+                    onClick={() => { setShowDateDropdown(!showDateDropdown); setShowJobTypeDropdown(false); setShowCountryDropdown(false); }}
+                    className={`w-full flex items-center justify-center lg:justify-between gap-1 sm:gap-2 px-1 sm:px-3 py-2 md:px-4 md:py-2.5 rounded-xl border text-[10px] sm:text-xs md:text-sm font-bold shadow-sm transition-all whitespace-nowrap ${
+                        showDateDropdown ? 'bg-white dark:bg-[#151b2d] border-pink-500 ring-2 ring-pink-500/20' : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-pink-300'
+                    }`}
+                >
+                    <Clock size={12} className="text-pink-500 flex-shrink-0 md:w-3.5 md:h-3.5" />
+                    <span className="truncate">{filterDate === "24h" ? "24h" : filterDate === "7d" ? "7 Days" : filterDate === "30d" ? "Month" : "Date"}</span>
+                    <ChevronDown size={12} className={`text-slate-400 flex-shrink-0 transition-transform ${showDateDropdown ? 'rotate-180 text-pink-500' : ''}`} strokeWidth={3} />
+                </button>
+                <AnimatePresence>
+                    {showDateDropdown && (
+                        <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} transition={{ duration: 0.2 }} className="absolute top-full left-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1 min-w-[180px]">
+                            {[{ val: "24h", label: "Last 24 Hours" }, { val: "7d", label: "Last 7 Days" }, { val: "30d", label: "Last Month" }].map((opt) => (
+                                <button key={opt.val} onClick={() => { setFilterDate(opt.val); fetchJobs(); setShowDateDropdown(false); updateURLParams('date', opt.val); }} className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-pink-50 dark:hover:bg-pink-900/30 hover:text-pink-600 dark:hover:text-pink-400 rounded-lg transition-colors flex items-center justify-between">
+                                    {opt.label} {filterDate === opt.val && <Check size={14} className="text-pink-500" />}
+                                </button>
+                            ))}
+                            {filterDate && (
+                                <button onClick={() => { setFilterDate(""); fetchJobs(); setShowDateDropdown(false); updateURLParams('date', ''); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1">Clear Filter</button>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Filter 3: Location */}
+            <div className="relative w-full">
+                <button 
+                    onClick={() => { setShowCountryDropdown(!showCountryDropdown); setShowJobTypeDropdown(false); setShowDateDropdown(false); }}
+                    className={`w-full flex items-center justify-center lg:justify-between gap-1 sm:gap-2 px-1 sm:px-3 py-2 md:px-4 md:py-2.5 rounded-xl border text-[10px] sm:text-xs md:text-sm font-bold shadow-sm transition-all whitespace-nowrap ${
+                        showCountryDropdown ? 'bg-white dark:bg-[#151b2d] border-emerald-500 ring-2 ring-emerald-500/20' : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-emerald-300'
+                    }`}
+                >
+                    <MapPin size={12} className="text-emerald-500 flex-shrink-0 md:w-3.5 md:h-3.5" />
+                    <span className="truncate">{filterCountry || "Location"}</span>
+                    <ChevronDown size={12} className={`text-slate-400 flex-shrink-0 transition-transform ${showCountryDropdown ? 'rotate-180 text-emerald-500' : ''}`} strokeWidth={3} />
+                </button>
+                <AnimatePresence>
+                    {showCountryDropdown && (
+                        <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute top-full right-0 lg:left-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl z-50 overflow-hidden min-w-[220px]">
+                            <div className="p-2 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20">
+                                <div className="relative">
+                                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"/>
+                                    <input type="text" placeholder="Search..." value={countrySearch} onChange={(e) => setCountrySearch(e.target.value)} onClick={(e) => e.stopPropagation()} autoFocus className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-[#151b2d] border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500 transition-all text-slate-700 dark:text-slate-200 placeholder:text-slate-400" />
+                                </div>
+                            </div>
+                            <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
+                                {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
+                                    <Link key={country.name} href={getLocationUrl(country.name)} scroll={false} onClick={() => { setFilterCountry(country.name); setShowCountryDropdown(false); setCountrySearch(""); }} className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors flex items-center gap-2">
+                                        <span className="text-lg">{country.flag}</span>
+                                        <span className="truncate">{country.name}</span>
+                                        {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}
+                                    </Link>
+                                ))}
+                            </div>
+                            {filterCountry && (
+                                <button onClick={() => { setFilterCountry(""); setShowCountryDropdown(false); setCountrySearch(""); router.push(getLocationUrl(''), { scroll: false }); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border-t border-slate-100 dark:border-slate-700 mt-1">Clear Location</button>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
+    )}
+
+    {/* 🚀 RIGHT SIDE (Yahan humne conditional logic lagai hai)
+        Agar User Logged In hai toh ye `w-full` le ga, Sort left pr or Count right pr aayega.
+        Agar Logged out hai toh wese hi `justify-end` ho ga jese pehle tha.
+    */}
+    <div className={`flex items-center justify-between gap-3 w-full ${currentUser ? '' : 'lg:w-auto lg:justify-end'} pt-3 lg:pt-0 mt-1 lg:mt-0 border-t lg:border-t-0 border-slate-200/50 dark:border-slate-800/50`}>
+        
+        {/* SORT & LATEST */}
+        {activeCategory === 'All' && !searchQuery ? (
+            <div className="relative inline-block text-left flex-shrink-0" ref={sortDropdownRef}>
+                <button onClick={() => setShowSortDropdown(!showSortDropdown)} className="flex items-center gap-2 px-3 py-1.5 md:py-2 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-all shadow-sm group">
+                    <span className="text-xs md:text-sm font-black text-slate-800 dark:text-white">
+                        {sortOrder === 'trending' ? '🔥 Trending' : '✨ Latest'}
+                    </span>
+                    <ChevronDown size={14} className={`text-slate-400 transition-transform ${showSortDropdown ? 'rotate-180 text-indigo-500' : ''}`} strokeWidth={3} />
+                </button>
+                <AnimatePresence>
+                    {showSortDropdown && (
+                        <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className={`absolute mt-2 w-56 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-50 p-2 ${currentUser ? 'left-0' : 'left-0 lg:right-0'}`}>
+                            <button onClick={() => { setSortOrder('new'); setShowSortDropdown(false); }} className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold transition-colors ${sortOrder === 'new' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
+                                <div className="flex items-center gap-2"><Sparkles size={16} /> Latest Opportunities</div>
+                                {sortOrder === 'new' && <Check size={14} />}
+                            </button>
+                            <button onClick={() => { setSortOrder('trending'); setShowSortDropdown(false); }} className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold transition-colors mt-1 ${sortOrder === 'trending' ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
+                                <div className="flex items-center gap-2"><TrendingUp size={16} /> Trending Jobs 🔥</div>
+                                {sortOrder === 'trending' && <Check size={14} />}
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+        ) : (
+            <h2 className="text-sm font-bold text-slate-800 dark:text-white truncate">Search Results</h2>
+        )}
+
+        {/* ACTIVE COUNT PILL */}
+        <div className="relative flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#0B0F19] border border-slate-100 dark:border-slate-800 rounded-full shadow-sm flex-shrink-0">
+            <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+            <div className="flex items-baseline gap-1">
+                <span className="text-xs md:text-sm font-black text-slate-900 dark:text-white leading-none">{totalCount > 0 ? totalCount.toLocaleString() : jobs.length}</span>
+                <span className="hidden sm:inline-block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active</span>
+            </div>
+        </div>
+
+    </div>
+</div>
 
         <div className="space-y-4">
             {/* 🌟 VVIP FEATURED MATCHES (Only on default dashboard, Logged In) */}
@@ -3061,6 +2791,99 @@ return (
           <CategorySection />
         </div>
       </main>
+      {!currentUser && (
+        <div className="relative bg-white dark:bg-[#0B0F19] py-20 md:py-32 overflow-hidden border-y border-slate-100 dark:border-slate-800/50">
+          {/* Subtle Background Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-96 bg-indigo-500/5 dark:bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+          <div className="container mx-auto px-4 max-w-6xl relative z-10">
+
+            {/* Section Header */}
+            <div className="text-center mb-16 md:mb-24">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight mb-6">
+                Why create an account?
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl font-medium max-w-2xl mx-auto">
+                Join the elite circle of remote professionals. Get hired faster with tools designed for the modern freelancer.
+              </p>
+            </div>
+
+            {/* Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+
+              {/* Feature 1: Public Profile */}
+              <div className="group relative bg-slate-50/50 dark:bg-[#111625] rounded-[2rem] border border-slate-200/60 dark:border-slate-800/60 p-8 md:p-10 transition-all duration-500 hover:bg-white dark:hover:bg-[#151b2d] hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.15)] hover:-translate-y-2 flex flex-col">
+                  
+                  {/* 📸 IMAGE PLACEHOLDER: Jab images ready hon, neeche wala div uncomment krna aur uske neeche wala 'Icon' div delete kr dena */}
+                  {/*
+                  <div className="relative w-full h-48 mb-8 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                      <Image src="/features/public-profile.png" alt="Public Profile" fill className="object-cover object-top" />
+                  </div>
+                  */}
+
+                  {/* Icon (Current Fallback) */}
+                  <div className="w-14 h-14 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-2xl flex items-center justify-center mb-8 shadow-sm border border-indigo-200/50 dark:border-indigo-800/50 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                      <IdCard size={28} />
+                  </div>
+
+                  <h3 className="font-black text-2xl mb-3 text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Public Profile</h3>
+                  <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Create a stunning, shareable professional portfolio. Let your work speak for itself and land clients directly.
+                  </p>
+              </div>
+
+              {/* Feature 2: Instant Alerts */}
+              <div className="group relative bg-slate-50/50 dark:bg-[#111625] rounded-[2rem] border border-slate-200/60 dark:border-slate-800/60 p-8 md:p-10 transition-all duration-500 hover:bg-white dark:hover:bg-[#151b2d] hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.15)] hover:-translate-y-2 flex flex-col">
+                  
+                  {/* 📸 IMAGE PLACEHOLDER */}
+                  {/*
+                  <div className="relative w-full h-48 mb-8 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                      <Image src="/features/instant-alerts.png" alt="Instant Alerts" fill className="object-cover object-top" />
+                  </div>
+                  */}
+
+                  <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-2xl flex items-center justify-center mb-8 shadow-sm border border-amber-200/50 dark:border-amber-800/50 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                      <Bell size={28} />
+                  </div>
+
+                  <h3 className="font-black text-2xl mb-3 text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">Instant Alerts</h3>
+                  <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Beat the competition. Get notified via <strong className="text-slate-700 dark:text-slate-300">Telegram & WhatsApp</strong> the millisecond a new job drops.
+                  </p>
+              </div>
+
+              {/* Feature 3: Save Jobs */}
+              <div className="group relative bg-slate-50/50 dark:bg-[#111625] rounded-[2rem] border border-slate-200/60 dark:border-slate-800/60 p-8 md:p-10 transition-all duration-500 hover:bg-white dark:hover:bg-[#151b2d] hover:shadow-[0_20px_40px_-15px_rgba(239,68,68,0.15)] hover:-translate-y-2 flex flex-col">
+                   
+                   {/* 📸 IMAGE PLACEHOLDER */}
+                   {/*
+                  <div className="relative w-full h-48 mb-8 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                      <Image src="/features/save-jobs.png" alt="Save Jobs" fill className="object-cover object-top" />
+                  </div>
+                  */}
+
+                  <div className="w-14 h-14 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-2xl flex items-center justify-center mb-8 shadow-sm border border-red-200/50 dark:border-red-800/50 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                      <Bookmark size={28} className="fill-current" />
+                  </div>
+
+                  <h3 className="font-black text-2xl mb-3 text-slate-900 dark:text-white group-hover:text-red-500 transition-colors">Save Jobs</h3>
+                  <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Build your application pipeline. Bookmark interesting roles and apply when your resume is perfectly tailored.
+                  </p>
+              </div>
+
+            </div>
+
+            {/* Call to Action */}
+            <div className="text-center mt-16 md:mt-24">
+              <Link href="/login?view=signup" className="inline-flex items-center gap-3 px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-indigo-600 dark:hover:bg-indigo-500 font-bold text-lg rounded-full shadow-lg transition-all transform hover:-translate-y-1 hover:shadow-indigo-500/25">
+                Create Free Account <ArrowRight size={20}/>
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

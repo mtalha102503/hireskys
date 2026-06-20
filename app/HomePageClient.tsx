@@ -684,7 +684,6 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
 // 🚀 DYNAMIC HERO IMAGES SETUP
   const HERO_IMAGES = [
     "/hero-person-14.png",
-    "/hero-person-12.png",
     "/hero-person-8.png",
     "/hero-person-9.png",
     "/hero-person-7.png",

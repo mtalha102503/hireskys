@@ -2075,33 +2075,35 @@ return (
 
                 </div>
 
-                {/* --- RIGHT COLUMN: HERO IMAGE (GROUNDED & DYNAMIC) --- */}
-                <motion.div 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  className="w-full lg:w-[50%] hidden lg:flex justify-end relative z-10"
-                >
+               {/* --- RIGHT COLUMN: HERO IMAGE (GROUNDED & DYNAMIC) --- */}
+                <div className="w-full lg:w-[50%] hidden lg:flex justify-end relative z-10">
                    <div className="relative w-full max-w-[600px] h-[450px] md:h-[600px] lg:h-[650px] flex items-end justify-center">
                        
                        {/* 🚀 DYNAMIC BACKLIGHT GLOW (Hides the white edges by making them look like a light source) */}
                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-indigo-500/20 rounded-full blur-[80px] -z-10"></div>
 
                        {isImageMounted && (
-                           <Image 
-                             src={currentHeroImage} 
-                             alt="Remote Work Professional" 
-                             fill 
-                             className="object-contain object-bottom animate-in fade-in duration-1000 scale-110 lg:scale-[1.15] origin-bottom"
-                             priority
-                           />
+                           <motion.div 
+                             initial={{ opacity: 0, y: 30 }} // 👈 Ab ye smoothly halka sa neechay se upar ayegi
+                             animate={{ opacity: 1, y: 0 }}
+                             transition={{ duration: 0.8, ease: "easeOut" }}
+                             className="absolute inset-0 w-full h-full"
+                           >
+                               <Image 
+                                 src={currentHeroImage} 
+                                 alt="Remote Work Professional" 
+                                 fill 
+                                 // 👈 FIX: Tailwind ki clash karne wali animation classes hata di hain
+                                 className="object-contain object-bottom scale-110 lg:scale-[1.15] origin-bottom"
+                                 priority
+                               />
+                           </motion.div>
                        )}
                    </div>
-                </motion.div>
-
-              </div>
-            </div>
-          </div>
+                </div>
+                </div>
+                </div>
+                </div>
 
           {/* ========================================= */}
           {/* 2. COMPANIES & CATEGORIES (LIGHT DEFAULT BACKGROUND) */}

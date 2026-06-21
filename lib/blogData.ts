@@ -1027,5 +1027,336 @@ export const BLOG_POSTS: BlogPost[] = [
           </a>
       </div>
     `
+},{
+    slug: 'build-world-class-remote-team-bootstrapped-budget',
+    title: 'How to Build a World-Class Remote Team on a Bootstrapped Budget',
+    excerpt: 'Hiring top talent shouldn\'t burn your runway. Learn how lean startups are using AI and pay-as-you-go ATS models to hire elite developers without the enterprise price tag.',
+    date: 'Jun 28, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png',
+    category: 'Growth Hacks & Hiring',
+    image: '/blog-bootstrapped-hiring.jpg', // Make sure to add a relevant image to your public folder
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Here is a terrifying statistic: The average startup spends over $4,000 and 40 days just to make <em>one</em> new hire. If you are a bootstrapped founder running on a tight runway, that isn't just expensive—it is a death sentence.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        When you don't have venture capital money to burn, you can't afford expensive recruitment agencies taking 20% of a candidate's first-year salary. You also can't afford to pay $300 a month for clunky, legacy Applicant Tracking Systems (ATS) that lock you into annual contracts just to read resumes.
+      </p>
+      
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
+        But here is the good news: the game has changed. Lean teams are now building elite, global remote workforces for a fraction of the cost. Here is the exact blueprint on how to hire world-class remote talent on a bootstrapped budget.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Mistake #1: The Monthly Subscription Trap
+      </h2>
+      
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Most ATS platforms are built for HR departments that hire year-round. But what if you are a startup that only needs to hire one Senior React Developer this quarter? 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Why should you pay $299/month for software you only use for three weeks? You end up paying for downtime. 
+      </p>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-bold text-indigo-800 dark:text-indigo-300 m-0 text-lg mb-2">
+            The HireSkys Fix: Pay-Per-Post
+        </p>
+        <p class="text-indigo-700 dark:text-indigo-400 mt-2 leading-relaxed">
+            We ripped up the subscription model. At HireSkys, you only pay when you actually need to hire. Our <a href="/employer/billing" class="font-bold hover:underline">Startup Plan is just $49 per post</a>. You get access to the full Kanban pipeline, candidate management, and private notes—with zero recurring fees. 
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Mistake #2: Wasting Founder Time on Filtering
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Time is your most expensive asset. If you post a remote job, you <em>will</em> get 300+ applications. If you spend just 2 minutes reviewing each resume, that is 10 hours of your life gone. Ten hours you should have spent coding, selling, or building your product.
+      </p>
+
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-8">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            The Automated Solution
+        </h3>
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+            Don't read resumes; let AI do it. With the HireSkys <strong>Scale Plan</strong>, every candidate that applies is instantly evaluated by our AI engine. It reads their CV, analyzes their screening answers, and assigns an <strong>AI Match Score (0-100%)</strong> based on your specific job description. You only talk to the top 5%.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Mistake #3: Hiring in the Wrong Geographies
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Hiring a developer in San Francisco will cost you $150,000+. Hiring an equally talented developer in Argentina, Eastern Europe, or Southeast Asia might cost you $40,000 - $60,000. 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Bootstrapped startups must embrace a <strong>Global-First</strong> hiring mindset. By hiring globally, you aren't just saving money; you are opening your company up to a talent pool of millions rather than just the people within a 50-mile radius of your office.
+      </p>
+
+      <div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-emerald-800 dark:text-emerald-300 m-0 text-lg">
+            <strong>Pro Tip:</strong> When posting your job on HireSkys, set the location to "Global" or specify time zones (like "Overlap with PST") rather than specific countries. This maximizes your applicant quality while maintaining budget efficiency.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        The HireSkys Zero-Budget Hack
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        If you truly have $0 to spend on hiring right now, we still have your back. Every new employer on HireSkys receives <strong>2 Free Job Credits</strong> upon signup. You can use these credits to create a highly professional, mobile-friendly application link, manage candidates in our Kanban board, and test the waters—without entering a credit card.
+      </p>
+
+      <div class="mt-12 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+              <div class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-500/20 blur-[80px] rounded-full"></div>
+              <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-rose-500/20 blur-[80px] rounded-full"></div>
+          </div>
+
+          <div class="relative z-10">
+            <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Stop bleeding cash on legacy hiring tools.</h3>
+            <p class="text-slate-300 mb-8 text-lg font-medium">Claim your 2 free credits today and hire smarter, faster, and cheaper.</p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="/login" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-black rounded-xl transition-transform hover:-translate-y-1 shadow-lg shadow-indigo-500/30 no-underline">
+                    Create Free Account
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+          </div>
+      </div>
+    `
+  },{
+  slug: 'top-6-true-borderless-remote-jobs-june-2026',
+  title: 'Top 6 True Borderless Remote Jobs of third week of June',
+  excerpt: 'Finding a remote job is easy but finding a true borderless remote job without any country restriction is really a very hard game.',
+  date: 'Jun 21, 2026',
+  author: 'Muhammad Talha',
+  role: 'Founder, HireSkys',
+  authorImage: '/founder.png',
+  category: 'Growth Hacks & Hiring',
+  image: '/blog-borderless-jobs.webp',
+  content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Finding a remote job is easy but finding a true borderless remote job without any country restriction is really a very hard game.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
+        This week different global tech giants , open source platforms and growing AI startups have unlocked positions for global talent without any country restriction.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        1. Site Reliability Engineer — Supabase
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Development / DevOps &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Open source platform Supabase is looking for systems engineer to build and scale the reliability frameworks protecting Postgres database instances. This isn’t a reactive cleanup role. You will actively embed alongside software feature teams to enforce code driven error budgets, run Operational Readiness Reviews (ORR), and eliminate operational toil.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> 7+ years of SRE/DevOps experience, deep Infrastructure as Code proficiency (Pulumi, Terraform, or AWS CDK), and an engineering mindset focused on building custom tools and dashboards using Python.
+        </p>
+      </div>
+      <div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-6 rounded-r-xl">
+        <p class="text-emerald-700 dark:text-emerald-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Highly competitive global salary, ESOP equity ownership, 100% company-paid medical insurance, tech allowance, and funded access to their annual international team off-sites.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/site-reliability-engineer-8714" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        2. Java Fintech Team Leader — Sarmad
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Development / Backend &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Sarmad is a financial technology pioneer building transaction engines and secure payment architectures for the MENA region and global markets. They need a technical leader to claim strategic accountability over the development lifecycle of their next-generation fintech solutions.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> 8+ years of enterprise Java software development experience, with at least 3 years commanding agile squads in a lead capacity. Complete mastery over Java, Spring Boot, Hibernate, and high-concurrency SQL/NoSQL databases is required.
+        </p>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-6 rounded-r-xl">
+        <p class="text-blue-700 dark:text-blue-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Geography calibrated baseline salary with absolute schedule flexibility.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/java-fintech-team-leader-8742" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        3. Product Manager, Laravel Cloud — Laravel
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Admin & Support / Project Management &bull; Type: Full-time &bull; Experience Level: Mid-level
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        The team behind the world's most popular open source PHP framework is hiring a principal infrastructure architect to shape a core slice of Laravel Cloud—their fully managed, auto-scaling deployment ecosystem. You will run 0-to-1 lifecycles, working with an incredibly sophisticated developer community to execute feature roadmaps and monitor telemetry.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> 4+ years of software product management experience, a track record of launching developer/server products from scratch, and hands-on history working with compute layers, database engines, or backend network architectures.
+        </p>
+      </div>
+      <div class="bg-rose-50 dark:bg-rose-900/10 border-l-4 border-rose-500 p-6 my-6 rounded-r-xl">
+        <p class="text-rose-700 dark:text-rose-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Venture-calibrated compensation with corporate equity, fully covered travel to Laracon conferences globally, and comprehensive family leave allocations.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/product-manager-laravel-cloud-8650" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        4. Senior Product Manager — Zeely AI
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: AI & Machine Learning &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Zeely AI runs a blistering, high growth generative marketing platform ranking as a Top 3 digital product in its vertical in the US market. They are looking for a data obsessed growth product leader to own user retention, onboarding loops, and subscription monetization strategies for over 1 million active users.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> 7+ years of experience running advanced B2C product growth, alongside expert tier capability mapping retention funnels through infrastructure analytics tools like Amplitude and Firebase.
+        </p>
+      </div>
+      <div class="bg-purple-50 dark:bg-purple-900/10 border-l-4 border-purple-500 p-6 my-6 rounded-r-xl">
+        <p class="text-purple-700 dark:text-purple-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Experience-calibrated salary, direct path into executive leadership, and complete trust to rapidly test and deploy next-gen generative media components.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/senior-product-manager-8715" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        5. Java Developer (Freelance) — Netguru
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Development / Backend &bull; Type: B2B Freelance Contract &bull; Experience Level: Mid-level
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Digital product consultancy Netguru is sourcing elite backend craftspeople to act as integrated contributors for a massive enterprise SaaS client platform. Key expectations involve designing complex ERP data integrations, constructing scalable RESTful endpoints, and relentlessly tuning SQL database paths under high concurrency.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> 3 to 4 years of professional backend history with a strong portfolio in Java and Kotlin. You must have explicit availability to cover the 14:30 to 22:30 CET shift parameter to support US operational hours.
+        </p>
+      </div>
+      <div class="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-6 my-6 rounded-r-xl">
+        <p class="text-amber-700 dark:text-amber-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Attractive hourly freelance rate up to 30 EUR per hour (net, invoiced) with elite, developer-friendly workflows.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/java-developer-freelance-8675" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        6. Marketing Specialist — Replicant
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Marketing & Sales / Email Marketing &bull; Type: Full-time Contract &bull; Experience Level: Entry-level
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Replicant is a category-defining conversational AI pioneer building contact center automation platforms for Fortune 500 enterprises. They need an operational specialist to drive their go-to-market machine by building complex email nurture sequences, managing ABM setups via Influ2, and executing search engine content updates.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> 2+ years of verified history running demand generation or marketing operations within a fast-moving B2B SaaS environment, with hands-on mastery over HubSpot or Salesforce automation.
+        </p>
+      </div>
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-6 rounded-r-xl">
+        <p class="text-indigo-700 dark:text-indigo-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Vetted enterprise SaaS contract structure with absolute scheduling trust to self-manage your remote calendar.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/marketing-specialist-8663" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="mt-12 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+              <div class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-500/20 blur-[80px] rounded-full"></div>
+              <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-rose-500/20 blur-[80px] rounded-full"></div>
+          </div>
+
+          <div class="relative z-10">
+            <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Say Goodbye to Ghost Jobs.</h3>
+            <p class="text-slate-300 mb-8 text-lg font-medium">Applying on HireSkys is 100% free. Every role with a 'New' tag is 100% fresh. We are not behind just views like other job boards who are show you just garbage scraped data with new tag but in real job will be older.</p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="/" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-black rounded-xl transition-transform hover:-translate-y-1 shadow-lg shadow-indigo-500/30 no-underline">
+                    Browse Fresh Jobs
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+          </div>
+      </div>
+      </div>
+    `
 }
 ];

@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import HomePageClient from './HomePageClient'; 
 import { Suspense } from 'react';
 export const revalidate = 86400;
-
+export const dynamic = 'force-static';
 // Next.js 15 Strict Types
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const tag = String(tagRaw || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   const query = String(qRaw || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-  let dynamicTitle = 'HireSkys | #1 Remote Jobs & Freelance Marketplace';
+  let dynamicTitle = 'HireSkys | #1 Remote Jobs Marketplace';
   let dynamicDesc = 'Find verified high-paying remote jobs in Development, Design, AI, and Marketing. 100% Remote, No office politics.';
   
   const titleParts = ['Remote'];

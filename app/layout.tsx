@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import GlobalCallListener from '@/components/GlobalCallListener';
 import Script from 'next/script';
 import ConditionalChat from '@/components/ConditionalChat';
 import { ThemeProvider } from "@/components/theme-provider";
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   },
   
   title: {
-    default: "HireSkys | #1 Remote Jobs & Freelance Marketplace",
+    default: "HireSkys | #1 Remote Jobs Marketplace",
     template: "%s | HireSkys", 
   },
 
@@ -172,7 +173,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
-          
+          <GlobalCallListener/>
           <ConsentBanner />
           <ConditionalChat />
         </ThemeProvider>

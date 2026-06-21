@@ -80,6 +80,15 @@ const BLOG_POSTS = [
     author: 'Muhammad Talha',
     category: 'Growth Hacks & Hiring',
     image: '/blog-zero-budget.jpg'
+  },
+  {
+  slug: 'top-6-true-borderless-remote-jobs-june-2026',
+  title: 'Top 6 True Borderless Remote Jobs of third week of June',
+  excerpt: 'Finding a remote job is easy but finding a true borderless remote job without any country restriction is really a very hard game.',
+  date: 'Jun 21, 2026',
+  author: 'Muhammad Talha',
+  category: 'Growth Hacks & Hiring',
+  image: '/blog-borderless-jobs.webp',
   }
 ];
 

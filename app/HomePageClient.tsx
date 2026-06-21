@@ -1487,7 +1487,7 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
   const loggedOutTitle = hasFilters ? <DynamicTitle /> : (
       <>
           Find High-Paying <br className="hidden md:block" />
-          Remote & Freelance Work
+          Remote Work
       </>
   );
 
@@ -2007,17 +2007,35 @@ return (
                 {/* 🚀 FIX: Isko pb-16 (padding-bottom) diya taake text upar rahay, lekin image neechay zameen touch karti rahay */}
                 <div className="w-full lg:w-[55%] flex flex-col items-start text-left space-y-6 md:space-y-8 z-30 pb-16 md:pb-24">
                   
-                  {/* 1. USP Badge */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-white/10 border border-white/20 shadow-sm backdrop-blur-sm"
-                  >
-                    <ShieldCheck size={16} className="text-white" />
-                    <span className="text-[11px] md:text-sm font-bold text-white">
-                      100% Manually Verified Remote Jobs
-                    </span>
-                  </motion.div>
+                  {/* 1. USP BADGES ROW */}
+<div className="flex flex-wrap items-center gap-3">
+    
+    {/* Badge 1: Bright Solid Style (Primary Highlight) */}
+    <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-lg shadow-indigo-900/20 border border-white"
+    >
+        <ShieldCheck size={16} className="text-emerald-500" />
+        <span className="text-xs md:text-sm font-extrabold text-slate-800">
+            100% Manually Verified Remote Jobs
+        </span>
+    </motion.div>
+
+    {/* Badge 2: Premium Strong Glass Style (Secondary) */}
+    <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/25 border border-white/50 shadow-lg backdrop-blur-md"
+    >
+        <Sparkles size={16} className="text-yellow-300" />
+        <span className="text-xs md:text-sm font-bold text-white drop-shadow-sm">
+            Trusted by 5,000+ remote workers
+        </span>
+    </motion.div>
+
+</div>
 
                   {/* 2. MAIN HEADING */}
 <motion.h1

@@ -563,25 +563,23 @@ const GENERIC_LOCATIONS = [
   "Yemen",
   "Zambia",
   "Zimbabwe"
-];
+].map(loc => loc.toLowerCase());
 
 // 🎯 2. SKILLS EXTRACTION (Ab Countries aur Generic tags dono ko filter out karo)
-const skillTags = rawTags
-    .filter((tag: string) => 
-        !VALID_COUNTRIES.includes(tag) && 
-        !GENERIC_LOCATIONS.includes(tag)
-    )
-    .filter((tag: string) => tag.trim() !== "") // Extra empty strings se bachne ke liye
-    .slice(0, 5);
+        const skillTags = rawTags
+            .filter((tag: string) => 
+                !VALID_COUNTRIES.includes(tag) && 
+                !GENERIC_LOCATIONS.includes(tag)
+            )
+            .filter((tag: string) => tag.trim() !== "") 
+            .slice(0, 5);
 
-        // Logging
-        if (targetCountries.length > 0) {
-            console.log(`🌍 Country Filter Active: Must match any of: [${targetCountries.join(", ")}]`);
-        } else {
-            console.log(`🌐 Global Mode: No specific country tag found.`);
+        // 🛑 NEW STRICT CHECK: Agar country bhi nahi, aur 'global/remote' jaisa tag bhi nahi, toh STOP.
+        const hasGlobalTag = rawTags.some((tag: string) => GENERIC_LOCATIONS.includes(tag));
+        if (targetCountries.length === 0 && !hasGlobalTag) {
+            console.log(`🚫 Job Skipped: "${jobTitle}" has no valid country or Global/Remote tag.`);
+            return NextResponse.json({ success: false, message: "Skipped: No location or Global tag found." });
         }
-        console.log(`🔎 Processing Job: "${jobTitle}"`);
-        console.log(`🎯 Target Skills:`, skillTags);
 
         const internalLink = createJobLink(job.title, job.id);
         const todayDate = new Date().toISOString().split('T')[0]; // Ek baar top par nikal liya taake dono loops mein use ho
@@ -650,18 +648,22 @@ const skillTags = rawTags
             // 🧠 STEP 3.5: DEEP PROFILE CHECK (Bio, Education, Projects)
             let isDeepMatch = false;
             
-            // User ki in 3 cheezon ka ek lamba text bana lo taake dhoondna asaan ho
             const userDeepText = `
                 ${user.bio || ''} 
                 ${JSON.stringify(user.education || [])} 
                 ${JSON.stringify(user.projects || [])}
             `.toLowerCase();
 
-            // Check karo kya job ke tags is text mein kahin mojood hain?
+            // Check karo kya job ke tags is text mein as EXACT WORD mojood hain?
             for (const tag of skillTags) {
-                if (userDeepText.includes(tag)) {
+                // Special characters (C++, .NET) ko handle karne ke liye
+                const escapedTag = tag.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+                
+                // Regex word boundaries ko ensure karega
+                const regex = new RegExp(`(^|[^a-zA-Z0-9_])${escapedTag}([^a-zA-Z0-9_]|$)`, 'i');
+
+                if (regex.test(userDeepText)) {
                     isDeepMatch = true;
-                    // Agar skill list mein tag nahi mila tha, toh deep profile wale tag ko use kar lo
                     if (!matchedSkill) matchedSkill = tag; 
                     break;
                 }

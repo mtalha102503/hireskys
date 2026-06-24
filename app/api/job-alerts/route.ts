@@ -645,48 +645,17 @@ const GENERIC_LOCATIONS = [
                 }
             }
 
-            // 🧠 STEP 3.5: DEEP PROFILE CHECK (Bio, Education, Projects)
-            let isDeepMatch = false;
-            
-            const userDeepText = `
-                ${user.bio || ''} 
-                ${JSON.stringify(user.education || [])} 
-                ${JSON.stringify(user.projects || [])}
-            `.toLowerCase();
-
-            // Check karo kya job ke tags is text mein as EXACT WORD mojood hain?
-            for (const tag of skillTags) {
-                // Special characters (C++, .NET) ko handle karne ke liye
-                const escapedTag = tag.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-                
-                // Regex word boundaries ko ensure karega
-                const regex = new RegExp(`(^|[^a-zA-Z0-9_])${escapedTag}([^a-zA-Z0-9_]|$)`, 'i');
-
-                if (regex.test(userDeepText)) {
-                    isDeepMatch = true;
-                    if (!matchedSkill) matchedSkill = tag; 
-                    break;
-                }
-            }
-
             // 🛑 DECISION POINT (Crucial Logic)
-            // Agar na Skill match hui, aur na hi Bio/Education/Projects match hue, toh SKIP kar do!
-            if (!isSkillMatch && !isDeepMatch) {
+            // Agar EXACT Skill match NAHI hui, toh SKIP kar do!
+            if (!isSkillMatch) {
                 continue; 
             }
 
             // 🏷️ DYNAMIC HEADER CREATION (WhatsApp/Email mein dikhane ke liye)
-            let customAlertHeader = "";
-            if (isSkillMatch && isDeepMatch) {
-                customAlertHeader = `🌟 PERFECT MATCH: ${matchedSkill}`;
-            } else if (isDeepMatch) {
-                customAlertHeader = `✨ PROFILE MATCH: ${matchedSkill}`;
-            } else {
-                customAlertHeader = `🔥 SKILL MATCH: ${matchedSkill}`; // (Tumhari requirement ke mutabiq fallback)
-            }
+            let customAlertHeader = `🔥 SKILL MATCH: ${matchedSkill}`;
 
             // ✅ STEP 4: SEND ALERT & UPDATE DB
-            if (isSkillMatch || isDeepMatch) {
+            if (isSkillMatch) {
                 console.log(`✅ Alerting: ${user.username} (Header: ${customAlertHeader}, Country: ${user.country})`);
                 alertsSent++;
                 

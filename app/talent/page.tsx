@@ -175,7 +175,6 @@ export default function TalentDirectory() {
                 <option value="Entry Level" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Entry Level</option>
                 <option value="Mid Level" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Mid Level</option>
                 <option value="Senior Level" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Senior Level</option>
-                <option value="Director/Executive" className="bg-white dark:bg-[#151b2d] text-slate-900 dark:text-white">Director / Exec</option>
               </select>
 
               {/* 🌍 COUNTRY FILTER */}

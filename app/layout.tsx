@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import GlobalCallListener from '@/components/GlobalCallListener';
 import Script from 'next/script';
 import ConditionalChat from '@/components/ConditionalChat';
 import { ThemeProvider } from "@/components/theme-provider";
@@ -141,6 +142,37 @@ export default function RootLayout({
   };
   return (
     <html lang="en" suppressHydrationWarning>
+<head>
+        {/* ✅ Clickio Consent Mode Config */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied',
+                'functionality_storage': 'denied',
+                'personalization_storage': 'denied',
+                'security_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'wait_for_update': 1500
+              });
+              gtag('set', 'ads_data_redaction', true);
+              gtag('set', 'url_passthrough', false);
+              
+              // Clickio ka jo baki bacha hua (function(){...}) wala code tha, wo bhi maine isi string ke andar safe kar diya hai
+              (function(){
+                const s={adStorage:{storageName:"ad_storage",serialNumber:0},analyticsStorage:{storageName:"analytics_storage",serialNumber:0},functionalityStorage:{storageName:"functionality_storage",serialNumber:0},personalizationStorage:{storageName:"personalization_storage",serialNumber:0},securityStorage:{storageName:"security_storage",serialNumber:0},adUserData:{storageName:"ad_user_data",serialNumber:0},adPersonalization:{storageName:"ad_personalization",serialNumber:0}};
+              })();
+            `,
+          }}
+        />
+
+        {/* ✅ Clickio Consent Main tag */}
+        <script async type="text/javascript" src="//clickiocmp.com/t/consent_249458.js" />
+      </head>
       <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>
         <script
           type="application/ld+json"
@@ -172,6 +204,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <GlobalCallListener/>
           <ConsentBanner />
           <ConditionalChat />
         </ThemeProvider>

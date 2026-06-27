@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
-import ConsentBanner from "@/components/ConsentBanner";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
 
@@ -203,7 +202,6 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
-          <ConsentBanner />
           <ConditionalChat />
         </ThemeProvider>
         <GoogleOneTap />

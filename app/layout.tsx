@@ -216,6 +216,11 @@ export default function RootLayout({
           src="//resources.infolinks.com/js/infolinks_main.js" 
           strategy="afterInteractive" 
         />
+        {/* ✅ CLICKIO MAIN TRACKING SCRIPT */}
+        <Script 
+          src="https://s.clickiocdn.com/t/249458/di.js"
+          strategy="afterInteractive" 
+        />
       </body>
     </html>
   );

@@ -2489,6 +2489,7 @@ return (
     width={20} 
     height={15} 
     className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" 
+    unoptimized={true} // <-- Ye add karo
 />
                                                         ) : (
                                                             <span className="text-base leading-none">🌍</span>
@@ -2526,6 +2527,7 @@ return (
     width={64} 
     height={64} 
     className="h-full w-full object-contain" 
+    unoptimized={true} // <-- Ye add karo
 />
                                             </div>
                                         ) : (
@@ -2633,6 +2635,7 @@ return (
     width={20} 
     height={15} 
     className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" 
+    unoptimized={true} // <-- Ye add karo
 />
                                          ) : (
                                              <span className="text-base leading-none">🌍</span>
@@ -2680,6 +2683,7 @@ return (
     width={64} 
     height={64} 
     className="h-full w-full object-contain" 
+    unoptimized={true} // <-- Ye add karo
 />
                               </div>
                           ) : (

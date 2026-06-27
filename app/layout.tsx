@@ -206,6 +206,16 @@ export default function RootLayout({
         </ThemeProvider>
         <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />
+        <Script id="infolinks-config" strategy="afterInteractive">
+          {`
+            var infolinks_pid = 3446262;
+            var infolinks_wsid = 0;
+          `}
+        </Script>
+        <Script 
+          src="//resources.infolinks.com/js/infolinks_main.js" 
+          strategy="afterInteractive" 
+        />
       </body>
     </html>
   );

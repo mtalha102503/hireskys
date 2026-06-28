@@ -7,6 +7,7 @@ import CategorySection from "@/components/CategorySection";
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { CATEGORIES } from '@/lib/categories'; 
 import { motion, AnimatePresence } from "framer-motion";
+import React from 'react';
 import { 
   Search, Globe, Briefcase, ShieldCheck, 
   Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
@@ -692,44 +693,58 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
   // Default image pehli wali rakhi hai taake server aur client mismatch na ho
   const [currentHeroImage, setCurrentHeroImage] = useState(HERO_IMAGES[0]);
   const [isImageMounted, setIsImageMounted] = useState(false);
-  // 1. State for Sponsored Job
-const [sponsoredJob, setSponsoredJob] = useState<any>(null);
+ 
 
-// 2. Fetch Logic for Sponsored Job
+// 1. State for Sponsored Jobs (Ab array hoga)
+const [sponsoredJobs, setSponsoredJobs] = useState<any[]>([]);
+
+// 2. Fetch Logic for Personalized Sponsored Jobs
 useEffect(() => {
-    const fetchSponsoredJob = async () => {
+    // Jab tak Auth check ho raha hai, API hit na karo
+    if (isAuthChecking) return;
+
+    const fetchSponsoredJobs = async () => {
         try {
-            // Tumhara Next.js backend route hit karega
-            const res = await fetch('/api/careerjet');
+            let apiUrl = '/api/careerjet';
+            
+            // 🧠 PERSONALIZATION ENGINE
+            // Agar user logged in hai aur uski profile load ho chuki hai
+            if (currentUser && userProfile) {
+                const params = new URLSearchParams();
+                
+                // Top 2 skills nikal lo taake search zyada broad na ho jaye
+                if (userProfile.skills && userProfile.skills.length > 0) {
+                    const topSkills = userProfile.skills.slice(0, 2).join(' ');
+                    params.append('skills', topSkills);
+                } else if (userProfile.primary_role) {
+                    params.append('skills', userProfile.primary_role);
+                }
+                
+                // User ki country nikal lo
+                if (userProfile.country) {
+                    params.append('location', userProfile.country);
+                }
+
+                if (params.toString()) {
+                    apiUrl += `?${params.toString()}`;
+                }
+            }
+
+            const res = await fetch(apiUrl);
             const data = await res.json();
             
             if (data.jobs && data.jobs.length > 0) {
-                // THE STRICT REMOTE SHIELD
-                const strictlyRemote = data.jobs.filter((job: any) => {
-                    const title = (job.title || "").toLowerCase();
-                    const loc = (job.locations || "").toLowerCase();
-                    const desc = (job.description || "").toLowerCase();
-                    
-                    const isHybrid = title.includes("hybrid") || loc.includes("hybrid") || desc.includes("hybrid");
-                    const isOnsite = title.includes("on-site") || title.includes("onsite");
-                    const hasRemote = title.includes("remote") || loc.includes("remote") || desc.includes("remote");
-                    
-                    return hasRemote && !isHybrid && !isOnsite;
-                });
-
-                if (strictlyRemote.length > 0) {
-                    // Array ko shuffle karo aur pehli job pick kar lo
-                    const shuffled = strictlyRemote.sort(() => 0.5 - Math.random());
-                    setSponsoredJob(shuffled[0]);
-                }
+                // Shuffle kar ke 3 jobs feed ke liye save kar lo
+                const shuffled = data.jobs.sort(() => 0.5 - Math.random());
+                setSponsoredJobs(shuffled.slice(0, 3));
             }
         } catch (err) {
             console.error("Sponsored job fetch error:", err);
         }
     };
 
-    fetchSponsoredJob();
-}, []); // Khali array matlab har page refresh par naya random job aayega!
+    fetchSponsoredJobs();
+}, [isAuthChecking, currentUser, userProfile]); 
   useEffect(() => {
     // Page load hote hi randomly ek image pick karega
     const randomIndex = Math.floor(Math.random() * HERO_IMAGES.length);
@@ -2605,86 +2620,6 @@ return (
                 })}
             </div>
         )}
-{/* 🌟 PREMIUM CAREERJET SPONSORED JOB CARD */}
-{sponsoredJob && !loading && (
-    <div className="mb-6 animate-in fade-in slide-in-from-bottom-2">
-        
-        {/* The Card Container - Premium Gradient & 2px Border */}
-        <div className="group relative flex flex-col bg-gradient-to-br from-indigo-50/80 to-blue-50/50 dark:from-indigo-950/30 dark:to-blue-900/10 border-2 border-indigo-100 dark:border-indigo-800/60 rounded-2xl md:rounded-3xl p-4 md:p-6 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-xl hover:shadow-indigo-500/15 overflow-hidden">
-            
-            {/* Background Glow Effect for "Maze ki look" */}
-            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-2xl pointer-events-none transition-transform group-hover:scale-150"></div>
-            
-            <div className="flex justify-between items-center mb-3 md:mb-5 relative z-10">
-                <div className="flex items-center gap-2 md:gap-4">
-                    {/* Location Badge */}
-                    <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white dark:bg-slate-900/80 border border-indigo-100 dark:border-indigo-800/80 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm">
-                        <span className="text-base leading-none">🌍</span>
-                        <span className="tracking-wide max-w-[120px] truncate">
-                            {sponsoredJob.locations || "Worldwide"}
-                        </span>
-                    </div>
-                </div>
-                
-                {/* 🚀 Premium AD Badge */}
-                <div className="flex gap-2 items-center">
-                    <span className="px-3 py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50 tracking-wider flex items-center gap-1 shadow-sm">
-                        <Sparkles size={12} className="text-indigo-500" /> Sponsored
-                    </span>
-                </div>
-            </div>
-
-            <div className="flex items-start gap-3 md:gap-5 mb-4 relative z-10">
-                {/* Careerjet Official Logo */}
-                <div className="flex-shrink-0">
-                    <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1.5 md:p-2 border border-indigo-100 dark:border-indigo-800/80 shadow-md flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <img 
-                            src="https://img.logo.dev/careerjet.com?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png" 
-                            alt="Careerjet Logo" 
-                            className="h-full w-full object-contain rounded-lg" 
-                        />
-                    </div>
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                    <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                        {sponsoredJob.title}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
-                        <span className="text-slate-800 dark:text-slate-200 font-bold">
-                            {sponsoredJob.company ? `${sponsoredJob.company}` : "Careerjet Partner"}
-                        </span>
-                        <span className="flex items-center gap-1 text-indigo-500/80 dark:text-indigo-400/80 font-bold">
-                            • Promoted Partner
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Action Row */}
-            <div className="mt-auto pt-3 md:pt-5 border-t border-indigo-100 dark:border-indigo-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5 relative z-10">
-                <div className="flex flex-wrap gap-2">
-                    <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-white dark:bg-slate-900/50 text-[10px] md:text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50 shadow-sm">
-                        Remote
-                    </div>
-                </div>
-                
-                {/* 🚀 Highly Convertible CTA Button */}
-                <div className="flex items-center w-full sm:w-auto">
-                    <a 
-                        href={sponsoredJob.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1 sm:flex-none px-6 py-2.5 text-sm font-bold rounded-xl transition-all text-center bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/40 w-full flex items-center justify-center gap-2 active:scale-95"
-                    >
-                        Apply via Careerjet <ArrowRight size={16} />
-                    </a>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-)}
           {loading ? (
             [1,2,3].map(i => <div key={i} className="h-32 rounded-2xl bg-slate-100 dark:bg-slate-800/50 animate-pulse" />)
           ) : jobs.length === 0 ? (
@@ -2696,30 +2631,111 @@ return (
             
           ) : (
             
-            // 🚀 STEP 1: index add kiya taake hum count kar saken
-            jobs.map((job, index) => {
-              // 🟢 1. Tumhara Sara Original Logic (No changes here)
-              const smartLoc = getSmartLocationUI(job.location || "");
-              const jobDate = new Date(job.date_posted);
-              const now = new Date();
-              const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
-              const diffDays = Math.floor(diffHrs / 24);
-              const isJustNow = diffHrs <= 4;
-              const isSaved = savedJobIds.includes(job.id);
-              const isSeen = seenJobs.includes(job.id);
-              const isApplied = appliedJobs.includes(job.id);
-              const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
-              const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
-              const isFeatured = job.featured_until ? new Date(job.featured_until) > new Date() : false;
-              const activeBrandColor = (job.brand_color && job.brand_color.toLowerCase() !== '#ffffff' && job.brand_color.toLowerCase() !== 'white' && job.brand_color.trim() !== '') 
-  ? job.brand_color 
-  : '#4f46e5';
-              // 🟢 2. RETURN: Har Job Card ko wrap kiya hai ek container mein
-              return (
-                  
-                  <div key={job.id} className="flex flex-col gap-4">
-                  
-                  {/* 💼 YOUR ORIGINAL JOB CARD (Now with Featured Logic) */}
+// 🚀 STEP 1: index add kiya taake hum count kar saken
+          jobs.map((job, index) => {
+            // 🟢 1. Tumhara Sara Original Logic
+            const smartLoc = getSmartLocationUI(job.location || "");
+            const jobDate = new Date(job.date_posted);
+            const now = new Date();
+            const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffHrs / 24);
+            const isJustNow = diffHrs <= 4;
+            const isSaved = savedJobIds.includes(job.id);
+            const isSeen = seenJobs.includes(job.id);
+            const isApplied = appliedJobs.includes(job.id);
+            const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
+            const companyLogoUrl = job.company_logo_url || companyLogos[cleanSourceName] || null; 
+            const isFeatured = job.featured_until ? new Date(job.featured_until) > new Date() : false;
+            const activeBrandColor = (job.brand_color && job.brand_color.toLowerCase() !== '#ffffff' && job.brand_color.toLowerCase() !== 'white' && job.brand_color.trim() !== '') 
+                ? job.brand_color 
+                : '#4f46e5';
+
+            // 🟢 2. Nikaal lo ke is index par konsi Sponsored Job dikhani hai
+            let currentSponsoredJob = null;
+            if (index === 0) currentSponsoredJob = sponsoredJobs[0];
+            if (index === 4) currentSponsoredJob = sponsoredJobs[1];
+            if (index === 9) currentSponsoredJob = sponsoredJobs[2];
+
+            // 🟢 3. RETURN: Har Job Card ko wrap kiya hai ek container mein
+            return (
+              <React.Fragment key={`wrap-${job.id}`}>
+                
+                {/* 🌟 THE IN-FEED SPONSORED CARD INJECTION */}
+                {/* Agar is position ke liye currentSponsoredJob mojood hai toh dikhao */}
+                {currentSponsoredJob && (
+                    <div className="group relative flex flex-col bg-gradient-to-br from-indigo-50/80 to-blue-50/50 dark:from-indigo-950/30 dark:to-blue-900/10 border-2 border-indigo-100 dark:border-indigo-800/60 rounded-2xl md:rounded-3xl p-4 md:p-6 mb-4 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-xl hover:shadow-indigo-500/15 overflow-hidden">
+                        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-2xl pointer-events-none transition-transform group-hover:scale-150"></div>
+                        
+                        <div className="flex justify-between items-center mb-3 md:mb-5 relative z-10">
+                            <div className="flex items-center gap-2 md:gap-4">
+                                <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white dark:bg-slate-900/80 border border-indigo-100 dark:border-indigo-800/80 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm">
+                                    <span className="text-base leading-none">🌍</span>
+                                    <span className="tracking-wide max-w-[120px] truncate">
+                                        {currentSponsoredJob.locations || "Worldwide"}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div className="flex gap-2 items-center">
+                                <span className="px-3 py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50 tracking-wider flex items-center gap-1 shadow-sm">
+                                    <Sparkles size={12} className="text-indigo-500" /> Promoted
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-3 md:gap-5 mb-4 relative z-10">
+                            <div className="flex-shrink-0">
+                                <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1.5 md:p-2 border border-indigo-100 dark:border-indigo-800/80 shadow-md flex items-center justify-center">
+                                    <img 
+                                        src="https://img.logo.dev/careerjet.com?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png" 
+                                        alt="Careerjet Partner" 
+                                        className="h-full w-full object-contain rounded-lg" 
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                                <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                    {currentSponsoredJob.title}
+                                </h3>
+                                <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
+                                    <span className="text-slate-800 dark:text-slate-200 font-bold">
+                                        {currentSponsoredJob.company ? currentSponsoredJob.company : "Premium Partner"}
+                                    </span>
+                                    
+                                    {/* 💰 SALARY BADGE */}
+                                    {currentSponsoredJob.salary && (
+                                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-black bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
+                                            💳 {currentSponsoredJob.salary}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-auto pt-3 md:pt-5 border-t border-indigo-100 dark:border-indigo-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5 relative z-10">
+                            <div className="flex flex-wrap gap-2">
+                                <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-white dark:bg-slate-900/50 text-[10px] md:text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50 shadow-sm">
+                                    Remote Priority
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center w-full sm:w-auto">
+                                <a 
+                                    href={currentSponsoredJob.url} 
+                                    target="_blank" 
+                                    rel="sponsored nofollow" 
+                                    className="flex-1 sm:flex-none px-6 py-2.5 text-sm font-bold rounded-xl transition-all text-center bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-500/25 w-full flex items-center justify-center gap-2"
+                                >
+                                    Apply Now <ArrowRight size={16} />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* 💼 TUMHARA ORIGINAL ORGANIC JOB CARD */}
+                <div className="flex flex-col gap-4">
                   <div 
                     className={`group relative flex flex-col bg-white dark:bg-[#111625] border md:rounded-3xl p-4 md:p-6 transition-all duration-300 hover:-translate-y-1 ${
                       isFeatured ? 'border-2 shadow-lg rounded-2xl' : 'border-slate-200 dark:border-slate-800 rounded-2xl hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-500/10'
@@ -2752,7 +2768,7 @@ return (
     width={20} 
     height={15} 
     className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" 
-    unoptimized={true} // <-- Ye add karo
+    unoptimized={true} 
 />
                                          ) : (
                                              <span className="text-base leading-none">🌍</span>
@@ -2800,7 +2816,7 @@ return (
     width={64} 
     height={64} 
     className="h-full w-full object-contain" 
-    unoptimized={true} // <-- Ye add karo
+    unoptimized={true} 
 />
                               </div>
                           ) : (
@@ -2832,7 +2848,6 @@ return (
                       <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
                           <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>
                           
-                          {/* 🔥 YOUR ORIGINAL VIEW DETAILS BUTTON (With Dynamic Colors added) */}
                           <Link 
                             href={`/jobs/${createSlug(job.title, job.id)}`} 
                             onClick={() => { 
@@ -2857,7 +2872,6 @@ return (
                   </div>
 
                   {/* 🔥 THE MAGIC: TEESRA CARD (TRENDING SEARCHES) */}
-                  {/* index === 1 matlab 2 jobs ke baad, aur !searchQuery matlab sirf home default list par dikhega */}
                   {index === 2 && !searchQuery && (
                     <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-700 to-indigo-800 rounded-2xl md:rounded-3xl p-6 md:p-10 my-2 shadow-2xl shadow-indigo-500/20 group">
                       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
@@ -2878,7 +2892,6 @@ return (
 
                         <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-[45%]">
   {[
-    // 🚀 SEO FIX 1: query mein space ya '+' ki jagah '-' (hyphen) use karo taake clean URL banay
     { name: "Finance Jobs", slug: "finance", icon: "📈" },
     { name: "Global AI Jobs", slug: "global-work-ai", icon: "🌎" },
     { name: "Data Entry Jobs", slug: "data-entry", icon: "👨🏻‍💻" },
@@ -2889,7 +2902,6 @@ return (
   ].map((trend) => (
     <Link 
       key={trend.name}
-      // 🚀 SEO FIX 2: ?q= hata diya! Ab ye direct clean URL banayega (e.g. /remote-jobs/all/software-engineer)
       href={getCategoryUrl(trend.slug)} 
       scroll={false}
       className="flex items-center gap-2 px-4 py-3 bg-white hover:bg-indigo-50 text-indigo-900 rounded-xl text-sm font-black transition-all transform hover:-translate-y-1 hover:shadow-xl active:scale-95 shadow-lg"
@@ -2902,9 +2914,10 @@ return (
                     </div>
                   )}
                 </div>
-              );
-            })
-          )}
+              </React.Fragment>
+            );
+          })
+        )}
           
           {hasMore && !loading && jobs.length > 0 && (
             <div className="pt-8 pb-0 flex justify-center">

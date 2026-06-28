@@ -698,7 +698,7 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
 // 1. State for Sponsored Jobs (Ab array hoga)
 const [sponsoredJobs, setSponsoredJobs] = useState<any[]>([]);
 
-// 2. Fetch Logic for Personalized Sponsored Jobs
+// 2. Fetch Logic for Personalized & Filtered Sponsored Jobs
 useEffect(() => {
     // Jab tak Auth check ho raha hai, API hit na karo
     if (isAuthChecking) return;
@@ -706,28 +706,34 @@ useEffect(() => {
     const fetchSponsoredJobs = async () => {
         try {
             let apiUrl = '/api/careerjet';
+            const params = new URLSearchParams();
             
-            // 🧠 PERSONALIZATION ENGINE
-            // Agar user logged in hai aur uski profile load ho chuki hai
-            if (currentUser && userProfile) {
-                const params = new URLSearchParams();
-                
-                // Top 2 skills nikal lo taake search zyada broad na ho jaye
-                if (userProfile.skills && userProfile.skills.length > 0) {
-                    const topSkills = userProfile.skills.slice(0, 2).join(' ');
-                    params.append('skills', topSkills);
-                } else if (userProfile.primary_role) {
-                    params.append('skills', userProfile.primary_role);
-                }
-                
-                // User ki country nikal lo
-                if (userProfile.country) {
-                    params.append('location', userProfile.country);
-                }
+            // 🧠 1. DYNAMIC SEARCH / CATEGORY PRIORITY
+            // Agar search box mein kuch likha hai, ya tag/category select ki hai
+            const activeSearchTerm = searchQuery.trim() || activeSubTag || (activeCategory !== 'All' ? activeCategory : '');
+            
+            if (activeSearchTerm) {
+                params.append('query', activeSearchTerm);
+            } else if (currentUser && userProfile?.skills?.length > 0) {
+                // Agar koi filter nai laga aur user logged in hai toh Skills use karo
+                const topSkills = userProfile.skills.slice(0, 2).join(' ');
+                params.append('skills', topSkills);
+            }
 
-                if (params.toString()) {
-                    apiUrl += `?${params.toString()}`;
-                }
+            // 🌍 2. DYNAMIC LOCATION PRIORITY
+            if (filterCountry && filterCountry !== 'Worldwide') {
+                params.append('location', filterCountry);
+            } else if (currentUser && userProfile?.country) {
+                params.append('location', userProfile.country);
+            }
+
+            // 💼 3. DYNAMIC JOB TYPE
+            if (filterJobType) {
+                params.append('jobType', filterJobType);
+            }
+
+            if (params.toString()) {
+                apiUrl += `?${params.toString()}`;
             }
 
             const res = await fetch(apiUrl);
@@ -737,14 +743,23 @@ useEffect(() => {
                 // Shuffle kar ke 3 jobs feed ke liye save kar lo
                 const shuffled = data.jobs.sort(() => 0.5 - Math.random());
                 setSponsoredJobs(shuffled.slice(0, 3));
+            } else {
+                setSponsoredJobs([]); // Agar is strict filter par koi sponsored job nai mili
             }
         } catch (err) {
             console.error("Sponsored job fetch error:", err);
         }
     };
 
-    fetchSponsoredJobs();
-}, [isAuthChecking, currentUser, userProfile]); 
+    // Thora delay (debounce) lagaya hai taake typing karte waqt bar bar API hit na ho
+    const timer = setTimeout(() => {
+        fetchSponsoredJobs();
+    }, 500);
+
+    return () => clearTimeout(timer);
+
+// 🚀 FIX: Dependencies mein tamam filters add kar diye hain taake filter change hone par yeh dobara chale
+}, [isAuthChecking, currentUser, userProfile, searchQuery, activeCategory, activeSubTag, filterCountry, filterJobType]);
   useEffect(() => {
     // Page load hote hi randomly ek image pick karega
     const randomIndex = Math.floor(Math.random() * HERO_IMAGES.length);

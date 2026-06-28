@@ -30,7 +30,19 @@ export async function GET(request: Request) {
   } 
   // 3. Fallback 2: Logged out / no search user ke liye high ticket jobs
   else {
-      keywordsArray.push("(senior OR lead OR executive OR director)");
+      // ✨ Yahan ek array bana lo queries ka
+      const rotationQueries = [
+          "(senior OR lead OR executive OR director)",
+          "(software OR developer OR engineer)",
+          "(marketing OR sales OR growth)",
+          "(design OR ui OR ux OR product)",
+          "(finance OR accountant OR analyst)",
+          "(support OR 'customer success')"
+      ];
+      
+      // Randomly ek query uthao
+      const randomQuery = rotationQueries[Math.floor(Math.random() * rotationQueries.length)];
+      keywordsArray.push(randomQuery);
   }
 
   // 4. Job Type (e.g. Freelance, Full-time) add karo

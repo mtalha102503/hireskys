@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   const user_agent = request.headers.get('user-agent') || 'Mozilla/5.0';
 
   // 2. Build the Endpoint URL
-  const url = new URL("https://search.api.careerjet.net/v4/query"); 
+  const url = new URL("http://54.225.29.27:5000/api/proxy/careerjet"); 
   url.searchParams.append("keywords", "remote"); 
   url.searchParams.append("locale_code", "en_US"); 
   url.searchParams.append("user_ip", user_ip); 

@@ -1855,27 +1855,6 @@ const handleApply = async () => {
                         </p>
                     </div>
                 )}
-                {/* 👇 VERIFY CARD (Ab Mobile aur Desktop dono par dikhega) */}
-                <div className="p-5 rounded-2xl bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-[#151b2d] dark:to-[#1e2433] border border-violet-100 dark:border-white/5 mb-6 shadow-sm">
-                    <div className="flex items-start gap-3">
-                        <div className="p-2 bg-white dark:bg-white/5 rounded-lg shadow-sm text-violet-600 dark:text-violet-400 flex-shrink-0">
-                            <ShieldCheck size={20} />
-                        </div>
-                        <div className="flex-1">
-                            <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                                Is this company safe?
-                            </h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 leading-relaxed">
-                                Ask Hyrizon AI to scan {job.company || 'this company'} for potential red flags before you apply.
-                            </p>
-                            
-                            {/* ✨ Hyrizon AI Verify Button */}
-                            <VerifyMagicButton 
-                                companyName={job.company || companyDetails?.name || job.source || "the company"} 
-                            />
-                        </div>
-                    </div>
-                </div>
                 <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <h3 className="font-bold mb-4 text-sm uppercase text-slate-400 tracking-wider">Safety First</h3>
                     <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">

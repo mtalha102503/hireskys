@@ -14,17 +14,17 @@ export async function POST(request: Request) {
 
     const { type, record, old_record } = body;
 
-    // 🕵️ Logic: Sirf tab chalo jab Job Approve hui ho
-    const isJustApproved = type === 'UPDATE' && record.approved === true && old_record.approved === false;
+    // 🕵️ 🔥 FIXED LOGIC: Nayi AI Insert hui job YA Admin Panel se Update hui job
+    const isDirectInsert = type === 'INSERT' && record.approved === true;
+    const isStatusUpdate = type === 'UPDATE' && record.approved === true && (!old_record || old_record.approved === false);
 
-    if (!isJustApproved) {
-      return NextResponse.json({ message: "Job update ignored (Not an approval event)" });
+    if (!isDirectInsert && !isStatusUpdate) {
+      return NextResponse.json({ message: "Job ignored (Not a fresh insert or approval event)" });
     }
 
-    // 🔑 Google Auth Setup (Fixed for New Version)
+    // 🔑 Google Auth Setup 
     const serviceAccount = JSON.parse(process.env.GOOGLE_INDEXING_KEY || '{}');
 
-    // 👇 YEH CHANGE KIYA HAI (JWT ki jagah GoogleAuth)
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: serviceAccount.client_email,

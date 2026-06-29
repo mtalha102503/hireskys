@@ -2804,13 +2804,12 @@ return (
                       
                       <div className="flex gap-2 items-center">
                           {isFeatured && (
-                              <span 
-                                className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase text-white shadow-md tracking-wider flex items-center gap-1"
-                                style={{ backgroundColor: activeBrandColor }}
-                              >
-                                ⚡ Featured
-                              </span>
-                          )}
+    <span 
+      className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-slate-900 dark:bg-indigo-600 text-white shadow-md tracking-wider flex items-center gap-1"
+    >
+      ⚡ Featured
+    </span>
+)}
                           {isApplied ? (
                               <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-green-100 text-green-700 border border-green-200 tracking-wider flex items-center gap-1"><CheckCircle size={12} /> Applied</span>
                           ) : isSeen ? (
@@ -2864,23 +2863,18 @@ return (
                           <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>
                           
                           <Link 
-                            href={`/jobs/${createSlug(job.title, job.id)}`} 
-                            onClick={() => { 
-                                if (!isSeen) { 
-                                    const newSeen = [...seenJobs, job.id]; 
-                                    setSeenJobs(newSeen); 
-                                    localStorage.setItem('seenJobs', JSON.stringify(newSeen)); 
-                                } 
-                            }} 
-                            className={`flex-1 sm:flex-none px-6 py-2.5 text-sm font-bold rounded-xl transition-all shadow-lg text-center ${
-                              isFeatured 
-                                ? 'text-white hover:opacity-90' 
-                                : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-indigo-600 dark:hover:bg-slate-200'
-                            }`}
-                            style={isFeatured ? { backgroundColor: activeBrandColor } : {}}
-                          >
-                            View Details
-                          </Link>
+  href={`/jobs/${createSlug(job.title, job.id)}`} 
+  onClick={() => { 
+      if (!isSeen) { 
+          const newSeen = [...seenJobs, job.id]; 
+          setSeenJobs(newSeen); 
+          localStorage.setItem('seenJobs', JSON.stringify(newSeen)); 
+      } 
+  }} 
+  className="flex-1 sm:flex-none px-6 py-2.5 text-sm font-bold rounded-xl transition-all shadow-lg text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-indigo-600 dark:hover:bg-slate-200"
+>
+  View Details
+</Link>
                           
                       </div>
                     </div>

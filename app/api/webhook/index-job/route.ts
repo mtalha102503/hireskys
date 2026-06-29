@@ -22,22 +22,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Job ignored (Not a fresh insert or approval event)" });
     }
 
-   // 🔑 Google Auth Setup 
-    const rawKey = process.env.GOOGLE_INDEXING_KEY;
-    
-    if (!rawKey) {
-      console.error("❌ GOOGLE_INDEXING_KEY is missing in environment variables!");
+   // 🔑 Google Auth Setup (Bulletproof Method)
+    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+    const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+
+    if (!clientEmail || !privateKey) {
+      console.error("❌ Google keys missing in environment variables!");
       return NextResponse.json({ error: "Server Configuration Error" }, { status: 500 });
     }
 
-    const serviceAccount = JSON.parse(rawKey);
-
-    // 🔥 Fix: Vercel kabhi kabhi \n ko double escape kar deta hai, isliye replace lagana zaroori hai
-    const formattedPrivateKey = serviceAccount.private_key?.replace(/\\n/g, '\n');
+    // String wale \n ko actual newlines mein convert karo (OpenSSL ke liye)
+    const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
-        client_email: serviceAccount.client_email,
+        client_email: clientEmail,
         private_key: formattedPrivateKey,
       },
       scopes: ['https://www.googleapis.com/auth/indexing'],

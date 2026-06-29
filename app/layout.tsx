@@ -174,7 +174,6 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
-          <GlobalCallListener/>
           <ConsentBanner />
           <ConditionalChat />
         </ThemeProvider>

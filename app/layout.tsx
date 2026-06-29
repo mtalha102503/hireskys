@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
+import ConsentBanner from "@/components/ConsentBanner";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
 
@@ -141,35 +142,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
 <head>
-        {/* ✅ Clickio Consent Mode Config */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent', 'default', {
-                'ad_storage': 'denied',
-                'analytics_storage': 'denied',
-                'functionality_storage': 'denied',
-                'personalization_storage': 'denied',
-                'security_storage': 'denied',
-                'ad_user_data': 'denied',
-                'ad_personalization': 'denied',
-                'wait_for_update': 1500
-              });
-              gtag('set', 'ads_data_redaction', true);
-              gtag('set', 'url_passthrough', false);
-              
-              // Clickio ka jo baki bacha hua (function(){...}) wala code tha, wo bhi maine isi string ke andar safe kar diya hai
-              (function(){
-                const s={adStorage:{storageName:"ad_storage",serialNumber:0},analyticsStorage:{storageName:"analytics_storage",serialNumber:0},functionalityStorage:{storageName:"functionality_storage",serialNumber:0},personalizationStorage:{storageName:"personalization_storage",serialNumber:0},securityStorage:{storageName:"security_storage",serialNumber:0},adUserData:{storageName:"ad_user_data",serialNumber:0},adPersonalization:{storageName:"ad_personalization",serialNumber:0}};
-              })();
-            `,
-          }}
-        />
-
-        {/* ✅ Clickio Consent Main tag */}
-        <script async type="text/javascript" src="//clickiocmp.com/t/consent_249458.js" />
       </head>
       <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>
         <script
@@ -202,11 +174,13 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <GlobalCallListener/>
+          <ConsentBanner />
           <ConditionalChat />
         </ThemeProvider>
         <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />
-        <Script id="infolinks-config" strategy="afterInteractive">
+       <Script id="infolinks-config" strategy="afterInteractive">
           {`
             var infolinks_pid = 3446262;
             var infolinks_wsid = 0;
@@ -214,11 +188,6 @@ export default function RootLayout({
         </Script>
         <Script 
           src="//resources.infolinks.com/js/infolinks_main.js" 
-          strategy="afterInteractive" 
-        />
-        {/* ✅ CLICKIO MAIN TRACKING SCRIPT */}
-        <Script 
-          src="https://s.clickiocdn.com/t/249458/di.js"
           strategy="afterInteractive" 
         />
       </body>

@@ -295,12 +295,10 @@ export default async function CompanyPage({ params, searchParams }: Props) {
         </div>
 
         {/* Company Info Header */}
-        {/* FIX: Desktop pe parent ka negative margin hata diya (sm:mt-0) taake white box neeche lamba ho jaye */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 sm:mt-0">
           <div className="flex flex-col sm:flex-row items-start sm:items-start gap-5 pb-6">
             
             {/* Big Logo Overlap */}
-            {/* FIX: Desktop pe sirf Logo ko upar push kiya hai (sm:-mt-20) taake sirf yehi banner pe overlap kare */}
             <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-white dark:bg-[#0B0F19] border-4 border-white dark:border-[#131b2b] shadow-xl p-3 flex-shrink-0 relative overflow-hidden sm:-mt-20 z-10">
               <div className="relative w-full h-full rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center">
                 <Image src={companyLogo} alt={`${companyName} Logo`} fill className="object-contain p-2" sizes="160px" />
@@ -313,7 +311,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
             </div>
 
             {/* Title & Details */}
-            {/* FIX: Text ab directly solid background pe hai, is liye drop-shadow hata diya aur padding set kar di */}
             <div className="flex-1 w-full pt-4 sm:pt-6">
               <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-2 leading-tight">
                 {companyName}
@@ -338,7 +335,33 @@ export default async function CompanyPage({ params, searchParams }: Props) {
             </div>
 
           </div>
+
+          {/* 🎯 THE NAVIGATION TABS (Premium Pill Buttons) */}
+          <div className="flex overflow-x-auto hide-scrollbar gap-3 border-t border-gray-100 dark:border-gray-800/60 pt-6 mt-4 pb-2">
+            
+            <Link href="?tab=overview" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${currentTab === 'overview' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+              Overview
+            </Link>
+            
+            <Link href="?tab=jobs" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center gap-2 ${currentTab === 'jobs' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+              Jobs 
+              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${currentTab === 'jobs' ? 'bg-white/20 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}>
+                {jobList.length}
+              </span>
+            </Link>
+            
+            {extractedBenefits.length > 0 && (
+              <Link href="?tab=benefits" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${currentTab === 'benefits' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                Benefits
+              </Link>
+            )}
+
+            <Link href="?tab=salaries" className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${currentTab === 'salaries' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25 border border-indigo-600' : 'bg-white dark:bg-[#1a2333] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+              Salaries
+            </Link>
+
           </div>
+        </div>
       </div>
 
       {/* 🌟 DYNAMIC CONTENT AREA (SEO HACK APPLIED) */}

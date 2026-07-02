@@ -18,8 +18,9 @@ import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import MoneytizerInFeed from '@/components/MoneytizerInFeed';
+import dynamic from 'next/dynamic';
 
-  
   // Baqi states wese hi rahengi...
 const JOBS_PER_PAGE = 50;
 
@@ -371,6 +372,7 @@ type Job = {
     "ZIMBABWE": { code: "ZW", flag: "🇿🇼", name: "Zimbabwe" },
     "ZW": { code: "ZW", flag: "🇿🇼", name: "Zimbabwe" },
 };
+
 // 🟢 1. STRING PARSER (Remote( UK(london), Spain(Madrid) ) ko torey ga)
 const parseComplexLocation = (locationString: string) => {
     if (!locationString) return [];
@@ -632,6 +634,10 @@ const COUNTRIES = [
   { code: "+260", flag: "🇿🇲", name: "Zambia" },
   { code: "+263", flag: "🇿🇼", name: "Zimbabwe" },
 ]
+const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
+  ssr: false 
+});
+
   const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
   const [forceExact, setForceExact] = useState(false);
   const [suggestedTerm, setSuggestedTerm] = useState('');
@@ -681,6 +687,9 @@ const COUNTRIES = [
       }
       return false;
   });
+  const MoneytizerInFeed = dynamic(() => import('@/components/MoneytizerInFeed'), { 
+  ssr: false 
+});
 const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); 
 // 🚀 DYNAMIC HERO IMAGES SETUP
   const HERO_IMAGES = [
@@ -2360,7 +2369,7 @@ return (
                 </div>
             </div>
         )}
-
+<MoneytizerMegabanner />
 {/* 🎛️ THE ULTIMATE CONTROL BAR (Filters + Sort + Count) */}
 <div ref={dropdownRef} className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 relative z-30">
     
@@ -2922,7 +2931,12 @@ return (
                       </div>
                     </div>
                   )}
+                  {/* 💰 THE MONEYTIZER IN-FEED AD (5th Job ke baad) */}
+                  {index === 3 && (
+                      <MoneytizerInFeed />
+                  )}
                 </div>
+                
               </React.Fragment>
             );
           })
@@ -3048,4 +3062,5 @@ return (
       )}
     </div>
   );
+  <MoneytizerStickyFooter />
 }

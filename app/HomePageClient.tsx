@@ -3062,5 +3062,4 @@ return (
       )}
     </div>
   );
-  <MoneytizerStickyFooter />
 }

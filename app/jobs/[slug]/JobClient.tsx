@@ -16,7 +16,11 @@ import {
   ArrowLeft, ArrowRight, MapPin, Clock, DollarSign, 
   Briefcase, ExternalLink, Share2, Heart, CheckCircle, Building, User, Mail, Globe,Loader2, ShieldCheck, ScanSearch, AlertTriangle, X, Bell, Star // 👈 Star add kiya
 } from 'lucide-react';
+// Baqi saaray upar wale imports idhar hain...
+import dynamic from 'next/dynamic';
 
+const MoneytizerHalfPage = dynamic(() => import('@/components/MoneytizerHalfPage'), { ssr: false });
+const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { ssr: false });
 // 🌍 GLOBAL COUNTRY MAP (Flags aur Codes ke liye)
 const COUNTRY_MAP: Record<string, { code: string; flag: string; name: string }> = {
     // --- POPULAR / COMMON ---
@@ -1543,6 +1547,9 @@ const handleApply = async () => {
       </div> 
       <div className="container mx-auto max-w-5xl px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div className="lg:col-span-2 space-y-8">
+        <div className="mb-6 w-full flex justify-center">
+      <MoneytizerMegabanner />
+    </div>
         <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
             
             {/* 👇 Description Heading */}
@@ -1808,70 +1815,77 @@ const handleApply = async () => {
             </div>
 
             {/* 🚀 THE FIX: lg:sticky aur lg:top-24 add kiya hai taake scroll karne par chipak jaye */}
-        <div className="space-y-6 lg:sticky lg:top-24 self-start">
+        {/* 1. Main outer div se "lg:sticky", "lg:top-24", aur "self-start" HATA diya */}
+<div className="space-y-6">
             
-            {/* SMART AUTHOR SECTION */}
-            {renderAuthorSection()}
-            
-            {/* 🔥 DESKTOP GUEST ALERT BOX (Mobile par hide kiya) */}
-            {authLoaded && !user && (
-                <div className="hidden md:block">
-                    <GuestJobAlert />
+    {/* SMART AUTHOR SECTION */}
+    {renderAuthorSection()}
+    
+    {/* 🔥 DESKTOP GUEST ALERT BOX */}
+    {authLoaded && !user && (
+        <div className="hidden md:block">
+            <GuestJobAlert />
+        </div>
+    )}
+    
+    {/* 🏢 COMPANY PROFILE CARD */}
+    {(job.company || companyDetails) && (
+        <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 relative overflow-hidden">
+            {/* Banner Background */}
+            {companyDetails?.banner_url && (
+                <div className="absolute top-0 left-0 w-full h-16 bg-slate-100">
+                    <img src={companyDetails.banner_url} className="w-full h-full object-cover opacity-50" alt="banner" />
                 </div>
             )}
-            
-            {/* 🏢 COMPANY PROFILE CARD (Updated) */}
-                {(job.company || companyDetails) && (
-                    <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 relative overflow-hidden">
-                        
-                        {/* Banner Background (Agar hai to) */}
-                        {companyDetails?.banner_url && (
-                            <div className="absolute top-0 left-0 w-full h-16 bg-slate-100">
-                                <img src={companyDetails.banner_url} className="w-full h-full object-cover opacity-50" alt="banner" />
-                            </div>
-                        )}
 
-                        <div className={`relative flex items-center gap-4 mb-4 ${companyDetails?.banner_url ? 'mt-8' : ''}`}>
-                            <div className="h-16 w-16 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-                                {companyDetails?.logo_url ? (
-                                    <img src={companyDetails.logo_url} alt="logo" className="w-full h-full object-contain p-1" />
-                                ) : (
-                                    (job.company || "C").charAt(0).toUpperCase()
-                                )}
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-lg text-slate-900 dark:text-white leading-tight">
-                                    {companyDetails?.name || job.company}
-                                </h3>
-                                <Link href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`} className="text-xs text-indigo-600 font-medium hover:underline flex items-center gap-1">
-                                    View Company Profile <ArrowRight size={12}/>
-                                </Link>
-                            </div>
-                        </div>
-                        
-                        {/* Description from DB or Generic */}
-                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3">
-                            {companyDetails?.description || `See all active remote openings and hiring details for ${job.company}.`}
-                        </p>
-                    </div>
-                )}
-                <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <h3 className="font-bold mb-4 text-sm uppercase text-slate-400 tracking-wider">Safety First</h3>
-                    <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
-                        <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Never pay for a job application.</li>
-                        <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Do not share sensitive bank info.</li>
-                        <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Verify the client before starting work.</li>
-                    </ul>
-                    
-                    {/* 🚀 NEW: Learn More Button */}
-                    <Link 
-                        href="/blog/ultimate-guide-remote-job-safety-2026" 
-                        className="mt-5 flex items-center justify-center gap-2 w-full py-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-95 group"
-                    >
-                        Learn More <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            <div className={`relative flex items-center gap-4 mb-4 ${companyDetails?.banner_url ? 'mt-8' : ''}`}>
+                <div className="h-16 w-16 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                    {companyDetails?.logo_url ? (
+                        <img src={companyDetails.logo_url} alt="logo" className="w-full h-full object-contain p-1" />
+                    ) : (
+                        (job.company || "C").charAt(0).toUpperCase()
+                    )}
+                </div>
+                <div>
+                    <h3 className="font-bold text-lg text-slate-900 dark:text-white leading-tight">
+                        {companyDetails?.name || job.company}
+                    </h3>
+                    <Link href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`} className="text-xs text-indigo-600 font-medium hover:underline flex items-center gap-1">
+                        View Company Profile <ArrowRight size={12}/>
                     </Link>
                 </div>
             </div>
+            
+            {/* Description */}
+            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3">
+                {companyDetails?.description || `See all active remote openings and hiring details for ${job.company}.`}
+            </p>
+        </div>
+    )}
+
+    {/* Safety First Card */}
+    <div className="bg-white dark:bg-[#111625] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 className="font-bold mb-4 text-sm uppercase text-slate-400 tracking-wider">Safety First</h3>
+        <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+            <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Never pay for a job application.</li>
+            <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Do not share sensitive bank info.</li>
+            <li className="flex gap-2"><CheckCircle size={16} className="text-green-500 flex-shrink-0"/> Verify the client before starting work.</li>
+        </ul>
+        
+        <Link 
+            href="/blog/ultimate-guide-remote-job-safety-2026" 
+            className="mt-5 flex items-center justify-center gap-2 w-full py-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-95 group"
+        >
+            Learn More <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+        </Link>
+    </div>
+
+    {/* 🚀 2. STICKY CLASSES KO YAHAN HALF-PAGE AD WALE WRAPPER PAR SHIFT KAR DIYA */}
+    <div className="hidden lg:block lg:sticky lg:top-24 self-start">
+        <MoneytizerHalfPage />
+    </div>
+
+</div>
       </div>
       {/* 📱 STICKY MOBILE APPLY FOOTER (Sirf Mobile par dikhega) */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 dark:bg-[#0b0f19]/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 p-4 z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">

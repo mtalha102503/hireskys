@@ -9,7 +9,7 @@ import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
-
+import MoneytizerStickyFooter from '@/components/MoneytizerStickyFooter';
 // 🌟 FONT OPTIMIZATION
 const jost = Jost({ subsets: ["latin"] });
 
@@ -335,11 +335,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen pb-[60px] md:pb-[100px] relative">
             <main className="flex-grow">
               {children}
             </main>
             <Footer />
+            {/* 💰 TEMPORARY STICKY FOOTER FOR RAMP-UP APPROVAL */}
+            <MoneytizerStickyFooter />
           </div>
           <ConsentBanner />
           <ConditionalChat />

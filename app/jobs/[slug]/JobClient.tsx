@@ -1,5 +1,5 @@
 "use client"; // FIX 1: Removed extra quote here
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams, useRouter } from 'next/navigation';
 import { createSlug } from '@/lib/utils'; // 👈 Ye zaroori hai
@@ -703,6 +703,25 @@ const [industryCompanies, setIndustryCompanies] = useState<any[]>([]); // Indust
   useEffect(() => {
     fetchJobDetails();
   }, []);
+  const mobileFooterRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  const el = mobileFooterRef.current;
+  if (!el) return;
+
+  const setHeight = () => {
+    document.documentElement.style.setProperty('--job-bar-h', `${el.offsetHeight}px`);
+  };
+
+  setHeight();
+  const ro = new ResizeObserver(setHeight);
+  ro.observe(el);
+
+  return () => {
+    ro.disconnect();
+    document.documentElement.style.setProperty('--job-bar-h', '0px');
+  };
+}, []);
 // 🟢 NAYA: Job page khulte hi isko 'Seen' mark kar do
   useEffect(() => {
     // Check karo ke job load ho chuki hai
@@ -1888,7 +1907,7 @@ const handleApply = async () => {
 </div>
       </div>
       {/* 📱 STICKY MOBILE APPLY FOOTER (Sirf Mobile par dikhega) */}
-      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 dark:bg-[#0b0f19]/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 p-4 z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+      <div ref={mobileFooterRef} className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 dark:bg-[#0b0f19]/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 p-4 z-[300] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
        <div className="flex items-center gap-3 max-w-md mx-auto">
           
           {/* 🔖 Save Button */}

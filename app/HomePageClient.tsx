@@ -18,9 +18,13 @@ import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import MoneytizerInFeed from '@/components/MoneytizerInFeed';
 import dynamic from 'next/dynamic';
-
+const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
+  ssr: false 
+});
+const MoneytizerInFeed = dynamic(() => import('@/components/MoneytizerInFeed'), { 
+  ssr: false 
+});
   // Baqi states wese hi rahengi...
 const JOBS_PER_PAGE = 50;
 
@@ -634,9 +638,7 @@ const COUNTRIES = [
   { code: "+260", flag: "🇿🇲", name: "Zambia" },
   { code: "+263", flag: "🇿🇼", name: "Zimbabwe" },
 ]
-const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
-  ssr: false 
-});
+
 
   const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
   const [forceExact, setForceExact] = useState(false);
@@ -687,9 +689,7 @@ const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegaba
       }
       return false;
   });
-  const MoneytizerInFeed = dynamic(() => import('@/components/MoneytizerInFeed'), { 
-  ssr: false 
-});
+
 const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); 
 // 🚀 DYNAMIC HERO IMAGES SETUP
   const HERO_IMAGES = [

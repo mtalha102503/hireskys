@@ -59,7 +59,7 @@ const { data: jobs, error } = await supabase
 
     for (const job of jobs) {
       // Dynamic route URL building based on your platform
-      const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
+      const jobUrl = `https://www.hireskys.com/jobs/${job.slug}`;
 
       // Schema mein expiry date nahi thi, isliye hum technically created_at + 30 days assign kar rahe hain
       const expireDate = new Date(job.created_at);

@@ -59,6 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: `Apply for ${jobTitle} at ${companyName} on HireSkys. Verified global remote jobs.`,
     openGraph: {
       title: `${jobTitle} at ${companyName} | HireSkys`,
+      siteName: 'HireSkys',
       images: [
         {
           url: ogUrl.toString(),

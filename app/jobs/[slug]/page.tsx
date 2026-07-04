@@ -25,7 +25,53 @@ export async function generateStaticParams() {
     slug: createSlug(job.title, job.id),
   }));
 }
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  // Params await karo
+  const { slug } = await params;
+  const slugParts = slug.split('-');
+  const id = slugParts[slugParts.length - 1];
 
+  if (!id || isNaN(Number(id))) {
+    return { title: 'Job Not Found | HireSkys' };
+  }
+
+  // Sirf title aur company uthao metadata ke liye (Fast fetch)
+  const { data: job } = await supabase
+    .from('jobs')
+    .select('title, company, source')
+    .eq('id', id)
+    .single();
+
+  if (!job) {
+    return { title: 'Job Not Found | HireSkys' };
+  }
+
+  const jobTitle = job.title;
+  const companyName = job.company || job.source || 'HireSkys';
+
+  // API Route ko details bhejna image bananay ke liye
+  const ogUrl = new URL('https://hireskys.com/api/og');
+  ogUrl.searchParams.set('title', jobTitle);
+  ogUrl.searchParams.set('company', companyName);
+
+  return {
+    title: `${jobTitle} at ${companyName} | HireSkys`,
+    description: `Apply for ${jobTitle} at ${companyName} on HireSkys. Verified global remote jobs.`,
+    openGraph: {
+      title: `${jobTitle} at ${companyName} | HireSkys`,
+      images: [
+        {
+          url: ogUrl.toString(),
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+    },
+  };
+}
 // Baki tumhara page component waise ka waisa hi hai
 export default async function JobPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

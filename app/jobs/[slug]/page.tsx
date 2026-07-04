@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const companyName = job.company || job.source || 'HireSkys';
 
   // API Route ko details bhejna image bananay ke liye
-  const ogUrl = new URL('https://hireskys.com/api/og');
+  const ogUrl = new URL('https://www.hireskys.com/api/og');
   ogUrl.searchParams.set('title', jobTitle);
   ogUrl.searchParams.set('company', companyName);
 

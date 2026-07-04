@@ -6,17 +6,15 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    // URL se Job Title aur Company ka naam nikalna
     const hasTitle = searchParams.has('title');
     const title = hasTitle ? searchParams.get('title')?.slice(0, 100) : 'Verified Borderless Remote Job';
 
     const hasCompany = searchParams.has('company');
     const company = hasCompany ? searchParams.get('company')?.slice(0, 50) : 'HireSkys';
 
-    // Yeh HTML/CSS real-time mein PNG image ban jayega
-return new ImageResponse(
-(
-  <div
+    return new ImageResponse(
+      (
+        <div
           style={{
             height: '100%',
             width: '100%',
@@ -24,7 +22,7 @@ return new ImageResponse(
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#0f172a', // Dark slate background
+            backgroundColor: '#0f172a',
             backgroundImage: 'radial-gradient(circle at 25px 25px, #1e293b 2%, transparent 0%), radial-gradient(circle at 75px 75px, #1e293b 2%, transparent 0%)',
             backgroundSize: '100px 100px',
           }}
@@ -43,6 +41,19 @@ return new ImageResponse(
               maxWidth: '900px',
             }}
           >
+            {/* 👇 YEH NAYA LOGO ADD KIYA HAI 👇 */}
+            <img
+              src="https://www.hireskys.com/logo2.png" // Agar logo2 use karna hai to naam change kar lena
+              width="80"
+              height="80"
+              style={{ 
+                marginBottom: '20px', 
+                borderRadius: '16px', // Agar logo square hai to thora gol ho jayega
+                objectFit: 'contain' 
+              }}
+            />
+            {/* 👆 BAS YEH BLOCK ADD HUA HAI 👆 */}
+
             <h1
               style={{
                 fontSize: '60px',
@@ -68,7 +79,7 @@ return new ImageResponse(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#3b82f6', // Blue button
+                backgroundColor: '#3b82f6',
                 color: 'white',
                 padding: '15px 40px',
                 borderRadius: '12px',
@@ -83,7 +94,7 @@ return new ImageResponse(
       ),
       {
         width: 1200,
-        height: 630, // Standard Open Graph image dimensions
+        height: 630,
       }
     );
   } catch (e: any) {

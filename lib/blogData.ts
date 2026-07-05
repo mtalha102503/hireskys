@@ -1358,5 +1358,224 @@ export const BLOG_POSTS: BlogPost[] = [
       </div>
       </div>
     `
+},
+{
+  slug: 'verified-safe-borderless-remote-jobs-july-2026',
+  title: 'Tired of Fake Listings? Here Are Safe, True Borderless Jobs for July',
+  excerpt: 'Job hunting is exhausting when you keep hitting fake listings and hidden location limits. Here is our manually verified list of safe, global remote jobs for this week.',
+  date: 'Jul 05, 2026',
+  author: 'Muhammad Talha',
+  role: 'Founder, HireSkys',
+  authorImage: '/founder.png',
+  category: 'Weekly Roundups',
+  image: '/june-four-week-jobs.webp',
+  content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Looking for a remote job can take a lot of time today. Often, you see a good job online, spend time on your application, and then find out they only want people from one specific country.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
+        Sometimes, the jobs are not even real. It is a big waste of your time and energy. You need jobs that are real, safe, and truly open to anyone. At HireSkys, we manually check every single job to make sure the company is real and "worldwide" actually means worldwide.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        1. Blockchain Engineering Manager — Velixus Labs
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Velixus Labs is looking for a manager to lead their developer teams and help build secure blockchain products. If you enjoy guiding others and have a strong background in Web3, this is a very safe and high-paying opportunity.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> You should have excellent experience managing teams and a solid understanding of the MERN stack.
+        </p>
+      </div>
+      <div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-6 rounded-r-xl">
+        <p class="text-emerald-700 dark:text-emerald-400 leading-relaxed m-0">
+          <strong>Perks:</strong> A highly competitive salary between $220,000 and $320,000 per year, plus total location freedom.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/blockchain-engineering-manager-9052" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        2. Senior Blockchain Engineer — Velixus Labs
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        In addition to a manager, Velixus Labs needs a senior engineer. You will focus on writing clean backend code and building out the core features of their new blockchain systems. 
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> Deep experience with backend development, specifically using Node.js in a Web3 environment.
+        </p>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-6 rounded-r-xl">
+        <p class="text-blue-700 dark:text-blue-400 leading-relaxed m-0">
+          <strong>Perks:</strong> A great salary ranging from $180,000 to $260,000 and the ability to work from anywhere in the world.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/senior-blockchain-engineer-9051" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        3. Senior Data Engineer — Supabase
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Data Science & Analytics &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Supabase is a widely loved open-source platform, and they need a data expert. You will work on keeping their internal data pipelines fast, organized, and reliable.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> A very strong background in data engineering, with excellent skills in SQL and Python.
+        </p>
+      </div>
+      <div class="bg-rose-50 dark:bg-rose-900/10 border-l-4 border-rose-500 p-6 my-6 rounded-r-xl">
+        <p class="text-rose-700 dark:text-rose-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Work with one of the best developer tool companies right now, completely remotely.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/senior-data-engineer-9151" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        4. Senior Platform Engineer — GoodShip
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        GoodShip is hiring a senior engineer to manage and improve their core platform infrastructure. Your daily work will make sure their software runs perfectly for all their customers without any drops.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> Solid experience in backend development and managing large-scale DevOps practices.
+        </p>
+      </div>
+      <div class="bg-purple-50 dark:bg-purple-900/10 border-l-4 border-purple-500 p-6 my-6 rounded-r-xl">
+        <p class="text-purple-700 dark:text-purple-400 leading-relaxed m-0">
+          <strong>Perks:</strong> A stable, full-time remote job solving interesting technical challenges every single day.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/senior-platform-engineer-9162" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        5. Frontend Software Engineer — Goodie
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Goodie needs a frontend engineer to create clean, easy-to-use interfaces. You will work closely with their design team to turn their ideas into fast, working web applications.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> You should be excellent at frontend coding, and have a good understanding of Python and Node.js environments.
+        </p>
+      </div>
+      <div class="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-6 my-6 rounded-r-xl">
+        <p class="text-amber-700 dark:text-amber-400 leading-relaxed m-0">
+          <strong>Perks:</strong> Complete location independence with a company that values great design.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/frontend-software-engineer-9156" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        6. Technical Customer Support — Trust Wallet
+      </h2>
+      <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+        Category: Customer Service &bull; Type: Contract &bull; Experience Level: Mid-Level
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Blueprint</strong><br />
+        Trust Wallet, one of the most popular crypto wallets globally, is looking for someone to support their users. You will chat with customers, solve technical problems, and ensure their accounts are safe.
+      </p>
+      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
+        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
+          <strong>What you need:</strong> Real experience doing technical support and communicating clearly with customers online.
+        </p>
+      </div>
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-6 rounded-r-xl">
+        <p class="text-indigo-700 dark:text-indigo-400 leading-relaxed m-0">
+          <strong>Perks:</strong> A highly verified contract role working inside a famous Web3 organization.
+        </p>
+      </div>
+      <div class="mt-6 mb-2">
+        <a href="https://www.hireskys.com/jobs/technical-customer-support-9048" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-0.5 shadow-md shadow-indigo-500/20 no-underline">
+          Apply Here
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="mt-12 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+              <div class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-500/20 blur-[80px] rounded-full"></div>
+              <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-rose-500/20 blur-[80px] rounded-full"></div>
+          </div>
+
+          <div class="relative z-10">
+            <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Protect Your Job Search.</h3>
+            <p class="text-slate-300 mb-8 text-lg font-medium">Stop worrying about ghost jobs and location limits. Using HireSkys is completely free, and every single job is checked by a real person to ensure it is fresh and 100% safe.</p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="/" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-black rounded-xl transition-transform hover:-translate-y-1 shadow-lg shadow-indigo-500/30 no-underline">
+                    Browse Verified Jobs
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+          </div>
+      </div>
+      `
 }
 ];

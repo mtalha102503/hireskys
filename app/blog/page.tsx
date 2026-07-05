@@ -89,7 +89,16 @@ const BLOG_POSTS = [
   author: 'Muhammad Talha',
   category: 'Growth Hacks & Hiring',
   image: '/blog-borderless-jobs.webp',
-  }
+  },
+  {
+  slug: 'verified-safe-borderless-remote-jobs-july-2026',
+  title: 'Tired of Fake Listings? Here Are Safe, True Borderless Jobs for July',
+  excerpt: 'Job hunting is exhausting when you keep hitting fake listings and hidden location limits. Here is our manually verified list of safe, global remote jobs for this week.',
+  date: 'Jul 5, 2026',
+  author: 'Muhammad Talha',
+  category: 'Weekly Roundups',
+  image: '/june-four-week-jobs.webp',
+  },
 ];
 
 export default function BlogIndex() {

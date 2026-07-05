@@ -19,6 +19,9 @@ type Props = {
 // ---------------------------------------------------------
 // 1. AUTOMATIC SEO GENERATOR (Metadata)
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// 1. AUTOMATIC SEO GENERATOR (Metadata)
+// ---------------------------------------------------------
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params; 
   const post = BLOG_POSTS.find((p: any) => p.slug === slug);
@@ -27,14 +30,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const siteUrl = "https://www.hireskys.com";
   const ogImage = post.image.startsWith("/") ? `${siteUrl}${post.image}` : post.image;
+  
+  // 👇 URL variable bana liya taake do jagah use ho sakay
+  const postUrl = `${siteUrl}/blog/${slug}`; 
 
   return {
     title: post.title,
     description: post.excerpt,
+    // ✅ PRO FIX: Yahan canonical URL add kiya hai taake Bing/Google khush rahein
+    alternates: {
+      canonical: postUrl,
+    },
     openGraph: {
       title: post.title,
       description: post.excerpt,
-      url: `${siteUrl}/blog/${slug}`,
+      url: postUrl,
       type: "article",
       images: [{ url: ogImage, width: 1200, height: 630 }],
       authors: [post.author],

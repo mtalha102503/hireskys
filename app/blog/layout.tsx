@@ -14,10 +14,6 @@ export const metadata: Metadata = {
   description: BLOG_DESCRIPTION,
   keywords: ["Remote Jobs", "Freelancing Tips", "Hyrizon AI", "Career Advice", "Tech Jobs", "Work from Home"],
   
-  // ✅ PRO TWEAK 1: Canonical URLs (Prevents Duplicate Content)
-  alternates: {
-    canonical: '/blog',
-  },
 
   // ✅ PRO TWEAK 2: Author Authority
   authors: [{ name: "Muhammad Talha", url: SITE_URL }],

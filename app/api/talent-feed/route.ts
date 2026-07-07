@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// 1. Next.js Route Config to disable caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Supabase Client Initialization
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -63,7 +67,12 @@ export async function GET() {
 
     if (!jobs || jobs.length === 0) {
       return new NextResponse(`<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, { 
-        headers: { 'Content-Type': 'application/xml' } 
+        headers: { 
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        } 
       });
     }
 
@@ -85,28 +94,23 @@ export async function GET() {
     <referencenumber><![CDATA[${job.id}]]></referencenumber>
     <title><![CDATA[${job.title}]]></title>
     <url><![CDATA[${jobUrl}]]></url>
-    <original_url><![CDATA[${job.link}]]></original_url> <!-- 🔥 Original ATS Link -->
-    <company><![CDATA[${job.source}]]></company> <!-- -->
-    
-    <!-- 🔥 Location Splitted Data -->
-    <city><![CDATA[${loc.city}]]></city>
+    <original_url><![CDATA[${job.link}]]></original_url> <company><![CDATA[${job.source}]]></company> <city><![CDATA[${loc.city}]]></city>
     <country><![CDATA[${loc.country}]]></country>
     
-    <description><![CDATA[${job.description}]]></description> <!-- -->
-    <date><![CDATA[${formatStandardDate(job.created_at)}]]></date>
+    <description><![CDATA[${job.description}]]></description> <date><![CDATA[${formatStandardDate(job.created_at)}]]></date>
     <expiration_date><![CDATA[${formatStandardDate(expireDate)}]]></expiration_date>
-    <jobtype><![CDATA[${job.job_type}]]></jobtype> <!-- -->
-    ${hasSalary ? `<salary><![CDATA[${job.salary_range}]]></salary>` : ''} <!-- -->
-    ${job.company_logo_url ? `<logo><![CDATA[${job.company_logo_url}]]></logo>` : ''} <!-- -->
-  </job>`;
+    <jobtype><![CDATA[${job.job_type}]]></jobtype> ${hasSalary ? `<salary><![CDATA[${job.salary_range}]]></salary>` : ''} ${job.company_logo_url ? `<logo><![CDATA[${job.company_logo_url}]]></logo>` : ''} </job>`;
     }
 
     const fullXml = `<?xml version="1.0" encoding="utf-8"?>\n<jobs>${xmlItems}\n</jobs>`;
 
+    // 3. Return response with strictly NO-CACHE headers
     return new NextResponse(fullXml, {
       headers: {
         'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=21600, stale-while-revalidate=7200',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       },
     });
 
@@ -114,7 +118,13 @@ export async function GET() {
     console.error("Talent.com XML Feed Error:", error);
     return new NextResponse(
       `<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, 
-      { status: 500, headers: { 'Content-Type': 'application/xml' } }
+      { 
+        status: 500, 
+        headers: { 
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'no-store'
+        } 
+      }
     );
   }
 }

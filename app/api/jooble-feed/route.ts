@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// 1. Next.js ko force karein ke is route ko hamesha dynamically render kare
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Supabase Client Initialization
 // Apne .env.local file mein yeh variables zaroor set rakhein
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -16,7 +20,7 @@ function formatJoobleDate(dateInput: string | Date): string {
   return `${day}.${month}.${year}`;
 }
 
-// Helper function: XML characters ko escape karne ke liye (Agar CDATA ke bahar zaroorat pade)
+// Helper function: XML characters ko escape karne ke liye
 function escapeXml(unsafe: string): string {
   if (!unsafe) return '';
   return unsafe.replace(/[<>&'"]/g, (c) => {
@@ -33,16 +37,13 @@ function escapeXml(unsafe: string): string {
 
 export async function GET() {
   try {
-
     // 2. Fetch data directly from your Supabase 'jobs' table
-    // (Agar aapki table ka naam kuch aur hai, toh 'jobs' ko replace kar dena)
-    // 1. Fetch ALL active and approved jobs without any date boundary
-const { data: jobs, error } = await supabase
-  .from('jobs') 
-  .select('id, title, slug, source, company_logo_url, location, description, created_at, salary_range, job_type')
-  .eq('active', true)
-  .eq('approved', true) 
-  .order('created_at', { ascending: false }); // Taaki 1 July aur bilkul fresh jobs sab se pehle top par dikhein!
+    const { data: jobs, error } = await supabase
+      .from('jobs') 
+      .select('id, title, slug, source, company_logo_url, location, description, created_at, salary_range, job_type')
+      .eq('active', true)
+      .eq('approved', true) 
+      .order('created_at', { ascending: false });
 
     if (error) {
       throw new Error(`Supabase Query Failed: ${error.message}`);
@@ -50,7 +51,12 @@ const { data: jobs, error } = await supabase
 
     if (!jobs || jobs.length === 0) {
       return new NextResponse(`<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, { 
-        headers: { 'Content-Type': 'application/xml' } 
+        headers: { 
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        } 
       });
     }
 
@@ -58,14 +64,11 @@ const { data: jobs, error } = await supabase
     let xmlItems = '';
 
     for (const job of jobs) {
-      // Dynamic route URL building based on your platform
-      const jobUrl = `https://www.hireskys.com/jobs/${job.slug}`;
+      const jobUrl = `https://hireskys.com/remote-jobs/${job.slug}`;
 
-      // Schema mein expiry date nahi thi, isliye hum technically created_at + 30 days assign kar rahe hain
       const expireDate = new Date(job.created_at);
       expireDate.setDate(expireDate.getDate() + 60);
 
-      // "Not Disclosed" wali salary ko filter out karne ki logic
       const hasSalary = job.salary_range && job.salary_range !== 'Not Disclosed';
 
       xmlItems += `
@@ -86,12 +89,13 @@ const { data: jobs, error } = await supabase
 
     const fullXml = `<?xml version="1.0" encoding="utf-8"?>\n<jobs>${xmlItems}\n</jobs>`;
 
-    // 4. Heavy Caching to protect your Supabase billing
-    // s-maxage=21600: Vercel CDN will cache this XML for 6 hours.
+    // 4. Return response with strictly NO-CACHE headers
     return new NextResponse(fullXml, {
       headers: {
         'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=21600, stale-while-revalidate=7200',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       },
     });
 
@@ -100,7 +104,13 @@ const { data: jobs, error } = await supabase
     // Silent fail fallback for bots
     return new NextResponse(
       `<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, 
-      { status: 500, headers: { 'Content-Type': 'application/xml' } }
+      { 
+        status: 500, 
+        headers: { 
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'no-store'
+        } 
+      }
     );
   }
 }

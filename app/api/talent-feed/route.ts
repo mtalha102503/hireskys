@@ -80,7 +80,7 @@ export async function GET() {
     let xmlItems = '';
 
     for (const job of jobs) {
-      const jobUrl = `https://hireskys.com/remote-jobs/${job.slug}`;
+      const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
       const expireDate = new Date(job.created_at);
       expireDate.setDate(expireDate.getDate() + 60);
 

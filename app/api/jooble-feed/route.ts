@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 // Supabase Client Initialization
-// Apne .env.local file mein yeh variables zaroor set rakhein
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -64,7 +63,11 @@ export async function GET() {
     let xmlItems = '';
 
     for (const job of jobs) {
-      const jobUrl = `https://hireskys.com/remote-jobs/${job.slug}`;
+      // 🚨 FIX 1: Link structure badal kar '/jobs/' kar diya hai
+      const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
+
+      // 🚨 FIX 2: Location checking logic - Remote (Global) ko United States map kar diya
+      const xmlLocation = job.location === "Remote (Global)" ? "United States" : job.location;
 
       const expireDate = new Date(job.created_at);
       expireDate.setDate(expireDate.getDate() + 60);
@@ -75,7 +78,7 @@ export async function GET() {
   <job id="${job.id}">
     <link><![CDATA[${jobUrl}]]></link>
     <name><![CDATA[${job.title}]]></name>
-    <region><![CDATA[${job.location}]]></region>
+    <region><![CDATA[${xmlLocation}]]></region>
     <description><![CDATA[${job.description}]]></description>
     <pubdate>${formatJoobleDate(job.created_at)}</pubdate>
     <updated>${formatJoobleDate(job.created_at)}</updated>

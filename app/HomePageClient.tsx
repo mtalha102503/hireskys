@@ -709,24 +709,21 @@ const [sponsoredJobs, setSponsoredJobs] = useState<any[]>([]);
 
 // 2. Fetch Logic for Personalized & Filtered Sponsored Jobs
 useEffect(() => {
-    // Jab tak Auth check ho raha hai, API hit na karo
     if (isAuthChecking) return;
 
     const fetchSponsoredJobs = async () => {
         try {
-            let apiUrl = '/api/careerjet';
+            let apiUrl = '/api/whatjobs';
             const params = new URLSearchParams();
             
             // 🧠 1. DYNAMIC SEARCH / CATEGORY PRIORITY
-            // Agar search box mein kuch likha hai, ya tag/category select ki hai
             const activeSearchTerm = searchQuery.trim() || activeSubTag || (activeCategory !== 'All' ? activeCategory : '');
             
             if (activeSearchTerm) {
                 params.append('query', activeSearchTerm);
             } else if (currentUser && userProfile?.skills?.length > 0) {
-                // Agar koi filter nai laga aur user logged in hai toh Skills use karo
                 const topSkills = userProfile.skills.slice(0, 2).join(' ');
-                params.append('skills', topSkills);
+                params.append('query', topSkills);
             }
 
             // 🌍 2. DYNAMIC LOCATION PRIORITY
@@ -734,11 +731,6 @@ useEffect(() => {
                 params.append('location', filterCountry);
             } else if (currentUser && userProfile?.country) {
                 params.append('location', userProfile.country);
-            }
-
-            // 💼 3. DYNAMIC JOB TYPE
-            if (filterJobType) {
-                params.append('jobType', filterJobType);
             }
 
             if (params.toString()) {
@@ -749,26 +741,23 @@ useEffect(() => {
             const data = await res.json();
             
             if (data.jobs && data.jobs.length > 0) {
-                // Shuffle kar ke 3 jobs feed ke liye save kar lo
+                // Shuffle karke feed ke liye save kar lo
                 const shuffled = data.jobs.sort(() => 0.5 - Math.random());
                 setSponsoredJobs(shuffled.slice(0, 3));
             } else {
-                setSponsoredJobs([]); // Agar is strict filter par koi sponsored job nai mili
+                setSponsoredJobs([]); 
             }
         } catch (err) {
             console.error("Sponsored job fetch error:", err);
         }
     };
 
-    // Thora delay (debounce) lagaya hai taake typing karte waqt bar bar API hit na ho
     const timer = setTimeout(() => {
         fetchSponsoredJobs();
     }, 500);
 
     return () => clearTimeout(timer);
-
-// 🚀 FIX: Dependencies mein tamam filters add kar diye hain taake filter change hone par yeh dobara chale
-}, [isAuthChecking, currentUser, userProfile, searchQuery, activeCategory, activeSubTag, filterCountry, filterJobType]);
+}, [isAuthChecking, currentUser, userProfile, searchQuery, activeCategory, activeSubTag, filterCountry]);
   useEffect(() => {
     // Page load hote hi randomly ek image pick karega
     const randomIndex = Math.floor(Math.random() * HERO_IMAGES.length);
@@ -2684,8 +2673,7 @@ return (
             return (
               <React.Fragment key={`wrap-${job.id}`}>
                 
-                {/* 🌟 THE IN-FEED SPONSORED CARD INJECTION */}
-                {/* Agar is position ke liye currentSponsoredJob mojood hai toh dikhao */}
+                 {/* 🌟 THE IN-FEED SPONSORED CARD INJECTION (WHATJOBS) */}
                 {currentSponsoredJob && (
                     <div className="group relative flex flex-col bg-gradient-to-br from-indigo-50/80 to-blue-50/50 dark:from-indigo-950/30 dark:to-blue-900/10 border-2 border-indigo-100 dark:border-indigo-800/60 rounded-2xl md:rounded-3xl p-4 md:p-6 mb-4 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-xl hover:shadow-indigo-500/15 overflow-hidden">
                         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-2xl pointer-events-none transition-transform group-hover:scale-150"></div>
@@ -2695,7 +2683,8 @@ return (
                                 <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white dark:bg-slate-900/80 border border-indigo-100 dark:border-indigo-800/80 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 shadow-sm">
                                     <span className="text-base leading-none">🌍</span>
                                     <span className="tracking-wide max-w-[120px] truncate">
-                                        {currentSponsoredJob.locations || "Worldwide"}
+                                        {/* Whatjobs JSON mein field ka naam "location" hai */}
+                                        {currentSponsoredJob.location || "Remote"}
                                     </span>
                                 </div>
                             </div>
@@ -2709,14 +2698,14 @@ return (
 
                         <div className="flex items-start gap-3 md:gap-5 mb-4 relative z-10">
                             <div className="flex-shrink-0">
-                                <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1.5 md:p-2 border border-indigo-100 dark:border-indigo-800/80 shadow-md flex items-center justify-center">
-                                    <img 
-                                        src="https://img.logo.dev/careerjet.com?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png" 
-                                        alt="Careerjet Partner" 
-                                        className="h-full w-full object-contain rounded-lg" 
-                                    />
-                                </div>
-                            </div>
+    <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1.5 md:p-2 border border-indigo-100 dark:border-indigo-800/80 shadow-md flex items-center justify-center">
+        <img 
+            src="https://img.logo.dev/whatjobs.com?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png" 
+            alt="Whatjobs Partner" 
+            className="h-full w-full object-contain rounded-lg" 
+        />
+    </div>
+</div>
                             
                             <div className="flex-1 min-w-0">
                                 <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
@@ -2726,13 +2715,14 @@ return (
                                     <span className="text-slate-800 dark:text-slate-200 font-bold">
                                         {currentSponsoredJob.company ? currentSponsoredJob.company : "Premium Partner"}
                                     </span>
-                                    
-                                    {/* 💰 SALARY BADGE */}
-                                    {currentSponsoredJob.salary && (
-                                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-black bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
-                                            💳 {currentSponsoredJob.salary}
-                                        </span>
-                                    )}
+                                    {/* 💰 SALARY BADGE FIX WITH CLEAN FORMATTING */}
+{currentSponsoredJob.salary && 
+ currentSponsoredJob.salary !== "0.000000 - 0.000000" && 
+ currentSponsoredJob.salary !== "0.000000" && (
+    <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-black bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
+        💳 {currentSponsoredJob.salary.replace(/\.000000/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+    </span>
+)}
                                 </div>
                             </div>
                         </div>
@@ -2740,7 +2730,7 @@ return (
                         <div className="mt-auto pt-3 md:pt-5 border-t border-indigo-100 dark:border-indigo-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5 relative z-10">
                             <div className="flex flex-wrap gap-2">
                                 <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-white dark:bg-slate-900/50 text-[10px] md:text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50 shadow-sm">
-                                    Remote Priority
+                                    Priority Listing
                                 </div>
                             </div>
                             

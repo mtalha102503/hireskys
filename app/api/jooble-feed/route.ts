@@ -64,7 +64,7 @@ export async function GET() {
 
     for (const job of jobs) {
       // 🚨 FIX 1: Link structure badal kar '/jobs/' kar diya hai
-      const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
+      const jobUrl = `https://www.hireskys.com/jobs/${job.slug}`;
 
       // 🚨 FIX 2: Location checking logic - Remote (Global) ko United States map kar diya
       const xmlLocation = job.location === "Remote (Global)" ? "United States" : job.location;

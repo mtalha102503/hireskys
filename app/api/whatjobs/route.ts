@@ -50,15 +50,22 @@ export async function GET(request: Request) {
   apiUrl.searchParams.append("user_agent", user_agent);
   apiUrl.searchParams.append("limit", "3");
 
-  // 🎯 KEYWORDS SETTING
+  // 🎯 KEYWORDS SETTING (STRICTLY REMOTE)
+  let finalKeyword = "remote"; // Base keyword hamesha remote rahega
+
   if (query) {
-      apiUrl.searchParams.append("keyword", query);
+      // Agar user ne "react" search kiya hai, toh API ko "remote react" jayega
+      finalKeyword = `remote ${query}`;
   } else {
+      // Agar koi search nahi hai, toh in high-paying roles ke sath remote lag kar jayega
       const rotationQueries = [
-          "software engineer", "react developer", "marketing", "remote", "data entry", "customer support"
+          "software engineer", "react developer", "marketing", "data analyst", "customer support"
       ];
-      apiUrl.searchParams.append("keyword", rotationQueries[Math.floor(Math.random() * rotationQueries.length)]);
+      const randomQuery = rotationQueries[Math.floor(Math.random() * rotationQueries.length)];
+      finalKeyword = `remote ${randomQuery}`;
   }
+
+  apiUrl.searchParams.append("keyword", finalKeyword);
 
   // 📍 FINAL LOCATION FILTER
   if (targetLocation) {

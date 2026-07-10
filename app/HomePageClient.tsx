@@ -1030,16 +1030,18 @@ useEffect(() => {
       }
   }, [activeSubTag]);
 
-  // 1. ORIGINAL FETCH JOBS
-  useEffect(() => {
+  // Apne pehle useEffect mein ye update kardo
+useEffect(() => {
     if (searchType === 'jobs') {
         const timer = setTimeout(() => {
-          setPage(0);         
-          fetchJobs(0, true); 
+            // URL se page number uthao (agar hai), warna 0 rakho
+            const urlPage = parseInt(searchParams.get('page') || '0', 10);
+            setPage(urlPage);         
+            fetchJobs(urlPage, true); 
         }, 500);
         return () => clearTimeout(timer);
     }
-  }, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry, sortOrder]); // 👈 sortOrder yahan add kiya
+}, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry, sortOrder, searchParams]);
 
 
   // 2. 🚀 THE SMART TYPING SYNC (Yeh sirf tab chalega jab tum text likhoge)
@@ -2933,26 +2935,37 @@ return (
         )}
           
           {hasMore && !loading && jobs.length > 0 && (
-            <div className="pt-8 pb-0 flex justify-center">
-                <button 
-                    onClick={handleLoadMore}
-                    disabled={loadingMore}
-                    className="flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-base font-bold rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                    {loadingMore ? (
-                        <>
-                            <Loader2 className="animate-spin" size={20} />
-                            <span>Loading...</span>
-                        </>
-                    ) : (
-                        <>
-                            <span>Load More Jobs</span>
-                            <ArrowRight size={20} />
-                        </>
-                    )}
-                </button>
-            </div>
-          )}
+    <div className="pt-8 pb-0 flex justify-center relative">
+        
+        {/* 🚀 SEO MAGIC: Hidden link for Googlebot */}
+        <Link 
+            href={`${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page + 1).toString()}).toString()}`}
+            className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
+            aria-hidden="true"
+        >
+            Next Page
+        </Link>
+
+        {/* User wala original button */}
+        <button 
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            className="flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-base font-bold rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+            {loadingMore ? (
+                <>
+                    <Loader2 className="animate-spin" size={20} />
+                    <span>Loading...</span>
+                </>
+            ) : (
+                <>
+                    <span>Load More Jobs</span>
+                    <ArrowRight size={20} />
+                </>
+            )}
+        </button>
+    </div>
+)}
           
           <CategorySection />
         </div>

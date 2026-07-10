@@ -101,6 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from('jobs')
     .select('id, title, date_posted')
     .eq('approved', true)
+    .eq('active', true) // 👈 SIRF YE LINE ADD KI HAI
     .order('date_posted', { ascending: false })
     .limit(5000);
 
@@ -109,7 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (jobs) {
     jobRoutes = jobs.map((job) => ({
       url: `${BASE_URL}/jobs/${createSlug(job.title, job.id)}`, 
-      lastModified: getSafeDate(job.date_posted), // 👈 Updated
+      lastModified: getSafeDate(job.date_posted), 
       changeFrequency: 'weekly', 
       priority: 0.8,
     }));

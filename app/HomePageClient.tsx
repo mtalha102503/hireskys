@@ -693,10 +693,10 @@ const COUNTRIES = [
 const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5); 
 // 🚀 DYNAMIC HERO IMAGES SETUP
   const HERO_IMAGES = [
-    "/hero-person-14.png",
-    "/hero-person-8.png",
-    "/hero-person-9.png",
-    "/hero-person-7.png",
+    "/hero-person-14.webp",
+    "/hero-person-8.webp",
+    "/hero-person-9.webp",
+    "/hero-person-7.webp",
   ];
   
   // Default image pehli wali rakhi hai taake server aur client mismatch na ho

@@ -1583,58 +1583,40 @@ return (
 </div>
 
                   {/* 2. MAIN HEADING */}
-<motion.h1
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay: 0.2 }}
-    // 👇 Yahan sirf text-white kar diya hai
-    className="text-5xl md:text-7xl font-black tracking-tighter text-white leading-[1.1]"
->
-    {loggedOutTitle}
-</motion.h1>
+                  <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white leading-[1.1] animate-in fade-in slide-in-from-bottom-4 duration-700">
+                      {loggedOutTitle}
+                  </h1>
 
                   {/* 3. DESCRIPTION */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-base sm:text-lg md:text-xl text-indigo-100 font-medium max-w-2xl leading-relaxed"
-                  >
-                    HireSkys is the elite job radar for Developers, Designers, & Marketers.
-                  </motion.div>
+                  <div className="text-base sm:text-lg md:text-xl text-indigo-100 font-medium max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700">
+                      HireSkys is the elite job radar for Developers, Designers, & Marketers.
+                  </div>
 
                   {/* 4. MAIN SEARCH BAR */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    className="w-full relative z-40 mt-2"
-                  >
-                    <form onSubmit={handleManualSearch} className="flex items-center bg-white p-1.5 md:p-2 rounded-full shadow-2xl border-2 border-transparent focus-within:border-indigo-300 transition-all">
-                        
-                        <div className="pl-4 pr-2 text-slate-400 hidden sm:block">
-                            <Briefcase size={22} />
-                        </div>
+                  <div className="w-full relative z-40 mt-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                      <form onSubmit={handleManualSearch} className="flex items-center bg-white p-1.5 md:p-2 rounded-full shadow-2xl border-2 border-transparent focus-within:border-indigo-300 transition-all">
+                          
+                          <div className="pl-4 pr-2 text-slate-400 hidden sm:block">
+                              <Briefcase size={22} />
+                          </div>
 
-                        <input 
-                            type="text" 
-                            placeholder="Search roles (e.g. React Developer)..." 
-                            className="flex-1 h-12 md:h-14 pl-4 sm:pl-2 pr-2 bg-transparent outline-none text-base md:text-lg text-slate-900 placeholder:text-slate-400 min-w-0"
-                            value={searchQuery}
-                            onChange={(e) => { 
-                                setSearchQuery(e.target.value); 
-                                setForceExact(false); 
-                            }}
-                        />
+                          <input 
+                              type="text" 
+                              placeholder="Search roles (e.g. React Developer)..." 
+                              className="flex-1 h-12 md:h-14 pl-4 sm:pl-2 pr-2 bg-transparent outline-none text-base md:text-lg text-slate-900 placeholder:text-slate-400 min-w-0"
+                              value={searchQuery}
+                              onChange={(e) => { 
+                                  setSearchQuery(e.target.value); 
+                                  setForceExact(false); 
+                              }}
+                          />
 
-                        {/* 🚀 IMPORTANT: Background is Indigo, so button must be a contrasting color like Deep Slate or Pink */}
-                        {/* 🚀 TWEAK: Added dark:bg-indigo-600 and dark:hover:bg-indigo-500 */}
-<button type="submit" className="bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-6 md:px-10 h-12 md:h-14 rounded-full font-bold text-base md:text-lg transition flex items-center gap-2 transform active:scale-95 flex-shrink-0 ml-1">
-    <Search size={18} className="sm:hidden" />
-    <span className="hidden sm:inline">Search</span>
-</button>
-                    </form>
-                  </motion.div>
+                          <button type="submit" className="bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-6 md:px-10 h-12 md:h-14 rounded-full font-bold text-base md:text-lg transition flex items-center gap-2 transform active:scale-95 flex-shrink-0 ml-1">
+                              <Search size={18} className="sm:hidden" />
+                              <span className="hidden sm:inline">Search</span>
+                          </button>
+                      </form>
+                  </div>
 
                 </div>
 

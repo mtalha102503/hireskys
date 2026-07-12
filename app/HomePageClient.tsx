@@ -23,9 +23,6 @@ import dynamic from 'next/dynamic';
 const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
   ssr: false 
 });
-const MoneytizerInFeed = dynamic(() => import('@/components/MoneytizerInFeed'), { 
-  ssr: false 
-});
   // Baqi states wese hi rahengi...
 const JOBS_PER_PAGE = 20;
 
@@ -2382,10 +2379,6 @@ return (
 </div>
                       </div>
                     </div>
-                  )}
-                  {/* 💰 THE MONEYTIZER IN-FEED AD (5th Job ke baad) */}
-                  {index === 3 && (
-                      <MoneytizerInFeed />
                   )}
                 </div>
                 

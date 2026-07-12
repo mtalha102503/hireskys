@@ -139,7 +139,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
 <head>
-  <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
   <Script id="inmobi-choice-cmp" strategy="beforeInteractive">
     {`
       (function() {

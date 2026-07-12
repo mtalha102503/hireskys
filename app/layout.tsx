@@ -57,9 +57,6 @@ export const metadata: Metadata = {
   authors: [{ name: "HireSkys Team", url: "https://www.hireskys.com" }],
   creator: "HireSkys Inc.",
   publisher: "HireSkys Inc.",
-other: {
-    "google-adsense-account": "ca-pub-7375069227835841"
-  },
   // Social Sharing (Open Graph)
   openGraph: {
     type: "website",
@@ -316,12 +313,6 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Script
-  async
-  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7375069227835841"
-  crossOrigin="anonymous"
-  strategy="afterInteractive"
-/>
         <NextTopLoader 
           color="#6366f1"
           initialPosition={0.08}

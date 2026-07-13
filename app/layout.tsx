@@ -9,7 +9,6 @@ import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
-import MoneytizerStickyFooter from '@/components/MoneytizerStickyFooter';
 // 🌟 FONT OPTIMIZATION
 const jost = Jost({ subsets: ["latin"] });
 
@@ -331,8 +330,6 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
-            {/* 💰 TEMPORARY STICKY FOOTER FOR RAMP-UP APPROVAL */}
-            <MoneytizerStickyFooter />
           </div>
           <ConsentBanner />
           <ConditionalChat />

@@ -59,7 +59,7 @@ const getSmartLocationUI = (locationString: string) => {
     
     parsedData.forEach(item => {
         const cKey = item.country.toUpperCase();
-        const countryData = COUNTRY_MAP[cKey] || { code: null, flag: "🌍", name: item.country };
+const countryData = countryMap[cKey] || { code: null, flag: "🌍", name: item.country };
         
         const displayName = item.cities.length > 0 ? item.cities[0] : countryData.name;
         
@@ -1274,7 +1274,7 @@ const handleApply = async () => {
                 const filteredJobSkills = rawJobSkills.filter((tag: string) => {
                     const upperTag = tag.trim().toUpperCase();
                     if (upperTag === "IT") return true; 
-                    const isCountry = !!COUNTRY_MAP[upperTag];
+                    const isCountry = !!countryMap[upperTag];
                     const isGenericWord = ["GLOBAL", "WORLDWIDE", "ANYWHERE", "REMOTE"].includes(upperTag);
                     return !isCountry && !isGenericWord; 
                 });

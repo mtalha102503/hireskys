@@ -78,7 +78,11 @@ const remoteLocations = [
   { name: "Ukraine", path: "/ukraine/all" },
   { name: "South Africa", path: "/south-africa/all" },
   { name: "Argentina", path: "/argentina/all" },
-  { name: "Mexico", path: "/mexico/all" }
+  { name: "Mexico", path: "/mexico/all" },
+  { name: "France", path: "/france/all" },
+  { name: "Serbia", path: "/serbia/all" },
+  { name: "Ireland", path: "/ireland/all" },
+  { name: "Colombia", path: "/colombia/all" }
 ];
 
 export default function Footer() {

@@ -119,28 +119,37 @@ const getSmartLocationUI = (locationString: string) => {
  
 export default function Home({
     seoCategory,
-    seoLocation
+    seoLocation,
+    serverJobs = [],     // 👈 Server se aane wala data
+    serverCount = 0,     // 👈 Server se aane wala count
+    serverPage = 0       // 👈 Server se aane wala page number
 }: {
     seoCategory?: string;
     seoLocation?: string;
+    serverJobs?: any[];   // 👈 TypeScript ko bataya ke ye array hai
+    serverCount?: number; // 👈 TypeScript ko bataya ke ye number hai
+    serverPage?: number;  // 👈 TypeScript ko bataya ke ye number hai
 } = {}) {
   const router = useRouter();
   const searchParams = useSearchParams(); 
-  const pathname = usePathname();        
-
+  const pathname = usePathname();       
 
   const [showJobTypeDropdown, setShowJobTypeDropdown] = useState(false);
   const [forceExact, setForceExact] = useState(false);
   const [suggestedTerm, setSuggestedTerm] = useState('');
   const [showDateDropdown, setShowDateDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const [jobs, setJobs] = useState<Job[]>([]);
+
+  // 🚀 👇 YAHAN MAGIC HAI: State ko seedha server ke data se initialize kiya
+  const [jobs, setJobs] = useState<Job[]>(serverJobs);
+  const [totalCount, setTotalCount] = useState(serverCount); 
+  const [page, setPage] = useState(serverPage);
+  
   const [featuredJobs, setFeaturedJobs] = useState<Job[] & { matchScore?: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
-  const [totalCount, setTotalCount] = useState(0); 
   const [countrySearch, setCountrySearch] = useState("");
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [searchType, setSearchType] = useState<'jobs' | 'talent'>('jobs');
@@ -153,7 +162,6 @@ export default function Home({
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const sortDropdownRef = useRef(null);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
   const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
   const [filterJobType, setFilterJobType] = useState(searchParams.get('type') || ''); 
   const [filterDate, setFilterDate] = useState('');
@@ -379,9 +387,6 @@ useEffect(() => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
   useEffect(() => {
     // 🧠 Profile Fetcher: Smart Redirect ke sath
     const fetchProfile = async (userId: string, retryCount = 0) => {
@@ -615,16 +620,20 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
       }
   };
 // 🚀 THE URL MAGIC FUNCTION
+  // 🚀 THE URL MAGIC FUNCTION
   const updateURLParams = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     
     if (value && value !== 'All') {
-      params.set(key, value); // Agar value hai to URL mein daalo
+      params.set(key, value); 
     } else {
-      params.delete(key); // Agar khali hai ya 'All' hai to URL se hata do
+      params.delete(key); 
     }
     
-    // Bina page refresh kiye URL change karo
+    // 👇 YEH NAYI LINE ADD KAREIN: 
+    // Jab bhi koi naya filter lage, page ko reset kar ke 0 par le aao
+    params.delete('page'); 
+    
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
  const handleManualSearch = (e: React.FormEvent) => {
@@ -959,27 +968,13 @@ const isExactMatch = topJob.title?.toLowerCase().includes(sq) ||
     setLoadingMore(false);
   }
 
-const handlePageChange = async (newPage) => {
-      setPage(newPage);
-      
-      // 🚀 IMPORTANT: Yahan 'true' pass kar rahe hain taake purana data clear ho aur naya data replace ho
-      await fetchJobs(newPage, true);
-
+const handleScrollToTop = () => {
       // Fauran page ko wapis "Jobs" list ke shuru mein scroll kar do
       const jobsSection = document.getElementById("jobs");
       if (jobsSection) {
           const y = jobsSection.getBoundingClientRect().top + window.scrollY - 100;
           window.scrollTo({ top: y, behavior: 'smooth' });
       }
-
-      // Silently URL update karo taake agar user URL copy kare toh exact page number copy ho
-      const params = new URLSearchParams(window.location.search);
-      if (newPage > 0) {
-          params.set('page', newPage.toString());
-      } else {
-          params.delete('page');
-      }
-      window.history.pushState({}, '', `${pathname}?${params.toString()}`);
   };
 // --- 📊 ONBOARDING PROGRESS LOGIC ---
 const calculateProgress = () => {
@@ -2405,6 +2400,7 @@ return (
         )}
           
 {/* 🔗 SEO Friendly Pagination Links */}
+          {/* 🔗 SEO Friendly Pagination Links */}
           {!loading && jobs.length > 0 && (
             <div className="pt-12 pb-4 flex justify-center items-center gap-3 sm:gap-4 relative z-20">
               
@@ -2413,9 +2409,8 @@ return (
                 <Link 
                   href={`${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page - 1).toString()}).toString()}`}
                   scroll={false}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(page - 1);
+                  onClick={() => {
+                    handleScrollToTop(); // 👈 Sirf scroll karega, data fetch nahi karega
                   }}
                   className="px-5 py-2.5 sm:px-6 sm:py-3 bg-white dark:bg-[#151b2d] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-bold shadow-sm flex items-center gap-2"
                 >
@@ -2441,9 +2436,8 @@ return (
                 <Link 
                   href={`${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page + 1).toString()}).toString()}`}
                   scroll={false}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(page + 1);
+                  onClick={() => {
+                    handleScrollToTop(); // 👈 Sirf scroll karega
                   }}
                   className="px-5 py-2.5 sm:px-6 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 font-bold flex items-center gap-2"
                 >

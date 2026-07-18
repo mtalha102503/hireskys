@@ -959,20 +959,27 @@ const isExactMatch = topJob.title?.toLowerCase().includes(sq) ||
     setLoadingMore(false);
   }
 
-  const handleLoadMore = () => {
-      const nextPage = page + 1;
-      setPage(nextPage);
+const handlePageChange = async (newPage) => {
+      setPage(newPage);
       
-      // Data load karna shuru karo
-      fetchJobs(nextPage, false);
+      // 🚀 IMPORTANT: Yahan 'true' pass kar rahe hain taake purana data clear ho aur naya data replace ho
+      await fetchJobs(newPage, true);
 
       // Fauran page ko wapis "Jobs" list ke shuru mein scroll kar do
       const jobsSection = document.getElementById("jobs");
       if (jobsSection) {
-          // -100 offset diya hai taake navbar card ko chupaa na le
           const y = jobsSection.getBoundingClientRect().top + window.scrollY - 100;
           window.scrollTo({ top: y, behavior: 'smooth' });
       }
+
+      // Silently URL update karo taake agar user URL copy kare toh exact page number copy ho
+      const params = new URLSearchParams(window.location.search);
+      if (newPage > 0) {
+          params.set('page', newPage.toString());
+      } else {
+          params.delete('page');
+      }
+      window.history.pushState({}, '', `${pathname}?${params.toString()}`);
   };
 // --- 📊 ONBOARDING PROGRESS LOGIC ---
 const calculateProgress = () => {
@@ -2397,40 +2404,61 @@ return (
           })
         )}
           
-         {hasMore && !loading && jobs.length > 0 && (
-    <div className="pt-8 pb-0 flex justify-center relative">
-        <Link 
-            href={`${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page + 1).toString()}).toString()}`}
-            scroll={false}
-            onClick={(e) => {
-                // 1. Next.js ki default navigation ko roko taake page refresh/change na ho
-                e.preventDefault(); 
-                
-                // 2. Apna Load More wala function call karo (ye data ko append karega)
-                handleLoadMore(); 
+{/* 🔗 SEO Friendly Pagination Links */}
+          {!loading && jobs.length > 0 && (
+            <div className="pt-12 pb-4 flex justify-center items-center gap-3 sm:gap-4 relative z-20">
+              
+              {/* PREVIOUS BUTTON */}
+              {page > 0 ? (
+                <Link 
+                  href={`${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page - 1).toString()}).toString()}`}
+                  scroll={false}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(page - 1);
+                  }}
+                  className="px-5 py-2.5 sm:px-6 sm:py-3 bg-white dark:bg-[#151b2d] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-bold shadow-sm flex items-center gap-2"
+                >
+                  <ArrowRight size={18} className="rotate-180" />
+                  <span className="hidden sm:inline">Previous</span>
+                </Link>
+              ) : (
+                <button disabled className="px-5 py-2.5 sm:px-6 sm:py-3 bg-slate-50 dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 rounded-xl font-bold cursor-not-allowed flex items-center gap-2">
+                  <ArrowRight size={18} className="rotate-180" />
+                  <span className="hidden sm:inline">Previous</span>
+                </button>
+              )}
 
-                // 3. Silently URL update karo taake agar user URL copy kare toh next page ka url copy ho
-                const nextUrl = `${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page + 1).toString()}).toString()}`;
-                window.history.pushState({}, '', nextUrl);
-            }}
-            className={`flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-base font-bold rounded-full transition-all shadow-md hover:shadow-lg ${
-                loadingMore ? 'opacity-70 cursor-not-allowed pointer-events-none' : ''
-            }`}
-        >
-            {loadingMore ? (
-                <>
-                    <Loader2 className="animate-spin" size={20} />
-                    <span>Loading...</span>
-                </>
-            ) : (
-                <>
-                    <span>Load More Jobs</span>
-                    <ArrowRight size={20} />
-                </>
-            )}
-        </Link>
-    </div>
-)}
+              {/* PAGE INDICATOR */}
+              <div className="px-4 py-2.5 bg-slate-50 dark:bg-[#151b2d] border border-slate-200 dark:border-slate-800 rounded-xl">
+                <span className="text-slate-600 dark:text-slate-400 font-bold text-sm">
+                  Page {page + 1} <span className="font-medium mx-1">of</span> {Math.ceil(totalCount / JOBS_PER_PAGE) > 0 ? Math.ceil(totalCount / JOBS_PER_PAGE) : '...'}
+                </span>
+              </div>
+
+              {/* NEXT BUTTON */}
+              {hasMore ? (
+                <Link 
+                  href={`${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page + 1).toString()}).toString()}`}
+                  scroll={false}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(page + 1);
+                  }}
+                  className="px-5 py-2.5 sm:px-6 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 font-bold flex items-center gap-2"
+                >
+                  <span className="hidden sm:inline">Next</span>
+                  <ArrowRight size={18} />
+                </Link>
+              ) : (
+                <button disabled className="px-5 py-2.5 sm:px-6 sm:py-3 bg-slate-50 dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 rounded-xl font-bold cursor-not-allowed flex items-center gap-2">
+                  <span className="hidden sm:inline">Next</span>
+                  <ArrowRight size={18} />
+                </button>
+              )}
+
+            </div>
+          )}
           
           <CategorySection />
         </div>

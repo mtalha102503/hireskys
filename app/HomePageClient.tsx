@@ -959,10 +959,24 @@ const isExactMatch = topJob.title?.toLowerCase().includes(sq) ||
     setLoadingMore(false);
   }
 
-  const handleLoadMore = () => {
+  const handleLoadMore = async () => {
       const nextPage = page + 1;
+      const currentJobsCount = jobs.length; // Record karo ke naye cards kahan se shuru honge
+      
       setPage(nextPage);
-      fetchJobs(nextPage, false);
+      
+      // Data fetch hone ka wait karo
+      await fetchJobs(nextPage, false);
+
+      // React ko UI render karne ke liye thora time do, phir smooth scroll karo
+      setTimeout(() => {
+          const firstNewCard = document.getElementById(`job-card-${currentJobsCount}`);
+          if (firstNewCard) {
+              // 120px minus kar rahe hain taake upar wala navbar card ko cover na kar le
+              const y = firstNewCard.getBoundingClientRect().top + window.scrollY - 120;
+              window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+      }, 300);
   };
 // --- 📊 ONBOARDING PROGRESS LOGIC ---
 const calculateProgress = () => {
@@ -2208,7 +2222,7 @@ return (
                 )}
 
                 {/* 💼 TUMHARA ORIGINAL ORGANIC JOB CARD */}
-                <div className="flex flex-col gap-4">
+                <div id={`job-card-${index}`} className="flex flex-col gap-4">
                   <div 
                     className={`group relative flex flex-col bg-white dark:bg-[#111625] border md:rounded-3xl p-4 md:p-6 transition-all duration-300 hover:-translate-y-1 ${
                       isFeatured ? 'border-2 shadow-lg rounded-2xl' : 'border-slate-200 dark:border-slate-800 rounded-2xl hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-500/10'

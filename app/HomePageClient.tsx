@@ -2387,23 +2387,25 @@ return (
           })
         )}
           
-          {hasMore && !loading && jobs.length > 0 && (
+         {hasMore && !loading && jobs.length > 0 && (
     <div className="pt-8 pb-0 flex justify-center relative">
-        
-        {/* 🚀 SEO MAGIC: Hidden link for Googlebot */}
         <Link 
             href={`${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page + 1).toString()}).toString()}`}
-            className="absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden"
-            aria-hidden="true"
-        >
-            Next Page
-        </Link>
+            scroll={false}
+            onClick={(e) => {
+                // 1. Next.js ki default navigation ko roko taake page refresh/change na ho
+                e.preventDefault(); 
+                
+                // 2. Apna Load More wala function call karo (ye data ko append karega)
+                handleLoadMore(); 
 
-        {/* User wala original button */}
-        <button 
-            onClick={handleLoadMore}
-            disabled={loadingMore}
-            className="flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-base font-bold rounded-full transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                // 3. Silently URL update karo taake agar user URL copy kare toh next page ka url copy ho
+                const nextUrl = `${pathname}?${new URLSearchParams({...Object.fromEntries(searchParams.entries()), page: (page + 1).toString()}).toString()}`;
+                window.history.pushState({}, '', nextUrl);
+            }}
+            className={`flex items-center gap-2 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-base font-bold rounded-full transition-all shadow-md hover:shadow-lg ${
+                loadingMore ? 'opacity-70 cursor-not-allowed pointer-events-none' : ''
+            }`}
         >
             {loadingMore ? (
                 <>
@@ -2416,7 +2418,7 @@ return (
                     <ArrowRight size={20} />
                 </>
             )}
-        </button>
+        </Link>
     </div>
 )}
           

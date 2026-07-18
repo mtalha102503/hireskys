@@ -213,7 +213,7 @@ export default function HowItWorks() {
                       Stop wasting your energy on closed positions. Browse today's manually verified, premium global roles completely free.
                   </p>
                   <div className="pt-4">
-                      <Link href="/jobs" className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-white text-indigo-600 font-extrabold rounded-xl shadow-xl hover:bg-slate-50 transition transform hover:-translate-y-1 w-full sm:w-auto">
+                      <Link href="/" className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-white text-indigo-600 font-extrabold rounded-xl shadow-xl hover:bg-slate-50 transition transform hover:-translate-y-1 w-full sm:w-auto">
                           Browse Today's Jobs <ArrowRight size={20}/>
                       </Link>
                   </div>

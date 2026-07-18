@@ -2,8 +2,10 @@
 import { Metadata } from 'next';
 import HomePageClient from './HomePageClient'; 
 import { Suspense } from 'react';
+import { supabase } from '@/lib/supabaseClient'; 
+
 export const revalidate = 86400;
-export const dynamic = 'force-static';
+
 // Next.js 15 Strict Types
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -11,7 +13,7 @@ type Props = {
 
 // 🚀 DYNAMIC SEO GENERATOR
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const resolvedParams = await searchParams || {}; // Added fallback for searchParams
+  const resolvedParams = await searchParams || {}; 
 
   const categoryRaw = typeof resolvedParams?.category === 'string' && resolvedParams.category !== 'All' ? resolvedParams.category : '';
   const locationRaw = typeof resolvedParams?.location === 'string' ? resolvedParams.location : '';
@@ -84,8 +86,35 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   };
 }
 
-// Main Page Component
-export default function Page() {
+// 🚀 ASYNC MAIN PAGE COMPONENT (SERVER-SIDE FETCHING)
+export default async function Page({ searchParams }: Props) {
+  const resolvedParams = await searchParams || {};
+  
+  // 1. URL se page nikal lo (Default 0 rakho)
+  const pageParam = typeof resolvedParams?.page === 'string' ? parseInt(resolvedParams.page, 10) : 0;
+  const LIMIT = 20;
+  const from = pageParam * LIMIT;
+  const to = from + LIMIT - 1;
+
+  // 2. 🚀 SERVER SIDE QUERY: Googlebot ko seedha render ho kar data milega
+  let query = supabase
+    .from('jobs')
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count', { count: 'exact' })
+    .eq('approved', true)
+    .eq('active', true)
+    .order('featured_until', { ascending: false, nullsFirst: false }) 
+    .order('date_posted', { ascending: false })
+    .range(from, to);
+
+  // Agar URL mein Category hai, toh server par hi filter kar lo
+  const categoryRaw = typeof resolvedParams?.category === 'string' && resolvedParams.category !== 'All' ? resolvedParams.category : '';
+  if (categoryRaw) {
+      query = query.ilike('category', `%${categoryRaw}%`);
+  }
+
+  // Data Fetch karo
+  const { data: initialJobs, count } = await query;
+
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -111,7 +140,12 @@ export default function Page() {
       />
       
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>}>
-        <HomePageClient />
+        {/* 3. 🚀 PASS DATA TO CLIENT COMPONENT */}
+        <HomePageClient 
+            serverJobs={initialJobs || []} 
+            serverCount={count || 0} 
+            serverPage={pageParam} 
+        />
       </Suspense>
     </>
   );

@@ -959,24 +959,20 @@ const isExactMatch = topJob.title?.toLowerCase().includes(sq) ||
     setLoadingMore(false);
   }
 
-  const handleLoadMore = async () => {
+  const handleLoadMore = () => {
       const nextPage = page + 1;
-      const currentJobsCount = jobs.length; // Record karo ke naye cards kahan se shuru honge
-      
       setPage(nextPage);
       
-      // Data fetch hone ka wait karo
-      await fetchJobs(nextPage, false);
+      // Data load karna shuru karo
+      fetchJobs(nextPage, false);
 
-      // React ko UI render karne ke liye thora time do, phir smooth scroll karo
-      setTimeout(() => {
-          const firstNewCard = document.getElementById(`job-card-${currentJobsCount}`);
-          if (firstNewCard) {
-              // 120px minus kar rahe hain taake upar wala navbar card ko cover na kar le
-              const y = firstNewCard.getBoundingClientRect().top + window.scrollY - 120;
-              window.scrollTo({ top: y, behavior: 'smooth' });
-          }
-      }, 300);
+      // Fauran page ko wapis "Jobs" list ke shuru mein scroll kar do
+      const jobsSection = document.getElementById("jobs");
+      if (jobsSection) {
+          // -100 offset diya hai taake navbar card ko chupaa na le
+          const y = jobsSection.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+      }
   };
 // --- 📊 ONBOARDING PROGRESS LOGIC ---
 const calculateProgress = () => {

@@ -63,26 +63,26 @@ const trendingSearches = [
 ];
 // Location Data Array for cleaner code
 const remoteLocations = [
-  { name: "United States", path: "/united-states/all" },
-  { name: "United Kingdom", path: "/united-kingdom/all" },
-  { name: "Canada", path: "/canada/all" },
-  { name: "Singapore", path: "/singapore/all" },
-  { name: "Germany", path: "/germany/all" },
-  { name: "Spain", path: "/spain/all" },
-  { name: "Portugal", path: "/portugal/all" },
-  { name: "Poland", path: "/poland/all" },
-  { name: "India", path: "/india/all" },
-  { name: "Pakistan", path: "/pakistan/all" },
-  { name: "Philippines", path: "/philippines/all" },
-  { name: "Brazil", path: "/brazil/all" },
-  { name: "Ukraine", path: "/ukraine/all" },
-  { name: "South Africa", path: "/south-africa/all" },
-  { name: "Argentina", path: "/argentina/all" },
-  { name: "Mexico", path: "/mexico/all" },
-  { name: "France", path: "/france/all" },
-  { name: "Serbia", path: "/serbia/all" },
-  { name: "Ireland", path: "/ireland/all" },
-  { name: "Colombia", path: "/colombia/all" }
+  { name: "United States", path: "united-states/all" },
+  { name: "United Kingdom", path: "united-kingdom/all" },
+  { name: "Canada", path: "canada/all" },
+  { name: "Singapore", path: "singapore/all" },
+  { name: "Germany", path: "germany/all" },
+  { name: "Spain", path: "spain/all" },
+  { name: "Portugal", path: "portugal/all" },
+  { name: "Poland", path: "poland/all" },
+  { name: "India", path: "india/all" },
+  { name: "Pakistan", path: "pakistan/all" },
+  { name: "Philippines", path: "philippines/all" },
+  { name: "Brazil", path: "brazil/all" },
+  { name: "Ukraine", path: "ukraine/all" },
+  { name: "South Africa", path: "south-africa/all" },
+  { name: "Argentina", path: "argentina/all" },
+  { name: "Mexico", path: "mexico/all" },
+  { name: "France", path: "france/all" },
+  { name: "Serbia", path: "serbia/all" },
+  { name: "Ireland", path: "ireland/all" },
+  { name: "Colombia", path: "colombia/all" }
 ];
 
 export default function Footer() {

@@ -53,9 +53,12 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
 
   // 👇 PAGE NUMBER KO TITLE MEIN ADD KARO (agar page > 0)
-  if (pageRaw > 0) {
-      dynamicTitle = `${dynamicTitle.replace(' | HireSkys', '')} - Page ${pageRaw + 1} | HireSkys`;
-  }
+if (pageRaw > 0) {
+    const baseTitle = (category || location || tag || query) 
+        ? `${titleParts.join(' ')}` 
+        : 'HireSkys Remote Jobs';   // 👈 clean fallback for homepage pagination
+    dynamicTitle = `${baseTitle} - Page ${pageRaw + 1} | HireSkys`;
+}
 
   // Canonical URL Builder
   const currentParams = new URLSearchParams();

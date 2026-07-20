@@ -19,8 +19,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const locationRaw = typeof resolvedParams?.location === 'string' ? resolvedParams.location : '';
   const tagRaw = typeof resolvedParams?.tag === 'string' ? resolvedParams.tag : '';
   const qRaw = typeof resolvedParams?.q === 'string' ? resolvedParams.q : ''; 
+  
+  // 👇 YEH NAYA ADD KARO
+  const pageRaw = typeof resolvedParams?.page === 'string' ? parseInt(resolvedParams.page, 10) : 0;
 
-  // 🚀 THE FIX: Bulletproof string formatting
   const category = String(categoryRaw || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); 
   const location = String(locationRaw || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   const tag = String(tagRaw || '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -31,7 +33,6 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   
   const titleParts = ['Remote'];
   
-  // 🏆 Smart Title Priority: Query > Tag > Category
   if (query) {
       titleParts.push(query);
   } else if (tag) {
@@ -51,18 +52,26 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       dynamicDesc = `Looking for ${titleParts.join(' ').toLowerCase()}? Browse the best verified 100% remote opportunities on HireSkys. Apply today!`;
   }
 
-  // Canonical URL Builder (Exclude 'q' for better SEO)
+  // 👇 PAGE NUMBER KO TITLE MEIN ADD KARO (agar page > 0)
+  if (pageRaw > 0) {
+      dynamicTitle = `${dynamicTitle.replace(' | HireSkys', '')} - Page ${pageRaw + 1} | HireSkys`;
+  }
+
+  // Canonical URL Builder
   const currentParams = new URLSearchParams();
   if (categoryRaw) currentParams.set('category', categoryRaw);
   if (locationRaw) currentParams.set('location', locationRaw);
   if (tagRaw) currentParams.set('tag', tagRaw);
   
+  // 👇 PAGE KO CANONICAL MEIN BHI ADD KARO (sirf jab 0 se zyada ho)
+  if (pageRaw > 0) currentParams.set('page', String(pageRaw));
+  
   const queryString = currentParams.toString() ? `?${currentParams.toString()}` : '';
   const canonicalUrl = `https://www.hireskys.com${queryString}`;
 
-  // 🚀 THE SEO MASTERSTROKE (Phase 2 pSEO Transition)
+  // 🚀 ROBOTS LOGIC — YEH ASLI FIX HAI
   const isCleanHomepage = !categoryRaw && !locationRaw && !tagRaw && !query;
-  const shouldIndex = isCleanHomepage; 
+  const shouldIndex = isCleanHomepage && pageRaw === 0;  // 👈 pageRaw === 0 condition add ki
 
   return {
     title: dynamicTitle,

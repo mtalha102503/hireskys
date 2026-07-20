@@ -24,7 +24,7 @@ const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegaba
   ssr: false 
 });
   // Baqi states wese hi rahengi...
-const JOBS_PER_PAGE = 20;
+const JOBS_PER_PAGE = 30;
 
 // --- PLATFORM ICONS ---
 const getPlatformIcon = (platform: string) => {

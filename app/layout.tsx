@@ -122,10 +122,10 @@ export default function RootLayout({
     "@type": "Organization",
     "name": "HireSkys",
     "url": "https://www.hireskys.com",
-    "logo": "https://www.hireskys.com/logo.png",
+    "logo": "https://www.hireskys.com/logo1.png",
     "sameAs": [
       "https://twitter.com/hireskys",
-      "https://linkedin.com/company/hireskys",
+      "https://www.linkedin.com/in/muhammad-talha-9a35a53a8",
       "https://instagram.com/hireskys"
     ],
     "contactPoint": {

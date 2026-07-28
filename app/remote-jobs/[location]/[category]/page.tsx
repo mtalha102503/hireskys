@@ -51,7 +51,7 @@ export async function generateMetadata(
     const finalRoleTitle = isTag ? actualTagName : (isMainCategory ? actualCategoryName : 'Remote');
 
     // 🎨 VIP Title Generator
-    const pageTitle = `${finalRoleTitle} Jobs ${isWorldwide ? 'Worldwide' : `in ${displayLocation}`} | HireSkys`;
+    const pageTitle = `${finalRoleTitle} Jobs ${isWorldwide ? 'Worldwide' : `in ${displayLocation}`}`;
     const pageDescription = `Find the best high-paying remote and work-from-home ${finalRoleTitle} jobs hiring ${isWorldwide ? 'worldwide' : `in ${displayLocation}`}. Apply today on HireSkys.`;
     
     // 🔗 URLs

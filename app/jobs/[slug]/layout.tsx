@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!job) {
     return {
-      title: "Job Not Found | HireSkys",
+      title: "Job Not Found",
       description: "This job post is no longer available.",
       robots: { index: false, follow: false }
     };
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const seoUrl = `https://www.hireskys.com/jobs/${correctSlug}`;
   
   // ✨ FIX: Ab page title aur description mein exact name use hoga
-  const pageTitle = `${job.title} ${exactCompanyName !== "Confidential" ? `at ${exactCompanyName}` : ''} | HireSkys`;
+  const pageTitle = `${job.title} ${exactCompanyName !== "Confidential" ? `at ${exactCompanyName}` : ''}`;
   const summary = `Hiring: ${job.title} at ${exactCompanyName}. Category: ${job.category}. ${job.location === 'Remote' ? '🌍 Remote Work' : `📍 ${job.location}`}. Salary: ${job.salary_range || 'Competitive'}. Apply securely via HireSkys.`;
   const jobImage = "https://www.hireskys.com/og-job-card.png"; // Future dynamic image
 

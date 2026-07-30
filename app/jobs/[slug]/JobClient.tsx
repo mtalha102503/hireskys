@@ -450,7 +450,7 @@ const getCompanySlug = (name: string) => {
 
     if (jobId) {
         // 👇 Ab ID se search karo
-        const { data } = await supabase.from('jobs').select('*').eq('id', jobId).single();
+        const data = initialJob;
         
         // 🔒 SECURITY CHECK: Agar job Approved nahi hai, to load mat karo
         if (data && data.approved === false) {
@@ -480,16 +480,7 @@ if (companyNameForSearch) {
     if (companyInfo) {
         setCompanyDetails(companyInfo);
         
-        // 1. Same Company Jobs
-        const { data: cJobs } = await supabase
-            .from('jobs')
-            .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-            .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
-            .neq('id', data.id) 
-            .eq('approved', true)
-            .order('date_posted', { ascending: false })
-            .limit(4);
-        if (cJobs) setCompanyJobs(cJobs);
+        
 
         // 🚀 2. THE NEW SMART INDUSTRY ENGINE (90% Coverage & Variety)
         let finalCompanies: any[] = [];
@@ -507,7 +498,7 @@ if (companyNameForSearch) {
                     .or(orQuery)
                     .neq('slug', companyInfo.slug)
                     // .eq('verified', true) // 👈 WARNING: Agar verified companies kam hain, to isko comment kardo
-                    .limit(50); // 👈 FIX: 4 ki jagah 50 lao taake pool bada ho
+                    .limit(12); // 👈 FIX: 50 se ghata kar 12 kiya, 4 dikhane ke liye itna kaafi hai
                     
                 if (indData && indData.length > 0) {
                     // 👈 FIX: Un 50 ko frontend pe shuffle karo aur pehli 4 uthao
@@ -528,7 +519,7 @@ if (companyNameForSearch) {
                 .select('slug, name, logo_url, industry, location, company_size, verified')
                 // .eq('verified', true) // 👈 WARNING: Same yahan, agar randomness kam hai to ise hata do
                 .not('slug', 'in', `(${excludeSlugs.join(',')})`)
-                .limit(100); 
+                .limit(20);
 
             if (randomData && randomData.length > 0) {
                 // Ab yeh 100 records mein se randomly choose karega

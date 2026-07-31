@@ -20,6 +20,35 @@ import { User } from '@supabase/supabase-js';
 import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
+// 👇 File ke bilkul top pe, imports ke neeche add karo
+const safeStorage = {
+  get: <T,>(key: string, defaultValue: T): T => {
+    if (typeof window === 'undefined') return defaultValue;
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (e) {
+      console.warn(`Storage read error for ${key}:`, e);
+      return defaultValue;
+    }
+  },
+  set: (key: string, value: unknown): void => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+      console.warn(`Storage write error for ${key}:`, e);
+    }
+  },
+  remove: (key: string): void => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.warn(`Storage remove error for ${key}:`, e);
+    }
+  }
+};
 const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
   ssr: false 
 });
@@ -177,6 +206,7 @@ export default function Home({
   // 🏢 COMPANY LOGOS STATE
   const [companyLogos, setCompanyLogos] = useState<Record<string, string>>({});
 // 🟢 NAYA: Seen aur Applied Jobs ke states
+const pageParam = searchParams.get('page') || '0';
   const [seenJobs, setSeenJobs] = useState<number[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
 // 🧠 SMART UX: Categories ka state yaad rakhne ke liye
@@ -342,33 +372,9 @@ useEffect(() => {
   }, [searchParams, seoCategory, seoLocation]);
 
   useEffect(() => {
-    const storedSeen = JSON.parse(localStorage.getItem('seenJobs') || '[]');
-    const storedApplied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
-    setSeenJobs(storedSeen);
-    setAppliedJobs(storedApplied);
-  }, []);
-  useEffect(() => {
-    const fetchCompanies = async () => {
-    const { data } = await supabase
-        .from('companies') 
-        .select('name, logo_url')
-        .not('logo_url', 'is', null) // Jinka logo hai sirf wahi lao
-        .limit(200); // 👈 MAXIMUM LIMIT LAGA DI
-        
-        if (data) {
-            const logoMap: Record<string, string> = {};
-            data.forEach((company: any) => {
-                if (company.name && company.logo_url) {
-                    // String ko lower case aur clean karo (For Backup Fallback)
-                    const cleanName = company.name.trim().toLowerCase();
-                    logoMap[cleanName] = company.logo_url;
-                }
-            });
-            setCompanyLogos(logoMap);
-        }
-    };
-    fetchCompanies();
-  }, []);
+    setSeenJobs(safeStorage.get<number[]>('seenJobs', []));
+    setAppliedJobs(safeStorage.get<number[]>('appliedJobs', []));
+}, []);
 
   useEffect(() => {
     function handleClickOutside(event: any) {
@@ -460,33 +466,37 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
-    const channel = supabase
-      .channel('realtime-jobs-count')
-      
-      // 1. Agar nayi job aayi (INSERT) -> Count +1
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'jobs' },
-        (payload) => {
-          const newJob = payload.new;
-          const oldJob = payload.old; // Ab purana data bhi milega
-
-          // ✅ PERFECT LOGIC:
-          // Sirf tab count kam karo jab job PEHLE Active thi aur AB Inactive hui hai.
-          if (oldJob.active === true && newJob.active === false) {
-            setTotalCount((prevCount) => Math.max(0, prevCount - 1)); 
-            
-            // Job list se bhi hata do (Smooth animation ke liye)
-            setJobs((prevJobs) => prevJobs.filter((job) => job.id !== newJob.id));
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  const fetchDailyCount = async () => {
+    const CACHE_KEY = 'hs_jobs_count';
+    const CACHE_TIME_KEY = 'hs_jobs_count_time';
+    const ONE_DAY = 24 * 60 * 60 * 1000; // 24 hours in ms
+    
+    const cachedCount = localStorage.getItem(CACHE_KEY);
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+    const now = Date.now();
+    
+    // Agar aaj already fetch ho chuka hai, toh bas cached count use karo
+    if (cachedCount && cachedTime && (now - parseInt(cachedTime)) < ONE_DAY) {
+      setTotalCount(parseInt(cachedCount));
+      return;
+    }
+    
+    // Nahi toh Supabase se fresh count lao
+    const { count, error } = await supabase
+      .from('jobs')
+      .select('*', { count: 'exact', head: true })
+      .eq('active', true)
+      .eq('approved', true);
+    
+    if (count !== null && !error) {
+      setTotalCount(count);
+      localStorage.setItem(CACHE_KEY, count.toString());
+      localStorage.setItem(CACHE_TIME_KEY, now.toString());
+    }
+  };
+  
+  fetchDailyCount();
+}, []); // 👈 Empty dependency = sirf 1 baar jab component mount hoga
     
   useEffect(() => {
     if (currentUser) {
@@ -526,16 +536,16 @@ useEffect(() => {
 
   // Apne pehle useEffect mein ye update kardo
 useEffect(() => {
-    if (searchType === 'jobs') {
-        const timer = setTimeout(() => {
-            // URL se page number uthao (agar hai), warna 0 rakho
-            const urlPage = parseInt(searchParams.get('page') || '0', 10);
-            setPage(urlPage);         
-            fetchJobs(urlPage, true); 
-        }, 500);
-        return () => clearTimeout(timer);
-    }
-}, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry, sortOrder, searchParams]);
+    if (searchType !== 'jobs') return;
+    
+    const timer = setTimeout(() => {
+        const urlPage = parseInt(pageParam, 10);
+        setPage(urlPage);         
+        fetchJobs(urlPage, true); 
+    }, 500);
+    
+    return () => clearTimeout(timer);
+}, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry, sortOrder, pageParam]);
 
 
   // 2. 🚀 THE SMART TYPING SYNC (Yeh sirf tab chalega jab tum text likhoge)
@@ -704,11 +714,13 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
 
       // 📥 FETCH JOBS (Isme description bhi mangwa li taake skills usme dhoond sakein)
       const { data: recentJobs } = await supabase
-          .from('jobs')
-          .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, description')
-          .gte('date_posted', twoDaysAgo.toISOString())
-          .eq('active', true)
-          .eq('approved', true);
+    .from('jobs')
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, description')
+    .gte('date_posted', twoDaysAgo.toISOString())
+    .eq('active', true)
+    .eq('approved', true)
+    .order('date_posted', { ascending: false })
+    .limit(50); // 👈 Bas 50 latest jobs check karo
 
       if (!recentJobs || recentJobs.length === 0) {
           setFeaturedJobs([]);
@@ -2253,7 +2265,6 @@ return (
     width={20} 
     height={15} 
     className="w-4 md:w-5 h-auto object-cover rounded-[2px] shadow-sm flex-shrink-0" 
-    unoptimized={true} 
 />
                                          ) : (
                                              <span className="text-base leading-none">🌍</span>
@@ -2300,7 +2311,6 @@ return (
     width={64} 
     height={64} 
     className="h-full w-full object-contain" 
-    unoptimized={true} 
 />
                               </div>
                           ) : (

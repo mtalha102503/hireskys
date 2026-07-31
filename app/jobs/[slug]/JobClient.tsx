@@ -342,7 +342,19 @@ const MobileGuestAlert = () => {
         </div>
     );
 };
-export default function JobClient({ initialJob }: { initialJob: any }) {
+export default function JobClient({ 
+  initialJob, 
+  initialCompanyDetails,
+  initialIndustryCompanies,
+  initialCompanyJobs,
+  initialRelatedJobs
+}: { 
+  initialJob: any; 
+  initialCompanyDetails?: any;
+  initialIndustryCompanies?: any[];
+  initialCompanyJobs?: any[];
+  initialRelatedJobs?: any[];
+}) {
   const params = useParams();
   const router = useRouter();
   
@@ -352,8 +364,8 @@ export default function JobClient({ initialJob }: { initialJob: any }) {
   const [saved, setSaved] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [authLoaded, setAuthLoaded] = useState(false);
-  const [relatedJobs, setRelatedJobs] = useState<any[]>([]); 
-  const [companyDetails, setCompanyDetails] = useState<any>(null);
+  const [relatedJobs, setRelatedJobs] = useState<any[]>(initialRelatedJobs || []); 
+  const [companyDetails, setCompanyDetails] = useState<any>(initialCompanyDetails || null);
   const [userProfile, setUserProfile] = useState<any>(null);
 const [applyCount, setApplyCount] = useState(job.application_count || 0);
 const [isReporting, setIsReporting] = useState(false);
@@ -361,13 +373,11 @@ const [isReporting, setIsReporting] = useState(false);
 // 🌍 GEO-LOCATION STATES
   const [userCountry, setUserCountry] = useState<string | null>(null);
   const [showGeoWarning, setShowGeoWarning] = useState(false);
-const [companyJobs, setCompanyJobs] = useState<any[]>([]); // Company ki baki jobs ke liye
-const [industryCompanies, setIndustryCompanies] = useState<any[]>([]); // Industry ki companies ke liye
+const [companyJobs, setCompanyJobs] = useState<any[]>(initialCompanyJobs || []); 
+const [industryCompanies, setIndustryCompanies] = useState<any[]>(initialIndustryCompanies || []);
   // 👇 LOCATION DETECTION LOGIC (Auto Run)
-  useEffect(() => {
+useEffect(() => {
     const detectLocation = async () => {
-      // 1. Agar user Login hai to Profile se Country lo
-      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: profile } = await supabase.from('profiles').select('country').eq('id', user.id).single();
         if (profile?.country) {
@@ -375,15 +385,14 @@ const [industryCompanies, setIndustryCompanies] = useState<any[]>([]); // Indust
           return;
         }
       }
-      // 2. Agar Guest hai to IP se Country lo
       try {
         const res = await fetch('https://ipapi.co/json/');
         const data = await res.json();
         if (data.country_name) setUserCountry(data.country_name);
-      } catch (e) { console.error("IP Error", e); setUserCountry("Unknown"); }
+      } catch (e) { setUserCountry("Unknown"); }
     };
-    detectLocation();
-  }, []);
+    if (authLoaded) detectLocation();  // 👈 authLoaded hone ka wait karo
+}, [authLoaded, user]);  // 👈 Ye dependency add karo
   useEffect(() => {
     fetchJobDetails();
   }, []);
@@ -432,218 +441,24 @@ const getCompanySlug = (name: string) => {
   async function fetchJobDetails() {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
-    setAuthLoaded(true); // 👈 YEH LINE ADD KARO (Iska matlab hai Supabase ne bata diya hai ke user kon hai)
-    
+    setAuthLoaded(true);
+
     if (user) {
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name, bio, skills, projects, experience')
-            .eq('id', user.id)
-            .maybeSingle();
-            
-        if (profile) setUserProfile(profile);
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, bio, skills, projects, experience')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (profile) setUserProfile(profile);
+
+      const { data: savedJob } = await supabase
+        .from('saved_jobs')
+        .select('id')
+        .match({ user_id: user.id, job_id: initialJob.id })
+        .single();
+      if (savedJob) setSaved(true);
     }
-    // 👇 URL se ID nikalo (slug ka last part)
-    // Example: "senior-react-dev-692" -> "692"
-    const slug = params.slug as string; 
-    const jobId = slug ? slug.split('-').pop() : null; // Last wala hissa uthao
-
-    if (jobId) {
-        // 👇 Ab ID se search karo
-        const data = initialJob;
-        
-        // 🔒 SECURITY CHECK: Agar job Approved nahi hai, to load mat karo
-        if (data && data.approved === false) {
-            setJob(null); // Job ko null hi rakho
-            setLoading(false);
-            return; // Yahan se wapis chale jao, neeche ka code run nahi hoga
-        }
-        
-        // 👇 Purana "if (data)" block replace karo is naye block se:
-        if (data) {
-            setJob(data);
-
-            // 🌟 EXACT MATCH: Company Data Fetch Logic
-const companyNameForSearch = data.company || 
-    (!['reddit', 'hacker news', 'upwork'].some(s => data.source?.toLowerCase().includes(s)) ? data.source : null);
-
-if (companyNameForSearch) {
-    const companySlug = getCompanySlug(companyNameForSearch);
-    
-    // 1. Check if Company exists in Companies table
-    const { data: companyInfo } = await supabase
-        .from('companies')
-        .select('*')
-        .or(`slug.eq.${companySlug},name.ilike.%${companyNameForSearch}%`)
-        .maybeSingle(); 
-        
-    if (companyInfo) {
-        setCompanyDetails(companyInfo);
-        
-        
-
-        // 🚀 2. THE NEW SMART INDUSTRY ENGINE (90% Coverage & Variety)
-        let finalCompanies: any[] = [];
-        let excludeSlugs = [companyInfo.slug]; // Current company dubara na aye
-
-        // Step A: Smart Keyword Matching (Lambi industry strings ko tor kar dhoondo)
-        if (companyInfo.industry) {
-            const keywords = companyInfo.industry.split(/[\s,/&]+/).filter((k: string) => k.length > 3);
-            
-            if (keywords.length > 0) {
-                const orQuery = keywords.map((k: string) => `industry.ilike.%${k}%`).join(',');
-                const { data: indData } = await supabase
-                    .from('companies')
-                    .select('slug, name, logo_url, industry, location, company_size, verified')
-                    .or(orQuery)
-                    .neq('slug', companyInfo.slug)
-                    // .eq('verified', true) // 👈 WARNING: Agar verified companies kam hain, to isko comment kardo
-                    .limit(12); // 👈 FIX: 50 se ghata kar 12 kiya, 4 dikhane ke liye itna kaafi hai
-                    
-                if (indData && indData.length > 0) {
-                    // 👈 FIX: Un 50 ko frontend pe shuffle karo aur pehli 4 uthao
-                    const shuffledInd = indData.sort(() => 0.5 - Math.random()).slice(0, 4);
-                    finalCompanies = [...shuffledInd];
-                    excludeSlugs = [...excludeSlugs, ...finalCompanies.map(c => c.slug)];
-                }
-            }
-        }
-
-        // Step B: Random Fallback Padding (Agar 4 cards poore nahi hue)
-        if (finalCompanies.length < 4) {
-            const limitNeeded = 4 - finalCompanies.length;
-            
-            // 👈 FIX: Ab 15 ki jagah 100 mangwa rahe hain taake randomness 1950 database se match kare
-            const { data: randomData } = await supabase
-                .from('companies')
-                .select('slug, name, logo_url, industry, location, company_size, verified')
-                // .eq('verified', true) // 👈 WARNING: Same yahan, agar randomness kam hai to ise hata do
-                .not('slug', 'in', `(${excludeSlugs.join(',')})`)
-                .limit(20);
-
-            if (randomData && randomData.length > 0) {
-                // Ab yeh 100 records mein se randomly choose karega
-                const shuffled = randomData.sort(() => 0.5 - Math.random()).slice(0, limitNeeded);
-                finalCompanies = [...finalCompanies, ...shuffled];
-            }
-        }
-
-        setIndustryCompanies(finalCompanies);
-    }
-
-    // 3. Fetch maximum lates 5 jobs of the SAME company (from jobs table directly)
-    const { data: cJobs } = await supabase
-        .from('jobs')
-        .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-        // 🚀 THE FIX: Ab yeh 'source' column mein bhi company ka naam dhoondega!
-        .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
-        .neq('id', data.id) 
-        .eq('approved', true)
-        .eq('active', true)
-        .order('date_posted', { ascending: false })
-        .limit(4);
-    if (cJobs) setCompanyJobs(cJobs);
-}
-            // 🌟 SUPER SMART RELATED JOBS (Location + Category + 30 Days Fallback)
-            
-            // 1. Calculate Date for Last 30 Days
-           const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            const thirtyDaysAgoStr = thirtyDaysAgo.toISOString();
-
-            let strictRelated: any[] = [];
-            
-            // 2. PRIMARY QUERY: Multi-Country Logic
-            // Tumhara apna function use kar ke location ko array mein torenge (e.g. ["India", "Pakistan"])
-            const parsedLocs = getSmartLocationUI(data.location).matched;
-            const countryNames = parsedLocs.filter((l: any) => l.code).map((l: any) => l.name);
-
-            let primaryQuery = supabase
-                .from('jobs')
-                .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-                .eq('category', data.category)
-                .gte('date_posted', thirtyDaysAgoStr) // Last 30 days
-                .neq('id', data.id)
-                .eq('approved', true)
-                .order('date_posted', { ascending: false })
-                .limit(4);
-
-            // 🧠 Agar specific countries mili hain, toh Supabase '.or()' trigger karo
-            if (countryNames.length > 0) {
-                // Yeh ek string banayega jese: "location.ilike.%India%,location.ilike.%Pakistan%"
-                const orQueryString = countryNames.map((c: string) => `location.ilike.%${c}%`).join(',');
-                primaryQuery = primaryQuery.or(orQueryString);
-            }
-
-            const { data: strictData } = await primaryQuery;
-            if (strictData) strictRelated = strictData;
-
-            let finalRelatedJobs = [...strictRelated];
-
-            // 3. FALLBACK QUERY: Agar 3 jobs poori nahi hui, to simply latest category jobs le aao
-            if (finalRelatedJobs.length < 3) {
-                // Jo jobs Primary Query mein aagayi hain unki ID nikal lo taake duplicate na hon
-                const excludeIds = [data.id, ...finalRelatedJobs.map(j => j.id)];
-                const remainingLimit = 4 - finalRelatedJobs.length;
-
-                const { data: fallbackData } = await supabase
-                    .from('jobs')
-                    .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-                    .eq('category', data.category)
-                    .not('id', 'in', `(${excludeIds.join(',')})`) // Pehle wali aur current job ko ignore karo
-                    .eq('approved', true)
-                    .eq('active', true)
-                    .order('date_posted', { ascending: false })
-                    .limit(remainingLimit);
-
-                if (fallbackData) {
-                    finalRelatedJobs = [...finalRelatedJobs, ...fallbackData];
-                }
-            }
-
-            // 4. LOGO FETCHING LOGIC (Ab 'related' ki jagah 'finalRelatedJobs' use hoga)
-            if (finalRelatedJobs.length > 0) {
-                // In jobs ke slugs nikalo taake companies table mein dhoond sakein
-                const slugsToFind = finalRelatedJobs.map(rJob => getCompanySlug(rJob.company || rJob.source || '')).filter(Boolean);
-                
-                // Companies table se inke logos mangwao
-                const { data: companiesData } = await supabase
-                    .from('companies')
-                    .select('slug, logo_url')
-                    .in('slug', slugsToFind);
-                    
-                // Map bana lo taake fast lookup ho
-                const logoMap: Record<string, string> = {};
-                if (companiesData) {
-                    companiesData.forEach(c => { if (c.logo_url) logoMap[c.slug] = c.logo_url; });
-                }
-                
-                // Jobs ke andar unka final logo attach kardo
-                const relatedWithLogos = finalRelatedJobs.map(rJob => ({
-                    ...rJob,
-                    final_logo: rJob.company_logo_url || logoMap[getCompanySlug(rJob.company || rJob.source || '')] || null
-                }));
-                
-                setRelatedJobs(relatedWithLogos);
-            }
-            // Saved check (Waisa hi rahega)
-            if (user) {
-                const { data: savedJob } = await supabase.from('saved_jobs').select('*').match({ user_id: user.id, job_id: data.id }).single();
-                if (savedJob) setSaved(true);
-            }
-            
-        }
-        if (data) {
-        setJob(data);
-        if (data.application_count) {
-            setApplyCount(data.application_count);
-        }
-        
-        }
-        
-    }
-     // FIX: Closing brace for if (jobId)
-  } // FIX: Closing brace for fetchJobDetails function
+  }
 
   function getRelativeTime(dateString: string) {
     const jobDate = new Date(dateString);
@@ -857,7 +672,7 @@ const handleApply = async () => {
      window.open(link, job.link.includes('@') ? '_self' : '_blank');
      setShowGeoWarning(false); // Popup band
   };
-  // --- 🔥 SMART RENDERERS ---
+ 
 
   const getSourceStyle = (source: string) => {
       const s = source?.toLowerCase() || "";

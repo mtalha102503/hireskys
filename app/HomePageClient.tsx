@@ -173,7 +173,7 @@ export default function Home({
   const [jobs, setJobs] = useState<Job[]>(serverJobs);
   const [totalCount, setTotalCount] = useState(serverCount); 
   const [page, setPage] = useState(serverPage);
-  
+  const isInitialMount = useRef(true);
   const [featuredJobs, setFeaturedJobs] = useState<Job[] & { matchScore?: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
@@ -537,7 +537,13 @@ useEffect(() => {
   // Apne pehle useEffect mein ye update kardo
 useEffect(() => {
     if (searchType !== 'jobs') return;
-    
+
+    // 🚀 FIX: Pehli baar mount hone par fetch skip karo — server ne already data de diya hai
+    if (isInitialMount.current) {
+        isInitialMount.current = false;
+        return;
+    }
+
     const timer = setTimeout(() => {
         const urlPage = parseInt(pageParam, 10);
         setPage(urlPage);         
@@ -934,9 +940,11 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
     setIsFallback(true); 
     const { data: fallbackData } = await supabase
     .from('jobs')
-    // 👇 Yahan end par 'application_count' add kar diya hai
     .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count') 
     .eq('approved', true)
+    .eq('active', true)
+    .order('date_posted', { ascending: false })
+    .limit(JOBS_PER_PAGE); // ya jitni chahiye
             
         data = fallbackData || []; 
     } else {
@@ -1387,7 +1395,7 @@ return (
                                             ))}
                                              {filterDate && (
                                                  <button
-                                                 onClick={() => { setFilterDate(""); fetchJobs(); setShowDateDropdown(false); updateURLParams('date', ''); }} // 🚀 ADDED updateURLParams
+                                                 onClick={() => { setFilterDate(""); setShowDateDropdown(false); updateURLParams('date', ''); }} // 🚀 ADDED updateURLParams
                                                  className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1"
                                              >
                                                  Clear Filter
@@ -1898,7 +1906,7 @@ return (
                                 </button>
                             ))}
                             {filterDate && (
-                                <button onClick={() => { setFilterDate(""); fetchJobs(); setShowDateDropdown(false); updateURLParams('date', ''); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1">Clear Filter</button>
+                                <button onClick={() => { setFilterDate(""); setShowDateDropdown(false); updateURLParams('date', ''); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1">Clear Filter</button>
                             )}
                         </motion.div>
                     )}

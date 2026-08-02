@@ -37,12 +37,12 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
   if (!manualCompany) {
     return { 
-      title: 'Company Not Found',
+      title: 'Company Not Found | HireSkys',
       robots: { index: false, follow: false }
     };
   }
 
-  const title = `${manualCompany.name} Remote Jobs & Careers`;
+  const title = `${manualCompany.name} Remote Jobs & Careers | HireSkys`;
   const desc = manualCompany.description?.slice(0, 160) || `Apply for remote jobs at ${manualCompany.name}. Verified career opportunities and hiring details.`;
   const cleanUrl = `https://www.hireskys.com/companies/${urlSlug}`;
 

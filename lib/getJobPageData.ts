@@ -40,8 +40,8 @@ const getCompanySlug = (name: string) => {
     .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '');
 };
-
 async function fetchJobPageData(jobId: string, companyNameForSearch: string | null, category: string, location: string) {
+  console.log(`🔥 FRESH DB FETCH — job: ${jobId}`);
   let companyDetails: any = null;
   let industryCompanies: any[] = [];
   let companyJobs: any[] = [];

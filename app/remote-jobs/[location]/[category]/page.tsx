@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabaseClient';
 import HomePageClient from '@/app/HomePageClient';
 import { CATEGORIES } from '@/lib/categories'; // 👈 Naya Import
 import { Suspense } from 'react';
-
+export const revalidate = 3600;
 type Props = {
     params: Promise<{ location: string; category: string }>
 }
@@ -31,15 +31,19 @@ export async function generateMetadata(
     let isMainCategory = false;
     let actualCategoryName = 'All';
     let actualTagName = '';
-    const urlSlug = resolvedParams.category.toLowerCase().replace(/[\s-\.]/g, '');
+    
+    // 🚀 THE FIX: Yahan /[^a-z0-9]/g use karna hai taake URL completely saaf ho jaye
+    const urlSlug = resolvedParams.category.toLowerCase().replace(/[^a-z0-9]/g, '');
 
     for (const [catName, catData] of Object.entries(CATEGORIES)) {
-        if (catName.toLowerCase().replace(/[\s-\.]/g, '') === urlSlug) {
+        // Category ko bhi match karte waqt same clean regex lagao
+        if (catName.toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug) {
             isMainCategory = true;
             actualCategoryName = catName;
             break;
         }
-        const matchedTag = catData.sub.find(t => t.toLowerCase().replace(/[\s-\.]/g, '') === urlSlug);
+        // Sub-tags ko bhi same clean regex lagao
+        const matchedTag = catData.sub.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug);
         if (matchedTag) {
             isTag = true;
             actualCategoryName = catName;
@@ -51,7 +55,7 @@ export async function generateMetadata(
     const finalRoleTitle = isTag ? actualTagName : (isMainCategory ? actualCategoryName : 'Remote');
 
     // 🎨 VIP Title Generator
-    const pageTitle = `${finalRoleTitle} Jobs ${isWorldwide ? 'Worldwide' : `in ${displayLocation}`}`;
+    const pageTitle = `${finalRoleTitle} Jobs ${isWorldwide ? 'Worldwide' : `in ${displayLocation}`} | HireSkys`;
     const pageDescription = `Find the best high-paying remote and work-from-home ${finalRoleTitle} jobs hiring ${isWorldwide ? 'worldwide' : `in ${displayLocation}`}. Apply today on HireSkys.`;
     
     // 🔗 URLs
@@ -90,16 +94,38 @@ export async function generateMetadata(
 // 🖥️ MAIN PAGE COMPONENT
 export default async function RemoteJobsPage({ params }: Props) {
     const resolvedParams = await params;
-    
-    // 🧠 Pehle hum 'finalLocation' ka variable bana rahe thay jo server se filter chep deta tha,
-    // Ab hum direct URL se aane wali location pass karenge bina kisi extra logic ke.
-    
+    const LIMIT = 20;
+
+    // 👇 NAYA: Server-side pe hi jobs fetch karo, location+category filter ke saath
+    let query = supabase
+        .from('jobs')
+        .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count', { count: 'exact' })
+        .eq('approved', true)
+        .eq('active', true)
+        .order('featured_until', { ascending: false, nullsFirst: false })
+        .order('date_posted', { ascending: false })
+        .range(0, LIMIT - 1);
+
+    const categoryFormatted = formatUrlParam(resolvedParams.category);
+    if (categoryFormatted !== 'All') {
+        query = query.ilike('category', `%${categoryFormatted}%`);
+    }
+
+    const locationFormatted = formatUrlParam(resolvedParams.location);
+    if (locationFormatted !== 'All') {
+        query = query.ilike('location', `%${locationFormatted}%`);
+    }
+
+    const { data: initialJobs, count } = await query;
+
     return (
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>}>
-            {/* 🚀 FIXED: Humne 'finalLocation' ki jagah direct 'resolvedParams.location' pass kar diya hai */}
             <HomePageClient 
                 seoCategory={resolvedParams.category} 
-                seoLocation={resolvedParams.location} 
+                seoLocation={resolvedParams.location}
+                serverJobs={initialJobs || []}
+                serverCount={count || 0}
+                serverPage={0}
             />
         </Suspense>
     );

@@ -63,28 +63,22 @@ const trendingSearches = [
 ];
 // Location Data Array for cleaner code
 const remoteLocations = [
-  { name: "United States", path: "united-states/all" },
-  { name: "United Kingdom", path: "united-kingdom/all" },
-  { name: "Canada", path: "canada/all" },
-  { name: "Singapore", path: "singapore/all" },
-  { name: "Germany", path: "germany/all" },
-  { name: "Spain", path: "spain/all" },
-  { name: "Portugal", path: "portugal/all" },
-  { name: "Poland", path: "poland/all" },
-  { name: "India", path: "india/all" },
-  { name: "Pakistan", path: "pakistan/all" },
-  { name: "Philippines", path: "philippines/all" },
-  { name: "Brazil", path: "brazil/all" },
-  { name: "Ukraine", path: "ukraine/all" },
-  { name: "South Africa", path: "south-africa/all" },
-  { name: "Argentina", path: "argentina/all" },
-  { name: "Mexico", path: "mexico/all" },
-  { name: "France", path: "france/all" },
-  { name: "Serbia", path: "serbia/all" },
-  { name: "Ireland", path: "ireland/all" },
-  { name: "Colombia", path: "colombia/all" },
-  { name: "Egypt", path: "egypt/all" },
-  { name: "Chile", path: "chile/all" }
+  { name: "United States", path: "/united-states/all" },
+  { name: "United Kingdom", path: "/united-kingdom/all" },
+  { name: "Canada", path: "/canada/all" },
+  { name: "Singapore", path: "/singapore/all" },
+  { name: "Germany", path: "/germany/all" },
+  { name: "Spain", path: "/spain/all" },
+  { name: "Portugal", path: "/portugal/all" },
+  { name: "Poland", path: "/poland/all" },
+  { name: "India", path: "/india/all" },
+  { name: "Pakistan", path: "/pakistan/all" },
+  { name: "Philippines", path: "/philippines/all" },
+  { name: "Brazil", path: "/brazil/all" },
+  { name: "Ukraine", path: "/ukraine/all" },
+  { name: "South Africa", path: "/south-africa/all" },
+  { name: "Argentina", path: "/argentina/all" },
+  { name: "Mexico", path: "/mexico/all" }
 ];
 
 export default function Footer() {
@@ -212,9 +206,10 @@ export default function Footer() {
     {trendingSearches.map((search) => (
       <li key={search.path}>
         <Link 
-          href={search.path} 
-          className="hover:text-indigo-600 dark:hover:text-slate-200 transition-colors"
-        >
+  href={search.path} 
+  prefetch={false}
+  className="hover:text-indigo-600 dark:hover:text-slate-200 transition-colors"
+>
           {search.name}
         </Link>
       </li>
@@ -233,9 +228,10 @@ export default function Footer() {
               {jobCategories.map((cat) => (
                 <li key={cat.path}>
                   <Link 
-                    href={`/category/${cat.path}`} 
-                    className="hover:text-indigo-600 dark:hover:text-slate-200 transition-colors"
-                  >
+  href={`/category/${cat.path}`} 
+  prefetch={false}
+  className="hover:text-indigo-600 dark:hover:text-slate-200 transition-colors"
+>
                     Remote {cat.name} jobs
                   </Link>
                 </li>
@@ -254,9 +250,10 @@ export default function Footer() {
               {remoteLocations.map((loc) => (
                 <li key={loc.path}>
                   <Link 
-                    href={`/remote-jobs/${loc.path}`} 
-                    className="hover:text-indigo-600 dark:hover:text-slate-200 transition-colors"
-                  >
+  href={`/remote-jobs/${loc.path}`} 
+  prefetch={false}
+  className="hover:text-indigo-600 dark:hover:text-slate-200 transition-colors"
+>
                     Remote jobs in {loc.name}
                   </Link>
                 </li>

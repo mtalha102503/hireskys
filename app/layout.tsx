@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
+import MoneytizerStickyFooter from "@/components/MoneytizerStickyFooter";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
 // 🌟 FONT OPTIMIZATION
@@ -333,6 +334,7 @@ export default function RootLayout({
           </div>
           <ConsentBanner />
           <ConditionalChat />
+          <MoneytizerStickyFooter/>
         </ThemeProvider>
         <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />

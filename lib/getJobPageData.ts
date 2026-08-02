@@ -40,72 +40,94 @@ const getCompanySlug = (name: string) => {
     .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '');
 };
-async function fetchJobPageData(jobId: string, companyNameForSearch: string | null, category: string, location: string) {
-  console.log(`🔥 FRESH DB FETCH — job: ${jobId}`);
+
+// =====================================================================
+// 🏢 PART 1 — Company lookup + industry companies
+// Cached by COMPANY NAME only — so 4500 jobs from the same 200 companies
+// share the same cache entry instead of creating 4500 separate queries.
+// =====================================================================
+async function fetchCompanyData(companyNameForSearch: string) {
   let companyDetails: any = null;
   let industryCompanies: any[] = [];
   let companyJobs: any[] = [];
-  let relatedJobs: any[] = [];
 
-  if (companyNameForSearch) {
-    const companySlug = getCompanySlug(companyNameForSearch);
-
-    const { data: companyInfo } = await supabase
-      .from('companies')
-      .select('name, slug, logo_url, banner_url, description, industry, location, company_size')
-      .or(`slug.eq.${companySlug},name.ilike.%${companyNameForSearch}%`)
-      .maybeSingle();
-
-    if (companyInfo) {
-      companyDetails = companyInfo;
-      let finalCompanies: any[] = [];
-      let excludeSlugs = [companyInfo.slug];
-
-      if (companyInfo.industry) {
-        const keywords = companyInfo.industry.split(/[\s,/&]+/).filter((k: string) => k.length > 3);
-        if (keywords.length > 0) {
-          const orQuery = keywords.map((k: string) => `industry.ilike.%${k}%`).join(',');
-          const { data: indData } = await supabase
-            .from('companies')
-            .select('slug, name, logo_url, industry, location, company_size, verified')
-            .or(orQuery)
-            .neq('slug', companyInfo.slug)
-            .limit(6);
-          if (indData?.length) {
-            finalCompanies = indData.sort(() => 0.5 - Math.random()).slice(0, 4);
-            excludeSlugs = [...excludeSlugs, ...finalCompanies.map(c => c.slug)];
-          }
-        }
-      }
-
-      if (finalCompanies.length < 4) {
-        const limitNeeded = 4 - finalCompanies.length;
-        const { data: randomData } = await supabase
-          .from('companies')
-          .select('slug, name, logo_url, industry, location, company_size, verified')
-          .not('slug', 'in', `(${excludeSlugs.join(',')})`)
-          .limit(8);
-        if (randomData?.length) {
-          const shuffled = randomData.sort(() => 0.5 - Math.random()).slice(0, limitNeeded);
-          finalCompanies = [...finalCompanies, ...shuffled];
-        }
-      }
-      industryCompanies = finalCompanies;
-    }
-
-    const { data: cJobs } = await supabase
-      .from('jobs')
-      .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-      .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
-      .neq('id', jobId)
-      .eq('approved', true)
-      .eq('active', true)
-      .order('date_posted', { ascending: false })
-      .limit(4);
-    if (cJobs) companyJobs = cJobs;
+  if (!companyNameForSearch) {
+    return { companyDetails, industryCompanies, companyJobs };
   }
 
-  // Related jobs
+  const companySlug = getCompanySlug(companyNameForSearch);
+
+  const { data: companyInfo } = await supabase
+    .from('companies')
+    .select('name, slug, logo_url, banner_url, description, industry, location, company_size')
+    .or(`slug.eq.${companySlug},name.ilike.%${companyNameForSearch}%`)
+    .maybeSingle();
+
+  if (companyInfo) {
+    companyDetails = companyInfo;
+    let finalCompanies: any[] = [];
+    let excludeSlugs = [companyInfo.slug];
+
+    if (companyInfo.industry) {
+      const keywords = companyInfo.industry.split(/[\s,/&]+/).filter((k: string) => k.length > 3);
+      if (keywords.length > 0) {
+        const orQuery = keywords.map((k: string) => `industry.ilike.%${k}%`).join(',');
+        const { data: indData } = await supabase
+          .from('companies')
+          .select('slug, name, logo_url, industry, location, company_size, verified')
+          .or(orQuery)
+          .neq('slug', companyInfo.slug)
+          .limit(6);
+        if (indData?.length) {
+          finalCompanies = indData.sort(() => 0.5 - Math.random()).slice(0, 4);
+          excludeSlugs = [...excludeSlugs, ...finalCompanies.map(c => c.slug)];
+        }
+      }
+    }
+
+    if (finalCompanies.length < 4) {
+      const limitNeeded = 4 - finalCompanies.length;
+      const { data: randomData } = await supabase
+        .from('companies')
+        .select('slug, name, logo_url, industry, location, company_size, verified')
+        .not('slug', 'in', `(${excludeSlugs.join(',')})`)
+        .limit(8);
+      if (randomData?.length) {
+        const shuffled = randomData.sort(() => 0.5 - Math.random()).slice(0, limitNeeded);
+        finalCompanies = [...finalCompanies, ...shuffled];
+      }
+    }
+    industryCompanies = finalCompanies;
+  }
+
+  const { data: cJobs } = await supabase
+    .from('jobs')
+    .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
+    .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
+    .eq('approved', true)
+    .eq('active', true)
+    .order('date_posted', { ascending: false })
+    .limit(5); // 5 lete hain kyunki caller khud ko (current job) exclude karega
+  if (cJobs) companyJobs = cJobs;
+
+  return { companyDetails, industryCompanies, companyJobs };
+}
+
+// 👇 Cache key sirf companyNameForSearch pe based hai — job ID involved nahi
+export const getCompanyData = unstable_cache(
+  fetchCompanyData,
+  ['job-page-company-data'],
+  { revalidate: 300 }
+);
+
+// =====================================================================
+// 🔗 PART 2 — Related jobs (category + location based)
+// Ye bhi job-id se independent hai — sirf category+location combo se cache
+// hoga, jo bhi hazaron jobs se bahut kam unique combinations honge.
+// =====================================================================
+async function fetchRelatedJobsData(category: string, location: string) {
+  let relatedJobs: any[] = [];
+
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const countryNames = getCountryNames(location);
@@ -115,10 +137,9 @@ async function fetchJobPageData(jobId: string, companyNameForSearch: string | nu
     .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
     .eq('category', category)
     .gte('date_posted', thirtyDaysAgo.toISOString())
-    .neq('id', jobId)
     .eq('approved', true)
     .order('date_posted', { ascending: false })
-    .limit(4);
+    .limit(8); // 8 lete hain taake current-job exclude hone ke baad bhi 4+ bache
 
   if (countryNames.length > 0) {
     const orQueryString = countryNames.map((c: string) => `location.ilike.%${c}%`).join(',');
@@ -128,18 +149,17 @@ async function fetchJobPageData(jobId: string, companyNameForSearch: string | nu
   const { data: strictData } = await primaryQuery;
   let finalRelatedJobs = strictData || [];
 
-  if (finalRelatedJobs.length < 3) {
-    const excludeIds = [jobId, ...finalRelatedJobs.map(j => j.id)];
-    const remainingLimit = 4 - finalRelatedJobs.length;
+  if (finalRelatedJobs.length < 6) {
+    const excludeIds = finalRelatedJobs.map(j => j.id);
     const { data: fallbackData } = await supabase
       .from('jobs')
       .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
       .eq('category', category)
-      .not('id', 'in', `(${excludeIds.join(',')})`)
+      .not('id', 'in', `(${excludeIds.length ? excludeIds.join(',') : 0})`)
       .eq('approved', true)
       .eq('active', true)
       .order('date_posted', { ascending: false })
-      .limit(remainingLimit);
+      .limit(8);
     if (fallbackData) finalRelatedJobs = [...finalRelatedJobs, ...fallbackData];
   }
 
@@ -157,12 +177,37 @@ async function fetchJobPageData(jobId: string, companyNameForSearch: string | nu
     }));
   }
 
-  return { companyDetails, industryCompanies, companyJobs, relatedJobs };
+  return { relatedJobs };
 }
 
-// 👇 Cache wrapper — 5 min ke liye cache karega
-export const getJobPageData = unstable_cache(
-  fetchJobPageData,
-  ['job-page-secondary-data'],
+// 👇 Cache key sirf category+location combo pe based hai — job ID involved nahi
+export const getRelatedJobsData = unstable_cache(
+  fetchRelatedJobsData,
+  ['job-page-related-jobs'],
   { revalidate: 300 }
 );
+
+// =====================================================================
+// 🧩 MAIN — page.tsx isi ek function ko call karega
+// Ye khud kisi cheez ko job-id se cache nahi karta — sirf cached
+// sub-functions ko combine karke, current job ko results se exclude karta hai
+// =====================================================================
+export async function getJobPageData(
+  jobId: string,
+  companyNameForSearch: string | null,
+  category: string,
+  location: string
+) {
+  const [companyData, relatedData] = await Promise.all([
+    getCompanyData(companyNameForSearch || ''),
+    getRelatedJobsData(category, location),
+  ]);
+
+  return {
+    companyDetails: companyData.companyDetails,
+    industryCompanies: companyData.industryCompanies,
+    // current job ko exclude karo (cache shared hone ki wajah se ho sakta hai isme khud shaamil ho)
+    companyJobs: (companyData.companyJobs || []).filter((j: any) => String(j.id) !== String(jobId)).slice(0, 4),
+    relatedJobs: (relatedData.relatedJobs || []).filter((j: any) => String(j.id) !== String(jobId)).slice(0, 4),
+  };
+}

@@ -39,6 +39,30 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
       {
+        // 👇 NAYA: AI chat/search assistants — bilkul unrestricted, koi delay nahi
+        // (ChatGPT, Claude, Gemini, Perplexity waghera taake ye tumhari site AI answers mein dikha sakein)
+        userAgent: [
+          'GPTBot',
+          'ChatGPT-User',
+          'OAI-SearchBot',
+          'ClaudeBot',
+          'Claude-Web',
+          'anthropic-ai',
+          'Google-Extended',
+          'PerplexityBot',
+          'Applebot-Extended',
+        ],
+        allow: '/',
+        disallow: [
+          '/api/',
+          '/auth/',
+          '/complete-profile/',
+          '/update-password/',
+          '/test/',
+          '/test-alert/',
+        ],
+      },
+      {
         // 👇 SEO-tool crawlers — block nahi, lekin 24-ghante ka gap majboor karo
         userAgent: ['AhrefsBot', 'SemrushBot', 'MJ12bot', 'DotBot', 'BLEXBot', 'SiteAuditBot'],
         allow: '/',

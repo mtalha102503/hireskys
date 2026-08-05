@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { unstable_cache } from 'next/cache';
 
-// Ab force-dynamic hata do, aur revalidate ek reasonable value pe rakho
-export const revalidate = 900; // 15 minute cache
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Feed size ko control me rakhne ke liye limit + description truncation
+const MAX_JOBS = 8000;
+const DESC_MAX_LENGTH = 700;
 
 function formatJoobleDate(dateInput: string | Date): string {
   const d = new Date(dateInput);
@@ -17,39 +20,70 @@ function formatJoobleDate(dateInput: string | Date): string {
   return `${day}.${month}.${year}`;
 }
 
-// 👇 Ye function ab cached hai — 15 minute mein sirf ek dafa DB se fetch karega
-const getCachedJobsFeed = unstable_cache(
-  async () => {
-    const { data: jobs, error } = await supabase
-      .from('jobs')
-      .select('id, title, slug, source, company_logo_url, location, description, created_at, salary_range, job_type')
-      .eq('active', true)
-      .eq('approved', true)
-      .order('created_at', { ascending: false });
+function escapeXml(unsafe: string): string {
+  if (!unsafe) return '';
+  return unsafe.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+}
 
-    if (error) throw new Error(`Supabase Query Failed: ${error.message}`);
-    return jobs || [];
-  },
-  ['jooble-jobs-feed'],
-  { revalidate: 900 } // 15 minute
-);
+// 🆕 HTML tags hatao aur ek reasonable length tak trim karo,
+// taake feed ka size manageable rahe aur ISR/response-size limit cross na ho
+function cleanAndTruncateDescription(html: string): string {
+  if (!html) return '';
+  // HTML tags hatao
+  const plainText = html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (plainText.length <= DESC_MAX_LENGTH) return plainText;
+  return plainText.slice(0, DESC_MAX_LENGTH).trim() + '...';
+}
 
 export async function GET() {
   try {
-    const jobs = await getCachedJobsFeed();
+    const { data: jobs, error } = await supabase
+      .from('jobs') 
+      .select('id, title, slug, source, company_logo_url, location, description, created_at, salary_range, job_type')
+      .eq('active', true)
+      .eq('approved', true) 
+      .order('created_at', { ascending: false })
+      .limit(MAX_JOBS); // 🆕 safety cap taake feed hamesha size-limit ke andar rahe
 
-    if (jobs.length === 0) {
-      return new NextResponse(`<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, {
-        headers: { 'Content-Type': 'application/xml' }
+    if (error) {
+      throw new Error(`Supabase Query Failed: ${error.message}`);
+    }
+
+    if (!jobs || jobs.length === 0) {
+      return new NextResponse(`<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, { 
+        headers: { 
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        } 
       });
     }
 
     let xmlItems = '';
+
     for (const job of jobs) {
-      const jobUrl = `https://www.hireskys.com/jobs/${job.slug}`;
+      const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
       const xmlLocation = job.location === "Remote (Global)" ? "United States" : job.location;
+      const cleanDescription = cleanAndTruncateDescription(job.description); // 🆕
+
       const expireDate = new Date(job.created_at);
       expireDate.setDate(expireDate.getDate() + 60);
+
       const hasSalary = job.salary_range && job.salary_range !== 'Not Disclosed';
 
       xmlItems += `
@@ -57,7 +91,7 @@ export async function GET() {
     <link><![CDATA[${jobUrl}]]></link>
     <name><![CDATA[${job.title}]]></name>
     <region><![CDATA[${xmlLocation}]]></region>
-    <description><![CDATA[${job.description}]]></description>
+    <description><![CDATA[${cleanDescription}]]></description>
     <pubdate>${formatJoobleDate(job.created_at)}</pubdate>
     <updated>${formatJoobleDate(job.created_at)}</updated>
     <company><![CDATA[${job.source}]]></company>
@@ -73,15 +107,23 @@ export async function GET() {
     return new NextResponse(fullXml, {
       headers: {
         'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'public, max-age=900, s-maxage=900', // 👈 browsers/CDN ko bhi bolo cache karo
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       },
     });
 
   } catch (error) {
     console.error("Jooble XML Feed Error:", error);
     return new NextResponse(
-      `<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`,
-      { status: 500, headers: { 'Content-Type': 'application/xml' } }
+      `<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, 
+      { 
+        status: 500, 
+        headers: { 
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'no-store'
+        } 
+      }
     );
   }
 }

@@ -145,7 +145,44 @@ const getSmartLocationUI = (locationString: string) => {
         totalCount: uiElements.length
     };
 };
- 
+ // 🆕 JOBADDER-ONLY LOCATION LOGIC (HomePageClient)
+// parseComplexLocation/getSmartLocationUI ko bilkul touch nahi karta,
+// isliye Greenhouse/Lever/Ashby wali jobs pe koi asar nahi.
+const getSmartLocationUI_JobAdder = (locationString: string) => {
+    if (!locationString) {
+        return { matched: [{ name: "Global", flag: "🌍", code: null, isImage: false }], isRemote: true, hasMore: false, totalCount: 1 };
+    }
+
+    let cleanStr = locationString.replace(/Remote\s*/i, '').trim();
+    if (cleanStr.startsWith('(') && cleanStr.endsWith(')')) {
+        cleanStr = cleanStr.slice(1, -1).trim();
+    }
+
+    const match = cleanStr.match(/^([^(]+?)(?:\s*\(([^)]+)\))?$/);
+    if (!match) {
+        return { matched: [{ name: locationString, flag: "🌍", code: null, isImage: false }], isRemote: true, hasMore: false, totalCount: 1 };
+    }
+
+    const countryName = match[1].trim();
+    const city = match[2] ? match[2].trim() : "";
+
+    const cKey = countryName.toUpperCase();
+    const countryData = countryMap[cKey] || { code: null, flag: "🌍", name: countryName };
+
+    const displayName = city ? `${city}, ${countryData.name}` : countryData.name;
+
+    return {
+        matched: [{
+            flag: countryData.flag,
+            code: countryData.code,
+            name: displayName === "Worldwide" ? "Global" : displayName,
+            isImage: !!countryData.code
+        }],
+        isRemote: locationString.toLowerCase().includes('remote'),
+        hasMore: false,
+        totalCount: 1
+    };
+};
 export default function Home({
     seoCategory,
     seoLocation,
@@ -2011,7 +2048,9 @@ return (
                 </div>
                 
                 {featuredJobs.map((job) => {
-                    const smartLoc = getSmartLocationUI(job.location || "");
+                    const smartLoc = job.platform === 'JobAdder'
+    ? getSmartLocationUI_JobAdder(job.location || "")
+    : getSmartLocationUI(job.location || "");
                     const isApplied = appliedJobs.includes(job.id);
                     const isSaved = savedJobIds.includes(job.id);
                     const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
@@ -2138,7 +2177,9 @@ return (
 // 🚀 STEP 1: index add kiya taake hum count kar saken
           jobs.map((job, index) => {
             // 🟢 1. Tumhara Sara Original Logic
-            const smartLoc = getSmartLocationUI(job.location || "");
+            const smartLoc = job.platform === 'JobAdder'
+    ? getSmartLocationUI_JobAdder(job.location || "")
+    : getSmartLocationUI(job.location || "");
             const jobDate = new Date(job.date_posted);
             const now = new Date();
             const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));
@@ -2345,7 +2386,20 @@ return (
                       <div className="flex flex-wrap gap-2">
                           <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200">{job.category}</div>
                           {job.job_type && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100">{job.job_type}</div>}
-                          {job.tags && job.tags.length > 0 && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-[10px] md:text-xs font-bold text-emerald-600 dark:text-emerald-300 border border-emerald-100">{job.tags[0]}</div>}
+                          {job.tags && job.tags.length > 0 && (() => {
+    // 🆕 JOBADDER-ONLY: tags array = [category, sub_category], isliye
+    // JobAdder jobs ke liye tags[1] (sub-category) dikhao, tags[0] nahi
+    // — warna Category badge ke saath duplicate ho jata hai.
+    // Baaki sab platforms ke liye purana tags[0] hi chalega, koi change nahi.
+    const displayTag = job.platform === 'JobAdder'
+        ? (job.tags.length > 1 ? job.tags[1] : job.tags[0])
+        : job.tags[0];
+    return (
+        <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-[10px] md:text-xs font-bold text-emerald-600 dark:text-emerald-300 border border-emerald-100">
+            {displayTag}
+        </div>
+    );
+})()}
                       </div>
                       <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
                           <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>

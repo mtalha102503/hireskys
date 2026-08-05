@@ -109,9 +109,9 @@ export default async function Page({ searchParams }: Props) {
   const to = from + LIMIT - 1;
 
   // 2. 🚀 SERVER SIDE QUERY: Googlebot ko seedha render ho kar data milega
-  let query = supabase
+let query = supabase
     .from('jobs')
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count', { count: 'exact' })
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count, platform', { count: 'exact' })
     .eq('approved', true)
     .eq('active', true)
     .order('featured_until', { ascending: false, nullsFirst: false }) 

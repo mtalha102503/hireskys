@@ -758,7 +758,7 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
       // 📥 FETCH JOBS (Isme description bhi mangwa li taake skills usme dhoond sakein)
       const { data: recentJobs } = await supabase
     .from('jobs')
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, description')
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, description, platform')
     .gte('date_posted', twoDaysAgo.toISOString())
     .eq('active', true)
     .eq('approved', true)
@@ -851,7 +851,7 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
    // 🟢 1. Base Query (Added application_count for trending sorting)
    let query = supabase
      .from('jobs')
-     .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count', { count: 'exact' });
+     .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count, platform', { count: 'exact' });
 
    // 🟢 2. DYNAMIC SORTING LOGIC (Trending vs New)
    if (sortOrder === 'trending') {
@@ -977,7 +977,7 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
     setIsFallback(true); 
     const { data: fallbackData } = await supabase
     .from('jobs')
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count') 
+    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count, platform')
     .eq('approved', true)
     .eq('active', true)
     .order('date_posted', { ascending: false })

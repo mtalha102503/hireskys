@@ -78,6 +78,48 @@ const countryData = countryMap[cKey] || { code: null, flag: "🌍", name: item.c
         totalCount: uiElements.length
     };
 };
+// 🆕 JOBADDER-ONLY LOCATION LOGIC
+// Yeh function bilkul alag/isolated hai — parseComplexLocation ya
+// getSmartLocationUI ko kahin se touch nahi karta, isliye purani
+// (Greenhouse/Lever/Ashby) jobs pe koi asar nahi padega.
+// Backend format expected: "Remote (Country (City))" ya "Remote (Country)"
+const getSmartLocationUI_JobAdder = (locationString: string) => {
+    if (!locationString) {
+        return { matched: [{ name: "Global", flag: "🌍", code: null, isImage: false }], isRemote: true, hasMore: false, totalCount: 1 };
+    }
+
+    let cleanStr = locationString.replace(/Remote\s*/i, '').trim();
+    if (cleanStr.startsWith('(') && cleanStr.endsWith(')')) {
+        cleanStr = cleanStr.slice(1, -1).trim();
+    }
+
+    const match = cleanStr.match(/^([^(]+?)(?:\s*\(([^)]+)\))?$/);
+
+    if (!match) {
+        return { matched: [{ name: locationString, flag: "🌍", code: null, isImage: false }], isRemote: true, hasMore: false, totalCount: 1 };
+    }
+
+    const countryName = match[1].trim();
+    const city = match[2] ? match[2].trim() : "";
+
+    const cKey = countryName.toUpperCase();
+    const countryData = countryMap[cKey] || { code: null, flag: "🌍", name: countryName };
+
+    // Flag hamesha country ka, text me City + Country dono
+    const displayName = city ? `${city}, ${countryData.name}` : countryData.name;
+
+    return {
+        matched: [{
+            flag: countryData.flag,
+            code: countryData.code,
+            name: displayName === "Worldwide" ? "Global" : displayName,
+            isImage: !!countryData.code
+        }],
+        isRemote: locationString.toLowerCase().includes('remote'),
+        hasMore: false,
+        totalCount: 1
+    };
+};
 // 🚀 GUEST JOB ALERT COMPONENT (Multi-Select Skills ke sath)
 const GuestJobAlert = () => {
     // 1. State mein 'skill' ki jagah 'skills' array bana diya
@@ -805,7 +847,9 @@ const handleApply = async () => {
   const sourceStyle = getSourceStyle(job.source);
 
   // 🟢 NEW SMART LOCATION ENGINE
-  const smartLoc = getSmartLocationUI(job.location);
+  const smartLoc = job.platform === 'JobAdder' 
+    ? getSmartLocationUI_JobAdder(job.location) 
+    : getSmartLocationUI(job.location);
 
   return (
     <div className="min-h-screen pb-24 md:pb-0 bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans">
@@ -1125,7 +1169,9 @@ const handleApply = async () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {relatedJobs.map((rJob) => {
-    const rSmartLoc = getSmartLocationUI(rJob.location || "");
+    const rSmartLoc = rJob.platform === 'JobAdder'
+    ? getSmartLocationUI_JobAdder(rJob.location || "")
+    : getSmartLocationUI(rJob.location || "");
     return (
         <Link 
             key={rJob.id}
@@ -1199,7 +1245,9 @@ const handleApply = async () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {companyJobs.map((cJob) => {
-    const cSmartLoc = getSmartLocationUI(cJob.location || "");
+    const cSmartLoc = cJob.platform === 'JobAdder'
+    ? getSmartLocationUI_JobAdder(cJob.location || "")
+    : getSmartLocationUI(cJob.location || "");
     return (
         <Link 
     key={cJob.id} 

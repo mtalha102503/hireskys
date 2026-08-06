@@ -10,7 +10,7 @@ const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const BASE_URL = 'https://www.hireskys.com'; 
-export const revalidate = 3600; // 1 hour (60 * 60 seconds)
+export const revalidate = 86400;
 
 // 🔥 THE FIX: SAFE DATE HELPER FUNCTION
 // This guarantees we never pass an invalid date to the sitemap
@@ -142,9 +142,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly', 
     priority: 0.8, 
   }));
+// ==========================================
+// 7️⃣TOOLS DIRECTORY (main page + category filters + individual tools)
+// ==========================================
+const { data: toolsForSitemap } = await supabase
+  .from('tools_directory')
+  .select('slug, category, created_at')
+  .eq('is_active', true);
 
+let toolsRoutes: MetadataRoute.Sitemap = [];
+
+if (toolsForSitemap) {
+  // Main directory page: /tools
+  toolsRoutes.push({
+    url: `${BASE_URL}/tools`,
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.8,
+  });
+
+  // Category filter pages: /tools?category=X
+  // Only categories that actually have at least one active tool.
+  const uniqueToolCategories = Array.from(
+    new Set(toolsForSitemap.map((t) => t.category))
+  );
+
+  uniqueToolCategories.forEach((cat) => {
+    toolsRoutes.push({
+      url: `${BASE_URL}/tools?category=${encodeURIComponent(cat)}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    });
+  });
+
+  // Individual tool detail pages: /tools/[slug]
+  toolsForSitemap.forEach((tool) => {
+    toolsRoutes.push({
+      url: `${BASE_URL}/tools/${tool.slug}`,
+      lastModified: getSafeDate(tool.created_at),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    });
+  });
+}
   // ==========================================
-  // 7️⃣ PROGRAMMATIC SEO PAGES
+  // 8️⃣ PROGRAMMATIC SEO PAGES
   // ==========================================
   const { data: seoPages } = await supabase
     .from('seo_pages')
@@ -170,6 +213,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...jobRoutes, 
     ...companyRoutes,
     ...blogRoutes,
-    ...pseoRoutes 
+    ...pseoRoutes,
+    ...toolsRoutes 
   ];
 }

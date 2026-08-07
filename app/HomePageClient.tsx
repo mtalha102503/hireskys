@@ -145,44 +145,6 @@ const getSmartLocationUI = (locationString: string) => {
         totalCount: uiElements.length
     };
 };
- // 🆕 JOBADDER-ONLY LOCATION LOGIC (HomePageClient)
-// parseComplexLocation/getSmartLocationUI ko bilkul touch nahi karta,
-// isliye Greenhouse/Lever/Ashby wali jobs pe koi asar nahi.
-const getSmartLocationUI_JobAdder = (locationString: string) => {
-    if (!locationString) {
-        return { matched: [{ name: "Global", flag: "🌍", code: null, isImage: false }], isRemote: true, hasMore: false, totalCount: 1 };
-    }
-
-    let cleanStr = locationString.replace(/Remote\s*/i, '').trim();
-    if (cleanStr.startsWith('(') && cleanStr.endsWith(')')) {
-        cleanStr = cleanStr.slice(1, -1).trim();
-    }
-
-    const match = cleanStr.match(/^([^(]+?)(?:\s*\(([^)]+)\))?$/);
-    if (!match) {
-        return { matched: [{ name: locationString, flag: "🌍", code: null, isImage: false }], isRemote: true, hasMore: false, totalCount: 1 };
-    }
-
-    const countryName = match[1].trim();
-    const city = match[2] ? match[2].trim() : "";
-
-    const cKey = countryName.toUpperCase();
-    const countryData = countryMap[cKey] || { code: null, flag: "🌍", name: countryName };
-
-    const displayName = city ? `${city}, ${countryData.name}` : countryData.name;
-
-    return {
-        matched: [{
-            flag: countryData.flag,
-            code: countryData.code,
-            name: displayName === "Worldwide" ? "Global" : displayName,
-            isImage: !!countryData.code
-        }],
-        isRemote: locationString.toLowerCase().includes('remote'),
-        hasMore: false,
-        totalCount: 1
-    };
-};
 export default function Home({
     seoCategory,
     seoLocation,
@@ -2048,9 +2010,7 @@ return (
                 </div>
                 
                 {featuredJobs.map((job) => {
-                    const smartLoc = job.platform === 'JobAdder'
-    ? getSmartLocationUI_JobAdder(job.location || "")
-    : getSmartLocationUI(job.location || "");
+                    const smartLoc = getSmartLocationUI(job.location || "");
                     const isApplied = appliedJobs.includes(job.id);
                     const isSaved = savedJobIds.includes(job.id);
                     const cleanSourceName = job.source ? job.source.trim().toLowerCase() : "";
@@ -2177,9 +2137,7 @@ return (
 // 🚀 STEP 1: index add kiya taake hum count kar saken
           jobs.map((job, index) => {
             // 🟢 1. Tumhara Sara Original Logic
-            const smartLoc = job.platform === 'JobAdder'
-    ? getSmartLocationUI_JobAdder(job.location || "")
-    : getSmartLocationUI(job.location || "");
+            const smartLoc = getSmartLocationUI(job.location || "");
             const jobDate = new Date(job.date_posted);
             const now = new Date();
             const diffHrs = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 60 * 60));

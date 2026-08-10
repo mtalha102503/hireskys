@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { unstable_cache } from 'next/cache'; // 🚀 EGRESS FIX
 import { createClient } from '@supabase/supabase-js';
 import Navbar from '@/components/Navbar';
 import ToolsGrid from './ToolsGridClient';
@@ -12,6 +13,26 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Page ko cache karne ke liye (Next.js ISR)
 export const revalidate = 3600;
+
+// ---------------------------------------------------------------------
+// 🚀 EGRESS FIX: query khud category-independent hai (poori list fetch
+// hoti hai, filter JS me hota hai) — lekin page `searchParams` use karta
+// hai isliye Next route ko dynamic bana deta hai aur `revalidate` route-level
+// pe kaam nahi karta. unstable_cache se query-level pe cache karo taake
+// chahe URL/category kuch bhi ho, DB sirf 1 ghante me ek baar hit ho.
+// ---------------------------------------------------------------------
+const getAllTools = unstable_cache(
+  async () => {
+    const { data, error } = await supabase
+      .from('tools_directory')
+      .select('name, slug, category, description, pricing_model, logo_url')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+    return { data, error };
+  },
+  ['tools-directory-all'],
+  { revalidate: 3600 }
+);
 
 // ---------------------------------------------------------------------
 // FIX: dynamic metadata based on ?category= — each category now gets its
@@ -69,11 +90,8 @@ export default async function ToolsDirectory({
 }) {
   const { category } = await searchParams;
 
-  const { data: tools, error } = await supabase
-    .from('tools_directory')
-    .select('name, slug, category, description, pricing_model, logo_url')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
+  // 🚀 EGRESS FIX: ab cached function call, direct supabase call nahi
+  const { data: tools, error } = await getAllTools();
 
   // Unique categories always computed from the FULL list (not the filtered
   // one), so the pill bar doesn't collapse down to one option once a

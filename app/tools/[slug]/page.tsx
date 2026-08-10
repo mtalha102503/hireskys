@@ -1,4 +1,5 @@
 import { Metadata, ResolvingMetadata } from 'next';
+import { cache } from 'react'; // 🚀 EGRESS FIX
 import { createClient } from '@supabase/supabase-js';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
@@ -22,6 +23,22 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const SITE_URL = 'https://www.hireskys.com';
 
 // ---------------------------------------------------------------------
+// 🚀 EGRESS FIX: generateMetadata aur ToolDetailsPage dono same slug
+// fetch karte the independently (2x select('*') per page view).
+// React cache() se same request cycle me dono ek hi query share karenge.
+// .maybeSingle() bhi use kiya taake missing/inactive slug pe 406 error
+// na aaye (jaisa seo_pages me tha).
+// ---------------------------------------------------------------------
+const getCachedTool = cache(async (slug: string) => {
+  const { data, error } = await supabase
+    .from('tools_directory')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle();
+  return { data, error };
+});
+
+// ---------------------------------------------------------------------
 // 1. DYNAMIC METADATA (SEO)
 // ---------------------------------------------------------------------
 export async function generateMetadata(
@@ -30,11 +47,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
 
-  const { data: tool } = await supabase
-    .from('tools_directory')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  const { data: tool } = await getCachedTool(slug);
 
   // FIX: tool not found -> tell crawlers not to index this metadata state.
   // The actual page will 404 via notFound() below, but metadata can still
@@ -113,11 +126,9 @@ export default async function ToolDetailsPage({
 }) {
   const { slug } = await params;
 
-  const { data: tool, error } = await supabase
-    .from('tools_directory')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  // 🚀 EGRESS FIX: same cached call jo generateMetadata ne use kiya —
+  // is request cycle me dobara DB hit nahi hogi
+  const { data: tool, error } = await getCachedTool(slug);
 
   // FIX: real 404 status code instead of a 200 "not found" page (soft-404).
   // Requires app/tools/[slug]/not-found.tsx (or a shared one) to render nicely.

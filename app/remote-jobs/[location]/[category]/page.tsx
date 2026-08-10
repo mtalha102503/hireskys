@@ -3,10 +3,30 @@ import { supabase } from '@/lib/supabaseClient';
 import HomePageClient from '@/app/HomePageClient';
 import { CATEGORIES } from '@/lib/categories'; // 👈 Naya Import
 import { Suspense } from 'react';
+import { unstable_cache } from 'next/cache'; // 🚀 EGRESS FIX: thundering-herd dedupe
 export const revalidate = 3600;
 type Props = {
     params: Promise<{ location: string; category: string }>
 }
+
+// ---------------------------------------------------------------------
+// 🚀 EGRESS FIX: naye/never-cached URLs pe jab multiple bots ek sath
+// hit karte hain, ISR miss hone tak har request apni alag query bhejti
+// thi (thundering herd). Ab url_path ke hisaab se cache hoga — same
+// path pe concurrent/repeat hits ek hi query share karengi.
+// ---------------------------------------------------------------------
+const getCachedSeoStatus = unstable_cache(
+    async (dbUrlPath: string) => {
+        const { data } = await supabase
+            .from('seo_pages')
+            .select('is_indexed')
+            .eq('url_path', dbUrlPath)
+            .maybeSingle();
+        return data;
+    },
+    ['seo-page-status'],
+    { revalidate: 3600 }
+);
 
 function formatUrlParam(param: string) {
     if (!param || param.toLowerCase() === 'all' || param.toLowerCase() === 'worldwide') return 'All';
@@ -64,11 +84,7 @@ export async function generateMetadata(
 
     // 🚀 THE NEW SEO BOT SHIELD (Lightning Fast)
     // Ab hum jobs count nahi karenge, direct apna VIP SEO table check karenge!
-    const { data: seoData } = await supabase
-        .from('seo_pages')
-        .select('is_indexed')
-        .eq('url_path', dbUrlPath)
-        .maybeSingle();
+    const seoData = await getCachedSeoStatus(dbUrlPath);
 
     // Agar table mein record nahi hai, YA is_indexed FALSE hai, toh Google ko block kardo!
     const shouldIndex = seoData?.is_indexed === true;

@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// force-dynamic aur revalidate=0 hata diya —
+// ab hum khud Cache-Control header se 15-hour caching control kar rahe hain (neeche dekho)
 
+// Supabase Client Initialization — URL wahi purana (seedha Supabase), koi change nahi
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Feed size ko control me rakhne ke liye limit + description truncation
-const MAX_JOBS = 8000;
-const DESC_MAX_LENGTH = 700;
-
+// Helper function: Jooble ke mandatory DD.MM.YYYY date format ke liye
 function formatJoobleDate(dateInput: string | Date): string {
   const d = new Date(dateInput);
   const day = String(d.getDate()).padStart(2, '0');
@@ -20,6 +18,7 @@ function formatJoobleDate(dateInput: string | Date): string {
   return `${day}.${month}.${year}`;
 }
 
+// Helper function: XML characters ko escape karne ke liye
 function escapeXml(unsafe: string): string {
   if (!unsafe) return '';
   return unsafe.replace(/[<>&'"]/g, (c) => {
@@ -34,30 +33,15 @@ function escapeXml(unsafe: string): string {
   });
 }
 
-// 🆕 HTML tags hatao aur ek reasonable length tak trim karo,
-// taake feed ka size manageable rahe aur ISR/response-size limit cross na ho
-function cleanAndTruncateDescription(html: string): string {
-  if (!html) return '';
-  // HTML tags hatao
-  const plainText = html
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  if (plainText.length <= DESC_MAX_LENGTH) return plainText;
-  return plainText.slice(0, DESC_MAX_LENGTH).trim() + '...';
-}
-
 export async function GET() {
   try {
+    // 2. Fetch data directly from your Supabase 'jobs' table
     const { data: jobs, error } = await supabase
       .from('jobs') 
       .select('id, title, slug, source, company_logo_url, location, description, created_at, salary_range, job_type')
       .eq('active', true)
       .eq('approved', true) 
-      .order('created_at', { ascending: false })
-      .limit(MAX_JOBS); // 🆕 safety cap taake feed hamesha size-limit ke andar rahe
+      .order('created_at', { ascending: false });
 
     if (error) {
       throw new Error(`Supabase Query Failed: ${error.message}`);
@@ -67,19 +51,21 @@ export async function GET() {
       return new NextResponse(`<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, { 
         headers: { 
           'Content-Type': 'application/xml',
-          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+          // Khaali response ko cache karne ki zaroorat nahi
+          'Cache-Control': 'no-store',
         } 
       });
     }
 
+    // 3. Construct XML Feed
     let xmlItems = '';
 
     for (const job of jobs) {
+      // Link structure '/jobs/' wala
       const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
+
+      // Location checking logic - Remote (Global) ko United States map kar diya
       const xmlLocation = job.location === "Remote (Global)" ? "United States" : job.location;
-      const cleanDescription = cleanAndTruncateDescription(job.description); // 🆕
 
       const expireDate = new Date(job.created_at);
       expireDate.setDate(expireDate.getDate() + 60);
@@ -91,7 +77,7 @@ export async function GET() {
     <link><![CDATA[${jobUrl}]]></link>
     <name><![CDATA[${job.title}]]></name>
     <region><![CDATA[${xmlLocation}]]></region>
-    <description><![CDATA[${cleanDescription}]]></description>
+    <description><![CDATA[${job.description}]]></description>
     <pubdate>${formatJoobleDate(job.created_at)}</pubdate>
     <updated>${formatJoobleDate(job.created_at)}</updated>
     <company><![CDATA[${job.source}]]></company>
@@ -104,17 +90,23 @@ export async function GET() {
 
     const fullXml = `<?xml version="1.0" encoding="utf-8"?>\n<jobs>${xmlItems}\n</jobs>`;
 
+    // 4. Response ab 15 hours (54000 seconds) ke liye publicly
+    // cacheable hai (Vercel Edge Cache). Is 15-hour window ke andar
+    // jitni baar bhi Jooble bot ye feed maangega, Vercel edge se hi
+    // serve hoga — Supabase ko bilkul touch nahi karega.
+    // stale-while-revalidate = agar cache expire ho jaye, purana
+    // response turant serve hoga jab tak background me naya fetch ho —
+    // isse bot ko kabhi error/khaali response nahi milega.
     return new NextResponse(fullXml, {
       headers: {
         'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
+        'Cache-Control': 'public, s-maxage=54000, stale-while-revalidate=3600',
       },
     });
 
   } catch (error) {
     console.error("Jooble XML Feed Error:", error);
+    // Silent fail fallback for bots
     return new NextResponse(
       `<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, 
       { 

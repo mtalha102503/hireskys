@@ -68,7 +68,7 @@ export async function generateMetadata(
         .from('seo_pages')
         .select('is_indexed')
         .eq('url_path', dbUrlPath)
-        .single();
+        .maybeSingle();
 
     // Agar table mein record nahi hai, YA is_indexed FALSE hai, toh Google ko block kardo!
     const shouldIndex = seoData?.is_indexed === true;

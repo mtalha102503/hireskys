@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// 1. Next.js Route Config to disable caching
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// force-dynamic aur revalidate=0 hata diya —
+// ab hum khud Cache-Control header se 15-hour caching control kar rahe hain (neeche dekho)
 
-// Supabase Client Initialization
+// Supabase Client Initialization — URL wahi purana (seedha Supabase), koi change nahi
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -53,7 +52,8 @@ function escapeXml(unsafe: string): string {
 
 export async function GET() {
   try {
-    // 1. Fetch data from Supabase. Added 'link' column for the Original ATS URL
+    // 1. Fetch data from Supabase (via Cloudflare Worker cache proxy).
+    // Added 'link' column for the Original ATS URL
     const { data: jobs, error } = await supabase
       .from('jobs') 
       .select('id, title, slug, source, company_logo_url, location, description, created_at, salary_range, job_type, link')
@@ -69,9 +69,8 @@ export async function GET() {
       return new NextResponse(`<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, { 
         headers: { 
           'Content-Type': 'application/xml',
-          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+          // Khaali response ko cache karne ki zaroorat nahi
+          'Cache-Control': 'no-store',
         } 
       });
     }
@@ -80,7 +79,7 @@ export async function GET() {
     let xmlItems = '';
 
     for (const job of jobs) {
-      const jobUrl = `https://www.hireskys.com/jobs/${job.slug}`;
+      const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
       const expireDate = new Date(job.created_at);
       expireDate.setDate(expireDate.getDate() + 60);
 
@@ -104,13 +103,17 @@ export async function GET() {
 
     const fullXml = `<?xml version="1.0" encoding="utf-8"?>\n<jobs>${xmlItems}\n</jobs>`;
 
-    // 3. Return response with strictly NO-CACHE headers
+    // 3. Response ab 15 hours (54000 seconds) ke liye publicly
+    // cacheable hai (Vercel Edge Cache). Is 15-hour window ke andar
+    // jitni baar bhi Talent.com/Jooble bot ye feed maangega, Vercel
+    // edge se hi serve hoga — Supabase ko bilkul touch nahi karega.
+    // stale-while-revalidate = agar cache expire ho jaye, purana
+    // response turant serve hoga jab tak background me naya fetch ho —
+    // isse bot ko kabhi error/khaali response nahi milega.
     return new NextResponse(fullXml, {
       headers: {
         'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
+        'Cache-Control': 'public, s-maxage=54000, stale-while-revalidate=3600',
       },
     });
 

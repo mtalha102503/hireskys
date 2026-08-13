@@ -132,9 +132,9 @@ export default function Footer() {
                 <InstagramIcon className="w-4 h-4" />
               </a>
               {/* 🟢 UPDATED: THREADS LINK */}
-<a href="https://www.threads.net/@hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-black hover:bg-slate-200 dark:hover:bg-white/10 dark:hover:text-white transition-all duration-300">
-  <FaThreads className="w-4 h-4" />
-</a>
+              <a href="https://www.threads.net/@hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-black hover:bg-slate-200 dark:hover:bg-white/10 dark:hover:text-white transition-all duration-300">
+                <FaThreads className="w-4 h-4" />
+              </a>
               <a href="https://discord.gg/BmfgGfX5" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#5865F2] hover:bg-[#5865F2]/10 dark:hover:bg-[#5865F2]/20 dark:hover:text-[#5865F2] transition-all duration-300">
                 <DiscordIcon className="w-4 h-4" />
               </a>
@@ -144,6 +144,24 @@ export default function Footer() {
               {/* 🟢 NEW: EMAIL LINK */}
               <a href="mailto:contact@hireskys.com" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all duration-300">
                 <MailIcon className="w-4 h-4" />
+              </a>
+            </div>
+
+            {/* 🚀 NEW: PRODUCT HUNT BADGE */}
+            <div className="pt-4">
+              <a 
+                href="https://www.producthunt.com/products/hireskys/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-hireskys" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block transition-transform duration-300 hover:scale-[1.03] active:scale-95 origin-left"
+              >
+                <img 
+                  src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1272186&theme=dark" 
+                  alt="HireSkys - Manually Verified remote jobs. Zero ghost listings. | Product Hunt" 
+                  style={{ width: '250px', height: '54px' }} 
+                  width="250" 
+                  height="54" 
+                />
               </a>
             </div>
           </div>

@@ -1577,5 +1577,123 @@ export const BLOG_POSTS: BlogPost[] = [
           </div>
       </div>
       `
-}
+},
+{
+    slug: 'transparent-job-posting-refund-policy',
+    title: 'Total Transparency: How Job Posting, Premium Boosts, and Refunds Work on HireSkys',
+    excerpt: 'We believe in 100% transparency. Here is exactly what happens when you submit a job, how our premium add-ons work, and our iron-clad refund policy.',
+    date: 'Aug 14, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png', 
+    category: 'Trust & Safety',
+    image: '/blog-transparency.webp', // Make sure to add this image to your public folder
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        At HireSkys, we are building a different kind of remote job board. We don't believe in hidden fees, confusing subscriptions, or trapping employers into long-term contracts. 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Whether you are posting a free job or using our premium tools to hire faster, we want you to know exactly how our system works behind the scenes. Here is the complete breakdown of our review process, our premium add-ons, and our commitment to fair refunds.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Step 1: The Manual Review Process
+      </h2>
+      
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Unlike other platforms where anyone can post anything instantly, <strong>every single job submitted to HireSkys goes through a manual review.</strong> 
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        When you click submit, your job enters our "Pending" queue. Our team personally reviews the listing to ensure:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>It is 100% Remote:</strong> We strictly do not allow hybrid or on-site roles.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>It is Legitimate:</strong> We cross-check company details to prevent scams and protect our candidate pool.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>It is Perfectly Formatted:</strong> If your bullet points are broken, we fix them for you before it goes live.</span>
+          </li>
+      </ul>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            This curation keeps our job board high-quality. If a job does not meet our standards, it gets rejected, ensuring top-tier talent only sees the best opportunities.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Step 2: Premium Boosts (A La Carte)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        We offer a <strong>Free Basic Post</strong> for early adopters. However, if you are looking to hire rapidly, you can securely purchase optional premium boosts at checkout. You only pay for what you need:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">📌 Pin to Top</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Keep your job at the very top of our board for 3, 7, or 30 days to get maximum impressions.</p>
+        </div>
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">🎨 Premium Brand Color</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">We auto-extract your company's hex color and use it to highlight your job post so it stands out visually.</p>
+        </div>
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">⏳ Extend to 60 Days</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Double your listing duration from the standard 30 days to 60 days.</p>
+        </div>
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">✉️ Talent Network Blast</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">We will include your job in our highly anticipated weekly newsletter sent directly to thousands of remote workers.</p>
+        </div>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Step 3: Our Iron-Clad Refund Policy
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        All our secure payments are handled by our Merchant of Record, <strong>Gumroad</strong>. We designed our refund policy to be completely risk-free for legitimate employers.
+      </p>
+
+      <ul class="list-disc space-y-3 ml-6 mb-8 text-lg text-slate-700 dark:text-slate-300 marker:text-emerald-500 marker:font-bold">
+        <li class="pl-2"><strong>Rejected Jobs:</strong> If you purchase premium add-ons but your job fails our manual review process (e.g., it is not fully remote), we will automatically refund 100% of your payment. No questions asked.</li>
+        <li class="pl-2"><strong>Accidental Purchases:</strong> If you made a mistake at checkout and your job has not been published yet, just email our support team within 7 days, and we will reverse the charge.</li>
+        <li class="pl-2"><strong>Used Features:</strong> Once a job is successfully approved, published, and the premium features (like the Email Blast or Pinning) are actively delivered, refunds are no longer available.</li>
+      </ul>
+
+      <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+              <div class="absolute -top-20 -left-20 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full"></div>
+              <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full"></div>
+          </div>
+
+          <div class="relative z-10">
+            <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Hire with absolute confidence.</h3>
+            <p class="text-slate-300 mb-8 text-lg font-medium">Enjoy a transparent, spam-free, and high-quality hiring experience.</p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="/post-job" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-black rounded-xl transition-transform hover:-translate-y-1 shadow-lg shadow-indigo-500/30 no-underline">
+                    Post a Remote Job
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+          </div>
+      </div>
+    `
+  }
 ];

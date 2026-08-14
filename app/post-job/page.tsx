@@ -88,7 +88,18 @@ export default function PostJob() {
   // 🖼️ UPLOAD STATES
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // 🚀 VIP JADOO: Premium Add-ons States
+  const [duration, setDuration] = useState(30);
+  const [pinDays, setPinDays] = useState(0);
+  const [brandColorPaid, setBrandColorPaid] = useState(false);
+  const [newsletterPaid, setNewsletterPaid] = useState(false); // 👈 Nayi State
 
+  // 💰 VIP JADOO: Dynamic Price Calculator for UI
+  const totalPrice = 
+    (duration === 60 ? 25 : 0) + 
+    (pinDays === 3 ? 20 : pinDays === 7 ? 50 : pinDays === 30 ? 100 : 0) + 
+    (brandColorPaid ? 20 : 0) +
+    (newsletterPaid ? 50 : 0); // 👈 Email ka $50 add kar diya
   const [formData, setFormData] = useState({
     title: '',
     applicationLink: '', // 👈 Naya
@@ -198,7 +209,7 @@ export default function PostJob() {
     window.scrollTo(0, 0);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -209,12 +220,12 @@ export default function PostJob() {
     }
 
     try {
-      const { error } = await supabase.from('job_submissions').insert([
+      const { data, error } = await supabase.from('job_submissions').insert([
         {
           magic_link: isLocked ? magicLink : null,
           title: isLocked ? null : formData.title,
-          application_link: isLocked ? magicLink : formData.applicationLink, // 👈 Link set
-          experience_level: formData.experienceLevel, // 👈 Naya
+          application_link: isLocked ? magicLink : formData.applicationLink,
+          experience_level: formData.experienceLevel,
           description: isLocked ? null : formData.description,
           location: formData.location,
           salary_range: formData.salary,
@@ -224,15 +235,30 @@ export default function PostJob() {
           company_name: formData.companyName,
           company_email: formData.companyEmail,
           company_website: formData.companyWebsite,
-          company_social: formData.companySocial, // 👈 Naya
+          company_social: formData.companySocial,
           company_logo_url: formData.companyLogoUrl, 
           brand_color: formData.brandColor,          
-          status: 'pending'
+          status: totalPrice > 0 ? 'awaiting_payment' : 'pending', // 👈 Status changed based on price
+          duration: duration,
+          pin_days: pinDays,
+          has_brand_color: brandColorPaid,
+          has_newsletter: newsletterPaid
         }
-      ]);
+      ]).select(); // 👈 .select() add kiya taake humein ID wapis milay
 
       if (error) throw error;
 
+      const newJobId = data[0].id;
+
+      // 🚀 REDIRECT LOGIC
+      if (totalPrice > 0) {
+        // Gumroad par redirect karo with dynamic price and job_id
+        const checkoutUrl = `https://hireskys.gumroad.com/l/nnxkg?price=${totalPrice}&job_id=${newJobId}&wanted=true`;
+        window.location.href = checkoutUrl;
+        return; // Function yahin rok do
+      }
+
+      // Agar Free (0$) hai toh normal success message dikhao
       setSuccess(true);
       setFormData({ 
         title: '', applicationLink: '', location: '', salary: '', jobType: 'Full-time', experienceLevel: 'Not Specified', description: '', 
@@ -241,6 +267,7 @@ export default function PostJob() {
       setMagicLink('');
       setIsLocked(false);
       setCurrentStep(1); 
+      setDuration(30); setPinDays(0); setBrandColorPaid(false);
       window.scrollTo(0, 0);
 
     } catch (error: any) {
@@ -527,7 +554,7 @@ export default function PostJob() {
                         <div>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                             {Object.entries(CATEGORIES).map(([catName, data]) => {
-                              const Icon = data.icon;
+                              const Icon = (data as any).icon;
                               const isSelected = formData.category === catName;
                               return (
                                 <button
@@ -554,7 +581,7 @@ export default function PostJob() {
                               Select Skills (Max 3)
                             </label>
                             <div className="flex flex-wrap gap-2">
-                              {CATEGORIES[formData.category as keyof typeof CATEGORIES].sub.map(tag => {
+                              {CATEGORIES[formData.category as keyof typeof CATEGORIES].sub.map((tag) => {
                                 const isSelected = formData.tags.includes(tag);
                                 return (
                                   <button
@@ -711,39 +738,133 @@ export default function PostJob() {
                         )}
                       </div>
 
+                      {/* 🎨 VIP JADOO: Locked Brand Color */}
                       <div>
                         <label className="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-2">Brand Color <span className="font-normal normal-case text-indigo-500">(Auto-Extracted)</span></label>
                         <div className="flex items-center gap-3 h-[88px]">
-                          <div className="relative w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden shadow-inner border-2 border-slate-200 dark:border-slate-700">
+                          
+                          {/* Color Picker Box */}
+                          <div className={`relative w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden shadow-inner border-2 ${brandColorPaid ? 'border-fuchsia-500' : 'border-slate-200 dark:border-slate-700 opacity-60'}`}>
                             <input 
                               type="color" 
                               value={formData.brandColor}
                               onChange={(e) => setFormData({...formData, brandColor: e.target.value})}
-                              className="absolute -top-2 -left-2 w-24 h-24 cursor-pointer border-0 p-0"
+                              disabled={!brandColorPaid}
+                              title={!brandColorPaid ? "Enable Premium Brand Color below to unlock" : "Pick your color"}
+                              className={`absolute -top-2 -left-2 w-24 h-24 border-0 p-0 ${brandColorPaid ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                             />
+                            {!brandColorPaid && (
+                              <div className="absolute inset-0 bg-slate-900/10 dark:bg-black/40 flex items-center justify-center backdrop-blur-[1px] pointer-events-none">
+                                <Lock size={16} className="text-slate-500" />
+                              </div>
+                            )}
                           </div>
-                          <div className="flex-1 bg-slate-50 dark:bg-[#151b2d] p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-600 dark:text-slate-300 font-mono flex items-center justify-center h-16">
+
+                          {/* Hex Code Display Box */}
+                          <div className={`flex-1 p-4 rounded-xl border text-sm font-bold font-mono flex items-center justify-between h-16 transition-all ${brandColorPaid ? 'bg-fuchsia-50 dark:bg-fuchsia-900/10 border-fuchsia-200 dark:border-fuchsia-800/50 text-fuchsia-700 dark:text-fuchsia-400' : 'bg-slate-50 dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'}`}>
                             {formData.brandColor.toUpperCase()}
+                            {!brandColorPaid && <span className="text-[10px] text-slate-400 normal-case font-medium">Locked</span>}
                           </div>
+
                         </div>
+                        
                       </div>
                     </div>
                   </div>
-                </div>
-
-                {/* VIP FREE INFO BOX */}
+                  </div>
+                {/* 🟢 VIP JADOO: Updated Green Info Box */}
                 <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/10 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-800/30 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left mb-6">
                   <div className="bg-emerald-100 dark:bg-emerald-800/50 p-3 rounded-2xl text-emerald-600 dark:text-emerald-400 flex-shrink-0 shadow-sm">
-                     <Zap size={28} className="fill-current" />
-                  </div>
+   <CheckCircle size={28} strokeWidth={2.5} />
+</div>
                   <div>
-                     <h3 className="font-black text-emerald-900 dark:text-emerald-300 text-lg">Post for Free (Early Adopter Benefit) 🚀</h3>
-                     <p className="text-sm text-emerald-700 dark:text-emerald-400/80 mt-1.5 font-medium leading-relaxed">
-                       Normal price is <span className="line-through opacity-70">$29/post</span>, but as an early user, your post is <strong className="text-emerald-800 dark:text-emerald-300">100% Free</strong>.
+                     <h3 className="font-black text-emerald-900 dark:text-emerald-300 text-lg">Basic Post is 100% Free 🚀</h3>
+                     <p className="text-sm text-emerald-700 dark:text-emerald-400/80 mt-1.5 mb-4 font-medium leading-relaxed">
+                       Your job will be listed on our board for 30 days. Want to hire 5x faster? Check out the optional premium boosts below.
                      </p>
+
+                     <Link 
+                       href="/blog/transparent-job-posting-refund-policy" 
+                       target="_blank" 
+                       className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md hover:bg-emerald-700 hover:shadow-lg transition-all active:scale-95 w-max mx-auto sm:mx-0"
+                     >
+                        Read Transparency & Refund Policy <ArrowRight size={16} />
+                     </Link>
                   </div>
                 </div>
+                {/* 🚀 VIP JADOO: BOOST YOUR JOB (UPSells) */}
+                <div className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-[#111625] p-6 md:p-8 rounded-3xl border border-indigo-200 dark:border-indigo-500/30 shadow-lg dark:shadow-2xl mb-8 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/10 dark:bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+                  
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                    <Zap className="text-amber-500 dark:text-amber-400 fill-amber-500 dark:fill-amber-400" size={24} /> Boost Your Reach
+                  </h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 font-medium">Stand out from the crowd and hire 5x faster.</p>
 
+                  <div className="space-y-4 relative z-10">
+                    
+                    {/* Duration Toggle */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer" onClick={() => setDuration(duration === 30 ? 60 : 30)}>
+                      <div>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm">Extend Duration to 60 Days</h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Keep your job board active for twice as long.</p>
+                      </div>
+                      <div className="flex items-center gap-3 mt-3 sm:mt-0">
+                        <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">+$25</span>
+                        <div className={`w-10 h-6 rounded-full p-1 transition-colors ${duration === 60 ? 'bg-indigo-500' : 'bg-slate-300 dark:bg-slate-700'}`}>
+                          <div className={`w-4 h-4 bg-white rounded-full transition-transform ${duration === 60 ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Email Newsletter Blast Toggle */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer" onClick={() => setNewsletterPaid(!newsletterPaid)}>
+                      <div>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">Blast to Talent Network <Mail size={14} className="text-blue-500 dark:text-blue-400" /></h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Feature this job in our weekly email to 10,000+ remote workers.</p>
+                      </div>
+                      <div className="flex items-center gap-3 mt-3 sm:mt-0">
+                        <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">+$50</span>
+                        <div className={`w-10 h-6 rounded-full p-1 transition-colors ${newsletterPaid ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-700'}`}>
+                          <div className={`w-4 h-4 bg-white rounded-full transition-transform ${newsletterPaid ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Pin to Top Dropdown */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10">
+                      <div className="mb-3 sm:mb-0">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm">Pin to Top of the Board</h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Get 10x more views by staying at the #1 spot.</p>
+                      </div>
+                      <select 
+                        className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 rounded-lg py-2 px-3 text-sm font-bold outline-none focus:border-indigo-500 cursor-pointer"
+                        value={pinDays}
+                        onChange={(e) => setPinDays(Number(e.target.value))}
+                      >
+                        <option value={0}>Don't Pin</option>
+                        <option value={3}>3 Days (+$20)</option>
+                        <option value={7}>7 Days (+$50)</option>
+                        <option value={30}>30 Days (+$100)</option>
+                      </select>
+                    </div>
+
+                    {/* Brand Color Toggle */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer" onClick={() => setBrandColorPaid(!brandColorPaid)}>
+                      <div>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">Enable Premium Brand Color <Sparkles size={14} className="text-fuchsia-500 dark:text-fuchsia-400" /></h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Highlight your post with your extracted hex color.</p>
+                      </div>
+                      <div className="flex items-center gap-3 mt-3 sm:mt-0">
+                        <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">+$20</span>
+                        <div className={`w-10 h-6 rounded-full p-1 transition-colors ${brandColorPaid ? 'bg-fuchsia-500' : 'bg-slate-300 dark:bg-slate-700'}`}>
+                          <div className={`w-4 h-4 bg-white rounded-full transition-transform ${brandColorPaid ? 'translate-x-4' : 'translate-x-0'}`}></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
                 {/* 🚀 BUTTONS FOR STEP 2 */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button 
@@ -753,13 +874,21 @@ export default function PostJob() {
                   >
                     <ArrowLeft size={20} /> Back
                   </button>
+
+                  {/* 🚀 VIP JADOO: Dynamic Submit Button */}
                   <button 
                     type="submit" 
                     disabled={loading}
-                    className="flex-1 py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xl font-black rounded-2xl hover:bg-indigo-600 dark:hover:bg-slate-200 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.01] active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className={`flex-1 py-5 text-xl font-black rounded-2xl transition-all shadow-xl hover:shadow-2xl hover:scale-[1.01] active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed ${
+                      totalPrice > 0 
+                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/30' 
+                        : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200'
+                    }`}
                   >
                     {loading ? (
-                      <><Loader2 className="animate-spin" /> Submitting to Admin...</>
+                      <><Loader2 className="animate-spin" /> Processing...</>
+                    ) : totalPrice > 0 ? (
+                      <>Proceed to Payment (${totalPrice}) <ArrowRight size={20} /></>
                     ) : (
                       <>Submit Job for Free <CheckCircle size={20} /></>
                     )}

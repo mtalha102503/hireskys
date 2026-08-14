@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 // 🚀 POST A JOB SEO METADATA
 export const metadata: Metadata = {
-  title: "Post a Remote Job for Free | HireSkys",
+  title: "Post a Remote Job for Free",
   description: "Hire top-tier remote developers, designers, and tech professionals. Post your 100% remote or freelance job for free on HireSkys and reach thousands of verified candidates.",
   
   alternates: {

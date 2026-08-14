@@ -99,6 +99,15 @@ const BLOG_POSTS = [
   category: 'Weekly Roundups',
   image: '/june-four-week-jobs.webp',
   },
+  {
+  slug: 'transparent-job-posting-refund-policy',
+  title: 'Total Transparency: How Job Posting, Premium Boosts, and Refunds Work on HireSkys',
+  excerpt: 'We believe in 100% transparency. Here is exactly what happens when you submit a job, how our premium add-ons work, and our iron-clad refund policy.',
+  date: 'Aug 14, 2026',
+  author: 'Muhammad Talha',
+  category: 'Trust & Safety',
+  image: '/blog-transparency.webp',
+  },
 ];
 
 export default function BlogIndex() {

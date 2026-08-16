@@ -798,194 +798,85 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
 
       setFeaturedJobs(topMatches);
   };
-  async function fetchJobs(pageNumber = 0, reset = false, isExact = false) {
-    if (reset) {
-        setLoading(true);
-        setHasMore(true);
-    } else {
-        setLoadingMore(true);
-    }
-
-    const from = pageNumber * JOBS_PER_PAGE;
-    const to = from + JOBS_PER_PAGE - 1;
-   // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
-    // 🟢 1. Pehle Base Query bana lo (Aur yahi par 'let' laga do)
-   // 🟢 1. Base Query (Added application_count for trending sorting)
-   let query = supabase
-     .from('jobs')
-     .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count, platform', { count: 'exact' });
-
-   // 🟢 2. DYNAMIC SORTING LOGIC (Trending vs New)
-   if (sortOrder === 'trending') {
-     // Trending Logic: Sort by application count, restricted to last 30 days
-     const thirtyDaysAgo = new Date();
-     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-     
-     query = query
-       .gte('date_posted', thirtyDaysAgo.toISOString()) // Sirf last 30 din ki
-       .order('application_count', { ascending: false }) // Sab se zyada apply hui
-       .order('date_posted', { ascending: false });
-   } else {
-     // New Logic: Default sorting
-     query = query
-       .order('featured_until', { ascending: false, nullsFirst: false }) 
-       .order('date_posted', { ascending: false });
-   }
-
-    // 🟢 2. POWERFUL SEARCH LOGIC (NOW POWERED BY TYPESENSE ⚡)
-    if (searchQuery && searchQuery.trim().length > 1) {
-        try {
-           const searchResults = await typesenseSearchClient.collections('jobs').documents().search({
-                q: searchQuery.trim(),
-                query_by: 'title,category,tags,source',
-                per_page: 250, // 🚀 FIX 1: Thora zyada data uthao taake Supabase ke paas latest sort karne ka margin ho
-                num_typos: (forceExact || isExact) ? 0 : 2,
-                sort_by: 'date_posted:desc' // 🚀 FIX 2: Typesense ko force karo ke naye jobs pehle de!
-            });
-
-            // 2. Jo jobs match huin, unki IDs nikal lo
-            const matchedIds = searchResults.hits?.map((hit: any) => parseInt(hit.document.id)) || [];
-
-            if (matchedIds.length === 0) {
-                 // Agar kuch nahi mila toh empty UI dikhao
-                 if (reset) {
-                     setJobs([]);
-                     setTotalCount(0);
-                 }
-                 setHasMore(false);
-                 setLoading(false);
-                 setLoadingMore(false);
-                 return; // Query yahin rok do
-            }
-
-            // 3. Supabase ko kaho ke sirf yeh wali IDs le kar aaye!
-            query = query.in('id', matchedIds);
-
-        } catch (tsError) {
-            console.error("Typesense Search Error:", tsError);
-            // Fallback (Agar Typesense mein koi masla aye toh purana Supabase search chalao)
-            const searchWords = searchQuery.trim().split(/\s+/);
-            searchWords.forEach(word => {
-                query = query.or(`title.ilike.%${word}%,source.ilike.%${word}%,category.ilike.%${word}%`);
-            });
-        }
-    }
+  
+ async function fetchJobs(pageNumber = 0, reset = false, isExact = false) {
+    if (reset) { setLoading(true); setHasMore(true); } else { setLoadingMore(true); }
     
-    if (filterJobType) {
-        query = query.eq('job_type', filterJobType);
-    }
+    const filters: string[] = ['approved:=true', 'active:=true'];
+console.log("🔍 FETCHING FROM:", "TYPESENSE", { filters, searchQuery });
+    if (filterJobType) filters.push(`job_type:=${filterJobType}`);
 
     if (filterDate) {
         const now = new Date();
-        if (filterDate === '24h') {
-            now.setDate(now.getDate() - 1);
-        } else if (filterDate === '7d') {
-            now.setDate(now.getDate() - 7);
-        } else if (filterDate === '30d') {
-            now.setDate(now.getDate() - 30);
-        }
-        query = query.gte('date_posted', now.toISOString());
+        if (filterDate === '24h') now.setDate(now.getDate() - 1);
+        if (filterDate === '7d') now.setDate(now.getDate() - 7);
+        if (filterDate === '30d') now.setDate(now.getDate() - 30);
+        filters.push(`date_posted_ts:>=${now.getTime()}`);
     }
 
     if (filterCountry) {
-        if (filterCountry === 'Worldwide') {
-            // Worldwide ke multiple variations check karega
-            query = query.or('location.ilike.%Global%,location.ilike.%Worldwide%,location.ilike.%Anywhere%');
-        } else {
-            // Dropdown se aane wale name se 2-letter Code nikal lo (e.g., United States -> US)
-            const upperLoc = filterCountry.toUpperCase();
-            const cData = countryMap[upperLoc]; 
-            
-            if (cData && cData.code === 'US') {
-                // 🔥 US ke liye Super Smart Query (US, USA, United States sab dhoondega)
-                query = query.or(`location.ilike.%United States%,location.ilike.%USA%,location.ilike.%(US)%,location.ilike.%US(%,location.ilike.%US %`);
-            } else if (cData && cData.code === 'GB') {
-                // UK ke liye Super Smart Query
-                query = query.or(`location.ilike.%United Kingdom%,location.ilike.%UK%,location.ilike.%(GB)%`);
-            } else if (cData && cData.code) {
-                // Baqi sab countries ke liye (Full name OR 2-letter Code in brackets)
-                query = query.or(`location.ilike.%${filterCountry}%,location.ilike.%(${cData.code})%,location.ilike.%${cData.code}(%`);
-            } else {
-                // Default fallback
-                query = query.ilike('location', `%${filterCountry}%`);
-            }
-        }
+        filters.push(filterCountry === 'Worldwide'
+            ? 'country_codes:=WORLDWIDE'
+            : `country_codes:=${(countryMap[filterCountry.toUpperCase()]?.code) || filterCountry}`);
     }
 
-    query = query.eq('approved', true).eq('active', true).range(from, to);
+    if (activeCategory !== 'All') filters.push(`category:=${activeCategory}`);
+    if (activeSubTag) filters.push(`tags:=${activeSubTag}`);
 
-    if (activeCategory !== 'All') {
-      query = query.ilike('category', `%${activeCategory}%`);
-    }
-
-    if (activeSubTag) {
-        query = query.or(`tags.cs.{${activeSubTag}},title.ilike.%${activeSubTag}%`);
+    if (sortOrder === 'trending') {
+        const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        filters.push(`date_posted_ts:>=${thirtyDaysAgo.getTime()}`);
     }
 
-    let { data, error, count } = await query;
-    if (error) {
-      console.error("Error fetching jobs:", JSON.stringify(error, null, 2));
-      setLoading(false);
-      setLoadingMore(false);
-      return;
-    }
-    if (count !== null && reset) {
-        setTotalCount(count); 
-    } else if (searchQuery && count === null && reset) {
-         setTotalCount(data ? data.length : 0);
-    }
+    try {
+        const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+            q: searchQuery.trim() || '*',
+            query_by: 'title,category,tags,source',
+            filter_by: filters.join(' && '),
+            sort_by: sortOrder === 'trending'
+                ? 'application_count:desc,date_posted_ts:desc'
+                : 'featured_until:desc,date_posted_ts:desc',
+            per_page: JOBS_PER_PAGE,
+            page: pageNumber + 1, // Typesense 1-indexed hota hai
+            num_typos: (forceExact || isExact) ? 0 : 2,
+        });
 
- if ((!data || data.length === 0) && searchQuery && reset) {
-    setIsFallback(true); 
-    const { data: fallbackData } = await supabase
-    .from('jobs')
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count, platform')
-    .eq('approved', true)
-    .eq('active', true)
-    .order('date_posted', { ascending: false })
-    .limit(JOBS_PER_PAGE); // ya jitni chahiye
-            
-        data = fallbackData || []; 
-    } else {
-        if (reset) setIsFallback(false);
-    }
-    if (data) {
-        if (reset) {
-            setJobs(data);
-            
-            // 🚀 THE GOOGLE TYPO MAGIC
-            if (searchQuery && data.length > 0) {
-                const topJob = data[0];
-                const sq = searchQuery?.toLowerCase() || ""; // <-- FIX: Safe string
-// Check karo ke user ne jo likha hai wo exactly title, category ya tags mein hai?
-const isExactMatch = topJob.title?.toLowerCase().includes(sq) || 
-                     topJob.category?.toLowerCase().includes(sq) ||
-                     (topJob.tags && topJob.tags.some((t: string) => t?.toLowerCase().includes(sq))); // <-- FIX: Optional chaining on title, category, and tags
-                
-                if (!isExactMatch) {
-                    // Agar exact match nahi hua (Yani Typo tha), toh us job ka sahi tag ya category suggest karo!
-                    setSuggestedTerm(topJob.tags && topJob.tags.length > 0 ? topJob.tags[0] : topJob.category);
-                } else {
-                    setSuggestedTerm(''); // Sab theek hai toh kuch na dikhao
-                }
-            } else {
-                setSuggestedTerm('');
-            }
-            
-        } else {
-            setJobs(prev => {
-                const existingIds = new Set(prev.map(job => job.id));
-                const uniqueNewJobs = data.filter((job: any) => !existingIds.has(job.id));
-                return [...prev, ...uniqueNewJobs];
+        const data = results.hits?.map((h: any) => h.document) || [];
+        const count = results.found || 0;
+
+        if (reset) setTotalCount(count);
+
+        if (data.length === 0 && searchQuery && reset) {
+            setIsFallback(true);
+            const fb: any = await typesenseSearchClient.collections('jobs').documents().search({
+                q: '*', query_by: 'title', filter_by: 'approved:=true && active:=true',
+                sort_by: 'date_posted_ts:desc', per_page: JOBS_PER_PAGE, page: 1,
             });
+            setJobs(fb.hits?.map((h: any) => h.document) || []);
+        } else {
+            if (reset) setIsFallback(false);
+            if (reset) {
+                setJobs(data);
+                if (searchQuery && data.length > 0) {
+                    const topJob = data[0]; const sq = searchQuery.toLowerCase();
+                    const isExactMatch = topJob.title?.toLowerCase().includes(sq) || topJob.category?.toLowerCase().includes(sq) || (topJob.tags || []).some((t: string) => t?.toLowerCase().includes(sq));
+                    setSuggestedTerm(!isExactMatch ? (topJob.tags?.[0] || topJob.category) : '');
+                } else setSuggestedTerm('');
+            } else {
+                setJobs(prev => {
+                    const existingIds = new Set(prev.map(j => j.id));
+                    return [...prev, ...data.filter((j: any) => !existingIds.has(j.id))];
+                });
+            }
+            if (data.length < JOBS_PER_PAGE) setHasMore(false);
         }
-        if (data.length < JOBS_PER_PAGE) {
-            setHasMore(false);
-        }
+    } catch (err) {
+        console.error("Typesense fetch error:", err);
     }
+
     setLoading(false);
     setLoadingMore(false);
-  }
+}
 
 const handleScrollToTop = () => {
       // Fauran page ko wapis "Jobs" list ke shuru mein scroll kar do

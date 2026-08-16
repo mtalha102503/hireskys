@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import HomePageClient from './HomePageClient'; 
 import { Suspense } from 'react';
-import { supabase } from '@/lib/supabaseClient'; 
+import { typesenseSearchClient } from '@/lib/typesenseClient'; 
 
 export const revalidate = 86400;
 
@@ -109,23 +109,29 @@ export default async function Page({ searchParams }: Props) {
   const to = from + LIMIT - 1;
 
   // 2. 🚀 SERVER SIDE QUERY: Googlebot ko seedha render ho kar data milega
-let query = supabase
-    .from('jobs')
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count, platform', { count: 'exact' })
-    .eq('approved', true)
-    .eq('active', true)
-    .order('featured_until', { ascending: false, nullsFirst: false }) 
-    .order('date_posted', { ascending: false })
-    .range(from, to);
+const categoryRaw = typeof resolvedParams?.category === 'string' && resolvedParams.category !== 'All' ? resolvedParams.category : '';
 
-  // Agar URL mein Category hai, toh server par hi filter kar lo
-  const categoryRaw = typeof resolvedParams?.category === 'string' && resolvedParams.category !== 'All' ? resolvedParams.category : '';
-  if (categoryRaw) {
-      query = query.ilike('category', `%${categoryRaw}%`);
+  const filters: string[] = ['approved:=true', 'active:=true'];
+  if (categoryRaw) filters.push(`category:=${categoryRaw}`);
+
+  let initialJobs: any[] = [];
+  let count = 0;
+
+  try {
+      const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+          q: '*',
+          query_by: 'title,category,tags,source',
+          filter_by: filters.join(' && '),
+          sort_by: 'featured_until:desc,date_posted_ts:desc',
+          per_page: LIMIT,
+          page: pageParam + 1, // Typesense 1-indexed
+      });
+
+      initialJobs = results.hits?.map((h: any) => h.document) || [];
+      count = results.found || 0;
+  } catch (err) {
+      console.error("Typesense SSR fetch error:", err);
   }
-
-  // Data Fetch karo
-  const { data: initialJobs, count } = await query;
 
   const websiteSchema = {
     "@context": "https://schema.org",

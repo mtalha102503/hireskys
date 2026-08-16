@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { CheckCircle2, XCircle, ExternalLink, BrainCircuit, TrendingUp } from 'lucide-react';
+import { CheckCircle2, XCircle, ExternalLink, BrainCircuit, TrendingUp, Clock } from 'lucide-react';
 import { getCourseForSkill, getSafeSlug } from '@/lib/courseDirectory';
 
 interface SkillGapAnalyzerProps {
@@ -29,7 +29,6 @@ export default function SkillGapAnalyzer({ jobSkills, userSkills }: SkillGapAnal
     return "text-rose-500 bg-rose-500/10 border-rose-500/20";
   };
 
-  // 🚀 NAYA LOGIC: Missing skills ko 2 hisson mein taqseem kar diya
   const missingWithCourses = missingSkills.filter(skill => getCourseForSkill(skill));
   const missingWithoutCourses = missingSkills.filter(skill => !getCourseForSkill(skill));
 
@@ -83,32 +82,48 @@ export default function SkillGapAnalyzer({ jobSkills, userSkills }: SkillGapAnal
           
           <div className="flex flex-col gap-4">
             
-            {/* 1. VIP Affiliate Courses (Big Boxes) */}
+            {/* 1. VIP Affiliate Courses (Compact Rows) */}
             {missingWithCourses.length > 0 && (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
                 {missingWithCourses.map(skill => {
                   const courseInfo = getCourseForSkill(skill)!;
                   return (
-                    <div key={skill} className="flex flex-col p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-bold text-slate-700 dark:text-slate-300">{skill}</span>
-                        {courseInfo.badge && (
-                          <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-full">
-                            {courseInfo.badge}
-                          </span>
-                        )}
-                      </div>
-                      <Link href={`/go/${getSafeSlug(skill)}`} target="_blank" className="flex items-center justify-between w-full p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors group">
-                        <span className="truncate pr-2">Learn in {courseInfo.duration}</span>
-                        <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                      </Link>
-                    </div>
+                    
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-indigo-100 dark:border-indigo-500/20 shadow-sm transition-all hover:border-indigo-300 dark:hover:border-indigo-400 group">
+  
+  {/* 👇 LEFT SIDE: Skill Name + Duration + Badge */}
+  <div className="flex flex-wrap items-center gap-2.5">
+    <span className="font-bold text-slate-900 dark:text-white text-sm">
+      {skill}
+    </span>
+    
+    {/* 🕒 NAYA: Time / Duration Badge */}
+    <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900/50 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
+      <Clock size={12} />
+      {courseInfo.duration}
+    </span>
+
+    {/* ✨ FREE TRIAL BADGE (Emoji fixed) */}
+    <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase rounded-md bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm whitespace-nowrap">
+      Free Trial ✨
+    </span>
+  </div>
+  
+  {/* 👇 RIGHT SIDE: Button */}
+  <Link 
+    href={`/go/${getSafeSlug(skill)}`} 
+    target="_blank" 
+    className="w-full sm:w-auto text-xs font-bold px-4 py-2.5 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 rounded-lg transition-all flex items-center justify-center gap-1.5 active:scale-95 group-hover:shadow-md"
+  >
+    Start 10-Day Free Trial <ExternalLink size={14} className="group-hover:translate-x-0.5 transition-transform" />
+  </Link>
+</div>
                   );
                 })}
               </div>
             )}
 
-            {/* 2. Standard Missing Skills (Compact Red Chips) 🚀 YEH TERA MASLA HAL KAREGA */}
+            {/* 2. Standard Missing Skills (Compact Red Chips) */}
             {missingWithoutCourses.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {missingWithoutCourses.map(skill => (

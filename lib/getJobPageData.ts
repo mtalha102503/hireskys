@@ -1,6 +1,5 @@
 // lib/getJobPageData.ts
 import { unstable_cache } from 'next/cache';
-import { supabase } from '@/lib/supabaseClient';
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { countryMap } from '@/lib/country';
 
@@ -43,7 +42,7 @@ const getCompanySlug = (name: string) => {
 };
 
 // =====================================================================
-// 🏢 PART 1 — Company lookup + industry companies
+// 🏢 PART 1 — Company lookup + industry companies (🔥 AB TYPESENSE SE)
 // Cached by COMPANY NAME only — so 4500 jobs from the same 200 companies
 // share the same cache entry instead of creating 4500 separate queries.
 // =====================================================================
@@ -58,49 +57,83 @@ async function fetchCompanyData(companyNameForSearch: string) {
 
   const companySlug = getCompanySlug(companyNameForSearch);
 
-  const { data: companyInfo } = await supabase
-    .from('companies')
-    .select('name, slug, logo_url, banner_url, description, industry, location, company_size')
-    .or(`slug.eq.${companySlug},name.ilike.%${companyNameForSearch}%`)
-    .maybeSingle();
+  // --- 1. Company info: pehle direct ID (slug) se retrieve try karo (fastest) ---
+  let companyInfo: any = null;
+  try {
+    companyInfo = await typesenseSearchClient
+      .collections('companies')
+      .documents(companySlug)
+      .retrieve();
+  } catch (err) {
+    // Slug se nahi mila to naam se text-search fallback karo
+    try {
+      const nameResults: any = await typesenseSearchClient
+        .collections('companies')
+        .documents()
+        .search({
+          q: companyNameForSearch,
+          query_by: 'name',
+          per_page: 1,
+        });
+      companyInfo = nameResults.hits?.[0]?.document || null;
+    } catch (err2) {
+      companyInfo = null;
+    }
+  }
 
   if (companyInfo) {
     companyDetails = companyInfo;
     let finalCompanies: any[] = [];
-    let excludeSlugs = [companyInfo.slug];
+    const excludeSlugs = [companyInfo.id];
 
+    // --- 2. Industry-match companies (text search, kyunki industry ek free-text field hai) ---
     if (companyInfo.industry) {
-      const keywords = companyInfo.industry.split(/[\s,/&]+/).filter((k: string) => k.length > 3);
-      if (keywords.length > 0) {
-        const orQuery = keywords.map((k: string) => `industry.ilike.%${k}%`).join(',');
-        const { data: indData } = await supabase
-          .from('companies')
-          .select('slug, name, logo_url, industry, location, company_size, verified')
-          .or(orQuery)
-          .neq('slug', companyInfo.slug)
-          .limit(6);
-        if (indData?.length) {
+      try {
+        const indResults: any = await typesenseSearchClient
+          .collections('companies')
+          .documents()
+          .search({
+            q: companyInfo.industry,
+            query_by: 'industry',
+            filter_by: `id:!=${companyInfo.id}`,
+            per_page: 8,
+          });
+        const indData = indResults.hits?.map((h: any) => h.document) || [];
+        if (indData.length) {
           finalCompanies = indData.sort(() => 0.5 - Math.random()).slice(0, 4);
-          excludeSlugs = [...excludeSlugs, ...finalCompanies.map(c => c.slug)];
+          excludeSlugs.push(...finalCompanies.map((c: any) => c.id));
         }
+      } catch (err) {
+        console.error('Typesense industryCompanies fetch error:', err);
       }
     }
 
+    // --- 3. Random fallback companies (agar industry match kam pade) ---
     if (finalCompanies.length < 4) {
       const limitNeeded = 4 - finalCompanies.length;
-      const { data: randomData } = await supabase
-        .from('companies')
-        .select('slug, name, logo_url, industry, location, company_size, verified')
-        .not('slug', 'in', `(${excludeSlugs.join(',')})`)
-        .limit(8);
-      if (randomData?.length) {
-        const shuffled = randomData.sort(() => 0.5 - Math.random()).slice(0, limitNeeded);
-        finalCompanies = [...finalCompanies, ...shuffled];
+      try {
+        const randomResults: any = await typesenseSearchClient
+          .collections('companies')
+          .documents()
+          .search({
+            q: '*',
+            query_by: 'name',
+            filter_by: `id:!=[${excludeSlugs.join(',')}]`,
+            per_page: 8,
+          });
+        const randomData = randomResults.hits?.map((h: any) => h.document) || [];
+        if (randomData.length) {
+          const shuffled = randomData.sort(() => 0.5 - Math.random()).slice(0, limitNeeded);
+          finalCompanies = [...finalCompanies, ...shuffled];
+        }
+      } catch (err) {
+        console.error('Typesense randomCompanies fetch error:', err);
       }
     }
     industryCompanies = finalCompanies;
   }
 
+  // --- 4. Same company ki active jobs ---
   try {
     const cResults: any = await typesenseSearchClient.collections('jobs').documents().search({
       q: companyNameForSearch,
@@ -185,14 +218,37 @@ async function fetchRelatedJobsData(category: string, location: string) {
     console.error("Typesense relatedJobs fetch error:", err);
   }
 
+  // --- 🔥 Related jobs ke company logos ab Typesense companies collection se ---
   if (finalRelatedJobs.length > 0) {
-    const slugsToFind = finalRelatedJobs.map(rJob => getCompanySlug(rJob.company || rJob.source || '')).filter(Boolean);
-    const { data: companiesData } = await supabase
-      .from('companies')
-      .select('slug, logo_url')
-      .in('slug', slugsToFind);
+    const slugsToFind = Array.from(
+      new Set(
+        finalRelatedJobs
+          .map(rJob => getCompanySlug(rJob.company || rJob.source || ''))
+          .filter((s): s is string => Boolean(s) && s !== '#')
+      )
+    );
+
     const logoMap: Record<string, string> = {};
-    companiesData?.forEach(c => { if (c.logo_url) logoMap[c.slug] = c.logo_url; });
+    if (slugsToFind.length > 0) {
+      try {
+        const companiesResults: any = await typesenseSearchClient
+          .collections('companies')
+          .documents()
+          .search({
+            q: '*',
+            query_by: 'name',
+            filter_by: `id:=[${slugsToFind.join(',')}]`,
+            per_page: slugsToFind.length,
+          });
+        const companiesData = companiesResults.hits?.map((h: any) => h.document) || [];
+        companiesData.forEach((c: any) => {
+          if (c.logo_url) logoMap[c.id] = c.logo_url;
+        });
+      } catch (err) {
+        console.error('Typesense relatedJobs logo fetch error:', err);
+      }
+    }
+
     relatedJobs = finalRelatedJobs.map(rJob => ({
       ...rJob,
       final_logo: rJob.company_logo_url || logoMap[getCompanySlug(rJob.company || rJob.source || '')] || null

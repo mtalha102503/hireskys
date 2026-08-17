@@ -1,5 +1,18 @@
 import { NextResponse } from 'next/server';
 import { typesenseAdminClient } from '@/lib/typesenseClient';
+import { countryMap } from '@/lib/country';
+
+function extractCountryCodes(location: string): string[] {
+    if (!location) return [];
+    const loc = location.toLowerCase();
+    const codes = new Set<string>();
+    if (loc.includes('worldwide') || loc.includes('global') || loc.includes('anywhere')) codes.add('WORLDWIDE');
+    Object.values(countryMap).forEach((v: any) => {
+        if (v.name && loc.includes(v.name.toLowerCase())) codes.add(v.code || v.name);
+        if (v.code && loc.includes(`(${v.code.toLowerCase()})`)) codes.add(v.code);
+    });
+    return Array.from(codes);
+}
 
 export async function POST(req: Request) {
     try {
@@ -70,6 +83,10 @@ export async function POST(req: Request) {
                 approved: record.approved ?? true,
                 active: record.active ?? true,
                 is_verified: record.is_verified ?? false,
+                featured_until: record.featured_until ? String(record.featured_until) : '',
+                brand_color: record.brand_color || '',
+                country_codes: extractCountryCodes(record.location || ''),
+                date_posted_ts: record.date_posted ? new Date(record.date_posted).getTime() : 0,
             };
 
             // 'upsert' ka matlab hai: Agar nahi hai toh create karo, agar hai toh update karo

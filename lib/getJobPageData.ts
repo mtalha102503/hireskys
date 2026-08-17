@@ -1,6 +1,7 @@
 // lib/getJobPageData.ts
 import { unstable_cache } from 'next/cache';
 import { supabase } from '@/lib/supabaseClient';
+import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { countryMap } from '@/lib/country';
 
 // 👇 Same location-parsing logic jo JobClient.tsx mein hai
@@ -100,15 +101,18 @@ async function fetchCompanyData(companyNameForSearch: string) {
     industryCompanies = finalCompanies;
   }
 
-  const { data: cJobs } = await supabase
-    .from('jobs')
-    .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-    .or(`company.ilike.%${companyNameForSearch}%,source.ilike.%${companyNameForSearch}%`)
-    .eq('approved', true)
-    .eq('active', true)
-    .order('date_posted', { ascending: false })
-    .limit(5); // 5 lete hain kyunki caller khud ko (current job) exclude karega
-  if (cJobs) companyJobs = cJobs;
+  try {
+    const cResults: any = await typesenseSearchClient.collections('jobs').documents().search({
+      q: companyNameForSearch,
+      query_by: 'company,source',
+      filter_by: 'approved:=true && active:=true',
+      sort_by: 'date_posted_ts:desc',
+      per_page: 5, // 5 lete hain kyunki caller khud ko (current job) exclude karega
+    });
+    companyJobs = cResults.hits?.map((h: any) => h.document) || [];
+  } catch (err) {
+    console.error("Typesense companyJobs fetch error:", err);
+  }
 
   return { companyDetails, industryCompanies, companyJobs };
 }
@@ -132,35 +136,53 @@ async function fetchRelatedJobsData(category: string, location: string) {
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const countryNames = getCountryNames(location);
 
-  let primaryQuery = supabase
-    .from('jobs')
-    .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-    .eq('category', category)
-    .gte('date_posted', thirtyDaysAgo.toISOString())
-    .eq('approved', true)
-    .order('date_posted', { ascending: false })
-    .limit(8); // 8 lete hain taake current-job exclude hone ke baad bhi 4+ bache
+  const countryCodes = countryNames
+    .map((name: string) => {
+      const entry = Object.entries(countryMap).find(([, v]: any) => v.name === name);
+      return entry ? (entry[1] as any).code : null;
+    })
+    .filter(Boolean);
 
-  if (countryNames.length > 0) {
-    const orQueryString = countryNames.map((c: string) => `location.ilike.%${c}%`).join(',');
-    primaryQuery = primaryQuery.or(orQueryString);
-  }
+  let finalRelatedJobs: any[] = [];
 
-  const { data: strictData } = await primaryQuery;
-  let finalRelatedJobs = strictData || [];
+  try {
+    const strictFilters = [
+      `category:=${category}`,
+      'approved:=true',
+      `date_posted_ts:>=${thirtyDaysAgo.getTime()}`,
+    ];
+    if (countryCodes.length > 0) {
+      strictFilters.push(`country_codes:=[${countryCodes.join(',')}]`);
+    }
 
-  if (finalRelatedJobs.length < 6) {
-    const excludeIds = finalRelatedJobs.map(j => j.id);
-    const { data: fallbackData } = await supabase
-      .from('jobs')
-      .select('id, title, company, source, location, salary_range, date_posted, category, company_logo_url')
-      .eq('category', category)
-      .not('id', 'in', `(${excludeIds.length ? excludeIds.join(',') : 0})`)
-      .eq('approved', true)
-      .eq('active', true)
-      .order('date_posted', { ascending: false })
-      .limit(8);
-    if (fallbackData) finalRelatedJobs = [...finalRelatedJobs, ...fallbackData];
+    const strictResults: any = await typesenseSearchClient.collections('jobs').documents().search({
+      q: '*',
+      query_by: 'title,category',
+      filter_by: strictFilters.join(' && '),
+      sort_by: 'date_posted_ts:desc',
+      per_page: 8, // 8 lete hain taake current-job exclude hone ke baad bhi 4+ bache
+    });
+    finalRelatedJobs = strictResults.hits?.map((h: any) => h.document) || [];
+
+    if (finalRelatedJobs.length < 6) {
+      const excludeIds = finalRelatedJobs.map((j: any) => j.id);
+      const fallbackFilters = [`category:=${category}`, 'approved:=true', 'active:=true'];
+      if (excludeIds.length > 0) {
+        fallbackFilters.push(`id:!=[${excludeIds.join(',')}]`);
+      }
+
+      const fallbackResults: any = await typesenseSearchClient.collections('jobs').documents().search({
+        q: '*',
+        query_by: 'title,category',
+        filter_by: fallbackFilters.join(' && '),
+        sort_by: 'date_posted_ts:desc',
+        per_page: 8,
+      });
+      const fallbackData = fallbackResults.hits?.map((h: any) => h.document) || [];
+      finalRelatedJobs = [...finalRelatedJobs, ...fallbackData];
+    }
+  } catch (err) {
+    console.error("Typesense relatedJobs fetch error:", err);
   }
 
   if (finalRelatedJobs.length > 0) {

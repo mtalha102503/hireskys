@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { typesenseAdminClient } from '@/lib/typesenseClient';
+import { createSlug } from '@/lib/utils';
 
-// force-dynamic aur revalidate=0 hata diya —
-// ab hum khud Cache-Control header se 15-hour caching control kar rahe hain (neeche dekho)
-
-// Supabase Client Initialization — URL wahi purana (seedha Supabase), koi change nahi
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+// 1. Next.js ko force karein ke is route ko hamesha dynamically render kare
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // Helper function: Jooble ke mandatory DD.MM.YYYY date format ke liye
-function formatJoobleDate(dateInput: string | Date): string {
+function formatJoobleDate(dateInput: string | number | Date): string {
   const d = new Date(dateInput);
   const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -18,56 +15,47 @@ function formatJoobleDate(dateInput: string | Date): string {
   return `${day}.${month}.${year}`;
 }
 
-// Helper function: XML characters ko escape karne ke liye
-function escapeXml(unsafe: string): string {
-  if (!unsafe) return '';
-  return unsafe.replace(/[<>&'"]/g, (c) => {
-    switch (c) {
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '&': return '&amp;';
-      case '\'': return '&apos;';
-      case '"': return '&quot;';
-      default: return c;
-    }
-  });
-}
-
 export async function GET() {
   try {
-    // 2. Fetch data directly from your Supabase 'jobs' table
-    const { data: jobs, error } = await supabase
-      .from('jobs') 
-      .select('id, title, slug, source, company_logo_url, location, description, created_at, salary_range, job_type')
-      .eq('active', true)
-      .eq('approved', true) 
-      .order('created_at', { ascending: false });
+    // 2. 🔥 Typesense export() se saari active+approved jobs ek baar me (koi 250 wali pagination limit nahi)
+    const exportResult = await typesenseAdminClient
+      .collections('jobs')
+      .documents()
+      .export({ filter_by: 'active:=true && approved:=true' });
 
-    if (error) {
-      throw new Error(`Supabase Query Failed: ${error.message}`);
-    }
+    const jobs = exportResult
+      .split('\n')
+      .filter(Boolean)
+      .map((line: string) => JSON.parse(line));
 
     if (!jobs || jobs.length === 0) {
       return new NextResponse(`<?xml version="1.0" encoding="utf-8"?><jobs></jobs>`, { 
         headers: { 
           'Content-Type': 'application/xml',
-          // Khaali response ko cache karne ki zaroorat nahi
-          'Cache-Control': 'no-store',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         } 
       });
     }
 
-    // 3. Construct XML Feed
+    // 3. Newest jobs pehle (export() order guarantee nahi karta, isliye manually sort)
+    jobs.sort((a: any, b: any) => (b.date_posted_ts || 0) - (a.date_posted_ts || 0));
+
+    // 4. Construct XML Feed
     let xmlItems = '';
 
     for (const job of jobs) {
-      // Link structure '/jobs/' wala
-      const jobUrl = `https://hireskys.com/jobs/${job.slug}`;
+      // Slug ab Supabase column se nahi, createSlug() se generate hoga (jaisa baaki site pe hota hai)
+      const jobSlug = createSlug(job.title, job.id);
+      const jobUrl = `https://hireskys.com/jobs/${jobSlug}`;
 
       // Location checking logic - Remote (Global) ko United States map kar diya
       const xmlLocation = job.location === "Remote (Global)" ? "United States" : job.location;
 
-      const expireDate = new Date(job.created_at);
+      // 👇 date_posted_ts (ms epoch) se date banao, fallback me date_posted string
+      const postedDate = job.date_posted_ts ? new Date(job.date_posted_ts) : new Date(job.date_posted || Date.now());
+      const expireDate = new Date(postedDate);
       expireDate.setDate(expireDate.getDate() + 60);
 
       const hasSalary = job.salary_range && job.salary_range !== 'Not Disclosed';
@@ -78,9 +66,9 @@ export async function GET() {
     <name><![CDATA[${job.title}]]></name>
     <region><![CDATA[${xmlLocation}]]></region>
     <description><![CDATA[${job.description}]]></description>
-    <pubdate>${formatJoobleDate(job.created_at)}</pubdate>
-    <updated>${formatJoobleDate(job.created_at)}</updated>
-    <company><![CDATA[${job.source}]]></company>
+    <pubdate>${formatJoobleDate(postedDate)}</pubdate>
+    <updated>${formatJoobleDate(postedDate)}</updated>
+    <company><![CDATA[${job.company || job.source}]]></company>
     <expire>${formatJoobleDate(expireDate)}</expire>
     <jobtype><![CDATA[${job.job_type}]]></jobtype>
     ${hasSalary ? `<salary><![CDATA[${job.salary_range}]]></salary>` : ''}
@@ -90,17 +78,13 @@ export async function GET() {
 
     const fullXml = `<?xml version="1.0" encoding="utf-8"?>\n<jobs>${xmlItems}\n</jobs>`;
 
-    // 4. Response ab 15 hours (54000 seconds) ke liye publicly
-    // cacheable hai (Vercel Edge Cache). Is 15-hour window ke andar
-    // jitni baar bhi Jooble bot ye feed maangega, Vercel edge se hi
-    // serve hoga — Supabase ko bilkul touch nahi karega.
-    // stale-while-revalidate = agar cache expire ho jaye, purana
-    // response turant serve hoga jab tak background me naya fetch ho —
-    // isse bot ko kabhi error/khaali response nahi milega.
+    // 5. Return response with strictly NO-CACHE headers
     return new NextResponse(fullXml, {
       headers: {
         'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=54000, stale-while-revalidate=3600',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       },
     });
 

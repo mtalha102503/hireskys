@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabaseClient';   // 👈 YE LINE ADD KARO
+import { searchCompanies } from '@/lib/typesenseCompanies';   // 👈 YE LINE ADD KARO
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { 
@@ -245,110 +245,31 @@ export default function CompaniesClient({
 
   const fetchCompanies = async (currentPage: number, currentSort: string, isReset = false) => {
     setLoading(true);
-    const from = currentPage * LIMIT;
-    const to = from + LIMIT - 1;
 
-    let finalCompanies: any[] = [];
-    let hasMoreFlag = true;
-
-    // 🏆 1. MOST JOBS (Powered by Supabase RPC)
-    if (currentSort === 'most-jobs') {
-      const locFilter = filterCountry !== 'All' ? filterCountry : '';
-      
-      // 👇 Yahan hum limit aur offset dono bhej rahe hain
-      const { data: topCompaniesData } = await supabase.rpc('get_top_companies_by_job_count', { 
-          limit_count: LIMIT, 
-          offset_count: from, // 👈 Yeh currentPage ke hisab se automatic skip karega (0, 30, 60...)
-          search_location: locFilter 
+    try {
+      const { companies: finalCompanies, found } = await searchCompanies({
+        page: currentPage + 1, // Typesense 1-indexed hai, humara state 0-indexed hai
+        perPage: LIMIT,
+        sortOption: currentSort,
+        country: filterCountry,
       });
 
-      if (!topCompaniesData || topCompaniesData.length === 0) {
-          hasMoreFlag = false;
+      if (isReset || currentPage === 0) {
+        setCompanies(finalCompanies);
+        setTotalCompanies(found);
       } else {
-          const pageNames = topCompaniesData.map((c: any) => c.company_name);
-          const { data: comps } = await supabase.from('companies').select('name, slug, logo_url, industry, location, description').in('name', pageNames);
-          finalCompanies = pageNames.map((name: string) => (comps || []).find((c: any) => c.name === name)).filter(Boolean);
-          if (finalCompanies.length < LIMIT) hasMoreFlag = false;
+        setCompanies((prev) => [...prev, ...finalCompanies]);
       }
 
-    // 💰 2. HIGHEST SALARY
-    } else if (currentSort === 'highest-salary') {
-  const locFilter = filterCountry !== 'All' ? filterCountry : '';
-
-  const { data: topSalaryData } = await supabase.rpc('get_companies_by_salary', {
-      limit_count: LIMIT,
-      offset_count: from,
-      search_location: locFilter
-  });
-
-  if (!topSalaryData || topSalaryData.length === 0) {
-      hasMoreFlag = false;
-  } else {
-      const pageNames = topSalaryData.map((c: any) => c.company_name);
-      const { data: comps } = await supabase.from('companies').select('name, slug, logo_url, industry, location, description').in('name', pageNames);
-      finalCompanies = pageNames.map((name: string) => (comps || []).find((c: any) => c.name === name)).filter(Boolean);
-      if (finalCompanies.length < LIMIT) hasMoreFlag = false;
-  }
-
-    // 🔤 3. ALPHABETICAL & NEWEST
-    } else {
-      let query = supabase.from('companies').select('name, slug, logo_url, industry, location, description');
-      if (filterCountry !== 'All') {
-          query = query.ilike('location', `%${filterCountry}%`); 
-      }
-
-      if (currentSort === 'a-z') query = query.order('name', { ascending: true });
-      else if (currentSort === 'z-a') query = query.order('name', { ascending: false });
-      else if (currentSort === 'newest') query = query.order('created_at', { ascending: false });
-      
-      const { data, error } = await query.range(from, to);
-      if (error) console.error(error);
-      if (data) finalCompanies = data;
-      if (!data || data.length < LIMIT) hasMoreFlag = false;
+      setHasMore(finalCompanies.length === LIMIT);
+    } catch (err) {
+      console.error('fetchCompanies typesense error', err);
+      if (isReset || currentPage === 0) setCompanies([]);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
     }
-
-    // --- 📊 SALARY AND ACTIVE JOBS CALCULATION ---
-    if (finalCompanies.length > 0) {
-      const companyNames = finalCompanies.map(c => c.name);
-      const { data: jobsData } = await supabase.from('jobs').select('source, salary_range').in('source', companyNames).eq('active', true).eq('approved', true);
-
-      finalCompanies = finalCompanies.map(company => {
-        const companyJobs = (jobsData || []).filter(j => j.source === company.name);
-        const activeJobsCount = companyJobs.length;
-
-        let totalSalary = 0;
-        let validSalaries = 0;
-        companyJobs.forEach(job => {
-          if (job.salary_range && !job.salary_range.toLowerCase().includes('not disclosed')) {
-            const nums = job.salary_range.match(/\d+(?:,\d+)*/g);
-            if (nums) {
-              const parsedNums = nums.map((n: string) => parseInt(n.replace(/,/g, ''), 10)).filter((n: number) => n > 1000); 
-              if (parsedNums.length > 0) {
-                const avg = parsedNums.reduce((a: number, b: number) => a + b, 0) / parsedNums.length;
-                totalSalary += avg;
-                validSalaries++;
-              }
-            }
-          }
-        });
-
-        let avgSalaryStr = 'Not Disclosed';
-        if (validSalaries > 0) {
-          const finalAvg = Math.round(totalSalary / validSalaries);
-          avgSalaryStr = `$${(finalAvg / 1000).toFixed(0)}k/yr`; 
-        }
-
-        return { ...company, activeJobsCount, avgSalaryStr }; 
-      });
-    }
-
-    // --- RENDER DATA ---
-    if (isReset || currentPage === 0) setCompanies(finalCompanies);
-    else setCompanies((prev) => [...prev, ...finalCompanies]);
-    
-    setHasMore(hasMoreFlag);
-    setLoading(false);
-  };
+};
 useEffect(() => {
   if (isFirstRender.current) {
     isFirstRender.current = false;

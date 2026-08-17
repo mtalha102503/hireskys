@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabaseClient';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createSlug } from '@/lib/utils';
-import Navbar from '@/components/Navbar'; 
+import Navbar from '@/components/Navbar';
+import { getCompanyBySlug } from '@/lib/typesenseCompanies'; 
+import { typesenseSearchClient } from '@/lib/typesenseClient';
 import VideoPlayerFacade from '@/components/VideoPlayerFacade';
 import Image from 'next/image'; // ✅ SEO: Performance ke liye zaroori
 import type { Metadata } from 'next';
@@ -29,11 +30,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   // ✅ Check karo ke kya URL mein koi parameter hai?
   const hasQueryParams = !!resolvedSearchParams?.tab;
 
-  const { data: manualCompany } = await supabase
-    .from('companies')
-    .select('name, description, logo_url')
-    .eq('slug', urlSlug)
-    .single();
+  const manualCompany = await getCompanyBySlug(urlSlug);
 
   if (!manualCompany) {
     return { 
@@ -94,27 +91,25 @@ export default async function CompanyPage({ params, searchParams }: Props) {
   const currentTab = resolvedSearchParams?.tab || 'overview'; // 🚨 Default tab "overview" hoga
 
   // 🛑 STEP 1: Fetch Company Data (LOGIC UNTOUCHED)
-  const { data: manualData } = await supabase
-    .from('companies')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  const manualData = await getCompanyBySlug(slug);
 
   if (!manualData) return notFound();
 
 // ✅ STEP 2: Fetch Related Jobs (🔥 SUPER SMART MATCHING)
   // Asli company name dhoondo aur har special character (dot, space, dash, &) ko '%' bana do
-  const smartSourceName = manualData.name.replace(/[^a-zA-Z0-9]/g, '%'); 
+  const jobsResult: any = await typesenseSearchClient
+    .collections('jobs')
+    .documents()
+    .search({
+      q: manualData.name,
+      query_by: 'source',
+      num_typos: 0,
+      filter_by: 'approved:=true && active:=true',
+      sort_by: 'date_posted_ts:desc',
+      per_page: 250,
+    });
 
-  const { data: jobs } = await supabase
-    .from('jobs')
-    .select('*')
-    .ilike('source', `%${smartSourceName}%`) // 👈 Case-insensitive + Wildcard Magic
-    .eq('approved', true)
-    .eq('active', true)
-    .order('date_posted', { ascending: false });
-
-  const jobList = jobs || [];
+  const jobList = (jobsResult.hits || []).map((h: any) => h.document);
 // Data Clean-up
   const companyName = manualData.name;
   const companyLogo = manualData.logo_url || '/default-company-icon.png';
@@ -123,7 +118,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
   const location = manualData.location || "Remote";
   const isVerified = manualData.verified || false;
   const hasCustomBanner = !!manualData.banner_url;
-  const industry = manualData.industry || manualData.category || "Technology";
+  const industry = manualData.industry || "Technology";
   let itemListSchema = null;
   
   // Agar company ki jobs available hain, tabhi list schema banega
@@ -134,7 +129,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
       "name": `Active Remote Jobs at ${companyName}`,
       "description": `List of current open remote positions at ${companyName}.`,
       // .map() use karke automatically jobs ki list generate kar rahe hain
-      "itemListElement": jobList.map((job, index) => ({
+      "itemListElement": jobList.map((job: any, index: number) => ({
         "@type": "ListItem",
         "position": index + 1, // Position hamesha 1 se shuru hoti hai
         "name": job.title,
@@ -152,7 +147,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
     }
   }
   // 🧠 THE SMART BENEFITS EXTRACTOR ENGINE
-  const combinedDescriptions = jobList.map(job => job.description || '').join(' ').toLowerCase();
+  const combinedDescriptions = jobList.map((job: any) => job.description || '').join(' ').toLowerCase();
   const potentialBenefits = [
     { id: 'health', icon: '🏥', title: 'Health & Medical', desc: 'Comprehensive medical, dental, and vision coverage for you and your dependents.', keywords: ['health insurance', 'medical', 'dental', 'vision', 'healthcare'] },
     { id: 'pto', icon: '✈️', title: 'Paid Time Off', desc: 'Generous paid time off, holidays, and sick days to help you rest and recharge.', keywords: ['pto', 'paid time off', 'unlimited vacation', 'paid holidays'] },
@@ -166,14 +161,14 @@ export default async function CompanyPage({ params, searchParams }: Props) {
     benefit.keywords.some(keyword => combinedDescriptions.includes(keyword))
   );
 // 💰 THE SMART SALARY ENGINE (With Graph Data Processing)
-  const rawJobsWithSalary = jobList.filter(job => 
+  const rawJobsWithSalary = jobList.filter((job: any) => 
     job.salary_range && 
     !job.salary_range.toLowerCase().includes('not disclosed') && 
     !job.salary_range.toLowerCase().includes('not mentioned')
   );
 
   // 1. Min aur Max numbers extract karo har job ke liye
-  const jobsWithSalary = rawJobsWithSalary.map(job => {
+  const jobsWithSalary = rawJobsWithSalary.map((job: any) => {
     const nums = job.salary_range.match(/\d+(?:,\d+)*/g);
     let min = 0, max = 0;
     if (nums) {
@@ -182,13 +177,13 @@ export default async function CompanyPage({ params, searchParams }: Props) {
       max = Math.max(...parsedNums);
     }
     return { ...job, parsedMin: min, parsedMax: max };
-  }).filter(job => job.parsedMax > 0);
+  }).filter((job: any) => job.parsedMax > 0);
 
   // 2. Graph ki scale banane ke liye Global Min/Max dhoondo
   let highestSalaryNum = 0;
   let globalMax = 0;
 
-  jobsWithSalary.forEach(j => {
+  jobsWithSalary.forEach((j: any) => {
     if (j.parsedMax > highestSalaryNum) highestSalaryNum = j.parsedMax;
     if (j.parsedMax > globalMax) globalMax = j.parsedMax;
   });
@@ -287,11 +282,11 @@ export default async function CompanyPage({ params, searchParams }: Props) {
         
         {/* Banner */}
         <div className="relative h-48 md:h-64 w-full overflow-hidden bg-slate-900 group">
-          {hasCustomBanner ? (
-             <Image src={manualData.banner_url} alt={`${companyName} banner`} fill priority className="object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" sizes="100vw"/>
-          ) : (
-             <div className="w-full h-full bg-gradient-to-r from-indigo-900 via-purple-900 to-[#0B0F19]"></div>
-          )}
+          {manualData.banner_url ? (
+   <Image src={manualData.banner_url} alt={`${companyName} banner`} fill priority className="object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" sizes="100vw"/>
+) : (
+   <div className="w-full h-full bg-gradient-to-r from-indigo-900 via-purple-900 to-[#0B0F19]"></div>
+)}
         </div>
 
         {/* Company Info Header */}
@@ -422,7 +417,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
               </span>
             </h2>
 
-            {jobList.length > 0 ? jobList.map((job) => (
+            {jobList.length > 0 ? jobList.map((job: any) => (
               <Link key={job.id} href={`/jobs/${createSlug(job.title, job.id)}`} className="block group">
                 <div className="relative bg-white dark:bg-[#131b2b] p-6 sm:p-7 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-indigo-500/50 hover:shadow-xl dark:hover:shadow-[0_8px_30px_rgba(79,70,229,0.12)] hover:-translate-y-1 transition-all duration-300">
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
@@ -540,7 +535,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                   </div>
 
                   <div className="space-y-8">
-                    {jobsWithSalary.map(job => {
+                    {jobsWithSalary.map((job: any) => {
                       const leftPercent = (job.parsedMin / chartMaxScale) * 100;
                       const widthPercent = Math.max(2, ((job.parsedMax - job.parsedMin) / chartMaxScale) * 100);
 

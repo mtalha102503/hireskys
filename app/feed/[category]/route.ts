@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabaseClient';
+import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { createSlug } from '@/lib/utils';
 
 export const revalidate = 86400; 
@@ -42,17 +42,20 @@ export async function GET(
       return new Response('Category Feed Not Found', { status: 404 });
     }
 
-    // 2. Database query (FIXED: 'company' column remove kar diya)
-    const { data: jobs, error } = await supabase
-      .from('jobs')
-      .select('id, title, source, date_posted, category') 
-      .eq('approved', true)
-      .eq('active', true)
-      .ilike('category', exactCategoryName) 
-      .order('date_posted', { ascending: false })
-      .limit(20);
-
-    if (error) throw new Error("Database fetch failed");
+    // 2. 🔥 Typesense se query (Supabase ki jagah)
+    let jobs: any[] = [];
+    try {
+      const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+        q: '*',
+        query_by: 'title',
+        filter_by: `category:=${exactCategoryName} && approved:=true && active:=true`,
+        sort_by: 'date_posted_ts:desc',
+        per_page: 20,
+      });
+      jobs = results.hits?.map((h: any) => h.document) || [];
+    } catch (err) {
+      throw new Error("Typesense fetch failed");
+    }
 
     // 3. XML Setup
    let xml = `<?xml version="1.0" encoding="UTF-8" ?>
@@ -68,9 +71,9 @@ export async function GET(
     if (jobs && jobs.length > 0) {
       jobs.forEach((job) => {
         const safeTitle = job.title || 'Remote Job';
-        // FIX: Ab sirf 'source' column se hi company ka naam uthayega
-        const safeCompany = job.source || 'HireSkys';
-        const safeDate = job.date_posted ? new Date(job.date_posted).toUTCString() : new Date().toUTCString();
+        // Ab bhi 'company' pehle try karega, phir 'source' fallback
+        const safeCompany = job.company || job.source || 'HireSkys';
+        const safeDate = job.date_posted_ts ? new Date(job.date_posted_ts).toUTCString() : new Date().toUTCString();
         
         const jobUrl = `${SITE_URL}/jobs/${createSlug(safeTitle, job.id)}`;
         

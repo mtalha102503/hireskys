@@ -1,18 +1,45 @@
 import type { Metadata } from "next";
-import { createClient } from '@supabase/supabase-js';
-import { createSlug } from '@/lib/utils'; // 👈 Ye line add karo
-import { permanentRedirect } from 'next/navigation';
-// 🛠️ CONFIGURATION
-const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
-const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+import { createSlug } from '@/lib/utils';
+import { typesenseSearchClient } from '@/lib/typesenseClient';
 
 export const revalidate = 86400;
 
 // ✅ Fix for Next.js 15/16 (Params as Promise)
 type Props = {
-  params: Promise<{ slug: string }>; // id -> slug
+  params: Promise<{ slug: string }>;
 };
+
+// 🧠 Helper: Typesense se ek job document fetch karna (id se exact match)
+async function fetchJobById(jobId: string) {
+  try {
+    const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+      q: '*',
+      query_by: 'title',
+      filter_by: `id:=${jobId}`,
+      per_page: 1,
+    });
+    return results.hits?.[0]?.document || null;
+  } catch (err) {
+    console.error("Typesense job fetch error:", err);
+    return null;
+  }
+}
+
+// 🧠 Helper: Typesense se company document fetch karna (slug se exact match)
+async function fetchCompanyBySlug(companySlug: string) {
+  try {
+    const results: any = await typesenseSearchClient.collections('companies').documents().search({
+      q: '*',
+      query_by: 'name',
+      filter_by: `id:=${companySlug}`,
+      per_page: 1,
+    });
+    return results.hits?.[0]?.document || null;
+  } catch (err) {
+    console.error("Typesense company fetch error:", err);
+    return null;
+  }
+}
 
 // ---------------------------------------------------------
 // 1️⃣ METADATA GENERATOR (Browser Tab, Google Snippet, Social Cards)
@@ -21,25 +48,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
 
   // 👇 SLUG SE ID NIKALNE KA LOGIC
-  const slugParts = resolvedParams.slug.split('-'); 
-  const jobId = slugParts[slugParts.length - 1]; // Last part ID hai
+  const slugParts = resolvedParams.slug.split('-');
+  const jobId = slugParts[slugParts.length - 1];
 
-  const { data: job } = await supabase
-    .from('jobs')
-    .select('*')
-    .eq('id', jobId)
-    .single();
+  const job = await fetchJobById(jobId);
 
   if (!job) {
     return {
-      title: "Job Not Found",
+      title: "Job Not Found | HireSkys",
       description: "This job post is no longer available.",
       robots: { index: false, follow: false }
     };
   }
 
   // 🔥 SEO UPDATE: Social Media aur Browser Tab ke liye exact company name fetch karna
-  // 👇 FIX: Yahan 'job.source' add kiya hai kyunke DB mein company ka naam 'source' column mein hai
   const companyIdentifier = job.source || job.company_name || job.company;
   let exactCompanyName = companyIdentifier || "Confidential";
 
@@ -50,57 +72,49 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (companyIdentifier) {
     const companySlug = companyIdentifier.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    
-    // Yahan sirf name chahiye meta tags ke liye
-    const { data: companyData } = await supabase
-      .from('companies')
-      .select('name') 
-      .eq('slug', companySlug)
-      .maybeSingle();
+
+    const companyData = await fetchCompanyBySlug(companySlug);
 
     if (companyData) {
       exactCompanyName = companyData.name;
     }
   }
 
-  const correctSlug = createSlug(job.title, job.id); 
+  const correctSlug = createSlug(job.title, job.id);
   const seoUrl = `https://www.hireskys.com/jobs/${correctSlug}`;
-  
+
   // ✨ FIX: Ab page title aur description mein exact name use hoga
-  const pageTitle = `${job.title} ${exactCompanyName !== "Confidential" ? `at ${exactCompanyName}` : ''}`;
+  const pageTitle = `${job.title} ${exactCompanyName !== "Confidential" ? `at ${exactCompanyName}` : ''} | HireSkys`;
   const summary = `Hiring: ${job.title} at ${exactCompanyName}. Category: ${job.category}. ${job.location === 'Remote' ? '🌍 Remote Work' : `📍 ${job.location}`}. Salary: ${job.salary_range || 'Competitive'}. Apply securely via HireSkys.`;
-  const jobImage = "https://www.hireskys.com/og-job-card.png"; // Future dynamic image
+  const jobImage = "https://www.hireskys.com/og-job-card.png";
 
   return {
-    title: { absolute: pageTitle }, // 👈 'absolute' Next.js ko order dega ke kisi aur layout ka text add na kare
+    title: { absolute: pageTitle },
     description: summary,
     keywords: [
-      job.category, 
-      "Remote Job", 
-      "Hiring", 
-      job.title, 
-      "HireSkys", 
-      "Freelance", 
-      "Full Time", 
+      job.category,
+      "Remote Job",
+      "Hiring",
+      job.title,
+      "HireSkys",
+      "Freelance",
+      "Full Time",
       job.tags?.join(", ") || "Tech Job"
     ],
-    // ✨ FIX: Author mein exact name!
     authors: [{ name: "HireSkys Bot" }, { name: exactCompanyName }],
     category: "Employment",
-    
-    // Canonical URL
+
     alternates: {
-      canonical: seoUrl, 
+      canonical: seoUrl,
     },
 
-    // OpenGraph (Facebook, LinkedIn, Discord)
     openGraph: {
       title: pageTitle,
       description: summary,
       url: seoUrl,
       siteName: 'HireSkys - Elite Job Radar',
       locale: 'en_US',
-      type: 'website', 
+      type: 'website',
       images: [
         {
           url: jobImage,
@@ -111,16 +125,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ],
     },
 
-    // Twitter Card (X.com)
     twitter: {
       card: 'summary_large_image',
       title: pageTitle,
       description: summary,
-      creator: '@HireSkys', 
+      creator: '@HireSkys',
       images: [jobImage],
     },
 
-    // Robots
     robots: {
       index: true,
       follow: true,
@@ -153,8 +165,6 @@ const COUNTRY_MAP: Record<string, string> = {
     "AUSTRALIA": "AU", "AU": "AU",
     "AUSTRIA": "AT", "AT": "AT",
     "AZERBAIJAN": "AZ", "AZ": "AZ",
-
-    // B
     "BAHAMAS": "BS", "BS": "BS",
     "BAHRAIN": "BH", "BH": "BH",
     "BANGLADESH": "BD", "BD": "BD",
@@ -172,8 +182,6 @@ const COUNTRY_MAP: Record<string, string> = {
     "BULGARIA": "BG", "BG": "BG",
     "BURKINA FASO": "BF", "BF": "BF",
     "BURUNDI": "BI", "BI": "BI",
-
-    // C
     "CABO VERDE": "CV", "CAPE VERDE": "CV", "CV": "CV",
     "CAMBODIA": "KH", "KH": "KH",
     "CAMEROON": "CM", "CM": "CM",
@@ -191,14 +199,10 @@ const COUNTRY_MAP: Record<string, string> = {
     "CUBA": "CU", "CU": "CU",
     "CYPRUS": "CY", "CY": "CY",
     "CZECH REPUBLIC": "CZ", "CZECHIA": "CZ", "CZ": "CZ",
-
-    // D
     "DENMARK": "DK", "DK": "DK",
     "DJIBOUTI": "DJ", "DJ": "DJ",
     "DOMINICA": "DM", "DM": "DM",
     "DOMINICAN REPUBLIC": "DO", "DO": "DO",
-
-    // E
     "ECUADOR": "EC", "EC": "EC",
     "EGYPT": "EG", "EG": "EG",
     "EL SALVADOR": "SV", "SV": "SV",
@@ -207,13 +211,9 @@ const COUNTRY_MAP: Record<string, string> = {
     "ESTONIA": "EE", "EE": "EE",
     "ESWATINI": "SZ", "SWAZILAND": "SZ", "SZ": "SZ",
     "ETHIOPIA": "ET", "ET": "ET",
-
-    // F
     "FIJI": "FJ", "FJ": "FJ",
     "FINLAND": "FI", "FI": "FI",
     "FRANCE": "FR", "FR": "FR",
-
-    // G
     "GABON": "GA", "GA": "GA",
     "GAMBIA": "GM", "GM": "GM",
     "GEORGIA": "GE", "GE": "GE",
@@ -225,13 +225,9 @@ const COUNTRY_MAP: Record<string, string> = {
     "GUINEA": "GN", "GN": "GN",
     "GUINEA-BISSAU": "GW", "GW": "GW",
     "GUYANA": "GY", "GY": "GY",
-
-    // H
     "HAITI": "HT", "HT": "HT",
     "HONDURAS": "HN", "HN": "HN",
     "HUNGARY": "HU", "HU": "HU",
-
-    // I
     "ICELAND": "IS", "IS": "IS",
     "INDIA": "IN", "IN": "IN",
     "INDONESIA": "ID", "ID": "ID",
@@ -241,21 +237,15 @@ const COUNTRY_MAP: Record<string, string> = {
     "ISRAEL": "IL", "IL": "IL",
     "ITALY": "IT", "IT": "IT",
     "IVORY COAST": "CI", "COTE D'IVOIRE": "CI", "CI": "CI",
-
-    // J
     "JAMAICA": "JM", "JM": "JM",
     "JAPAN": "JP", "JP": "JP",
     "JORDAN": "JO", "JO": "JO",
-
-    // K
     "KAZAKHSTAN": "KZ", "KZ": "KZ",
     "KENYA": "KE", "KE": "KE",
     "KIRIBATI": "KI", "KI": "KI",
     "KOSOVO": "XK", "XK": "XK",
     "KUWAIT": "KW", "KW": "KW",
     "KYRGYZSTAN": "KG", "KG": "KG",
-
-    // L
     "LAOS": "LA", "LA": "LA",
     "LATVIA": "LV", "LV": "LV",
     "LEBANON": "LB", "LB": "LB",
@@ -265,8 +255,6 @@ const COUNTRY_MAP: Record<string, string> = {
     "LIECHTENSTEIN": "LI", "LI": "LI",
     "LITHUANIA": "LT", "LT": "LT",
     "LUXEMBOURG": "LU", "LU": "LU",
-
-    // M
     "MADAGASCAR": "MG", "MG": "MG",
     "MALAWI": "MW", "MW": "MW",
     "MALAYSIA": "MY", "MY": "MY",
@@ -285,8 +273,6 @@ const COUNTRY_MAP: Record<string, string> = {
     "MOROCCO": "MA", "MA": "MA",
     "MOZAMBIQUE": "MZ", "MZ": "MZ",
     "MYANMAR": "MM", "BURMA": "MM", "MM": "MM",
-
-    // N
     "NAMIBIA": "NA", "NA": "NA",
     "NAURU": "NR", "NR": "NR",
     "NEPAL": "NP", "NP": "NP",
@@ -298,11 +284,7 @@ const COUNTRY_MAP: Record<string, string> = {
     "NORTH KOREA": "KP", "KP": "KP",
     "NORTH MACEDONIA": "MK", "MACEDONIA": "MK", "MK": "MK",
     "NORWAY": "NO", "NO": "NO",
-
-    // O
     "OMAN": "OM", "OM": "OM",
-
-    // P
     "PAKISTAN": "PK", "PK": "PK",
     "PALAU": "PW", "PW": "PW",
     "PALESTINE": "PS", "PS": "PS",
@@ -313,16 +295,10 @@ const COUNTRY_MAP: Record<string, string> = {
     "PHILIPPINES": "PH", "PH": "PH",
     "POLAND": "PL", "PL": "PL",
     "PORTUGAL": "PT", "PT": "PT",
-
-    // Q
     "QATAR": "QA", "QA": "QA",
-
-    // R
     "ROMANIA": "RO", "RO": "RO",
     "RUSSIA": "RU", "RU": "RU",
     "RWANDA": "RW", "RW": "RW",
-
-    // S
     "SAINT KITTS AND NEVIS": "KN", "KN": "KN",
     "SAINT LUCIA": "LC", "LC": "LC",
     "SAINT VINCENT AND THE GRENADINES": "VC", "VC": "VC",
@@ -349,8 +325,6 @@ const COUNTRY_MAP: Record<string, string> = {
     "SWEDEN": "SE", "SE": "SE",
     "SWITZERLAND": "CH", "CH": "CH",
     "SYRIA": "SY", "SY": "SY",
-
-    // T
     "TAIWAN": "TW", "TW": "TW",
     "TAJIKISTAN": "TJ", "TJ": "TJ",
     "TANZANIA": "TZ", "TZ": "TZ",
@@ -363,8 +337,6 @@ const COUNTRY_MAP: Record<string, string> = {
     "TURKEY": "TR", "TURKIYE": "TR", "TR": "TR",
     "TURKMENISTAN": "TM", "TM": "TM",
     "TUVALU": "TV", "TV": "TV",
-
-    // U
     "UGANDA": "UG", "UG": "UG",
     "UKRAINE": "UA", "UA": "UA",
     "UAE": "AE", "UNITED ARAB EMIRATES": "AE", "DUBAI": "AE", "AE": "AE",
@@ -372,32 +344,24 @@ const COUNTRY_MAP: Record<string, string> = {
     "USA": "US", "UNITED STATES": "US", "US": "US",
     "URUGUAY": "UY", "UY": "UY",
     "UZBEKISTAN": "UZ", "UZ": "UZ",
-
-    // V
     "VANUATU": "VU", "VU": "VU",
     "VATICAN CITY": "VA", "VATICAN": "VA", "VA": "VA",
     "VENEZUELA": "VE", "VE": "VE",
     "VIETNAM": "VN", "VN": "VN",
-
-    // W, Y, Z
     "YEMEN": "YE", "YE": "YE",
     "ZAMBIA": "ZM", "ZM": "ZM",
     "ZIMBABWE": "ZW", "ZW": "ZW",
-
-    // Famous Territories / Commonly searched
     "HONG KONG": "HK", "HK": "HK",
     "MACAU": "MO", "MO": "MO",
     "PUERTO RICO": "PR", "PR": "PR",
     "GREENLAND": "GL", "GL": "GL",
-
-    // GLOBAL / WORLDWIDE
     "GLOBAL": "GLOBAL", "WORLDWIDE": "GLOBAL", "ANYWHERE": "GLOBAL"
 };
 
 // 🟢 STRING PARSER FOR GOOGLE SCHEMA
 const parseLocationForSchema = (locationString: string) => {
     if (!locationString) return [];
-    
+
     let cleanStr = locationString.replace(/Remote\s*/i, '').trim();
     if (cleanStr.startsWith('(') && cleanStr.endsWith(')')) {
         cleanStr = cleanStr.slice(1, -1).trim();
@@ -408,12 +372,12 @@ const parseLocationForSchema = (locationString: string) => {
     let match;
 
     while ((match = regex.exec(cleanStr)) !== null) {
-        const countryName = match[1].trim().replace(/^,|,$/g, '').trim(); 
+        const countryName = match[1].trim().replace(/^,|,$/g, '').trim();
         if (!countryName || countryName.toLowerCase() === 'and') continue;
 
         const isoCode = COUNTRY_MAP[countryName.toUpperCase()] || null;
         const cities = match[2] ? match[2].split(',').map(c => c.trim()) : [];
-        
+
         if (cities.length > 0) {
             cities.forEach(city => {
                 parsedLocations.push({ city: city, countryCode: isoCode || countryName });
@@ -433,59 +397,47 @@ export default async function Layout({ children, params }: { children: React.Rea
   const slugParts = resolvedParams.slug.split('-');
   const jobId = slugParts[slugParts.length - 1];
 
-  const { data: job } = await supabase
-    .from('jobs')
-    .select('*')
-    .eq('id', jobId) // ✅ Correct ID Query
-    .single();
+  const job = await fetchJobById(jobId);
 
   if (!job) return <>{children}</>;
-// 🔥 SEO UPDATE: Fetch exact company logo & website
+
+  // 🔥 SEO UPDATE: Fetch exact company logo & website
   let exactLogo = null;
   let exactWebsite = null;
 
-  // 👇 FIX: Yahan bhi 'job.source' add karna zaroori hai
-  const companyIdentifier = job.source || job.company_name || job.company; 
+  const companyIdentifier = job.source || job.company_name || job.company;
   let exactCompanyName = companyIdentifier || "Confidential";
 
   if (companyIdentifier) {
     const companySlug = companyIdentifier.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    
-    // ✨ FIX 1: Humne 'name' column ko bhi select mein add kar diya
-    const { data: companyData } = await supabase
-      .from('companies')
-      .select('name, logo_url, website') 
-      .eq('slug', companySlug)
-      .maybeSingle();
+
+    const companyData = await fetchCompanyBySlug(companySlug);
 
     if (companyData) {
-      // ✨ FIX 2: Ab hum exact real name (e.g., '1Password') Companies table se uthayenge
-      exactCompanyName = companyData.name; 
+      exactCompanyName = companyData.name;
       exactLogo = companyData.logo_url;
       exactWebsite = companyData.website;
     } else {
-      // Agar companies table mein match nahi mila toh purana naam use kar lo
       exactCompanyName = companyIdentifier;
     }
   }
+
   // 🚀 SEO PHASE 2 & 3 LOGIC START
   const jobDate = new Date(job.date_posted);
   const diffDays = Math.ceil(Math.abs(new Date().getTime() - jobDate.getTime()) / (1000 * 60 * 60 * 24));
-  
+
   const isExpired = diffDays > 60 || job.active === false;
 
-  let googleEmploymentType = "FULL_TIME"; // Default
-  if (job.employment_type) { // Maan lo DB column ka naam employment_type hai
+  let googleEmploymentType = "FULL_TIME";
+  if (job.employment_type) {
       const type = job.employment_type.toLowerCase();
       if (type.includes('part')) googleEmploymentType = "PART-TIME";
       else if (type.includes('contract') || type.includes('freelance')) googleEmploymentType = "CONTRACTOR";
       else if (type.includes('temp')) googleEmploymentType = "TEMPORARY";
       else if (type.includes('intern')) googleEmploymentType = "INTERNSHIP";
-      // Agar 'Full Time' hai to default FULL_TIME hi rahega
   }
 
-  
-const breadcrumbLd = {
+  const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     'itemListElement': [
@@ -514,7 +466,7 @@ const breadcrumbLd = {
   const minSalary = salaryNumbers ? salaryNumbers[0] : null;
   const maxSalary = salaryNumbers && salaryNumbers[1] ? salaryNumbers[1] : null;
 
-// 🌟 SMART LOCATION EXTRACTION FOR SCHEMA
+  // 🌟 SMART LOCATION EXTRACTION FOR SCHEMA
   const parsedSchemaLocations = parseLocationForSchema(job.location);
   const isRemote = job.location?.toLowerCase().includes('remote');
 
@@ -523,7 +475,7 @@ const breadcrumbLd = {
       if (loc.countryCode === 'GLOBAL') return null;
       if (loc.city) locObj.address.addressLocality = loc.city;
       if (loc.countryCode) locObj.address.addressCountry = loc.countryCode;
-      if (!loc.city && !loc.countryCode) locObj.address.addressCountry = "US"; // Fallback
+      if (!loc.city && !loc.countryCode) locObj.address.addressCountry = "US";
       return locObj;
   }).filter(Boolean) : [{ '@type': 'Place', 'address': { '@type': 'PostalAddress', 'addressCountry': 'US' } }];
 
@@ -531,21 +483,19 @@ const breadcrumbLd = {
       .filter(loc => loc.countryCode && loc.countryCode !== 'GLOBAL')
       .map(loc => ({ '@type': 'Country', 'name': loc.countryCode }));
 
-  // 🔥 THE MASTER PLAN: Global Multi-Market Domination
-  // Agar job Globally available hai (ya location specify nahi hai), toh hum usko Duniya ki Top 6 Tech Markets mein rank karwayenge.
-  const isGlobal = job.location?.toLowerCase().includes('global') || 
-                   job.location?.toLowerCase().includes('worldwide') || 
-                   job.location?.toLowerCase().includes('anywhere') || 
+  const isGlobal = job.location?.toLowerCase().includes('global') ||
+                   job.location?.toLowerCase().includes('worldwide') ||
+                   job.location?.toLowerCase().includes('anywhere') ||
                    (isRemote && applicantReqs.length === 0);
 
   if (isGlobal) {
       applicantReqs = [
-          { '@type': 'Country', 'name': 'US' }, // United States (Top Tier Traffic)
-          { '@type': 'Country', 'name': 'GB' }, // United Kingdom
-          { '@type': 'Country', 'name': 'CA' }, // Canada
-          { '@type': 'Country', 'name': 'AU' }, // Australia
-          { '@type': 'Country', 'name': 'IN' }, // India (Massive Developer Base)
-          { '@type': 'Country', 'name': 'DE' }  // Germany (Top EU Market)
+          { '@type': 'Country', 'name': 'US' },
+          { '@type': 'Country', 'name': 'GB' },
+          { '@type': 'Country', 'name': 'CA' },
+          { '@type': 'Country', 'name': 'AU' },
+          { '@type': 'Country', 'name': 'IN' },
+          { '@type': 'Country', 'name': 'DE' }
       ];
   }
 
@@ -554,10 +504,10 @@ const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
     title: job.title,
-    description: job.description, 
+    description: job.description,
     datePosted: job.date_posted,
-    validThrough: isExpired 
-        ? new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString() 
+    validThrough: isExpired
+        ? new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString()
         : new Date(new Date(job.date_posted).getTime() + 90 * 24 * 60 * 60 * 1000).toISOString(),
     employmentType: googleEmploymentType,
     hiringOrganization: {
@@ -573,9 +523,9 @@ const breadcrumbLd = {
         currency: 'USD',
         value: {
           '@type': 'QuantitativeValue',
-          value: minSalary,      
-          minValue: minSalary,   
-          maxValue: maxSalary || minSalary, 
+          value: minSalary,
+          minValue: minSalary,
+          maxValue: maxSalary || minSalary,
           unitText: 'YEAR'
         }
       }
@@ -586,7 +536,6 @@ const breadcrumbLd = {
 
   return (
     <>
-      {/* Schema Injection */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -595,7 +544,6 @@ const breadcrumbLd = {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      {/* Page Content */}
       {children}
     </>
   );

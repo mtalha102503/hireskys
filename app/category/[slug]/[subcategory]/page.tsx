@@ -1,20 +1,14 @@
-import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { createSlug } from '@/lib/utils';
 import { Metadata } from 'next';
-import Navbar from '@/components/Navbar'; // 👈 Navbar Import
+import Navbar from '@/components/Navbar';
+import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { 
   ArrowLeft, Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, 
-  Briefcase, Search, MapPin, DollarSign, Calendar, Sparkles, Speaker, Headphones, Users,ShieldCheck, BookOpen, BarChart,PenTool 
+  Briefcase, Search, MapPin, DollarSign, Calendar, Sparkles, Speaker, Headphones, Users, ShieldCheck, BookOpen, BarChart, PenTool 
 } from 'lucide-react';
 
-// 🛠️ CONFIGURATION
-const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
-const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
-  // 1. Tech & Development
   "Development": {
     icon: Code,
     sub: ["React", "Next.js", "Node.js", "Python", "MERN Stack", "WordPress", "Shopify", "Web3", "Frontend", "Backend", "DevOps", "Cybersecurity", "QA Tester", "Game Dev"]
@@ -27,8 +21,6 @@ const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
     icon: Cpu,
     sub: ["AI Engineer", "Machine Learning", "NLP", "Computer Vision", "Prompt Engineering", "Chatbot Dev", "TensorFlow", "OpenAI API", "Python Scripting"]
   },
-
-  // 2. Creative & Design
   "Design & Creative": {
     icon: Layout,
     sub: ["UI/UX Design", "Graphic Design", "Logo Design", "Figma", "Adobe Photoshop", "Illustrator", "Packaging Design", "Presentation Design", "NFT Art"]
@@ -45,14 +37,10 @@ const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
     icon: Edit3,
     sub: ["Content Writer", "Copywriter", "Technical Writer", "Ghostwriter", "Proofreading", "Translation", "Scriptwriting", "Blog Writing", "Resume Writing"]
   },
-
-  // 3. Marketing & Sales
   "Marketing & Sales": { 
     icon: Globe,
     sub: ["SEO", "Social Media Manager", "Facebook Ads", "Google Ads", "Email Marketing", "Lead Generation", "Sales Representative", "Cold Calling", "Affiliate Marketing", "Influencer Marketing"]
   },
-
-  // 4. Business & Admin
   "Admin & Support": { 
     icon: Users, 
     sub: ["Virtual Assistant", "Data Entry", "Executive Assistant", "Research", "Project Management", "Transcription", "Spreadsheets (Excel/Google Sheets)"] 
@@ -61,8 +49,6 @@ const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
     icon: Headphones,
     sub: ["Customer Support", "Technical Support", "Community Manager", "Chat Support", "Call Center", "Zendesk"]
   },
-
-  // 5. Professional Services
   "Finance & Accounting": {
     icon: DollarSign,
     sub: ["Accountant", "Bookkeeping", "Financial Analyst", "Tax Preparation", "QuickBooks", "Xero", "CFO", "Crypto Trading"]
@@ -75,8 +61,6 @@ const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
     icon: BookOpen,
     sub: ["Online Tutor", "Course Creator", "Language Teacher", "Math Tutor", "Coding Mentor", "Fitness Coach", "Life Coach"]
   },
-  
-  // 6. Data & Engineering
   "Data Science & Analytics": {
     icon: BarChart,
     sub: ["Data Scientist", "Data Analyst", "Business Intelligence", "Power BI", "Tableau", "SQL", "Big Data", "Data Scraping"]
@@ -86,6 +70,7 @@ const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
     sub: ["CAD Designer", "3D Modeling", "Interior Design", "Mechanical Engineering", "Electrical Engineering", "AutoCAD", "SolidWorks"]
   }
 };
+
 type Props = {
   params: Promise<{ slug: string; subcategory: string }>;
 };
@@ -115,18 +100,35 @@ export default async function SubCategoryJobsPage({ params }: Props) {
   const resolvedParams = await params;
   const exactTag = findRealTag(resolvedParams.slug, resolvedParams.subcategory);
   const searchTag = exactTag || decodeURIComponent(resolvedParams.subcategory).replace(/-/g, ' ');
-
-  // Query Logic
-  let query = supabase.from('jobs').select('*').eq('active', true).order('date_posted', { ascending: false });
-
-  if (exactTag) {
-    query = query.contains('tags', [exactTag]);
-  } else {
-    query = query.ilike('tags::text', `%${searchTag}%`);
-  }
-
-  const { data: jobs } = await query;
   const displaySubCategory = exactTag || searchTag.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+  // 🚀 Query Logic — ab Typesense se
+  let jobs: any[] = [];
+
+  try {
+    const filters: string[] = ['active:=true'];
+    if (exactTag) {
+      // Exact tag match — jaisa Supabase .contains('tags', [exactTag]) karta tha
+      filters.push(`tags:=${exactTag}`);
+    }
+
+    const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+      // Agar exact tag mil gaya to sirf filter se kaam chal jayega (q: '*')
+      // Warna free-text search karo tags field pe (loose ilike jaisa behavior)
+      q: exactTag ? '*' : searchTag,
+      query_by: exactTag ? 'title' : 'tags',
+      filter_by: filters.join(' && '),
+      sort_by: 'date_posted_ts:desc',
+      per_page: 250, // Supabase wale code me koi limit nahi tha, high rakh diya
+    });
+
+    jobs = (results.hits?.map((h: any) => h.document) || []).map((doc: any) => ({
+      ...doc,
+      id: Number(doc.id),
+    }));
+  } catch (err) {
+    console.error("Typesense subcategory jobs fetch error:", err);
+  }
 
   // 🔴 NO JOBS STATE (Beautiful Empty State)
   if (!jobs || jobs.length === 0) {
@@ -161,7 +163,6 @@ export default async function SubCategoryJobsPage({ params }: Props) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         
-        {/* 🔙 BACK BUTTON */}
         <div className="mb-8">
             <Link 
                 href={`/category/${resolvedParams.slug}`} 
@@ -174,7 +175,6 @@ export default async function SubCategoryJobsPage({ params }: Props) {
             </Link>
         </div>
 
-        {/* 🎨 HEADER */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
             <div>
                 <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -187,7 +187,6 @@ export default async function SubCategoryJobsPage({ params }: Props) {
             </div>
         </div>
 
-        {/* 💎 JOBS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {jobs.map((job) => (
             <Link 
@@ -197,7 +196,6 @@ export default async function SubCategoryJobsPage({ params }: Props) {
             >
               <div>
                 <div className="flex justify-between items-start mb-4">
-                  {/* Company Logo Placeholder or Initial */}
                   <div className="w-12 h-12 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xl">
                     {job.company ? job.company.charAt(0) : "H"}
                   </div>
@@ -214,7 +212,6 @@ export default async function SubCategoryJobsPage({ params }: Props) {
                   {job.company || "Confidential Client"}
                 </p>
 
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   {job.tags?.slice(0, 3).map((tag: string, i: number) => (
                     <span key={i} className="text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
@@ -227,7 +224,6 @@ export default async function SubCategoryJobsPage({ params }: Props) {
                 </div>
               </div>
 
-              {/* Bottom Info */}
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
                   <DollarSign className="w-4 h-4 text-emerald-500" /> 
@@ -242,7 +238,6 @@ export default async function SubCategoryJobsPage({ params }: Props) {
           ))}
         </div>
 
-        {/* 👇 Footer CTA to Explore More */}
         <div className="mt-20 text-center border-t border-slate-200 dark:border-slate-800 pt-10">
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                 Keep exploring
@@ -263,4 +258,3 @@ export default async function SubCategoryJobsPage({ params }: Props) {
     </div>
   );
 }
-

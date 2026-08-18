@@ -3,8 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 import { createSlug } from '@/lib/utils'; 
 import { CATEGORIES } from '@/lib/categories'; 
 import { BLOG_POSTS } from '@/lib/blogData';
+import { typesenseSearchClient } from '@/lib/typesenseClient';
 
-// 🛠️ CONFIGURATION
+// 🛠️ CONFIGURATION — sirf tools_directory (abhi tak migrate nahi hui) ke liye Supabase rakha hai
 const SUPABASE_URL = "https://pxtifojzsouujkfxpohq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_8Pwl1r9B_H8rlTUODhMbdw_9uYLkhMJ"; 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -12,18 +13,47 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const BASE_URL = 'https://www.hireskys.com'; 
 export const revalidate = 86400;
 
-// 🔥 THE FIX: SAFE DATE HELPER FUNCTION
-// This guarantees we never pass an invalid date to the sitemap
+// 🔥 SAFE DATE HELPER
 function getSafeDate(dateString: any): Date {
-  if (!dateString) return new Date(); // Fallback to now if null/undefined
-  
+  if (!dateString) return new Date();
   const parsedDate = new Date(dateString);
-  // Check if the parsed date is valid
-  if (isNaN(parsedDate.getTime())) {
-    return new Date(); // Fallback to now if parsing failed
-  }
-  
+  if (isNaN(parsedDate.getTime())) return new Date();
   return parsedDate;
+}
+
+// 🚀 Typesense pagination helper — max per_page 250 hoti hai, isliye loop lagana padta hai
+// taake saari matching documents mil sakein (Supabase ke .limit(5000) jaisa result)
+async function fetchAllTypesenseDocs(
+  collection: string,
+  searchParams: { q: string; query_by: string; filter_by?: string; sort_by?: string },
+  maxDocs: number = 5000
+) {
+  let allDocs: any[] = [];
+  let page = 1;
+  const perPage = 250;
+
+  while (allDocs.length < maxDocs) {
+    try {
+      const results: any = await typesenseSearchClient.collections(collection).documents().search({
+        ...searchParams,
+        per_page: perPage,
+        page,
+      });
+
+      const hits = results.hits?.map((h: any) => h.document) || [];
+      if (hits.length === 0) break;
+
+      allDocs = [...allDocs, ...hits];
+
+      if (hits.length < perPage) break; // Last page mil gaya
+      page++;
+    } catch (err) {
+      console.error(`Sitemap Typesense fetch error (${collection}):`, err);
+      break;
+    }
+  }
+
+  return allDocs.slice(0, maxDocs);
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -94,116 +124,115 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   // ==========================================
-  // 4️⃣ DYNAMIC JOBS
+  // 4️⃣ DYNAMIC JOBS — ab Typesense se
   // ==========================================
-  const { data: jobs } = await supabase
-    .from('jobs')
-    .select('id, title, date_posted')
-    .eq('approved', true)
-    .eq('active', true) // 👈 SIRF YE LINE ADD KI HAI
-    .order('date_posted', { ascending: false })
-    .limit(5000);
+  const jobs = await fetchAllTypesenseDocs(
+    'jobs',
+    {
+      q: '*',
+      query_by: 'title',
+      filter_by: 'approved:=true && active:=true',
+      sort_by: 'date_posted_ts:desc',
+    },
+    5000
+  );
 
-  let jobRoutes: MetadataRoute.Sitemap = [];
-
-  if (jobs) {
-    jobRoutes = jobs.map((job) => ({
-      url: `${BASE_URL}/jobs/${createSlug(job.title, job.id)}`, 
-      lastModified: getSafeDate(job.date_posted), 
-      changeFrequency: 'weekly', 
-      priority: 0.8,
-    }));
-  }
+  const jobRoutes: MetadataRoute.Sitemap = jobs.map((job) => ({
+    url: `${BASE_URL}/jobs/${createSlug(job.title, Number(job.id))}`, 
+    lastModified: getSafeDate(job.date_posted), 
+    changeFrequency: 'weekly', 
+    priority: 0.8,
+  }));
 
   // ==========================================
-  // 5️⃣ DYNAMIC COMPANIES
+  // 5️⃣ DYNAMIC COMPANIES — ab Typesense se
   // ==========================================
-  const { data: companies } = await supabase
-    .from('companies')
-    .select('slug, created_at'); 
+  const companies = await fetchAllTypesenseDocs(
+    'companies',
+    {
+      q: '*',
+      query_by: 'name',
+    },
+    5000
+  );
 
-  let companyRoutes: MetadataRoute.Sitemap = [];
-
-  if (companies) {
-    companyRoutes = companies.map((company) => ({
-      url: `${BASE_URL}/companies/${company.slug}`, 
-      lastModified: getSafeDate(company.created_at), // 👈 Updated
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    }));
-  }
+  const companyRoutes: MetadataRoute.Sitemap = companies.map((company) => ({
+    url: `${BASE_URL}/companies/${company.slug}`, 
+    lastModified: getSafeDate(company.created_at), 
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
 
   // ==========================================
   // 6️⃣ DYNAMIC BLOG POSTS
   // ==========================================
   const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,
-    lastModified: getSafeDate(post.date), // 👈 Updated
+    lastModified: getSafeDate(post.date), 
     changeFrequency: 'monthly', 
     priority: 0.8, 
   }));
-// ==========================================
-// 7️⃣TOOLS DIRECTORY (main page + category filters + individual tools)
-// ==========================================
-const { data: toolsForSitemap } = await supabase
-  .from('tools_directory')
-  .select('slug, category, created_at')
-  .eq('is_active', true);
 
-let toolsRoutes: MetadataRoute.Sitemap = [];
+  // ==========================================
+  // 7️⃣ TOOLS DIRECTORY (abhi tak Supabase pe hi — migrate nahi hui)
+  // ==========================================
+  const { data: toolsForSitemap } = await supabase
+    .from('tools_directory')
+    .select('slug, category, created_at')
+    .eq('is_active', true);
 
-if (toolsForSitemap) {
-  // Main directory page: /tools
-  toolsRoutes.push({
-    url: `${BASE_URL}/tools`,
-    lastModified: new Date(),
-    changeFrequency: 'daily',
-    priority: 0.8,
-  });
+  let toolsRoutes: MetadataRoute.Sitemap = [];
 
-  // Category filter pages: /tools?category=X
-  // Only categories that actually have at least one active tool.
-  const uniqueToolCategories = Array.from(
-    new Set(toolsForSitemap.map((t) => t.category))
+  if (toolsForSitemap) {
+    toolsRoutes.push({
+      url: `${BASE_URL}/tools`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    });
+
+    const uniqueToolCategories = Array.from(
+      new Set(toolsForSitemap.map((t) => t.category))
+    );
+
+    uniqueToolCategories.forEach((cat) => {
+      toolsRoutes.push({
+        url: `${BASE_URL}/tools?category=${encodeURIComponent(cat)}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      });
+    });
+
+    toolsForSitemap.forEach((tool) => {
+      toolsRoutes.push({
+        url: `${BASE_URL}/tools/${tool.slug}`,
+        lastModified: getSafeDate(tool.created_at),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      });
+    });
+  }
+
+  // ==========================================
+  // 8️⃣ PROGRAMMATIC SEO PAGES — ab Typesense se
+  // ==========================================
+  const seoPages = await fetchAllTypesenseDocs(
+    'seo_pages',
+    {
+      q: '*',
+      query_by: 'url_path',
+      filter_by: 'is_indexed:=true',
+    },
+    5000
   );
 
-  uniqueToolCategories.forEach((cat) => {
-    toolsRoutes.push({
-      url: `${BASE_URL}/tools?category=${encodeURIComponent(cat)}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    });
-  });
-
-  // Individual tool detail pages: /tools/[slug]
-  toolsForSitemap.forEach((tool) => {
-    toolsRoutes.push({
-      url: `${BASE_URL}/tools/${tool.slug}`,
-      lastModified: getSafeDate(tool.created_at),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    });
-  });
-}
-  // ==========================================
-  // 8️⃣ PROGRAMMATIC SEO PAGES
-  // ==========================================
-  const { data: seoPages } = await supabase
-    .from('seo_pages')
-    .select('url_path, last_updated')
-    .eq('is_indexed', true); 
-
-  let pseoRoutes: MetadataRoute.Sitemap = [];
-
-  if (seoPages) {
-    pseoRoutes = seoPages.map((page) => ({
-      url: `${BASE_URL}${page.url_path}`, 
-      lastModified: getSafeDate(page.last_updated), // 👈 Updated
-      changeFrequency: 'daily', 
-      priority: 0.9, 
-    }));
-  }
+  const pseoRoutes: MetadataRoute.Sitemap = seoPages.map((page) => ({
+    url: `${BASE_URL}${page.url_path}`, 
+    lastModified: getSafeDate(page.last_updated), 
+    changeFrequency: 'daily', 
+    priority: 0.9, 
+  }));
 
   // 🔥 MERGE EVERYTHING
   return [

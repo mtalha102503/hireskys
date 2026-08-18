@@ -1,9 +1,10 @@
 import { Metadata, ResolvingMetadata } from 'next';
-import { supabase } from '@/lib/supabaseClient';
 import HomePageClient from '@/app/HomePageClient';
-import { CATEGORIES } from '@/lib/categories'; // 👈 Naya Import
+import { CATEGORIES } from '@/lib/categories';
 import { Suspense } from 'react';
-import { unstable_cache } from 'next/cache'; // 🚀 EGRESS FIX: thundering-herd dedupe
+import { unstable_cache } from 'next/cache';
+import { typesenseSearchClient } from '@/lib/typesenseClient';
+
 export const revalidate = 3600;
 type Props = {
     params: Promise<{ location: string; category: string }>
@@ -17,12 +18,18 @@ type Props = {
 // ---------------------------------------------------------------------
 const getCachedSeoStatus = unstable_cache(
     async (dbUrlPath: string) => {
-        const { data } = await supabase
-            .from('seo_pages')
-            .select('is_indexed')
-            .eq('url_path', dbUrlPath)
-            .maybeSingle();
-        return data;
+        try {
+            const results: any = await typesenseSearchClient.collections('seo_pages').documents().search({
+                q: '*',
+                query_by: 'url_path',
+                filter_by: `url_path:=${dbUrlPath}`,
+                per_page: 1,
+            });
+            return results.hits?.[0]?.document || null;
+        } catch (err) {
+            console.error("Typesense seo_pages fetch error:", err);
+            return null;
+        }
     },
     ['seo-page-status'],
     { revalidate: 3600 }
@@ -33,36 +40,20 @@ function formatUrlParam(param: string) {
     return param.replace(/-/g, ' '); // Simply remove dashes for matching
 }
 
-// 🚀 DYNAMIC SEO GENERATOR
-export async function generateMetadata(
-    { params }: Props,
-    parent: ResolvingMetadata
-): Promise<Metadata> {
-    const resolvedParams = await params;
-    
-    const locationRaw = formatUrlParam(resolvedParams.location);
-    const categoryOrTagRaw = formatUrlParam(resolvedParams.category);
-
-    const isWorldwide = locationRaw === 'All';
-    const displayLocation = isWorldwide ? 'Worldwide' : locationRaw;
-
-    // 🧠 REVERSE SEARCH: Find if it's a Tag or Category
+// 🧠 Helper: URL slug se exact category/tag nikalna (metadata aur page dono me use hoga)
+function resolveCategoryOrTag(categoryParam: string) {
+    const urlSlug = categoryParam.toLowerCase().replace(/[^a-z0-9]/g, '');
     let isTag = false;
     let isMainCategory = false;
     let actualCategoryName = 'All';
     let actualTagName = '';
-    
-    // 🚀 THE FIX: Yahan /[^a-z0-9]/g use karna hai taake URL completely saaf ho jaye
-    const urlSlug = resolvedParams.category.toLowerCase().replace(/[^a-z0-9]/g, '');
 
     for (const [catName, catData] of Object.entries(CATEGORIES)) {
-        // Category ko bhi match karte waqt same clean regex lagao
         if (catName.toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug) {
             isMainCategory = true;
             actualCategoryName = catName;
             break;
         }
-        // Sub-tags ko bhi same clean regex lagao
         const matchedTag = catData.sub.find(t => t.toLowerCase().replace(/[^a-z0-9]/g, '') === urlSlug);
         if (matchedTag) {
             isTag = true;
@@ -71,22 +62,36 @@ export async function generateMetadata(
             break;
         }
     }
+    return { isTag, isMainCategory, actualCategoryName, actualTagName };
+}
 
+// 🚀 DYNAMIC SEO GENERATOR
+export async function generateMetadata(
+    { params }: Props,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const resolvedParams = await params;
+
+    const locationRaw = formatUrlParam(resolvedParams.location);
+    const isWorldwide = locationRaw === 'All';
+    const displayLocation = isWorldwide ? 'Worldwide' : locationRaw;
+
+    // 🧠 REVERSE SEARCH: Find if it's a Tag or Category
+    const { isTag, isMainCategory, actualCategoryName, actualTagName } = resolveCategoryOrTag(resolvedParams.category);
     const finalRoleTitle = isTag ? actualTagName : (isMainCategory ? actualCategoryName : 'Remote');
 
     // 🎨 VIP Title Generator
     const pageTitle = `${finalRoleTitle} Jobs ${isWorldwide ? 'Worldwide' : `in ${displayLocation}`} | HireSkys`;
     const pageDescription = `Find the best high-paying remote and work-from-home ${finalRoleTitle} jobs hiring ${isWorldwide ? 'worldwide' : `in ${displayLocation}`}. Apply today on HireSkys.`;
-    
+
     // 🔗 URLs
     const canonicalUrl = `https://www.hireskys.com/remote-jobs/${resolvedParams.location.toLowerCase()}/${resolvedParams.category.toLowerCase()}`;
     const dbUrlPath = `/remote-jobs/${resolvedParams.location.toLowerCase()}/${resolvedParams.category.toLowerCase()}`;
 
-    // 🚀 THE NEW SEO BOT SHIELD (Lightning Fast)
-    // Ab hum jobs count nahi karenge, direct apna VIP SEO table check karenge!
+    // 🚀 THE SEO BOT SHIELD (Typesense se, Lightning Fast)
     const seoData = await getCachedSeoStatus(dbUrlPath);
 
-    // Agar table mein record nahi hai, YA is_indexed FALSE hai, toh Google ko block kardo!
+    // Agar record nahi mila, YA is_indexed FALSE hai, toh Google ko block kardo!
     const shouldIndex = seoData?.is_indexed === true;
 
     if (!shouldIndex) {
@@ -107,40 +112,51 @@ export async function generateMetadata(
     }
 }
 
-// 🖥️ MAIN PAGE COMPONENT
+// 🖥️ MAIN PAGE COMPONENT — ab poori tarah Typesense se SSR
 export default async function RemoteJobsPage({ params }: Props) {
     const resolvedParams = await params;
     const LIMIT = 20;
 
-    // 👇 NAYA: Server-side pe hi jobs fetch karo, location+category filter ke saath
-    let query = supabase
-        .from('jobs')
-        .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, featured_until, brand_color, application_count', { count: 'exact' })
-        .eq('approved', true)
-        .eq('active', true)
-        .order('featured_until', { ascending: false, nullsFirst: false })
-        .order('date_posted', { ascending: false })
-        .range(0, LIMIT - 1);
-
-    const categoryFormatted = formatUrlParam(resolvedParams.category);
-    if (categoryFormatted !== 'All') {
-        query = query.ilike('category', `%${categoryFormatted}%`);
-    }
-
     const locationFormatted = formatUrlParam(resolvedParams.location);
-    if (locationFormatted !== 'All') {
-        query = query.ilike('location', `%${locationFormatted}%`);
+    const { isTag, isMainCategory, actualCategoryName, actualTagName } = resolveCategoryOrTag(resolvedParams.category);
+
+    // 🚀 Exact match filters — jaisa homepage ke fetchJobs() me karte hain
+    const filters: string[] = ['approved:=true', 'active:=true'];
+    if (isTag) {
+        filters.push(`tags:=${actualTagName}`);
+    } else if (isMainCategory) {
+        filters.push(`category:=${actualCategoryName}`);
     }
 
-    const { data: initialJobs, count } = await query;
+    let initialJobs: any[] = [];
+    let count = 0;
+
+    try {
+        const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+            q: locationFormatted !== 'All' ? locationFormatted : '*',
+            query_by: locationFormatted !== 'All' ? 'location' : 'title',
+            filter_by: filters.join(' && '),
+            sort_by: 'featured_until:desc,date_posted_ts:desc',
+            per_page: LIMIT,
+            page: 1,
+        });
+
+        initialJobs = (results.hits?.map((h: any) => h.document) || []).map((doc: any) => ({
+            ...doc,
+            id: Number(doc.id), // Typesense id string hota hai, HomePageClient ko number chahiye
+        }));
+        count = results.found || 0;
+    } catch (err) {
+        console.error("Typesense SSR jobs fetch error:", err);
+    }
 
     return (
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>}>
-            <HomePageClient 
-                seoCategory={resolvedParams.category} 
+            <HomePageClient
+                seoCategory={resolvedParams.category}
                 seoLocation={resolvedParams.location}
-                serverJobs={initialJobs || []}
-                serverCount={count || 0}
+                serverJobs={initialJobs}
+                serverCount={count}
                 serverPage={0}
             />
         </Suspense>

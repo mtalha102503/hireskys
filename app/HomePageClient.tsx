@@ -464,38 +464,40 @@ useEffect(() => {
     };
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
   const fetchDailyCount = async () => {
     const CACHE_KEY = 'hs_jobs_count';
     const CACHE_TIME_KEY = 'hs_jobs_count_time';
-    const ONE_DAY = 24 * 60 * 60 * 1000; // 24 hours in ms
+    const ONE_DAY = 24 * 60 * 60 * 1000;
     
     const cachedCount = localStorage.getItem(CACHE_KEY);
     const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
     const now = Date.now();
     
-    // Agar aaj already fetch ho chuka hai, toh bas cached count use karo
     if (cachedCount && cachedTime && (now - parseInt(cachedTime)) < ONE_DAY) {
       setTotalCount(parseInt(cachedCount));
       return;
     }
     
-    // Nahi toh Supabase se fresh count lao
-    const { count, error } = await supabase
-      .from('jobs')
-      .select('*', { count: 'exact', head: true })
-      .eq('active', true)
-      .eq('approved', true);
-    
-    if (count !== null && !error) {
+    try {
+      const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+        q: '*',
+        query_by: 'title',
+        filter_by: 'approved:=true && active:=true',
+        per_page: 1, // sirf count chahiye, docs nahi
+      });
+      
+      const count = results.found || 0;
       setTotalCount(count);
       localStorage.setItem(CACHE_KEY, count.toString());
       localStorage.setItem(CACHE_TIME_KEY, now.toString());
+    } catch (err) {
+      console.error("Typesense count fetch error:", err);
     }
   };
   
   fetchDailyCount();
-}, []); // 👈 Empty dependency = sirf 1 baar jab component mount hoga
+}, []);
     
   useEffect(() => {
     if (currentUser) {
@@ -718,19 +720,28 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
       twoDaysAgo.setHours(twoDaysAgo.getHours() - 48);
 
       // 📥 FETCH JOBS (Isme description bhi mangwa li taake skills usme dhoond sakein)
-      const { data: recentJobs } = await supabase
-    .from('jobs')
-    .select('id, title, source, link, category, date_posted, is_verified, approved, active, job_type, location, tags, company_logo_url, description, platform')
-    .gte('date_posted', twoDaysAgo.toISOString())
-    .eq('active', true)
-    .eq('approved', true)
-    .order('date_posted', { ascending: false })
-    .limit(50); // 👈 Bas 50 latest jobs check karo
+let recentJobs: any[] = [];
+try {
+    const results: any = await typesenseSearchClient.collections('jobs').documents().search({
+        q: '*',
+        query_by: 'title',
+        filter_by: `approved:=true && active:=true && date_posted_ts:>=${twoDaysAgo.getTime()}`,
+        sort_by: 'date_posted_ts:desc',
+        per_page: 50,
+    });
 
-      if (!recentJobs || recentJobs.length === 0) {
-          setFeaturedJobs([]);
-          return;
-      }
+    recentJobs = (results.hits?.map((h: any) => h.document) || []).map((doc: any) => ({
+        ...doc,
+        id: Number(doc.id), // Typesense id string hota hai, Job type me number chahiye
+    }));
+} catch (err) {
+    console.error("Typesense featured jobs fetch error:", err);
+}
+
+if (!recentJobs || recentJobs.length === 0) {
+    setFeaturedJobs([]);
+    return;
+}
 
       // 🧮 SCORING & FILTERING LOGIC
       const scoredJobs = recentJobs.map(job => {

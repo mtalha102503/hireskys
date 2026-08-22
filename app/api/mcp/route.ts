@@ -111,8 +111,8 @@ const handler = createMcpHandler((server) => {
       }));
 
       return {
-        content: [{ type: "text", text: JSON.stringify(companies, null, 2) }],
-      };
+  content: [{ type: "text" as const, text: JSON.stringify(companies, null, 2) }],
+};
     }
   );
 });

@@ -189,10 +189,12 @@ async function handleMcpRequest(req: NextRequest, apiKey: string) {
   return handler(req);
 }
 
-export async function POST(req: NextRequest, { params }: { params: { key: string } }) {
-  return handleMcpRequest(req, params.key);
+export async function POST(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
+  const { key } = await params; // 👈 Pehle params ko await kiya
+  return handleMcpRequest(req, key);
 }
 
-export async function GET(req: NextRequest, { params }: { params: { key: string } }) {
-  return handleMcpRequest(req, params.key);
+export async function GET(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
+  const { key } = await params; // 👈 Pehle params ko await kiya
+  return handleMcpRequest(req, key);
 }

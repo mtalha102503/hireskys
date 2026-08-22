@@ -47,7 +47,7 @@ const handler = createMcpHandler((server) => {
         .documents()
         .search({
           q: query || "*",
-          query_by: "title,description,tags,company",
+          query_by: "title,tags,company",
           filter_by: filters.join(" && "),
           sort_by: "date_posted_ts:desc",
           per_page: 10,
@@ -96,7 +96,7 @@ const handler = createMcpHandler((server) => {
         .documents()
         .search({
           q: query || "*",
-          query_by: "name,description,industry",
+          query_by: "name,industry",
           filter_by: filters.join(" && "),
           per_page: 10,
         });

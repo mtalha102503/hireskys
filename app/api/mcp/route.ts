@@ -63,8 +63,8 @@ const handler = createMcpHandler((server) => {
       }));
 
       return {
-        content: [{ type: "text", text: JSON.stringify(jobs, null, 2) }],
-      };
+  content: [{ type: "text" as const, text: JSON.stringify(jobs, null, 2) }],
+};
     }
   );
 

@@ -54,15 +54,15 @@ const handler = createMcpHandler((server) => {
         });
 
       const jobs = results.hits?.map((hit: any) => ({
-        title: hit.document.title,
-        company: hit.document.company,
-        category: hit.document.category,
-        location: hit.document.location,
-        job_type: hit.document.job_type,
-        experience_level: hit.document.experience_level,
-        salary_range: hit.document.salary_range,
-        link: hit.document.link,
-      }));
+  title: hit.document.title,
+  company: hit.document.company,
+  category: hit.document.category,
+  location: hit.document.location,
+  job_type: hit.document.job_type,
+  experience_level: hit.document.experience_level,
+  salary_range: hit.document.salary_range,
+  link: `https://www.hireskys.com/jobs/${hit.document.slug}`,
+}));
 
       return {
   content: [{ type: "text" as const, text: JSON.stringify(jobs, null, 2) }],

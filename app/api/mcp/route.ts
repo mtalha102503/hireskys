@@ -2,15 +2,17 @@ import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 import { Client } from "typesense";
 
-const typesenseClient = new Client({
-  nodes: [{
-    host: process.env.TYPESENSE_HOST!,
-    port: 443,
-    protocol: "https",
-  }],
-  apiKey: process.env.TYPESENSE_SEARCH_KEY!,
-  connectionTimeoutSeconds: 5,
-});
+function getTypesenseClient() {
+  return new Client({
+    nodes: [{
+      host: process.env.NEXT_PUBLIC_TYPESENSE_HOST!,
+      port: 443,
+      protocol: "https",
+    }],
+    apiKey: process.env.NEXT_PUBLIC_TYPESENSE_SEARCH_KEY!,
+    connectionTimeoutSeconds: 5,
+  });
+}
 
 const handler = createMcpHandler((server) => {
   // TOOL 1: Search Jobs
@@ -39,7 +41,7 @@ const handler = createMcpHandler((server) => {
       if (location) filters.push(`location:=${location}`);
       if (job_type) filters.push(`job_type:=${job_type}`);
       if (experience_level) filters.push(`experience_level:=${experience_level}`);
-
+      const typesenseClient = getTypesenseClient();
       const results = await typesenseClient
         .collections("jobs")
         .documents()
@@ -88,7 +90,7 @@ const handler = createMcpHandler((server) => {
       let filters: string[] = [];
       if (industry) filters.push(`industry:=${industry}`);
       if (company_size) filters.push(`company_size:=${company_size}`);
-
+     const typesenseClient = getTypesenseClient();
       const results = await typesenseClient
         .collections("companies")
         .documents()

@@ -1695,5 +1695,99 @@ export const BLOG_POSTS: BlogPost[] = [
           </div>
       </div>
     `
+  },
+  {
+    slug: 'how-to-use-hireskys-mcp-claude-chatgpt',
+    title: 'The Ultimate Guide: How to Search HireSkys Directly Inside Claude using MCP',
+    excerpt: 'Stop switching tabs. Learn how to connect our Model Context Protocol (MCP) server to your AI assistant to find remote jobs in real-time.',
+    date: 'Aug 23, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png', 
+    category: 'Product Updates',
+    image: '/blog-mcp-guide.webp', // Unsplash se koi tech/AI image daal dena
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Imagine asking Claude to "find me a senior React developer role, summarize the requirements, and write a customized cover letter for it" — and getting it all done in one single chat window. With our new MCP integration, this is now a reality.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        AI models are incredibly smart, but their training data is outdated. By connecting the HireSkys MCP (Model Context Protocol) server to your AI client, you give it real-time access to our live database of remote jobs and verified companies. 
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl">1</span>
+        Get Your Free API Key
+      </h2>
+      
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        First, you need a personal access key to connect to our servers. We offer a generous free tier to get you started.
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span>Go to the <a href="/mcp" class="text-indigo-600 hover:underline font-bold">HireSkys MCP Page</a>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span>Enter your email address and click <strong>Generate Key</strong>.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span>Copy your unique MCP Server URL (it will look something like <code>https://www.hireskys.com/api/mcp/hsk_12345...</code>).</span>
+          </li>
+      </ul>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl">2</span>
+        Connect to Claude (The Easy Way)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        You don't need to be a developer or mess with configuration files to set this up. Claude makes it incredibly easy with their custom connector UI. Here is how to do it in 10 seconds:
+      </p>
+
+      <div class="bg-slate-50 dark:bg-[#111625] border border-slate-200 dark:border-slate-800 p-6 rounded-2xl mb-8">
+        <ol class="list-decimal space-y-4 ml-4 text-lg text-slate-700 dark:text-slate-300 font-medium">
+          <li class="pl-2">Open Claude and go to <strong>Settings</strong> > <strong>Connectors</strong>.</li>
+          <li class="pl-2">Click on <strong>Add custom connector</strong>.</li>
+          <li class="pl-2">Give it a name (e.g., "HireSkys Jobs").</li>
+          <li class="pl-2">Paste your unique MCP Server URL into the URL field.</li>
+          <li class="pl-2">Click <strong>Connect</strong> and you are done!</li>
+        </ol>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl">3</span>
+        Start Searching (Prompt Examples)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Once connected, you will notice a "tools" icon indicating that HireSkys is active. You can now use natural language to search. Try these prompts:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+        <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
+            <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"Search HireSkys for remote marketing jobs paying over $80k."</p>
+        </div>
+        <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
+            <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"Find me 3 open frontend developer roles and write a cover letter for the first one."</p>
+        </div>
+        <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
+            <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"Search companies on HireSkys in the CleanTech industry."</p>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-slate-900 to-[#111625] p-8 rounded-3xl text-center border border-slate-800 shadow-2xl mt-12">
+        <h3 class="text-2xl font-black text-white mb-3">Understanding Usage Limits</h3>
+        <p class="text-slate-400 mb-6 text-lg">Your free key includes 10 AI searches per day. Need more power? Upgrade to a premium plan for unlimited daily searches and priority server access.</p>
+        <a href="/mcp" class="inline-flex justify-center items-center px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all shadow-lg shadow-indigo-500/30">
+            Get Your Key or Upgrade Today
+        </a>
+      </div>
+    `
   }
 ];

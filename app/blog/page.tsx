@@ -108,6 +108,15 @@ const BLOG_POSTS = [
   category: 'Trust & Safety',
   image: '/blog-transparency.webp',
   },
+  {
+  slug: 'how-to-use-hireskys-mcp-claude-chatgpt',
+  title: 'The Ultimate Guide: How to Search HireSkys Directly Inside Claude using MCP',
+  excerpt: 'Stop switching tabs. Learn how to connect our Model Context Protocol (MCP) server to your AI assistant to find remote jobs in real-time.',
+  date: 'Aug 23, 2026',
+  author: 'Muhammad Talha',
+  category: 'Product Updates',
+  image: '/blog-mcp-guide.webp',
+  },
 ];
 
 export default function BlogIndex() {

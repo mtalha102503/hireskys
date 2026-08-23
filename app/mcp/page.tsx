@@ -1,7 +1,8 @@
 "use client";
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
-import { Zap, CheckCircle, Copy, Sparkles, AlertCircle, Bot, Code, FastForward, HelpCircle } from 'lucide-react';
+import Link from 'next/link'; // 👈 Yeh line add karni hai
+import { Zap, CheckCircle, Copy, Sparkles, AlertCircle, Bot, Code, FastForward, HelpCircle, PlayCircle, ArrowRight } from 'lucide-react'; // 👈 ArrowRight add kiya
 
 export default function McpPage() {
   const [email, setEmail] = useState('');
@@ -165,15 +166,61 @@ export default function McpPage() {
                   </button>
                 </div>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-4 font-medium">
-                  Add this URL as a custom server in Claude Desktop configuration. 
+                  Add this URL as a custom connector in Claude. 
                 </p>
               </div>
             </div>
           )}
+
+          {/* 🔗 NEW: Setup Guide Banner */}
+          <div className="mt-10 pt-8 border-t border-slate-100 dark:border-slate-800/50 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+            <div className="flex items-center gap-4 text-center sm:text-left">
+              <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 hidden sm:flex items-center justify-center text-blue-500 shrink-0">
+                <HelpCircle size={24} />
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 dark:text-white text-base">Need help connecting?</h4>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Read our step-by-step setup guide for Claude & ChatGPT.</p>
+              </div>
+            </div>
+            <Link 
+              href="/blog/how-to-use-hireskys-mcp-claude-chatgpt" 
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-xl transition-all flex items-center justify-center gap-2 shrink-0"
+            >
+              Read Full Guide <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+
+        {/* 🚀 NEW: DEMO VIDEO SECTION */}
+        <div className="mb-24 relative">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-black mb-3 flex items-center justify-center gap-2">
+              <PlayCircle className="text-indigo-500" size={28} /> See it in Action
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-lg">Watch how seamlessly HireSkys integrates into Claude.</p>
+          </div>
+          
+          <div className="relative mx-auto max-w-4xl p-2 md:p-4 rounded-[2rem] bg-slate-200/50 dark:bg-[#111625]/80 border border-slate-300 dark:border-slate-800 shadow-2xl backdrop-blur-sm">
+            {/* Ambient shadow behind video */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[2.5rem] blur-xl opacity-20 -z-10"></div>
+            
+            <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-inner aspect-video">
+              <video 
+                src="/combined_video.mp4" 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                controls
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
         </div>
 
         {/* FEATURES GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
           <div className="p-6 bg-white dark:bg-[#111625] rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">
               <FastForward size={24} />

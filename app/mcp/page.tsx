@@ -311,7 +311,7 @@ export default function McpPage() {
             </div>
             <div>
               <h4 className="font-bold text-lg mb-2 text-slate-900 dark:text-white">How do I add this to Claude Desktop?</h4>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">Open Claude Desktop settings, go to the Developer tab, edit your config file, and add the URL we generated for you under the <code>mcpServers</code> section using the SSE (Server-Sent Events) configuration.</p>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed">Open Claude clik customize then click connectors and add custom connector paste the url that provided with your key.</p>
             </div>
           </div>
         </div>

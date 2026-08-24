@@ -240,7 +240,7 @@ export default function McpPage() {
               <Code size={24} />
             </div>
             <h3 className="text-xl font-bold mb-2">Built for Developers</h3>
-            <p className="text-slate-500 dark:text-slate-400 leading-relaxed">Use the standard Model Context Protocol. Works perfectly with Claude Desktop, Cursor, and any other MCP-compatible AI client.</p>
+            <p className="text-slate-500 dark:text-slate-400 leading-relaxed">Use the standard Model Context Protocol. Works perfectly with Claude Custom Connector, Claude Desktop, Cursor, and any other MCP-compatible AI client.</p>
           </div>
         </div>
 

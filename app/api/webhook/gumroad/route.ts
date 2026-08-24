@@ -8,18 +8,63 @@ export async function POST(req: Request) {
     const payload = Object.fromEntries(formData.entries());
 
     // Gumroad se bhejey gaye data ko nikalna
-    const employerId = payload.employerId as string; // Make sure your Gumroad button sends this!
+    const employerId = payload.employerId as string; 
+    const apiKey = payload.apiKey as string; // 👈 Naya MCP wala custom field
     const buyerEmail = payload.email as string;
     const isRefunded = payload.refunded === 'true';
-    
-    // 🟢 VIP JADOO: Gumroad bhejta hai ke product ka naam kya tha
     const productName = (payload.product_name as string || '').toLowerCase(); 
 
-    console.log(`Gumroad Webhook Received | User: ${employerId} | Product: ${productName} | Refunded: ${isRefunded}`);
+    console.log(`Gumroad Master Webhook | Product: ${productName} | Refunded: ${isRefunded} | Employer: ${employerId} | API Key: ${apiKey}`);
 
-    // Verification check
+    // ==============================================================
+    // 🚀 SCENARIO 1: MCP SUBSCRIPTION LOGIC
+    // ==============================================================
+    if (productName.includes('mcp')) {
+      if (!apiKey) {
+        return NextResponse.json({ error: "Missing API key for MCP purchase" }, { status: 400 });
+      }
+
+      // 🔴 Refund hua -> free tier pe wapas kar do
+      if (isRefunded) {
+        await supabase
+          .from('api_keys')
+          .update({ plan: 'free', subscription_expires_at: null })
+          .eq('key', apiKey);
+
+        return NextResponse.json({ success: true, message: "MCP Refund processed, downgraded to free" });
+      }
+
+      // 🟢 Payment successful -> expiry date calculate karo
+      let daysToAdd = 30; // default monthly
+
+      if (productName.includes('6-month')) {
+        daysToAdd = 180;
+      } else if (productName.includes('yearly')) {
+        daysToAdd = 365;
+      }
+
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + daysToAdd);
+
+      const { error } = await supabase
+        .from('api_keys')
+        .update({
+          plan: 'paid',
+          subscription_expires_at: expiryDate.toISOString(),
+        })
+        .eq('key', apiKey);
+
+      if (error) throw error;
+      return NextResponse.json({ success: true, message: `MCP subscription activated: ${productName}` });
+    }
+
+    // ==============================================================
+    // 💼 SCENARIO 2: JOB POSTS / COMPANY CREDITS LOGIC
+    // ==============================================================
+    
+    // Verification check for Jobs
     if (!employerId) {
-      return NextResponse.json({ error: "Missing Employer ID" }, { status: 400 });
+      return NextResponse.json({ error: "Missing Employer ID for Job Post" }, { status: 400 });
     }
 
     // Pehle mojooda company ka data nikalo taake purane credits pata chal sakein
@@ -35,11 +80,9 @@ export async function POST(req: Request) {
     if (isRefunded) {
       let updateData: any = {};
       
-      // Agar urgent refund hua hai toh urgent se kato, warna paid se
       if (productName.includes('urgent')) {
         updateData = { urgent_credits: Math.max(0, (company.urgent_credits || 0) - 1) };
       } else {
-        // Bulk packs refund hue hain toh zyada kato, warna 1
         let deduction = 1;
         if (productName.includes('bulk 5')) deduction = 5;
         if (productName.includes('bulk 10')) deduction = 10;
@@ -64,14 +107,14 @@ export async function POST(req: Request) {
       newPlanTier = 'Scale';
       creditsToAdd = 1;
     } else if (productName.includes('urgent')) {
-      newPlanTier = 'Urgent'; // 👈 VIP JADOO: Plan update karna zaroori hai!
+      newPlanTier = 'Urgent'; 
       creditsToAdd = 1;
       isUrgentToken = true;
     } else if (productName.includes('bulk 5')) {
-      newPlanTier = 'Bulk 5 Pack'; // 👈 VIP JADOO: Plan update karna zaroori hai!
+      newPlanTier = 'Bulk 5 Pack'; 
       creditsToAdd = 5;
     } else if (productName.includes('bulk 10')) {
-      newPlanTier = 'Bulk 10 Pack'; // 👈 VIP JADOO: Plan update karna zaroori hai!
+      newPlanTier = 'Bulk 10 Pack'; 
       creditsToAdd = 10;
     } else {
       creditsToAdd = 1; // Default
@@ -80,14 +123,12 @@ export async function POST(req: Request) {
     // 🛠️ Prepare the payload for Supabase
     let updatePayload: any = {};
 
-    // Sahi balti mein credits daalo
     if (isUrgentToken) {
       updatePayload.urgent_credits = (company.urgent_credits || 0) + creditsToAdd;
     } else {
       updatePayload.paid_credits = (company.paid_credits || 0) + creditsToAdd;
     }
 
-    // Agar plan badalna hai toh payload mein daal do
     if (newPlanTier) {
       updatePayload.plan_tier = newPlanTier;
     }

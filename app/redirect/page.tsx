@@ -1,15 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function ApplyRedirectPage() {
+function RedirectContent() {
   const searchParams = useSearchParams();
   const targetUrl = searchParams.get("url") || "/"; 
   const jobTitle = searchParams.get("title") || "unknown";
   const [countdown, setCountdown] = useState(2);
 
   useEffect(() => {
-    // Fire GA4 event immediately when redirect page loads
     if (typeof window !== "undefined" && (window as any).gtag) {
       (window as any).gtag("event", "job_apply_click", {
         event_category: "engagement",
@@ -75,5 +74,13 @@ export default function ApplyRedirectPage() {
 
       </div>
     </div>  
+  );
+}
+
+export default function ApplyRedirectPage() {
+  return (
+    <Suspense fallback={null}>
+      <RedirectContent />
+    </Suspense>
   );
 }

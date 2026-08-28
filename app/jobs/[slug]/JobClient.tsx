@@ -667,11 +667,25 @@ const handleApply = async () => {
      }
 
      handleApply(); // Database count badhao
-     // Link open karo
-     const link = job.link.includes('@') && !job.link.startsWith('mailto:') ? `mailto:${job.link}` : job.link;
-     window.open(link, job.link.includes('@') ? '_self' : '_blank');
      setShowGeoWarning(false); // Popup band
+     
+     // 🚀 SMART ROUTING FOR REDIRECT PAGE
+     const isEmail = job.link.includes('@');
+     
+     if (isEmail) {
+         // Agar email hai, toh direct email app kholo
+         const mailLink = job.link.startsWith('mailto:') ? job.link : `mailto:${job.link}`;
+         window.open(mailLink, '_self');
+     } else {
+         // Agar website link hai, toh pehle apne redirect page par bhejo
+         const redirectUrl = `/redirect?url=${encodeURIComponent(job.link)}`;
+         
+         // router.push isliye use kar rahe hain taake Next.js/Analytics isay 
+         // ek proper "pageview" count kare aur Bounce Rate drop ho jaye!
+         router.push(redirectUrl); 
+     }
   };
+
  
 
   const getSourceStyle = (source: string) => {

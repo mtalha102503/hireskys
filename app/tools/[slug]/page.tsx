@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-
+import SafetyWingClaimGuide from '@/components/SafetyWingClaimGuide';
 const YoutubeVideo = dynamic(() => import('@/components/YoutubeVideo'), {
   loading: () => (
     <div className="w-full h-full bg-gray-100 dark:bg-gray-800 animate-pulse flex items-center justify-center">
@@ -333,6 +333,11 @@ export default async function ToolDetailsPage({
                   dangerouslySetInnerHTML={{ __html: tool.content }}
                 />
               </div>
+            )}
+            {tool.slug === 'safetywing' && (
+                <div className="px-8 pb-12 md:px-12">
+                   <SafetyWingClaimGuide />
+                </div>
             )}
           </div>
         </div>

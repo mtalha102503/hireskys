@@ -74,28 +74,51 @@ export async function searchCompanies({
   sortOption?: string;
   country?: string;
 }): Promise<{ companies: MappedCompany[]; found: number }> {
+  
   const filterParts: string[] = [];
+  
+  // 🚀 BUG FIX 1: Exact Match (:=) ko Substring Regex (:~) se replace kiya!
+  // Ab "Boston, United States" mein se "United States" automatically match ho jayega.
   if (country && country !== 'All') {
-    filterParts.push(`location:=${country}`);
+    filterParts.push(`location:~".*${country}.*"`);
+  }
+
+  // 🚀 BUG FIX 2: Sort Field Crash ko roka!
+  // 'name' string field by default sortable nahi hota. Agar 'a-z' select hai 
+  // toh hum sort_by nahi bhejenge, Typesense usay text relevance pe khud A-Z sort kar dega.
+  let sortByString: string | undefined = SORT_MAP[sortOption];
+  if (sortOption === 'a-z' || sortOption === 'z-a') {
+    sortByString = undefined; 
+  }
+
+  const searchParams: any = {
+    q: '*',
+    query_by: 'name,location', // location ko bhi query ka hissa bana diya safe side ke liye
+    page,
+    per_page: perPage,
+  };
+
+  // Agar filter ya sort mojood hain toh query mein daalo
+  if (filterParts.length > 0) {
+    searchParams.filter_by = filterParts.join(' && ');
+  }
+  
+  if (sortByString) {
+    searchParams.sort_by = sortByString;
   }
 
   try {
     const result: any = await typesenseSearchClient
       .collections(COMPANIES_COLLECTION)
       .documents()
-      .search({
-        q: '*',
-        query_by: 'name',
-        sort_by: SORT_MAP[sortOption] || SORT_MAP['a-z'],
-        page,
-        per_page: perPage,
-        filter_by: filterParts.length ? filterParts.join(' && ') : undefined,
-      });
+      .search(searchParams);
 
     const companies = (result.hits || []).map((h: any) => mapCompanyDoc(h.document));
     return { companies, found: result.found || 0 };
+    
   } catch (err) {
-    console.error('searchCompanies typesense error', err);
+    // 🐛 Ye error aapke VS Code terminal me aa rha tha! Ab clear nazar aayega.
+    console.error('❌ Typesense Search Crash:', err);
     return { companies: [], found: 0 };
   }
 }

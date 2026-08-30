@@ -22,6 +22,6 @@ async function fetchCompaniesPageData() {
 
 export const getCompaniesPageData = unstable_cache(
   fetchCompaniesPageData,
-  ['companies-page-default'],
+  ['companies-page-default-v2'], // 👈 V2 lagadiya, ab fauran naya data fetch hoga!
   { revalidate: 300 }
 );

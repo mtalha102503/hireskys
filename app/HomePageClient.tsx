@@ -2327,9 +2327,6 @@ return (
                       </div>
                     </div>
                   )}
-                  {(index + 1) % 5 === 0 && (
-                      <InFeedAd />
-                  )}
                   {(index === 3 || (index > 3 && (index - 3) % 10 === 0)) && (
                       <InFeedAd />
                   )}

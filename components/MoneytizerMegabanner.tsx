@@ -1,34 +1,51 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-export default function MoneytizerMegabanner() {
+export default function MegaBannerAd() {
   const adRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (adRef.current && adRef.current.innerHTML === "") {
-      const script1 = document.createElement("script");
-      script1.src = "//ads.themoneytizer.com/s/gen.js?type=1"; // type=1 for Megabanner
-      script1.async = true;
+    // Agar ad already load ho chuka hai toh dobara inject na kare (React StrictMode fix)
+    if (!adRef.current || adRef.current.hasChildNodes()) return;
 
-      const script2 = document.createElement("script");
-      script2.src = "//ads.themoneytizer.com/s/requestform.js?siteId=141745&formatId=1"; // formatId=1
-      script2.async = true;
+    // 1. Configure the ad options
+    const confScript = document.createElement("script");
+    confScript.type = "text/javascript";
+    confScript.innerHTML = `
+      atOptions = {
+        'key' : '8c981f99e2fdcb758347a9099c888033',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    `;
 
-      adRef.current.appendChild(script1);
-      adRef.current.appendChild(script2);
-    }
+    // 2. Inject the external ad network script
+    const invokeScript = document.createElement("script");
+    invokeScript.type = "text/javascript";
+    invokeScript.src = "https://environmenttalentrabble.com/8c981f99e2fdcb758347a9099c888033/invoke.js";
+    invokeScript.async = true;
+
+    // Append both scripts to the specific ad container
+    adRef.current.appendChild(confScript);
+    adRef.current.appendChild(invokeScript);
+    
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center my-6 py-2 bg-slate-50/50 dark:bg-[#111625] rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 transition-all">
-      <span className="text-[9px] uppercase font-black text-slate-300 dark:text-slate-600 mb-1 tracking-[0.2em]">
-        Sponsored
+    <div className="w-full flex flex-col items-center justify-center my-8 py-4 bg-slate-50/80 dark:bg-[#111625]/80 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 transition-all">
+      <span className="text-[9px] uppercase font-black text-slate-300 dark:text-slate-600 mb-2 tracking-[0.2em]">
+        Advertisement
       </span>
-      {/* CLS FIX: Responsive minimum heights for Megabanner */}
-      <div
-        id="141745-1"
-        ref={adRef}
-        className="min-h-[50px] md:min-h-[90px] w-full flex items-center justify-center overflow-hidden"
+      
+      {/* 
+        Ad Container: We set a min-height/width here to prevent Layout Shift (CLS) 
+        because the script expects a 728x90 area.
+      */}
+      <div 
+        ref={adRef} 
+        className="w-[728px] h-[90px] max-w-full flex items-center justify-center overflow-hidden"
       ></div>
     </div>
   );

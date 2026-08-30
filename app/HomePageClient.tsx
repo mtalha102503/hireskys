@@ -52,6 +52,9 @@ const safeStorage = {
 const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
   ssr: false 
 });
+const InFeedAd = dynamic(() => import('@/components/InFeedAd'), { 
+  ssr: false 
+});
   // Baqi states wese hi rahengi...
 const JOBS_PER_PAGE = 30;
 
@@ -2300,7 +2303,7 @@ return (
                             Don't miss out! Top companies are hiring heavily for these specific roles right now.
                           </p>
                         </div>
-
+                        
                         <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-[45%]">
   {[
     { name: "Finance Jobs", slug: "finance", icon: "📈" },
@@ -2323,6 +2326,12 @@ return (
 </div>
                       </div>
                     </div>
+                  )}
+                  {(index + 1) % 5 === 0 && (
+                      <InFeedAd />
+                  )}
+                  {(index === 3 || (index > 3 && (index - 3) % 10 === 0)) && (
+                      <InFeedAd />
                   )}
                 </div>
                 

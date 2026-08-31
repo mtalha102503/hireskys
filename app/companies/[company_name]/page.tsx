@@ -7,12 +7,14 @@ import { typesenseSearchClient } from '@/lib/typesenseClient';
 import VideoPlayerFacade from '@/components/VideoPlayerFacade';
 import Image from 'next/image'; // ✅ SEO: Performance ke liye zaroori
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import { 
   Globe, MapPin, Users, Calendar, 
   CheckCircle, Briefcase, Building2, ArrowUpRight,
   ExternalLink, DollarSign, Share2
 } from 'lucide-react';
-
+// ✅ ISKO BAQI IMPORTS KE SATH UPAR LAGA DO
+import MoneytizerMegabanner from '@/components/MoneytizerMegabanner';
 // 👇 FIX: Faster Page Load (Server Response Time improve karega)
 export const revalidate = 3600; 
 
@@ -118,6 +120,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
   const location = manualData.location || "Remote";
   const isVerified = manualData.verified || false;
   const hasCustomBanner = !!manualData.banner_url;
+  
   const industry = manualData.industry || "Technology";
   let itemListSchema = null;
   
@@ -361,7 +364,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
 
       {/* 🌟 DYNAMIC CONTENT AREA (SEO HACK APPLIED) */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        
+        <MoneytizerMegabanner />
         {/* TAB 1: OVERVIEW */}
         <div className={currentTab === 'overview' ? 'block animate-in fade-in duration-500' : 'hidden'}>
           <div className="bg-white dark:bg-[#131b2b] rounded-3xl p-8 border border-gray-200 dark:border-gray-800 shadow-sm max-w-4xl">
@@ -533,7 +536,6 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                       <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Max</span>
                     </div>
                   </div>
-
                   <div className="space-y-8">
                     {jobsWithSalary.map((job: any) => {
                       const leftPercent = (job.parsedMin / chartMaxScale) * 100;

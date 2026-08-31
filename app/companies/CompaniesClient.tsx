@@ -10,7 +10,8 @@ import {
   Rocket, 
   BriefcaseBusiness, 
   DollarSign, 
-  ChevronDown 
+  ChevronDown,
+  Plus
 } from 'lucide-react';
 
 // data/countries.ts
@@ -232,7 +233,7 @@ export default function CompaniesClient({
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   const isFirstRender = useRef(true);
-
+ 
   const sortOptionsData: Record<string, { text: string; icon: React.ReactNode }> = {
     'a-z': { text: 'Alphabetical (A-Z)', icon: <ArrowDownAZ className="w-4 h-4 text-gray-500" /> },
     'z-a': { text: 'Alphabetical (Z-A)', icon: <ArrowUpZA className="w-4 h-4 text-gray-500" /> },
@@ -300,6 +301,15 @@ useEffect(() => {
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Explore <span className="font-extrabold text-2xl text-indigo-600 dark:text-indigo-400">{totalCompanies > 0 ? totalCompanies : '...'}</span> global companies and startups hiring the best remote talent right now.
             </p>
+            <div className="mt-8 flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <Link 
+              href="/add-company" // 👈 Isko apne Contact ya Form wale page ke link se replace kar lena
+                className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-indigo-600 dark:hover:bg-indigo-500 text-sm md:text-base font-bold rounded-xl shadow-lg hover:shadow-indigo-500/25 transition-all transform hover:-translate-y-1"
+              >
+                <Plus size={18} strokeWidth={3} />
+                Add Your Company
+              </Link>
+            </div>
           </div>
           
           <div className="flex justify-end mb-6">

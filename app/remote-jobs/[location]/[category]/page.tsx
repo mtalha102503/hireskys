@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { unstable_cache } from 'next/cache';
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 
-export const revalidate = 3600;
+export const revalidate = 60; // 1 minute
 type Props = {
     params: Promise<{ location: string; category: string }>
 }

@@ -100,10 +100,11 @@ export default function Footer() {
       <div className="container mx-auto px-4 max-w-6xl">
         
         {/* MAIN GRID SECTION */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        {/* 🚀 FIX: Grid ko wapas 5 columns mein set kiya (2 for Branding, 1 for each links column) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
           
-          {/* COL 1: BRANDING */}
-          <div className="space-y-4">
+          {/* COL 1: BRANDING (Takes 2 columns on large screens) */}
+          <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-5 md:gap-5">
               <Image 
                 src="/logo2.png" 
@@ -119,7 +120,7 @@ export default function Footer() {
               </span>
             </Link>
             
-            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed pr-4">
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed pr-4 xl:pr-12">
               Your gateway to elite remote work. We connect top talent with verified work-from-anywhere opportunities and freelance contracts.
             </p>
             
@@ -131,7 +132,6 @@ export default function Footer() {
               <a href="https://www.instagram.com/hireskys/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#E1306C] hover:bg-[#E1306C]/10 dark:hover:bg-[#E1306C]/20 dark:hover:text-[#E1306C] transition-all duration-300">
                 <InstagramIcon className="w-4 h-4" />
               </a>
-              {/* 🟢 UPDATED: THREADS LINK */}
               <a href="https://www.threads.net/@hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-black hover:bg-slate-200 dark:hover:bg-white/10 dark:hover:text-white transition-all duration-300">
                 <FaThreads className="w-4 h-4" />
               </a>
@@ -141,13 +141,12 @@ export default function Footer() {
               <a href="https://t.me/hireskys_jobs" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#0088cc] hover:bg-[#0088cc]/10 dark:hover:bg-[#0088cc]/20 dark:hover:text-[#0088cc] transition-all duration-300">
                 <TelegramIcon className="w-4 h-4" />
               </a>
-              {/* 🟢 NEW: EMAIL LINK */}
               <a href="mailto:contact@hireskys.com" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all duration-300">
                 <MailIcon className="w-4 h-4" />
               </a>
             </div>
 
-            {/* 🚀 NEW: PRODUCT HUNT BADGE */}
+            {/* PRODUCT HUNT BADGE */}
             <div className="pt-4">
               <a 
                 href="https://www.producthunt.com/products/hireskys/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-hireskys" 
@@ -166,27 +165,38 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* COL 2: PLATFORM */}
-          <div>
-            <h3 className="font-bold text-slate-900 dark:text-white mb-4">Platform</h3>
-            <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
-              <li><Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Browse Jobs</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">How It Works</Link></li>
-              <li><Link href="/post-job" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Post a Job</Link></li>
-              <li><Link href="/share-story" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Share Your Success</Link></li>
-              <li>
-                <Link href="/ats" className="group inline-flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
-                  Free ATS 
-                  <span className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
-                    Hot
-                  </span>
-                </Link>
-              </li>
-            </ul>
+          {/* COL 2: PLATFORM (Talent + Employers Stacked) */}
+          <div className="lg:col-span-1 flex flex-col gap-8">
+            {/* For Talent */}
+            <div>
+              <h3 className="font-bold text-slate-900 dark:text-white mb-4">For Talent</h3>
+              <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+                <li><Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Browse Jobs</Link></li>
+                <li><Link href="/how-it-works" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">How It Works</Link></li>
+                <li><Link href="/share-story" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Share Your Success</Link></li>
+              </ul>
+            </div>
+            
+            {/* For Employers (Stacked exactly below For Talent) */}
+            <div>
+              <h3 className="font-bold text-slate-900 dark:text-white mb-4">For Employers</h3>
+              <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
+                <li><Link href="/post-job" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Post a Job</Link></li>
+                <li><Link href="/add-company" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Add Company</Link></li>
+                <li>
+                  <Link href="/ats" className="group inline-flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                    Free ATS 
+                    <span className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
+                      Hot
+                    </span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* COL 3: RESOURCES */}
-          <div>
+          <div className="lg:col-span-1">
             <h3 className="font-bold text-slate-900 dark:text-white mb-4">Resources</h3>
             <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
               <li><Link href="/success-stories" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Success Stories</Link></li>
@@ -199,7 +209,7 @@ export default function Footer() {
           </div>
 
           {/* COL 4: LEGAL */}
-          <div>
+          <div className="lg:col-span-1">
             <h3 className="font-bold text-slate-900 dark:text-white mb-4">Legal</h3>
             <ul className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
               <li><Link href="/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Privacy Policy</Link></li>

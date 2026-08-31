@@ -59,7 +59,8 @@ const trendingSearches = [
   { name: "Remote Data Entry Jobs", path: "/remote-jobs/all/data-entry" },
   { name: "Remote HR Jobs", path: "/remote-jobs/all/hr" },
   { name: "Remote Customer Support Jobs", path: "/remote-jobs/all/customer-support" },
-  { name: "Remote Software Engineer Jobs", path: "/remote-jobs/all/software-engineer" }
+  { name: "Remote Software Engineer Jobs", path: "/remote-jobs/all/software-engineer" },
+  { name: "Remote Translation Jobs", path: "/remote-jobs/all/translation" }
 ];
 // Location Data Array for cleaner code
 const remoteLocations = [

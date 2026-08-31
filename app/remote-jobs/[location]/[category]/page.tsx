@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { unstable_cache } from 'next/cache';
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 
-export const revalidate = 60; // 1 minute
+export const revalidate = 86400; // 1 minute
 type Props = {
     params: Promise<{ location: string; category: string }>
 }
@@ -32,7 +32,7 @@ const getCachedSeoStatus = unstable_cache(
         }
     },
     ['seo-page-status'],
-    { revalidate: 60 }
+    { revalidate: 86400 }
 );
 
 function formatUrlParam(param: string) {

@@ -32,7 +32,7 @@ const getCachedSeoStatus = unstable_cache(
         }
     },
     ['seo-page-status'],
-    { revalidate: 3600 }
+    { revalidate: 60 }
 );
 
 function formatUrlParam(param: string) {

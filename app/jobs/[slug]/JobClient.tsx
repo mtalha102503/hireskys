@@ -659,6 +659,7 @@ const handleApply = async () => {
     }
   };
   // Asli Apply Function (Jo link kholega aur Count badhayega)
+  // Asli Apply Function (Jo link kholega aur Count badhayega)
   const proceedToApply = () => {
      // 🟢 NAYA: Button dabte hi isko 'Applied' mark kar do
      const applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
@@ -666,27 +667,25 @@ const handleApply = async () => {
          localStorage.setItem('appliedJobs', JSON.stringify([...applied, job.id]));
      }
 
-     handleApply(); // Database count badhao
+     handleApply(); // Database count badhao (Yeh background mein chalta rahega)
      setShowGeoWarning(false); // Popup band
      
      // 🚀 SMART ROUTING FOR REDIRECT PAGE
      const isEmail = job.link.includes('@');
      
      if (isEmail) {
-         // Agar email hai, toh direct email app kholo
+         // Agar email hai, toh usay open karo
          const mailLink = job.link.startsWith('mailto:') ? job.link : `mailto:${job.link}`;
          window.open(mailLink, '_self');
      } else {
-         // Agar website link hai, toh pehle apne redirect page par bhejo
-         const redirectUrl = `/redirect?url=${encodeURIComponent(job.link)}`;
+         // 🚀 THE FIX: Naye tab mein foran kholo!
+         // Maine title bhi encode kar diya hai taake tumhare redirect page par Google Analytics (gtag) sahi track kare
+         const redirectUrl = `/redirect?url=${encodeURIComponent(job.link)}&title=${encodeURIComponent(job.title)}`;
          
-         // router.push isliye use kar rahe hain taake Next.js/Analytics isay 
-         // ek proper "pageview" count kare aur Bounce Rate drop ho jaye!
-         router.push(redirectUrl); 
+         // window.open browser ko foran naya tab kholne ka order deta hai, bina Next.js ke slow loading ka wait kiye!
+         window.open(redirectUrl, '_blank', 'noopener,noreferrer'); 
      }
   };
-
- 
 
   const getSourceStyle = (source: string) => {
       const s = source?.toLowerCase() || "";

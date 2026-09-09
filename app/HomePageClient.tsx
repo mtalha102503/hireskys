@@ -235,7 +235,52 @@ const visibleCategories = showAll ? categoryEntries : categoryEntries.slice(0, 5
 
 // 1. State for Sponsored Jobs (Ab array hoga)
 const [sponsoredJobs, setSponsoredJobs] = useState<any[]>([]);
+// ⏱️ DWELL TIME TRACKER LOGIC (For Homepage)
+  const entryTime = useRef(Date.now());
 
+  useEffect(() => {
+      // 🛑 Sirf logged-in users track honge
+      if (!currentUser) return;
+      
+      // Jaise hi user aaye, timer start
+      entryTime.current = Date.now();
+
+      const sendDwellTime = () => {
+          const timeSpent = Math.floor((Date.now() - entryTime.current) / 1000);
+          
+          // Agar 5 seconds se kam ruka hai, toh usay 'bounce' maano aur DB ka space bachao
+          if (timeSpent >= 5) {
+              const payload = {
+                  user_id: currentUser.id,
+                  event_type: 'dwell_time',
+                  metadata: { page: 'homepage', time_spent_seconds: timeSpent }
+              };
+              
+              // sendBeacon tab close hone par bhi perfectly kaam karta hai
+              navigator.sendBeacon('/api/track', JSON.stringify(payload));
+          }
+      };
+
+      // CASE 1: Jab user browser tab switch kare ya close kare
+      const handleVisibilityChange = () => {
+          if (document.visibilityState === 'hidden') {
+              sendDwellTime(); // Tab hide hone par time bhej do
+          } else {
+              entryTime.current = Date.now(); // Tab wapis aane par timer reset
+          }
+      };
+
+      window.addEventListener('visibilitychange', handleVisibilityChange);
+
+      // CASE 2: Jab user kisi Job par click kar ke naye page par jaye (Component Unmount)
+      return () => {
+          window.removeEventListener('visibilitychange', handleVisibilityChange);
+          // Check karo ke tab visible tha tabhi bhejo, double entry na ho
+          if (document.visibilityState === 'visible') {
+              sendDwellTime();
+          }
+      };
+  }, [currentUser]);
 // 2. Fetch Logic for Personalized & Filtered Sponsored Jobs
 useEffect(() => {
     if (isAuthChecking) return;
@@ -661,15 +706,18 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
       if (searchType === 'talent') {
           router.push(`/talent?search=${encodeURIComponent(searchQuery)}`);
       } else {
-          // 🚀 THE FIX: Search button/Enter dabane par URL update ho
           updateURLParams('q', searchQuery.trim()); 
           fetchJobs(0, true);
 
-          // 👇 YEH 3 NAYI LINES ADD KI HAIN (Auto-Scroll ke liye)
+          // 👇 YEH LINE ADD KI HAI (Search Tracking)
+          if (searchQuery.trim()) {
+              trackActivity('search', { query: searchQuery.trim(), type: searchType });
+          }
+
           if (jobsSectionRef.current) {
               setTimeout(() => {
                   jobsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 100); // 100ms ka delay taake UI pehle thora saans le le
+              }, 100);
           }
       }
   }
@@ -681,6 +729,24 @@ if (currentQ !== newQ && pathWord !== newQ.toLowerCase()) {
     } else {
         router.push('/hyrizon'); // Khali page kholo
     }
+  };
+  // 🧠 BEHAVIORAL TRACKING: Fire & Forget
+  const trackActivity = async (eventType: string, metadata: any) => {
+      // 🛑 STRICT RULE: Sirf logged-in users track honge! Egress bachao.
+      if (!currentUser) return; 
+
+      try {
+          // Await lagane ki zaroorat nahi hai yahan taake UI bilkul block na ho
+          supabase.from('user_activity_logs').insert([{
+              user_id: currentUser.id,
+              event_type: eventType,
+              metadata: metadata
+          }]).then(({ error }) => {
+              if (error) console.error("Tracking Error:", error);
+          });
+      } catch (err) {
+          // Silently fail taake user experience kharab na ho
+      }
   };
   async function fetchSavedJobs() {
       if (!currentUser) return;
@@ -1629,7 +1695,11 @@ return (
                            const Icon = (data as any).icon;
                            const isActive = activeCategory === name;
                            return (
-                               <Link key={name} href={getCategoryUrl(name)} scroll={false} onClick={() => { setActiveCategory(name); setActiveSubTag(''); }} className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm md:text-base font-medium transform hover:scale-105 active:scale-95 transition-all border whitespace-nowrap shadow-sm ${isActive ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg' : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'}`}>
+                               <Link key={name} href={getCategoryUrl(name)} scroll={false} onClick={() => { 
+    setActiveCategory(name); 
+    setActiveSubTag(''); 
+    trackActivity('filter', { filter_type: 'category', filter_value: name }); 
+}} className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm md:text-base font-medium transform hover:scale-105 active:scale-95 transition-all border whitespace-nowrap shadow-sm ${isActive ? 'bg-indigo-600 text-white border-transparent shadow-indigo-500/30 shadow-lg' : 'bg-white/80 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:text-indigo-600 dark:hover:text-indigo-300 hover:shadow-md'}`}>
                                    <Icon size={18} /> {name}
                                </Link>
                            )
@@ -1645,7 +1715,11 @@ return (
                    {activeCategory !== 'All' && CATEGORIES.hasOwnProperty(activeCategory) && (
                        <motion.div ref={subTagsRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap justify-center gap-2 mt-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 relative z-10 w-full">
                            {((CATEGORIES as any)[activeCategory]?.sub || []).map((tag: any) => (
-                               <Link key={tag} href={getTagUrl(tag)} scroll={false} onClick={() => { const newTag = activeSubTag === tag ? '' : tag; setActiveSubTag(newTag); }} className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}>
+                               <Link key={tag} href={getTagUrl(tag)} scroll={false} onClick={() => { 
+    const newTag = activeSubTag === tag ? '' : tag; 
+    setActiveSubTag(newTag); 
+    trackActivity('filter', { filter_type: 'tag', filter_value: newTag || 'cleared' });
+}} className={`px-4 py-2 rounded-full text-sm font-medium transform hover:scale-105 active:scale-95 transition-all border ${activeSubTag === tag ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-indigo-300'}`}>
                                    {tag}
                                </Link>
                            ))}
@@ -1840,7 +1914,12 @@ return (
                             </div>
                             <div className="max-h-[250px] overflow-y-auto custom-scrollbar p-1">
                                 {COUNTRIES.filter(c => (c.name || "").toLowerCase().includes((countrySearch || "").toLowerCase())).map((country) => (
-                                    <Link key={country.name} href={getLocationUrl(country.name)} scroll={false} onClick={() => { setFilterCountry(country.name); setShowCountryDropdown(false); setCountrySearch(""); }} className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors flex items-center gap-2">
+                                    <Link key={country.name} href={getLocationUrl(country.name)} scroll={false} onClick={() => { 
+    setFilterCountry(country.name); 
+    setShowCountryDropdown(false); 
+    setCountrySearch(""); 
+    trackActivity('filter', { filter_type: 'location', filter_value: country.name });
+}} className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors flex items-center gap-2">
                                         <span className="text-lg">{country.flag}</span>
                                         <span className="truncate">{country.name}</span>
                                         {filterCountry === country.name && <Check size={14} className="text-emerald-500 ml-auto" />}

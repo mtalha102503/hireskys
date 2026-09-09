@@ -366,14 +366,15 @@ export default async function CompanyPage({ params, searchParams }: Props) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         <MoneytizerMegabanner />
         {/* TAB 1: OVERVIEW */}
-        <div className={currentTab === 'overview' ? 'block animate-in fade-in duration-500' : 'hidden'}>
-          <div className="bg-white dark:bg-[#131b2b] rounded-3xl p-8 border border-gray-200 dark:border-gray-800 shadow-sm max-w-4xl">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">About {companyName}</h2>
-            <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-justify whitespace-pre-line">
-                {description}
-              </p>
-            </div>
+<div className={currentTab === 'overview' ? 'block animate-in fade-in duration-500' : 'hidden'}>
+  <div className="bg-white dark:bg-[#131b2b] rounded-3xl p-8 border border-gray-200 dark:border-gray-800 shadow-sm max-w-4xl">
+    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">About {companyName}</h2>
+    
+    {/* ✅ FIX: dangerouslySetInnerHTML se HTML parse hogi aur Tailwind Typography (prose) usko automatically style kar dega */}
+    <div 
+      className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:underline hover:prose-a:text-indigo-500"
+      dangerouslySetInnerHTML={{ __html: description }}
+    />
             {videoId && (
               <div className="mt-10 mb-6">
                 <div className="rounded-3xl overflow-hidden border-2 border-gray-100 dark:border-gray-800 shadow-2xl relative aspect-video bg-gray-100 dark:bg-[#0B0F19] group cursor-pointer">

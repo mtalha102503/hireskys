@@ -393,6 +393,57 @@ useEffect(() => {
     };
     if (authLoaded) detectLocation();  // 👈 authLoaded hone ka wait karo
 }, [authLoaded, user]);  // 👈 Ye dependency add karo
+// ⏱️ THE SMART DWELL TIME TRACKER (For Job Details Page)
+  const entryTime = useRef(Date.now());
+
+  useEffect(() => {
+      // 🛑 Sirf logged-in users track honge, aur jab job load ho jaye
+      if (!user || !job?.id) return;
+      
+      // Jaise hi user job page par aaye, timer start
+      entryTime.current = Date.now();
+
+      const sendDwellTime = () => {
+          const timeSpent = Math.floor((Date.now() - entryTime.current) / 1000);
+          
+          // Agar 5 seconds se kam ruka hai, toh bounce maano (track mat karo)
+          if (timeSpent >= 5) {
+              const payload = {
+                  user_id: user.id,
+                  job_id: job.id, // Yahan hum specific job ki ID bhej rahe hain
+                  event_type: 'dwell_time',
+                  metadata: { 
+                      page: 'job_details', 
+                      time_spent_seconds: timeSpent,
+                      category: job.category 
+                  }
+              };
+              
+              // sendBeacon tab close hone par bhi perfectly background mein POST request bhej deta hai
+              navigator.sendBeacon('/api/track', JSON.stringify(payload));
+          }
+      };
+
+      // CASE 1: Jab user browser tab switch kare ya close kare
+      const handleVisibilityChange = () => {
+          if (document.visibilityState === 'hidden') {
+              sendDwellTime(); // Tab hide hone par time bhej do
+          } else {
+              entryTime.current = Date.now(); // Tab wapis aaye toh naye siray se count karo
+          }
+      };
+
+      window.addEventListener('visibilitychange', handleVisibilityChange);
+
+      // CASE 2: Jab user kisi link par click kar ke naye page par jaye (Component Unmount)
+      return () => {
+          window.removeEventListener('visibilitychange', handleVisibilityChange);
+          // Check karo ke tab visible tha tabhi bhejo, double entry se bachne ke liye
+          if (document.visibilityState === 'visible') {
+              sendDwellTime();
+          }
+      };
+  }, [user, job?.id, job?.category]);
   useEffect(() => {
     fetchJobDetails();
   }, []);

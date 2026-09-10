@@ -631,20 +631,6 @@ export default function CompleteProfile() {
                             </div>
                         </div>
                     )}
-
-                    {alertPreference === 'none' && (
-                        <div className="w-full p-4 bg-gray-50 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700/50 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
-                            <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                <BellRing size={20} />
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-bold text-gray-900 dark:text-gray-300">No Alerts Selected</h4>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
-                                    You won't receive instant notifications for new jobs. You can always enable them later from your dashboard.
-                                </p>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
                 {/* 📍 PROFESSIONAL LOCATION BLOCK */}

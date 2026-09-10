@@ -394,15 +394,37 @@ useEffect(() => {
     if (authLoaded) detectLocation();  // 👈 authLoaded hone ka wait karo
 }, [authLoaded, user]);  // 👈 Ye dependency add karo
 // ⏱️ THE SMART DWELL TIME TRACKER (For Job Details Page)
+  // ⏱️ THE SMART DWELL TIME & SCROLL DEPTH TRACKER (For Job Details Page)
   const entryTime = useRef(Date.now());
+  const maxScrollDepth = useRef(0); // 👈 NAYA: Scroll limit track karne ke liye ref
 
   useEffect(() => {
       // 🛑 Sirf logged-in users track honge, aur jab job load ho jaye
       if (!user || !job?.id) return;
       
-      // Jaise hi user job page par aaye, timer start
+      // Jaise hi user job page par aaye, timer aur scroll reset karo
       entryTime.current = Date.now();
+      maxScrollDepth.current = 0; 
 
+      // 📜 NAYA: Scroll Tracking Logic
+      const handleScroll = () => {
+          const scrollTop = window.scrollY; // Kitna neechay scroll kiya
+          const windowHeight = window.innerHeight; // Screen ki height
+          const docHeight = document.documentElement.scrollHeight; // Poore page ki height
+          
+          // Percentage calculate karo (0 to 100)
+          const scrollPercent = Math.round(((scrollTop + windowHeight) / docHeight) * 100);
+          
+          // Sirf highest percentage save karo (agar user wapis oopar jaye toh percentage kam na ho)
+          if (scrollPercent > maxScrollDepth.current) {
+              maxScrollDepth.current = Math.min(scrollPercent, 100); // 100 se oopar nahi jana chahiye
+          }
+      };
+
+      // Scroll listener attach karo (passive: true rakha hai taake scrolling smooth rahay aur UI lag na ho)
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      // 📤 Payload Sending Logic
       const sendDwellTime = () => {
           const timeSpent = Math.floor((Date.now() - entryTime.current) / 1000);
           
@@ -410,16 +432,17 @@ useEffect(() => {
           if (timeSpent >= 5) {
               const payload = {
                   user_id: user.id,
-                  job_id: job.id, // Yahan hum specific job ki ID bhej rahe hain
+                  job_id: job.id, 
                   event_type: 'dwell_time',
                   metadata: { 
                       page: 'job_details', 
                       time_spent_seconds: timeSpent,
-                      category: job.category 
+                      category: job.category,
+                      max_scroll_depth: maxScrollDepth.current // 👈 YAHAN SCROLL DEPTH ATTACH KI HAI
                   }
               };
               
-              // sendBeacon tab close hone par bhi perfectly background mein POST request bhej deta hai
+              // sendBeacon tab close hone par bhi safely data bhejta hai
               navigator.sendBeacon('/api/track', JSON.stringify(payload));
           }
       };
@@ -427,7 +450,7 @@ useEffect(() => {
       // CASE 1: Jab user browser tab switch kare ya close kare
       const handleVisibilityChange = () => {
           if (document.visibilityState === 'hidden') {
-              sendDwellTime(); // Tab hide hone par time bhej do
+              sendDwellTime(); 
           } else {
               entryTime.current = Date.now(); // Tab wapis aaye toh naye siray se count karo
           }
@@ -437,8 +460,9 @@ useEffect(() => {
 
       // CASE 2: Jab user kisi link par click kar ke naye page par jaye (Component Unmount)
       return () => {
+          window.removeEventListener('scroll', handleScroll); // 👈 Memory leak se bachne ke liye listener remove karo
           window.removeEventListener('visibilitychange', handleVisibilityChange);
-          // Check karo ke tab visible tha tabhi bhejo, double entry se bachne ke liye
+          
           if (document.visibilityState === 'visible') {
               sendDwellTime();
           }
@@ -520,7 +544,24 @@ const getCompanySlug = (name: string) => {
     if (diffHrs < 24) return `${diffHrs}h ago`;
     return `${diffDays}d ago`;
   }
+// 🧠 BEHAVIORAL TRACKING: Fire & Forget for Clicks
+  const trackActivity = async (eventType: string, metadata: any) => {
+      // 🛑 Sirf logged-in users track honge
+      if (!user) return; 
 
+      try {
+          supabase.from('user_activity_logs').insert([{
+              user_id: user.id,
+              job_id: job.id, // Yahan specific job id jayegi
+              event_type: eventType,
+              metadata: metadata
+          }]).then(({ error }) => {
+              if (error) console.error("Tracking Error:", error);
+          });
+      } catch (err) {
+          // Silently fail
+      }
+  };
   const toggleSave = async () => {
     if (!user) { router.push('/login'); return; }
     if (saved) {
@@ -797,10 +838,12 @@ const handleApply = async () => {
                     </div>
                 </div>
                 {(job.company || companyDetails) && (
-                <Link 
-                    href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`}
-                    className="flex items-center gap-2 group/company transition-all"
-                >
+                // Naya code:
+<Link 
+    href={`/companies/${getCompanySlug(job.company || companyDetails?.name)}`}
+    onClick={() => trackActivity('company_click', { section: 'header_badge', company_name: job.company || companyDetails?.name })}
+    className="group flex items-center gap-1.5 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md px-3 py-1.5 rounded-lg transition-all text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-bold text-sm mr-1"
+>
                     {/* Agar Asli Logo hai to wo dikhao, nahi to Icon */}
                     {companyDetails?.logo_url ? (
                         <img 

@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { 
   User, Phone, CheckCircle, ArrowRight, Loader2, 
-  LayoutGrid, Calendar, X, MapPin, Building2, Hash, ChevronDown, Briefcase,
+  LayoutGrid, Calendar,Mail, X, MapPin, Building2, Hash, ChevronDown, Briefcase,
   BellRing, Send 
 } from 'lucide-react';
 import Link from 'next/link';
@@ -548,22 +548,43 @@ export default function CompleteProfile() {
                                 Soon
                             </div>
                         </button>
-                        <button 
-                            type="button"
-                            onClick={() => setAlertPreference('telegram')} 
-                            className={`flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${alertPreference === 'telegram' ? 'bg-white dark:bg-[#151b2d] text-blue-500 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
-                        >
-                            <Send size={16}/> Telegram
-                        </button>
-                        <button 
-                            type="button"
-                            onClick={() => setAlertPreference('none')} 
-                            className={`flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${alertPreference === 'none' ? 'bg-white dark:bg-[#151b2d] text-red-500 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
-                        >
-                            <X size={16}/> Skip
-                        </button>
+                        {/* 🔴 DISABLED TELEGRAM BUTTON */}
+<button 
+    type="button"
+    disabled
+    className="flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold bg-gray-50 dark:bg-black/20 text-gray-400 dark:text-gray-600 cursor-not-allowed border border-transparent relative overflow-hidden"
+>
+    <Send size={16} className="opacity-50"/> 
+    <span className="hidden sm:inline opacity-50">Telegram</span>
+    <span className="sm:hidden opacity-50">TG</span>
+    
+    <div className="absolute top-0 right-0 bg-gradient-to-r from-red-500 to-red-700 text-white text-[8px] font-black px-1.5 py-0.5 rounded-bl-lg uppercase tracking-wider shadow-sm">
+        Maint.
+    </div>
+</button>
+                        {/* ✉️ EMAIL (DEFAULT/SKIP) BUTTON */}
+<button 
+    type="button"
+    onClick={() => setAlertPreference('none')} 
+    className={`flex-1 flex items-center justify-center gap-1.5 md:gap-2 py-3 rounded-xl text-xs md:text-sm font-bold transition-all ${alertPreference === 'none' ? 'bg-white dark:bg-[#151b2d] text-indigo-500 shadow-sm border border-gray-200 dark:border-gray-700' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+>
+    <Mail size={16}/> Email Only
+</button>
                     </div>
-
+                    {/* 📨 INFO BANNER FOR EMAIL ALERTS */}
+{alertPreference === 'none' && (
+    <div className="w-full p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2 mt-4">
+        <div className="bg-indigo-200 dark:bg-indigo-800/50 p-2 rounded-full text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+            <Mail size={20} />
+        </div>
+        <div>
+            <h4 className="text-sm font-bold text-indigo-900 dark:text-indigo-300">Email Alerts Active ✉️</h4>
+            <p className="text-xs text-indigo-700 dark:text-indigo-400 mt-1 leading-relaxed">
+                Our WhatsApp and Telegram bots are currently under maintenance. Don't worry, your VIP job alerts will be sent directly to your registered email address!
+            </p>
+        </div>
+    </div>
+)}
                     {alertPreference === 'whatsapp' && (
                         <div className="flex items-center w-full h-14 bg-white dark:bg-[#0B0F19] border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all duration-200 hover:border-gray-300 animate-in fade-in slide-in-from-top-2">
                             <div className="relative h-full bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-gray-700 min-w-[110px]">

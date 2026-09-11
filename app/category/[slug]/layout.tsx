@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: {
       template: `%s | ${categoryName} Remote Jobs`, 
-      default: `${year} Best Remote ${categoryName} Jobs (Hiring Now) | HireSkys`,
+      default: `${year} Best Remote ${categoryName} Jobs (Hiring Now)`,
     },
     description: `Browse verified remote ${categoryName} jobs. Apply to high-paying freelance, part-time, and full-time ${categoryName} roles. Updated daily for ${year}!`,
     
@@ -119,28 +119,15 @@ export default async function CategoryLayout({ children, params }: Props) {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] dark:bg-[#0B0F19]">
-      {/* Schema Injection */}
+    <>
+      {/* 🍞 Schema Injection For Google */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
       
-      {/* Semantic HTML5 tagging for SEO */}
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <header className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-                Remote {categoryName} Jobs
-            </h1>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">
-                Explore verified freelance and full-time {categoryName} opportunities.
-            </p>
-        </header>
-
-        <section aria-label={`${categoryName} Job Listings`}>
-            {children}
-        </section>
-      </main>
-    </div>
+      {/* Tumhara page.tsx yahan render hoga, bina kisi extra text ke */}
+      {children}
+    </>
   );
 }

@@ -131,59 +131,59 @@ export default async function CategoryPage({ params }: Props) {
         </div>
 
         {/* 🎨 HERO HEADER */}
-        <div className="relative mb-16 p-8 md:p-12 rounded-3xl overflow-hidden bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
-            {/* Background Decor */}
-            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl" />
+<div className="relative mb-12 p-8 md:p-10 rounded-[2rem] overflow-hidden bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-2xl shadow-indigo-500/5">
+    {/* Background Decor */}
+    <div className="absolute top-[-20%] right-[-10%] w-96 h-96 bg-indigo-500/15 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute bottom-[-20%] left-[-10%] w-72 h-72 bg-violet-500/15 rounded-full blur-[80px] pointer-events-none" />
+    <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] dark:opacity-10 opacity-5" />
 
-            <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
-                <div className="p-4 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl border border-indigo-100 dark:border-indigo-500/20">
-                    <Icon className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
-                </div>
-                <div>
-                    <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
-                        Remote <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">{categoryKey}</span> Jobs
-                    </h1>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
-                        Explore specialized roles in {categoryKey}. We curate the best remote opportunities for <span className="text-indigo-600 dark:text-indigo-400 font-medium">{data.sub.length}+ skills</span>.
-                    </p>
-                </div>
-            </div>
+    <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
+        <div className="p-4 bg-white dark:bg-slate-800/80 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 ring-1 ring-black/5 dark:ring-white/5">
+            <Icon className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
         </div>
+        <div className="mt-1 md:mt-0">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
+                Remote <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">{categoryKey}</span> Jobs
+            </h1>
+            <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
+                Explore specialized roles in {categoryKey}. We curate the best remote opportunities across <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{data.sub.length}+ skills</span>.
+            </p>
+        </div>
+    </div>
+</div>
 
         {/* 💎 INTERACTIVE GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {data.sub.map((sub, index) => {
-            const subSlug = sub.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            
-            return (
-              <Link
-                key={index}
-                href={`/category/${resolvedParams.slug}/${subSlug}`}
-                // 👇 YAHAN CHANGE KIYA HAI: active:scale-95 active:bg-indigo-50 add kiya hai
-                className="group relative overflow-hidden bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-xl p-6 transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1 hover:border-indigo-500/30 active:scale-95 active:border-indigo-500 active:bg-indigo-50 dark:active:bg-indigo-900/20"
-              >
-                {/* Gradient Line Effect */}
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-violet-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
+  {data.sub.map((sub, index) => {
+    const subSlug = sub.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    
+    return (
+      <Link
+        key={index}
+        href={`/category/${resolvedParams.slug}/${subSlug}`}
+        className="group relative flex flex-col justify-between overflow-hidden bg-white dark:bg-[#151b2b] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 hover:border-indigo-500/50 active:scale-[0.98]"
+      >
+        {/* Subtle top border highlight on hover */}
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500 to-violet-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
 
-                <div className="flex items-center justify-between mb-4">
-                    <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 transition-colors">
-                        <Hash className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-slate-300 dark:text-slate-600 -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-indigo-500" />
-                </div>
-
-                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  {sub}
-                </h3>
-                
-                <p className="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wider group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                    View Jobs
-                </p>
-              </Link>
-            );
-          })}
+        <div className="relative z-10">
+          <div className="flex items-start justify-between mb-4">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              {sub}
+            </h3>
+            <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center group-hover:bg-indigo-500 group-hover:rotate-45 transition-all duration-300">
+                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+            </div>
+          </div>
+          
+          <div className="mt-4 flex items-center text-sm font-medium text-slate-500 dark:text-slate-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">
+            <span>View openings</span>
+          </div>
         </div>
+      </Link>
+    );
+  })}
+</div>
         
         {/* 🔥 NEW ATTRACTIVE FOOTER (BUTTON STYLE) */}
         <div className="mt-24 mb-10">

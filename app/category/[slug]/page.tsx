@@ -2,9 +2,10 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { 
   Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, 
-  ArrowLeft, ArrowRight, Hash, Sparkles, Briefcase, Search, Speaker, Users, Headphones, DollarSign, ShieldCheck, BookOpen , BarChart,PenTool
+  ArrowLeft, ArrowRight, Hash, Sparkles, Briefcase, Search, Speaker, Users, Headphones, DollarSign, ShieldCheck, BookOpen , BarChart,PenTool, HelpCircle
 } from 'lucide-react';
 
 const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
@@ -113,10 +114,47 @@ export default async function CategoryPage({ params }: Props) {
   const data = CATEGORIES[categoryKey];
   const Icon = data.icon;
 
+  // 🧠 SEO Content — direct Typesense fetch, main-category-level document (id = category slug, no subcategory)
+  let introText = '';
+  let faqs: { q: string; a: string }[] = [];
+
+  try {
+    const contentDoc: any = await typesenseSearchClient
+      .collections('category_content')
+      .documents(resolvedParams.slug)
+      .retrieve();
+
+    introText = contentDoc.intro_text || '';
+    faqs = contentDoc.faqs ? JSON.parse(contentDoc.faqs) : [];
+  } catch (err) {
+    // 404 = content not seeded yet for this category, safe to fall back to empty
+    console.error("Category content fetch error (Typesense):", err);
+  }
+
+  const faqSchema = faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
+
   return (
     <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#0B0F19]">
       {/* 1️⃣ NAVBAR */}
       <Navbar />
+
+      {/* 🧩 FAQ Schema for Google */}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         
@@ -131,7 +169,7 @@ export default async function CategoryPage({ params }: Props) {
         </div>
 
         {/* 🎨 HERO HEADER */}
-<div className="relative mb-12 p-8 md:p-10 rounded-[2rem] overflow-hidden bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-2xl shadow-indigo-500/5">
+<div className="relative mb-8 p-8 md:p-10 rounded-[2rem] overflow-hidden bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-2xl shadow-indigo-500/5">
     {/* Background Decor */}
     <div className="absolute top-[-20%] right-[-10%] w-96 h-96 bg-indigo-500/15 rounded-full blur-[100px] pointer-events-none" />
     <div className="absolute bottom-[-20%] left-[-10%] w-72 h-72 bg-violet-500/15 rounded-full blur-[80px] pointer-events-none" />
@@ -151,6 +189,15 @@ export default async function CategoryPage({ params }: Props) {
         </div>
     </div>
 </div>
+
+        {/* 🧠 SEO INTRO CONTENT — separate card below the hero, same rounded/glass language */}
+        {introText && (
+          <div className="relative mb-12 p-6 md:p-8 rounded-[1.5rem] bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-lg shadow-indigo-500/5">
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-[15px] md:text-base">
+              {introText}
+            </p>
+          </div>
+        )}
 
         {/* 💎 INTERACTIVE GRID */}
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
@@ -184,6 +231,36 @@ export default async function CategoryPage({ params }: Props) {
     );
   })}
 </div>
+
+        {/* 🙋 FAQ SECTION — glass-card style matching this page's hero language */}
+        {faqs.length > 0 && (
+          <div className="mt-20">
+            <div className="flex items-center gap-2 mb-8 justify-center md:justify-start">
+              <HelpCircle className="w-5 h-5 text-indigo-500" />
+              <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Frequently Asked Questions
+              </h2>
+            </div>
+            <div className="space-y-3 max-w-4xl">
+              {faqs.map((f, i) => (
+                <details 
+                  key={i} 
+                  className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 p-5 open:shadow-lg open:shadow-indigo-500/5 open:border-indigo-200 dark:open:border-indigo-900/50 transition-colors"
+                >
+                  <summary className="font-semibold text-slate-900 dark:text-white cursor-pointer flex items-center justify-between list-none">
+                    <span>{f.q}</span>
+                    <span className="ml-4 shrink-0 w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 group-open:bg-indigo-500 group-open:text-white group-open:rotate-45 transition-all duration-300">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
+                    {f.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        )}
         
         {/* 🔥 NEW ATTRACTIVE FOOTER (BUTTON STYLE) */}
         <div className="mt-24 mb-10">

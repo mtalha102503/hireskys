@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { createSlug } from '@/lib/utils';
 import { Metadata } from 'next';
+import { getCategoryContent } from '@/lib/generateCategoryContent';
 import Navbar from '@/components/Navbar';
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { 
   ArrowLeft, Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, 
-  Briefcase, Search, MapPin, DollarSign, Calendar, Sparkles, Speaker, Headphones, Users, ShieldCheck, BookOpen, BarChart, PenTool 
+  Briefcase, Search, MapPin, DollarSign, Calendar, Sparkles, Speaker, Headphones, Users, ShieldCheck, BookOpen, BarChart, PenTool, HelpCircle
 } from 'lucide-react';
 
 const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
@@ -40,6 +41,12 @@ const findRealTag = (categorySlug: string, subSlug: string) => {
     sub.toLowerCase().replace(/[^a-z0-9]+/g, '-') === subSlug
   );
   return realTag;
+};
+
+// 🌟 NEW HELPER — parent category ka display name nikalta hai slug se (DB + Mistral prompt ke liye)
+const findMainCategoryName = (categorySlug: string) => {
+  const mainKey = Object.keys(CATEGORIES).find(k => k.toLowerCase().replace(/[^a-z0-9]+/g, '-') === categorySlug);
+  return mainKey || null;
 };
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
@@ -139,6 +146,40 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
     console.error("Typesense subcategory jobs fetch error:", err);
   }
 
+  // 🧠 SEO Content — ab Typesense se direct fetch (seed script + sync route se pehle hi populate ho chuka hai)
+  const mainCategoryName = findMainCategoryName(resolvedParams.slug);
+  const contentSlug = `${resolvedParams.slug}/${resolvedParams.subcategory}`;
+
+  let introText = '';
+  let faqs: { q: string; a: string }[] = [];
+
+  if (mainCategoryName && totalJobs > 0 && currentPage === 1) {
+    try {
+      const contentDoc: any = await typesenseSearchClient
+        .collections('category_content')
+        .documents(contentSlug)
+        .retrieve();
+
+      introText = contentDoc.intro_text || '';
+      faqs = contentDoc.faqs ? JSON.parse(contentDoc.faqs) : [];
+    } catch (err) {
+      // 404 aayega jab slug ka content abhi tak seed/sync nahi hua — safe fallback empty rakha
+      console.error("Category content fetch error (Typesense):", err);
+    }
+  }
+
+  const faqSchema = faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
+
   // 🔴 NO JOBS STATE
   if (!jobs || jobs.length === 0) {
     return (
@@ -170,6 +211,14 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
     <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#0B0F19]">
       <Navbar />
 
+      {/* 🧩 FAQ Schema for Google */}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         
         <div className="mb-8">
@@ -184,7 +233,7 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
             </Link>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
                 <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                     Remote <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">{displaySubCategory}</span> Jobs
@@ -195,6 +244,15 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
                 </p>
             </div>
         </div>
+
+        {/* 🧠 SEO INTRO CONTENT — matches card design language used elsewhere on the site */}
+        {introText && (
+          <div className="mb-12 p-6 md:p-8 bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-[15px] md:text-base">
+              {introText}
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {jobs.map((job) => {
@@ -302,6 +360,36 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
                 Next
               </button>
             )}
+          </div>
+        )}
+
+        {/* 🙋 FAQ SECTION — same card language as job cards, styled to fit naturally */}
+        {faqs.length > 0 && (
+          <div className="mt-20">
+            <div className="flex items-center gap-2 mb-8">
+              <HelpCircle className="w-5 h-5 text-indigo-500" />
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                Frequently Asked Questions
+              </h2>
+            </div>
+            <div className="space-y-3">
+              {faqs.map((f, i) => (
+                <details 
+                  key={i} 
+                  className="group bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 open:shadow-sm open:border-indigo-200 dark:open:border-indigo-900 transition-colors"
+                >
+                  <summary className="font-semibold text-slate-900 dark:text-white cursor-pointer flex items-center justify-between list-none">
+                    <span>{f.q}</span>
+                    <span className="ml-4 shrink-0 w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-open:rotate-45 transition-transform">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
+                    {f.a}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         )}
 

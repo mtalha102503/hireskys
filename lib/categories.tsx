@@ -3,8 +3,7 @@ import {
   Briefcase, BarChart, Users, DollarSign, Headphones, 
   BookOpen, ShieldCheck, PenTool, Database, Speaker
 } from 'lucide-react';
-
-export const CATEGORIES = {
+export const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
   // 1. Tech & Development
   "Development": {
     icon: Code,
@@ -104,3 +103,10 @@ export function getCategoryBySkill(skill: string) {
 
 // --- JOB TYPES ---
 export const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Freelance", "Internship", "Temporary"];
+// --- SLUG HELPER --- (naya add karo, file ke end mein)
+export function findCategoryKeyBySlug(slug: string): string | null {
+  const mainKey = Object.keys(CATEGORIES).find(
+    k => k.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
+  );
+  return mainKey || null;
+}

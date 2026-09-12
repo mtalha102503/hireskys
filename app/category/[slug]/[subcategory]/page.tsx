@@ -1,33 +1,25 @@
 import Link from 'next/link';
 import { createSlug } from '@/lib/utils';
 import { Metadata } from 'next';
-import { getCategoryContent } from '@/lib/generateCategoryContent';
 import Navbar from '@/components/Navbar';
+import { CATEGORIES, findCategoryKeyBySlug } from '@/lib/categories';
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { 
   ArrowLeft, Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, 
   Briefcase, Search, MapPin, DollarSign, Calendar, Sparkles, Speaker, Headphones, Users, ShieldCheck, BookOpen, BarChart, PenTool, HelpCircle
 } from 'lucide-react';
 
-const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
-  // ... (Tumhara existing CATEGORIES object wese hi rahega)
-  "Development": { icon: Code, sub: ["React", "Next.js", "Node.js", "Python", "MERN Stack", "WordPress", "Shopify", "Web3", "Frontend", "Backend", "DevOps", "Cybersecurity", "QA Tester", "Game Dev"] },
-  "Mobile App": { icon: Smartphone, sub: ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin", "Ionic", "App Design"] },
-  "AI & Machine Learning": { icon: Cpu, sub: ["AI Engineer", "Machine Learning", "NLP", "Computer Vision", "Prompt Engineering", "Chatbot Dev", "TensorFlow", "OpenAI API", "Python Scripting"] },
-  "Design & Creative": { icon: Layout, sub: ["UI/UX Design", "Graphic Design", "Logo Design", "Figma", "Adobe Photoshop", "Illustrator", "Packaging Design", "Presentation Design", "NFT Art"] },
-  "Video & Animation": { icon: Video, sub: ["Video Editor", "Premiere Pro", "After Effects", "Motion Graphics", "3D Animation", "Thumbnail Artist", "Short Form (Reels/TikTok)", "VFX"] },
-  "Audio & Voice": { icon: Speaker, sub: ["Voice Over", "Audio Engineering", "Podcast Editor", "Music Production", "Sound Design", "Mixing & Mastering"] },
-  "Writing & Translation": { icon: Edit3, sub: ["Content Writer", "Copywriter", "Technical Writer", "Ghostwriter", "Proofreading", "Translation", "Scriptwriting", "Blog Writing", "Resume Writing"] },
-  "Marketing & Sales": { icon: Globe, sub: ["SEO", "Social Media Manager", "Facebook Ads", "Google Ads", "Email Marketing", "Lead Generation", "Sales Representative", "Cold Calling", "Affiliate Marketing", "Influencer Marketing"] },
-  "Admin & Support": { icon: Users, sub: ["Virtual Assistant", "Data Entry", "Executive Assistant", "Research", "Project Management", "Transcription", "Spreadsheets (Excel/Google Sheets)"] },
-  "Customer Service": { icon: Headphones, sub: ["Customer Support", "Technical Support", "Community Manager", "Chat Support", "Call Center", "Zendesk"] },
-  "Finance & Accounting": { icon: DollarSign, sub: ["Accountant", "Bookkeeping", "Financial Analyst", "Tax Preparation", "QuickBooks", "Xero", "CFO", "Crypto Trading"] },
-  "Legal & HR": { icon: ShieldCheck, sub: ["Legal Consultant", "Contract Law", "Paralegal", "Recruiter", "HR Manager", "Talent Acquisition"] },
-  "Education & Coaching": { icon: BookOpen, sub: ["Online Tutor", "Course Creator", "Language Teacher", "Math Tutor", "Coding Mentor", "Fitness Coach", "Life Coach"] },
-  "Data Science & Analytics": { icon: BarChart, sub: ["Data Scientist", "Data Analyst", "Business Intelligence", "Power BI", "Tableau", "SQL", "Big Data", "Data Scraping"] },
-  "Engineering & Architecture": { icon: PenTool, sub: ["CAD Designer", "3D Modeling", "Interior Design", "Mechanical Engineering", "Electrical Engineering", "AutoCAD", "SolidWorks"] }
+// 📝 Lamba single-paragraph intro text ko 2-3 chhote paragraphs mein todta hai, readability ke liye
+const splitIntoParagraphs = (text: string): string[] => {
+  if (!text) return [];
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const chunkSize = Math.ceil(sentences.length / 3); // roughly 3 paragraphs
+  const paragraphs: string[] = [];
+  for (let i = 0; i < sentences.length; i += chunkSize) {
+    paragraphs.push(sentences.slice(i, i + chunkSize).join(' ').trim());
+  }
+  return paragraphs;
 };
-
 type Props = {
   params: Promise<{ slug: string; subcategory: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -35,39 +27,33 @@ type Props = {
 
 // 🌟 HELPER
 const findRealTag = (categorySlug: string, subSlug: string) => {
-  const mainKey = Object.keys(CATEGORIES).find(k => k.toLowerCase().replace(/[^a-z0-9]+/g, '-') === categorySlug);
+  const mainKey = findCategoryKeyBySlug(categorySlug);
   if (!mainKey) return null;
-  const realTag = CATEGORIES[mainKey].sub.find(sub => 
+  return CATEGORIES[mainKey].sub.find(sub => 
     sub.toLowerCase().replace(/[^a-z0-9]+/g, '-') === subSlug
   );
-  return realTag;
 };
 
-// 🌟 NEW HELPER — parent category ka display name nikalta hai slug se (DB + Mistral prompt ke liye)
-const findMainCategoryName = (categorySlug: string) => {
-  const mainKey = Object.keys(CATEGORIES).find(k => k.toLowerCase().replace(/[^a-z0-9]+/g, '-') === categorySlug);
-  return mainKey || null;
-};
+const findMainCategoryName = (categorySlug: string) => findCategoryKeyBySlug(categorySlug);
+
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
-  
-  // 1️⃣ URL se current page nikalo (Default 1)
   const currentPage = Number(resolvedSearchParams?.page) || 1;
 
   const realTag = findRealTag(resolvedParams.slug, resolvedParams.subcategory);
   const displayTitle = realTag || decodeURIComponent(resolvedParams.subcategory).replace(/-/g, ' ');
 
   return {
-    // Agar page > 1 hai, to title me page number add kar do (optional but good practice)
     title: currentPage > 1 ? `Page ${currentPage} - Remote ${displayTitle} Jobs | HireSkys` : `Remote ${displayTitle} Jobs | HireSkys`,
     description: `Apply to verified ${displayTitle} jobs.`,
-    
-    // 2️⃣ Yahan Magic Hai! SEO ke liye pagination robots rule
+    alternates: {
+      canonical: `https://www.hireskys.com/category/${resolvedParams.slug}/${resolvedParams.subcategory}`,
+    },
     robots: {
-      index: currentPage === 1, // Sirf Page 1 index hoga
-      follow: true,             // Links har page par follow honge
+      index: currentPage === 1,
+      follow: true,
     },
   };
 }
@@ -155,15 +141,22 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
 
   if (mainCategoryName && totalJobs > 0 && currentPage === 1) {
     try {
-      const contentDoc: any = await typesenseSearchClient
+      const contentResults: any = await typesenseSearchClient
         .collections('category_content')
-        .documents(contentSlug)
-        .retrieve();
+        .documents()
+        .search({
+          q: '*',
+          query_by: 'slug',
+          filter_by: `slug:=${contentSlug}`,
+          per_page: 1,
+        });
 
-      introText = contentDoc.intro_text || '';
-      faqs = contentDoc.faqs ? JSON.parse(contentDoc.faqs) : [];
+      const contentDoc = contentResults.hits?.[0]?.document;
+      if (contentDoc) {
+        introText = contentDoc.intro_text || '';
+        faqs = contentDoc.faqs ? JSON.parse(contentDoc.faqs) : [];
+      }
     } catch (err) {
-      // 404 aayega jab slug ka content abhi tak seed/sync nahi hua — safe fallback empty rakha
       console.error("Category content fetch error (Typesense):", err);
     }
   }
@@ -245,14 +238,15 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
             </div>
         </div>
 
-        {/* 🧠 SEO INTRO CONTENT — matches card design language used elsewhere on the site */}
         {introText && (
-          <div className="mb-12 p-6 md:p-8 bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-[15px] md:text-base">
-              {introText}
-            </p>
-          </div>
-        )}
+  <div className="mb-12 p-6 md:p-8 bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+    {splitIntoParagraphs(introText).map((para, i) => (
+      <p key={i} className="text-slate-600 dark:text-slate-400 leading-relaxed text-[15px] md:text-base">
+        {para}
+      </p>
+    ))}
+  </div>
+)}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {jobs.map((job) => {
@@ -363,35 +357,36 @@ export default async function SubCategoryJobsPage({ params, searchParams }: Prop
           </div>
         )}
 
-        {/* 🙋 FAQ SECTION — same card language as job cards, styled to fit naturally */}
         {faqs.length > 0 && (
-          <div className="mt-20">
-            <div className="flex items-center gap-2 mb-8">
-              <HelpCircle className="w-5 h-5 text-indigo-500" />
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Frequently Asked Questions
-              </h2>
-            </div>
-            <div className="space-y-3">
-              {faqs.map((f, i) => (
-                <details 
-                  key={i} 
-                  className="group bg-white dark:bg-[#111625] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 open:shadow-sm open:border-indigo-200 dark:open:border-indigo-900 transition-colors"
-                >
-                  <summary className="font-semibold text-slate-900 dark:text-white cursor-pointer flex items-center justify-between list-none">
-                    <span>{f.q}</span>
-                    <span className="ml-4 shrink-0 w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 group-open:rotate-45 transition-transform">
-                      +
-                    </span>
-                  </summary>
-                  <p className="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
-                    {f.a}
-                  </p>
-                </details>
-              ))}
-            </div>
-          </div>
-        )}
+  <div className="mt-20">
+    <div className="flex items-center gap-2 mb-8">
+      <div className="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
+        <HelpCircle className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+        Frequently Asked Questions
+      </h2>
+    </div>
+    <div className="space-y-3">
+      {faqs.map((f, i) => (
+        <details 
+          key={i} 
+          className="group bg-slate-50 dark:bg-[#151b2b] rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 open:border-indigo-300 dark:open:border-indigo-800 open:shadow-md open:shadow-indigo-500/5 transition-all"
+        >
+          <summary className="font-semibold text-slate-900 dark:text-white cursor-pointer flex items-center justify-between list-none">
+            <span>{f.q}</span>
+            <span className="ml-4 shrink-0 w-7 h-7 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-open:bg-indigo-600 group-open:text-white group-open:rotate-45 group-open:border-indigo-600 transition-all duration-300">
+              +
+            </span>
+          </summary>
+          <p className="mt-4 text-slate-600 dark:text-slate-400 leading-relaxed text-sm border-t border-slate-200 dark:border-slate-800 pt-4">
+            {f.a}
+          </p>
+        </details>
+      ))}
+    </div>
+  </div>
+)}
 
         <div className="mt-20 text-center border-t border-slate-200 dark:border-slate-800 pt-10">
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">

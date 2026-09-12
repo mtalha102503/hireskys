@@ -3,97 +3,31 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { typesenseSearchClient } from '@/lib/typesenseClient';
+import { CATEGORIES, findCategoryKeyBySlug } from '@/lib/categories';
 import { 
   Code, Smartphone, Video, Layout, Globe, Edit3, Cpu, 
   ArrowLeft, ArrowRight, Hash, Sparkles, Briefcase, Search, Speaker, Users, Headphones, DollarSign, ShieldCheck, BookOpen , BarChart,PenTool, HelpCircle
 } from 'lucide-react';
 
-const CATEGORIES: Record<string, { icon: any; sub: string[] }> = {
-  // 1. Tech & Development
-  "Development": {
-    icon: Code,
-    sub: ["React", "Next.js", "Node.js", "Python", "MERN Stack", "WordPress", "Shopify", "Web3", "Frontend", "Backend", "DevOps", "Cybersecurity", "QA Tester", "Game Dev"]
-  },
-  "Mobile App": {
-    icon: Smartphone,
-    sub: ["React Native", "Flutter", "iOS", "Swift", "Android", "Kotlin", "Ionic", "App Design"]
-  },
-  "AI & Machine Learning": { 
-    icon: Cpu,
-    sub: ["AI Engineer", "Machine Learning", "NLP", "Computer Vision", "Prompt Engineering", "Chatbot Dev", "TensorFlow", "OpenAI API", "Python Scripting"]
-  },
 
-  // 2. Creative & Design
-  "Design & Creative": {
-    icon: Layout,
-    sub: ["UI/UX Design", "Graphic Design", "Logo Design", "Figma", "Adobe Photoshop", "Illustrator", "Packaging Design", "Presentation Design", "NFT Art"]
-  },
-  "Video & Animation": {
-    icon: Video,
-    sub: ["Video Editor", "Premiere Pro", "After Effects", "Motion Graphics", "3D Animation", "Thumbnail Artist", "Short Form (Reels/TikTok)", "VFX"]
-  },
-  "Audio & Voice": {
-    icon: Speaker,
-    sub: ["Voice Over", "Audio Engineering", "Podcast Editor", "Music Production", "Sound Design", "Mixing & Mastering"]
-  },
-  "Writing & Translation": {
-    icon: Edit3,
-    sub: ["Content Writer", "Copywriter", "Technical Writer", "Ghostwriter", "Proofreading", "Translation", "Scriptwriting", "Blog Writing", "Resume Writing"]
-  },
-
-  // 3. Marketing & Sales
-  "Marketing & Sales": { 
-    icon: Globe,
-    sub: ["SEO", "Social Media Manager", "Facebook Ads", "Google Ads", "Email Marketing", "Lead Generation", "Sales Representative", "Cold Calling", "Affiliate Marketing", "Influencer Marketing"]
-  },
-
-  // 4. Business & Admin
-  "Admin & Support": { 
-    icon: Users, 
-    sub: ["Virtual Assistant", "Data Entry", "Executive Assistant", "Research", "Project Management", "Transcription", "Spreadsheets (Excel/Google Sheets)"] 
-  },
-  "Customer Service": {
-    icon: Headphones,
-    sub: ["Customer Support", "Technical Support", "Community Manager", "Chat Support", "Call Center", "Zendesk"]
-  },
-
-  // 5. Professional Services
-  "Finance & Accounting": {
-    icon: DollarSign,
-    sub: ["Accountant", "Bookkeeping", "Financial Analyst", "Tax Preparation", "QuickBooks", "Xero", "CFO", "Crypto Trading"]
-  },
-  "Legal & HR": {
-    icon: ShieldCheck,
-    sub: ["Legal Consultant", "Contract Law", "Paralegal", "Recruiter", "HR Manager", "Talent Acquisition"]
-  },
-  "Education & Coaching": {
-    icon: BookOpen,
-    sub: ["Online Tutor", "Course Creator", "Language Teacher", "Math Tutor", "Coding Mentor", "Fitness Coach", "Life Coach"]
-  },
-  
-  // 6. Data & Engineering
-  "Data Science & Analytics": {
-    icon: BarChart,
-    sub: ["Data Scientist", "Data Analyst", "Business Intelligence", "Power BI", "Tableau", "SQL", "Big Data", "Data Scraping"]
-  },
-  "Engineering & Architecture": {
-    icon: PenTool,
-    sub: ["CAD Designer", "3D Modeling", "Interior Design", "Mechanical Engineering", "Electrical Engineering", "AutoCAD", "SolidWorks"]
+// 📝 Lamba single-paragraph intro text ko 2-3 chhote paragraphs mein todta hai, readability ke liye
+const splitIntoParagraphs = (text: string): string[] => {
+  if (!text) return [];
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const chunkSize = Math.ceil(sentences.length / 3);
+  const paragraphs: string[] = [];
+  for (let i = 0; i < sentences.length; i += chunkSize) {
+    paragraphs.push(sentences.slice(i, i + chunkSize).join(' ').trim());
   }
+  return paragraphs;
 };
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-const findCategoryKey = (slug: string) => {
-  return Object.keys(CATEGORIES).find(key => 
-    key.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
-  );
-};
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const categoryKey = findCategoryKey(resolvedParams.slug);
+  const categoryKey = findCategoryKeyBySlug(resolvedParams.slug);
 
   if (!categoryKey) return { title: "Category Not Found" };
 
@@ -105,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const resolvedParams = await params;
-  const categoryKey = findCategoryKey(resolvedParams.slug);
+  const categoryKey = findCategoryKeyBySlug(resolvedParams.slug);
 
   if (!categoryKey) {
     return notFound();
@@ -119,15 +53,22 @@ export default async function CategoryPage({ params }: Props) {
   let faqs: { q: string; a: string }[] = [];
 
   try {
-    const contentDoc: any = await typesenseSearchClient
+    const contentResults: any = await typesenseSearchClient
       .collections('category_content')
-      .documents(resolvedParams.slug)
-      .retrieve();
+      .documents()
+      .search({
+        q: '*',
+        query_by: 'slug',
+        filter_by: `slug:=${resolvedParams.slug}`,
+        per_page: 1,
+      });
 
-    introText = contentDoc.intro_text || '';
-    faqs = contentDoc.faqs ? JSON.parse(contentDoc.faqs) : [];
+    const contentDoc = contentResults.hits?.[0]?.document;
+    if (contentDoc) {
+      introText = contentDoc.intro_text || '';
+      faqs = contentDoc.faqs ? JSON.parse(contentDoc.faqs) : [];
+    }
   } catch (err) {
-    // 404 = content not seeded yet for this category, safe to fall back to empty
     console.error("Category content fetch error (Typesense):", err);
   }
 
@@ -190,14 +131,15 @@ export default async function CategoryPage({ params }: Props) {
     </div>
 </div>
 
-        {/* 🧠 SEO INTRO CONTENT — separate card below the hero, same rounded/glass language */}
         {introText && (
-          <div className="relative mb-12 p-6 md:p-8 rounded-[1.5rem] bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-lg shadow-indigo-500/5">
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-[15px] md:text-base">
-              {introText}
-            </p>
-          </div>
-        )}
+  <div className="relative mb-12 p-6 md:p-8 rounded-[1.5rem] bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-lg shadow-indigo-500/5 space-y-4">
+    {splitIntoParagraphs(introText).map((para, i) => (
+      <p key={i} className="text-slate-600 dark:text-slate-400 leading-relaxed text-[15px] md:text-base">
+        {para}
+      </p>
+    ))}
+  </div>
+)}
 
         {/* 💎 INTERACTIVE GRID */}
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">

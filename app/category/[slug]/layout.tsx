@@ -1,33 +1,24 @@
 import { Metadata } from "next";
+import { CATEGORIES, findCategoryKeyBySlug } from "@/lib/categories";
 
 type Props = {
   children: React.ReactNode;
   params: Promise<{ slug: string }>;
 };
 
-// 1️⃣ DYNAMIC METADATA GENERATOR
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  
-  const categoryName = decodeURIComponent(slug)
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, l => l.toUpperCase());
 
-  const year = new Date().getFullYear(); 
-  const canonicalUrl = `https://www.hireskys.com/category/${slug}`;
+  // ✅ Ab naive casing conversion nahi, asal CATEGORIES se sahi display name milega
+  const categoryName = findCategoryKeyBySlug(slug) || decodeURIComponent(slug).replace(/-/g, ' ');
+  const year = new Date().getFullYear();
 
   return {
-    title: {
-      template: `%s | ${categoryName} Remote Jobs`, 
-      default: `${year} Best Remote ${categoryName} Jobs (Hiring Now)`,
-    },
+    // 🔴 title (template + default) hata diya — pages apna khud complete title bhejte hain,
+    // warna Next.js template wrap karke "HireSkys | HireSkys" jaisi duplication banata tha
     description: `Browse verified remote ${categoryName} jobs. Apply to high-paying freelance, part-time, and full-time ${categoryName} roles. Updated daily for ${year}!`,
-    
     metadataBase: new URL('https://www.hireskys.com'),
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    
+
     robots: {
       index: true,
       follow: true,
@@ -45,10 +36,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: 'HireSkys',
       title: `Top Remote ${categoryName} Jobs in ${year} - HireSkys`,
       description: `Find your dream remote ${categoryName} career. Verified listings with salary transparency.`,
-      url: canonicalUrl,
       images: [
         {
-          url: `/og-category.png`, // Pro Tip: Try to make this dynamic later
+          url: `/og-category.png`,
           width: 1200,
           height: 630,
           alt: `Remote ${categoryName} Jobs on HireSkys`,
@@ -61,47 +51,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: `New remote ${categoryName} opportunities are live on HireSkys.`,
       images: ['/og-category.png'],
     }
+    // 🔴 canonical bhi yahan se hata diya — ye layout subcategory pages ko bhi wrap karta hai,
+    // lekin isko subcategory param pata nahi chal sakta, isliye galat canonical bhej raha tha.
+    // Ab har page apna sahi canonical khud set karega (neeche dekho).
   };
 }
 
-// 2️⃣ MAIN LAYOUT COMPONENT
 export default async function CategoryLayout({ children, params }: Props) {
   const { slug } = await params;
-  
-  const categoryName = decodeURIComponent(slug)
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, l => l.toUpperCase());
-
+  const categoryName = findCategoryKeyBySlug(slug) || decodeURIComponent(slug).replace(/-/g, ' ');
   const currentUrl = `https://www.hireskys.com/category/${slug}`;
 
-  // 🍞 ADVANCED SCHEMA (Breadcrumb + Collection + ItemList)
   const schemaData = [
-    // Breadcrumbs: Google Search mein path dikhane ke liye
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://www.hireskys.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Categories",
-          "item": "https://www.hireskys.com/categories" // Assuming you have a categories page
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": categoryName,
-          "item": currentUrl
-        }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hireskys.com" },
+        { "@type": "ListItem", "position": 2, "name": "Categories", "item": "https://www.hireskys.com/categories" },
+        { "@type": "ListItem", "position": 3, "name": categoryName, "item": currentUrl }
       ]
     },
-    // CollectionPage: Google ko batane ke liye ki ye jobs ki collection hai
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
@@ -113,20 +83,13 @@ export default async function CategoryLayout({ children, params }: Props) {
         "@type": "ItemList",
         "name": `Latest ${categoryName} Vacancies`,
         "description": `List of all available remote ${categoryName} jobs.`
-        // Note: Ideally, you'd map your actual jobs here in "itemListElement"
       }
     }
   ];
 
   return (
     <>
-      {/* 🍞 Schema Injection For Google */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-      />
-      
-      {/* Tumhara page.tsx yahan render hoga, bina kisi extra text ke */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
       {children}
     </>
   );

@@ -10,6 +10,7 @@ import ConsentBanner from "@/components/ConsentBanner";
 import MoneytizerStickyFooter from "@/components/MoneytizerStickyFooter";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
+import PlatformFeedback from '@/components/PlatformFeedback';
 // 🌟 FONT OPTIMIZATION
 const jost = Jost({ subsets: ["latin"] });
 
@@ -335,6 +336,7 @@ export default function RootLayout({
           <ConsentBanner />
           <ConditionalChat />
           <MoneytizerStickyFooter/>
+          <PlatformFeedback />
         </ThemeProvider>
         <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />

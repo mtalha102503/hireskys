@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, HeartHandshake, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { usePathname } from 'next/navigation'; // 👈 1. Naya import add kiya
 
 const EMOJIS = [
     { icon: '🤩', label: 'Amazing', color: 'bg-green-100 dark:bg-green-900/30 border-green-200' },
@@ -14,6 +15,7 @@ const EMOJIS = [
 ];
 
 export default function PlatformFeedback() {
+    const pathname = usePathname(); // 👈 2. Current URL pakro
     const [isOpen, setIsOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
     const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
@@ -21,15 +23,23 @@ export default function PlatformFeedback() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
+        // 🛑 3. ROUTE RESTRICTION: Sirf Homepage ('/') ya Job Details ('/jobs/...') par allow karo
+        const isAllowedPage = pathname === '/' || pathname?.startsWith('/jobs/');
+
+        if (!isAllowedPage) {
+            setIsOpen(false); // Agar user kisi aur page par gaya, toh isko chup kara do
+            return;
+        }
+
         const checkEligibility = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
             setUser(user);
 
-            // LocalStorage hack taake har page load par database query na ho agar user dismiss kar chuka hai
+            // LocalStorage hack
             if (localStorage.getItem(`review_done_${user.id}`)) return;
+            if (sessionStorage.getItem('review_dismissed')) return;
 
-            // Profile se updated_at aur status nikalo
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('updated_at, has_submitted_review')
@@ -51,12 +61,10 @@ export default function PlatformFeedback() {
         };
 
         checkEligibility();
-    }, []);
+    }, [pathname]); // 👈 4. Pathname par dependency daali taake URL badalne par khud check kare
 
     const handleDismiss = () => {
         setIsOpen(false);
-        // Temporary dismiss (1 hafte baad dobara dikhane ke liye localStorage set kar sakte ho)
-        // Abhi ke liye hum local storage mein save kar rahay hain taake session mein tang na kare
         sessionStorage.setItem('review_dismissed', 'true'); 
     };
 
@@ -69,19 +77,16 @@ export default function PlatformFeedback() {
         setIsSubmitting(true);
 
         try {
-            // 1. Review Table mein dalo
             await supabase.from('platform_reviews').insert([{
                 user_id: user.id,
                 sentiment: selectedEmoji,
                 feedback_text: feedbackText.trim() || null
             }]);
 
-            // 2. Profile table mein flag update karo taake zindagi mein dobara na aye
             await supabase.from('profiles').update({
                 has_submitted_review: true
             }).eq('id', user.id);
 
-            // 3. LocalStorage mein bhi daal do for extreme performance
             localStorage.setItem(`review_done_${user.id}`, 'true');
 
             toast.success("Thank you for your genuine feedback! 💙");
@@ -94,6 +99,7 @@ export default function PlatformFeedback() {
         }
     };
 
+    // UI part waisa hi rahega
     return (
         <AnimatePresence>
             {isOpen && (
@@ -104,7 +110,6 @@ export default function PlatformFeedback() {
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
                         className="relative w-full max-w-md bg-white dark:bg-[#151b2d] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 md:p-8"
                     >
-                        {/* Close Button */}
                         <button 
                             onClick={handleDismiss}
                             className="absolute top-4 right-4 p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
@@ -124,7 +129,6 @@ export default function PlatformFeedback() {
                             </p>
                         </div>
 
-                        {/* EMOJI ROW */}
                         <div className="flex justify-between items-center gap-2 mb-6">
                             {EMOJIS.map((emoji) => (
                                 <button
@@ -148,7 +152,6 @@ export default function PlatformFeedback() {
                             ))}
                         </div>
 
-                        {/* OPTIONAL TEXT BOX */}
                         <div className="mt-8 mb-6">
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                                 Tell us more (Optional)
@@ -162,7 +165,6 @@ export default function PlatformFeedback() {
                             />
                         </div>
 
-                        {/* SUBMIT BUTTON */}
                         <button
                             onClick={handleSubmit}
                             disabled={isSubmitting || !selectedEmoji}

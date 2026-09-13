@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: 'website',
       siteName: 'HireSkys',
-      title: `Top Remote ${categoryName} Jobs in ${year} - HireSkys`,
+      title: `Top Remote ${categoryName} Jobs in ${year}`,
       description: `Find your dream remote ${categoryName} career. Verified listings with salary transparency.`,
       images: [
         {
@@ -68,7 +68,7 @@ export default async function CategoryLayout({ children, params }: Props) {
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hireskys.com" },
-        { "@type": "ListItem", "position": 2, "name": "Categories", "item": "https://www.hireskys.com/categories" },
+        { "@type": "ListItem", "position": 2, "name": "Categories", "item": "https://www.hireskys.com" },
         { "@type": "ListItem", "position": 3, "name": categoryName, "item": currentUrl }
       ]
     },

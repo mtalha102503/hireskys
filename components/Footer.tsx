@@ -92,7 +92,10 @@ export default function Footer() {
     pathname?.startsWith('/p/') || 
     pathname?.startsWith('/community')||
     pathname?.startsWith('/employer')||
-    pathname?.startsWith('/redirect')
+    pathname?.startsWith('/redirect')||
+    pathname?.startsWith('/auth')||
+    pathname?.startsWith('/complete-profile')||
+    pathname?.startsWith('/login')
   ) {
     return null;
   }

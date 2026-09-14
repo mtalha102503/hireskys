@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, LogOut, Sparkles } from 'lucide-react'; 
+// 👇 1. Yahan Loader2 import kiya hai
+import { Check, LogOut, Sparkles, Loader2 } from 'lucide-react'; 
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -16,6 +17,9 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // 👇 2. Nayi state add ki hai Sign Out ke liye
+  const [isSigningOut, setIsSigningOut] = useState(false); 
   
   // Master State
   const [formData, setFormData] = useState({
@@ -30,7 +34,7 @@ export default function OnboardingPage() {
     social_links: { linkedin: '', website: '' }
   });
 
-  // Data Load Logic (SAME AS BEFORE)
+  // Data Load Logic
   useEffect(() => {
     const loadExistingData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -63,7 +67,7 @@ export default function OnboardingPage() {
   const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 4));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 2));
 
-  // Submit Logic (SAME AS BEFORE)
+  // Submit Logic
   const handleSubmitProfile = async () => {
     setIsSubmitting(true);
     try {
@@ -122,7 +126,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-white dark:from-[#0f172a] dark:via-[#0B0F19] dark:to-[#0B0F19] text-slate-900 dark:text-white flex flex-col items-center selection:bg-indigo-500/30">
       
-      {/* 🔵 NAVBAR (Untouched) */}
+      {/* 🔵 NAVBAR */}
       <nav className="w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-xl shadow-sm sticky top-0 z-50 transition-all duration-300">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-5xl">
           
@@ -153,15 +157,24 @@ export default function OnboardingPage() {
             </div>
           </Link>
 
+          {/* 👇 3. Sign Out Button FIX YAHAN HAI */}
           <button 
             onClick={async () => {
+              setIsSigningOut(true); // Loading start
               await supabase.auth.signOut();
               router.push('/login');
             }}
-            className="group flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-red-600 transition-all bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-full border border-transparent hover:border-red-200 dark:hover:border-red-900/50"
+            disabled={isSigningOut} // Button ko disable kar do taake double click na ho
+            className="group flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-red-600 transition-all bg-slate-100 dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-full border border-transparent hover:border-red-200 dark:hover:border-red-900/50 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" /> 
-            <span className="hidden sm:inline">Sign Out</span>
+            {isSigningOut ? (
+              <Loader2 size={16} className="animate-spin text-red-500" />
+            ) : (
+              <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" /> 
+            )}
+            <span className="hidden sm:inline">
+              {isSigningOut ? 'Signing out...' : 'Sign Out'}
+            </span>
           </button>
 
         </div>
@@ -233,14 +246,10 @@ export default function OnboardingPage() {
           </div>
         </div>
 
-        {/* 🛠 FIX: Removed the "Glass Card" styling (bg-white, shadow, border) from this wrapper.
-            Now it's just a transparent layout holder, so your inner component (StepTwo) 
-            is the only "Card" visible. 
-        */}
         <div className="w-full max-w-3xl relative">
             <motion.div 
                 layout
-                className="relative w-full" // Removed bg-white, shadow, border, padding
+                className="relative w-full"
             >
                 <AnimatePresence mode='wait'>
                     <motion.div

@@ -91,7 +91,7 @@ export default function Footer() {
     pathname?.startsWith('/embed') || 
     pathname?.startsWith('/p/') || 
     pathname?.startsWith('/community')||
-    pathname?.startsWith('/employer')
+    pathname?.startsWith('/employer')||
     pathname?.startsWith('/redirect')
   ) {
     return null;

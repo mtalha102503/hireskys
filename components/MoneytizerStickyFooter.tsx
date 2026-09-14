@@ -9,12 +9,19 @@ export default function StickyFooterAd() {
   const [shouldLoad, setShouldLoad] = useState(false); 
 
   // 🚀 PATHNAME HOOK: Pata lagane ke liye ke user kis page par hai
-  const pathname = usePathname();
-  const isJobPage = pathname?.includes("/jobs/");
+  const pathname = usePathname() || ""; // Default empty string in case pathname is null
+  const isJobPage = pathname.includes("/jobs/");
+
+  // 🛑 NEW: HIDDEN ROUTES LOGIC
+  const hiddenRoutes = ["/redirect", "/login", "/complete-profile"];
+  const isHiddenRoute = hiddenRoutes.some((route) => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  );
 
   // 🚀 SPEED FIX: Ad-script ko page ke critical content ke baad load karo.
   useEffect(() => {
-    if (!isVisible) return;
+    // 🛑 Agar user hidden page par hai ya ad close kar di hai, to timer start mat karo
+    if (!isVisible || isHiddenRoute) return;
 
     if ('requestIdleCallback' in window) {
       const idleId = (window as any).requestIdleCallback(() => setShouldLoad(true), { timeout: 2000 });
@@ -23,12 +30,12 @@ export default function StickyFooterAd() {
       const timer = setTimeout(() => setShouldLoad(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, [isVisible]);
+  }, [isVisible, isHiddenRoute]); // 🛑 isHiddenRoute dependency array me add kiya
 
   // 🚀 AD INJECTION LOGIC (New Ad Network)
   useEffect(() => {
-    // Agar script load nahi karni, ya container nahi mila, ya ad pehle se inject ho chuka hai, to ruk jao
-    if (!shouldLoad || !adRef.current || adRef.current.hasChildNodes()) return;
+    // 🛑 Agar script load nahi karni, container nahi mila, pehle se ad hai, YA hidden route hai, to ruk jao
+    if (!shouldLoad || !adRef.current || adRef.current.hasChildNodes() || isHiddenRoute) return;
 
     // 1. Configure the ad options
     const confScript = document.createElement("script");
@@ -52,9 +59,10 @@ export default function StickyFooterAd() {
     // Append scripts
     adRef.current.appendChild(confScript);
     adRef.current.appendChild(invokeScript);
-  }, [shouldLoad]);
+  }, [shouldLoad, isHiddenRoute]); // 🛑 isHiddenRoute dependency array me add kiya
 
-  if (!isVisible) return null;
+  // 🛑 FINAL CHECK: Agar hidden route hai ya ad closed hai, to component ko gayab kardo
+  if (!isVisible || isHiddenRoute) return null;
 
   // 🔥 DYNAMIC POSITIONING LOGIC
   const style =

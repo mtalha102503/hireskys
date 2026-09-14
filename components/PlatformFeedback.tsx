@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, HeartHandshake, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { usePathname } from 'next/navigation'; // 👈 1. Naya import add kiya
+import { usePathname } from 'next/navigation'; 
 
 const EMOJIS = [
     { icon: '🤩', label: 'Amazing', color: 'bg-green-100 dark:bg-green-900/30 border-green-200' },
@@ -15,7 +15,7 @@ const EMOJIS = [
 ];
 
 export default function PlatformFeedback() {
-    const pathname = usePathname(); // 👈 2. Current URL pakro
+    const pathname = usePathname(); 
     const [isOpen, setIsOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
     const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
@@ -23,11 +23,11 @@ export default function PlatformFeedback() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        // 🛑 3. ROUTE RESTRICTION: Sirf Homepage ('/') ya Job Details ('/jobs/...') par allow karo
+        // 🛑 ROUTE RESTRICTION: Sirf Homepage ya Jobs page
         const isAllowedPage = pathname === '/' || pathname?.startsWith('/jobs/');
 
         if (!isAllowedPage) {
-            setIsOpen(false); // Agar user kisi aur page par gaya, toh isko chup kara do
+            setIsOpen(false);
             return;
         }
 
@@ -36,9 +36,9 @@ export default function PlatformFeedback() {
             if (!user) return;
             setUser(user);
 
-            // LocalStorage hack
+            // 🛑 FIX: Har user ka apna alag Dismiss aur Done check hoga (LocalStorage use kiya taake permanent rahay)
             if (localStorage.getItem(`review_done_${user.id}`)) return;
-            if (sessionStorage.getItem('review_dismissed')) return;
+            if (localStorage.getItem(`review_dismissed_${user.id}`)) return; // SessionStorage ko hata kar LocalStorage lagaya hai
 
             const { data: profile } = await supabase
                 .from('profiles')
@@ -47,25 +47,27 @@ export default function PlatformFeedback() {
                 .single();
 
             if (profile && !profile.has_submitted_review) {
-                // 10 Din ka hisaab lagao
+                // 10 Din ka hisaab
                 const updatedDate = new Date(profile.updated_at);
                 const today = new Date();
                 const diffTime = Math.abs(today.getTime() - updatedDate.getTime());
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                if (diffDays >= 10) {
-                    // Thora delay de kar show karo taake user achanak darr na jaye
+                // ⚠️ TESTING HACK: Agar aap abhi live test karna chahte ho to (diffDays >= 10) ko (diffDays >= 0) kar do. 
+                // Test mukammal hone ke baad isko wapas 10 kar dena.
+                if (diffDays >= 10) { 
                     setTimeout(() => setIsOpen(true), 3000); 
                 }
             }
         };
 
         checkEligibility();
-    }, [pathname]); // 👈 4. Pathname par dependency daali taake URL badalne par khud check kare
+    }, [pathname]); 
 
     const handleDismiss = () => {
         setIsOpen(false);
-        sessionStorage.setItem('review_dismissed', 'true'); 
+        // 🛑 FIX: Agar user cross karta hai toh us user ke liye hamesha ke liye hide ho jayega
+        localStorage.setItem(`review_dismissed_${user?.id}`, 'true'); 
     };
 
     const handleSubmit = async () => {
@@ -99,7 +101,6 @@ export default function PlatformFeedback() {
         }
     };
 
-    // UI part waisa hi rahega
     return (
         <AnimatePresence>
             {isOpen && (

@@ -11,6 +11,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { CATEGORIES } from '@/lib/categories'; 
 import toast, { Toaster } from 'react-hot-toast';
+
 // 👇 COUNTRIES DATA
 const COUNTRIES = [
   { code: "+92", flag: "🇵🇰", name: "Pakistan" },
@@ -217,6 +218,10 @@ export default function CompleteProfile() {
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [selectedCountryCode, setSelectedCountryCode] = useState("+92");
   const [selectedCategory, setSelectedCategory] = useState("");
+  
+  // 🚀 Nayi state add ki hai taake button loading state show kare
+  const [isNavigating, setIsNavigating] = useState<'onboarding' | 'dashboard' | null>(null);
+
   const [formData, setFormData] = useState({
     full_name: '',
     username: '',
@@ -262,11 +267,10 @@ export default function CompleteProfile() {
          
          setSelectedCountryCode(initialCode);
 
-         // 🚀 THE FIX: Smart Auto-Selection (WhatsApp temporarily disabled)
          if (profile.telegram_chat_id) {
              setAlertPreference('telegram');
          } else {
-             setAlertPreference('none'); // WhatsApp ko auto-select hone se rok diya
+             setAlertPreference('none'); 
          }
 
          if (profile.skills && Array.isArray(profile.skills)) {
@@ -308,7 +312,6 @@ export default function CompleteProfile() {
   };
 
   const handleSave = async () => {
-    // 🛑 STRICT CHECKS WITH MODERN TOAST
     if (!formData.primary_role) {
         toast.error("Please select your Main Expertise before continuing.");
         return; 
@@ -331,7 +334,6 @@ export default function CompleteProfile() {
 
     setSaving(true);
     
-    // 🔗 Merge Country Code + Number
     const fullWhatsApp = alertPreference === 'whatsapp' && formData.whatsapp 
         ? `${selectedCountryCode}${formData.whatsapp}` 
         : null;
@@ -356,6 +358,7 @@ export default function CompleteProfile() {
         toast.error("Error: " + error.message);
     }
   };
+
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0B0F19]"><Loader2 className="animate-spin text-indigo-600 dark:text-indigo-400" size={40}/></div>;
 
   return (
@@ -380,7 +383,7 @@ export default function CompleteProfile() {
                 </p>
                 <div className="flex flex-col gap-3">
                   <a 
-                    href={`https://t.me/hireskys_bot?start=${user?.id}`} // 🚀 BOT NAME FIXED HERE
+                    href={`https://t.me/hireskys_bot?start=${user?.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {
@@ -395,7 +398,7 @@ export default function CompleteProfile() {
                 </div>
               </>
             ) : (
-              /* ✅ SCENARIO 2: WHATSAPP CHUNA HAI -YA- TELEGRAM CLICK KARKE WAPIS AA GAYA HAI */
+              /* ✅ SCENARIO 2: WHATSAPP/EMAIL CHUNA HAI -YA- TELEGRAM CLICK KARKE WAPIS AA GAYA HAI */
               <>
                 <div className="w-24 h-24 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
                   <CheckCircle size={48} className="text-green-600 dark:text-green-400" />
@@ -404,18 +407,37 @@ export default function CompleteProfile() {
                 <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-8">
                   Your basic details are saved. Now, build your professional identity to get hired fast.
                 </p>
+                
+                {/* 🚀 YAHAN FIX KIYA HAI: BUTTONS ME LOADING STATE ADD KI */}
                 <div className="flex flex-col gap-3">
                   <button 
-                    onClick={() => router.push('/onboarding')} 
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/20 transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                    onClick={() => {
+                        setIsNavigating('onboarding');
+                        router.push('/onboarding');
+                    }} 
+                    disabled={isNavigating !== null}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/20 transition-transform hover:scale-[1.02] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    <Briefcase size={20} /> Complete Full Profile
+                    {isNavigating === 'onboarding' ? (
+                        <Loader2 size={20} className="animate-spin" />
+                    ) : (
+                        <Briefcase size={20} />
+                    )}
+                    {isNavigating === 'onboarding' ? 'Loading Page...' : 'Complete Full Profile'}
                   </button>
+
                   <button 
-                    onClick={() => router.push('/')} // 🚀 CHANGED FROM '/' TO '/profile' (DASHBOARD)
-                    className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-3.5 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2"
+                    onClick={() => {
+                        setIsNavigating('dashboard');
+                        router.push('/');
+                    }} 
+                    disabled={isNavigating !== null}
+                    className="w-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-3.5 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    Skip to Dashboard
+                    {isNavigating === 'dashboard' ? (
+                        <Loader2 size={20} className="animate-spin" />
+                    ) : null}
+                    {isNavigating === 'dashboard' ? 'Taking you there...' : 'Skip to Dashboard'}
                   </button>
                 </div>
               </>
@@ -688,7 +710,7 @@ export default function CompleteProfile() {
                                                 <span className="text-sm">{c.name}</span>
                                                 {formData.country === c.name && <CheckCircle size={14} className="ml-auto" />}
                                             </div>
-                                    ))}
+                                        ))}
                                     {COUNTRIES.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).length === 0 && (
                                         <div className="p-4 text-center text-gray-400 text-sm">No country found</div>
                                     )}

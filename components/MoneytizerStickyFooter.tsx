@@ -13,7 +13,7 @@ export default function StickyFooterAd() {
   const isJobPage = pathname.includes("/jobs/");
 
   // 🛑 NEW: HIDDEN ROUTES LOGIC
-  const hiddenRoutes = ["/redirect", "/login", "/complete-profile"];
+  const hiddenRoutes = ["/redirect", "/login", "/complete-profile", "/auth"];
   const isHiddenRoute = hiddenRoutes.some((route) => 
     pathname === route || pathname.startsWith(`${route}/`)
   );

@@ -2,38 +2,10 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-function RedirectContent() {
-  const searchParams = useSearchParams();
-  const targetUrl = searchParams.get("url") || "/"; 
-  const jobTitle = searchParams.get("title") || "unknown";
-  const [countdown, setCountdown] = useState(2);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).gtag) {
-      (window as any).gtag("event", "job_apply_click", {
-        event_category: "engagement",
-        job_title: jobTitle,
-        target_url: targetUrl,
-      });
-    }
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          window.location.href = targetUrl;
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [targetUrl, jobTitle]);
-
+// 🎨 1. STATIC UI COMPONENT: Ye wo design ha jo fauran load hoga
+function RedirectUI({ countdown }: { countdown?: number | string }) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] flex flex-col items-center justify-center p-4 selection:bg-indigo-500/30">
-      
       <div className="flex flex-col items-center justify-center text-center max-w-md w-full bg-white dark:bg-[#111625] p-10 md:p-12 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-slate-100 dark:border-slate-800 transition-all duration-500 animate-in fade-in zoom-in-95">
         
         <div className="mb-8">
@@ -41,6 +13,8 @@ function RedirectContent() {
             src="/logo2.png" 
             alt="HireSkys Logo" 
             className="h-10 md:h-12 w-auto object-contain mx-auto"
+            fetchPriority="high" // 🔥 Image ko high priority di ha
+            loading="eager"
           />
         </div>
 
@@ -77,10 +51,45 @@ function RedirectContent() {
   );
 }
 
+// ⚙️ 2. DYNAMIC LOGIC: Ye URL read krega aur 2 sec timer chalayega
+function RedirectLogic() {
+  const searchParams = useSearchParams();
+  const targetUrl = searchParams.get("url") || "/"; 
+  const jobTitle = searchParams.get("title") || "unknown";
+  const [countdown, setCountdown] = useState(2); // 2 second delay idhar ha
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "job_apply_click", {
+        event_category: "engagement",
+        job_title: jobTitle,
+        target_url: targetUrl,
+      });
+    }
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          window.location.replace(targetUrl); // 🔥 .replace use kiya taake user back button daba kar yahan phans na jaye
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [targetUrl, jobTitle]);
+
+  return <RedirectUI countdown={countdown} />;
+}
+
+// 🚀 3. MAIN EXPORT
 export default function ApplyRedirectPage() {
   return (
-    <Suspense fallback={null}>
-      <RedirectContent />
+    // 🔥 MAGIC HERE: null ki jagah apna UI pass kr diya fallback me!
+    <Suspense fallback={<RedirectUI countdown={2} />}>
+      <RedirectLogic />
     </Suspense>
   );
 }

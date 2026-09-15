@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import React from 'react';
 import { 
   Search, Globe, Briefcase, ShieldCheck, 
-  Video, Code, PenTool, Layout, Layers, ArrowRight, Clock,
+  Video, Code, PenTool, Layout, Layers, DollarSign,ArrowRight, Clock,
   User as UserIcon, Smartphone, Cpu, Edit3, X, Zap, Facebook, Linkedin,
   Heart, ChevronDown, Filter, Users, Award, Bell, Bookmark, Rocket, CheckCircle, IdCard, Loader2, Sparkles, TrendingUp, ChevronUp, Check, MapPin, Eye, MessageCircle, Send, AlertTriangle
 } from 'lucide-react';
@@ -88,6 +88,7 @@ type Job = {
   featured_until?: string;
   brand_color?: string;
   application_count?: number;
+  salary_range?: string; // 👈 NAYI LINE YAHAN ADD KARNI HAI
 };
 
 
@@ -2117,8 +2118,6 @@ return (
             </div>
             
           ) : (
-            
-// 🚀 STEP 1: index add kiya taake hum count kar saken
           jobs.map((job, index) => {
             // 🟢 1. Tumhara Sara Original Logic
             const smartLoc = getSmartLocationUI(job.location || "");
@@ -2286,9 +2285,7 @@ return (
                               <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-green-100 text-green-700 border border-green-200 tracking-wider flex items-center gap-1"><CheckCircle size={12} /> Applied</span>
                           ) : isSeen ? (
                               <span className="px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-slate-200 text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 tracking-wider flex items-center gap-1"><Eye size={12} /> Seen</span>
-                          ) : isJustNow && !isFeatured ? (
-                              <span className="animate-pulse px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md tracking-wider">New Arrival</span> 
-                          ) : null}
+) : null}
                       </div>
                     </div>
 
@@ -2315,34 +2312,57 @@ return (
                           )}
                       </div>
                       <div className="flex-1 min-w-0">
-                          <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 transition-colors" style={{ ':hover': { color: activeBrandColor } } as any}>{job.title}</h3>
-                          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
-                              <span className="text-slate-800 dark:text-slate-200 font-bold">{job.source}</span>
-                              {job.is_verified && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 text-[10px] md:text-xs font-bold border border-blue-100"><ShieldCheck size={10} /> Verified</span>}
-                              <span className="md:hidden flex items-center gap-1 text-slate-400"> • {diffHrs < 1 ? 'Just now' : `${diffHrs}h ago`}</span>
-                          </div>
-                      </div>
+    <h3 className="text-base md:text-2xl font-black text-slate-900 dark:text-white leading-tight mb-1 md:mb-2 transition-colors" style={{ ':hover': { color: activeBrandColor } } as any}>
+        {job.title}
+    </h3>
+    
+    {/* 👇 YAHAN MAGIC HAI 👇 */}
+    <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
+        
+        <div className="text-slate-800 dark:text-slate-200 font-bold flex items-center gap-1.5">
+            {job.source}
+            
+            {/* 🌈 EXACT REMOTEOK ANIMATED TEXT TAG */}
+            {isJustNow && !isFeatured && (
+                <span 
+                    className="font-black italic text-[10px] md:text-[11px] uppercase tracking-wider ml-1"
+                    style={{
+                        backgroundImage: 'linear-gradient(90deg, #ff8a00, #e52e71, #9c1aff, #00f0ff, #ff8a00)',
+                        backgroundSize: '200% auto',
+                        color: 'transparent',
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        animation: 'remoteok-rainbow 2s linear infinite'
+                    }}
+                >
+                    NEW
+                </span>
+            )}
+        </div>
+
+        {job.is_verified && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 text-[10px] md:text-xs font-bold border border-blue-100"><ShieldCheck size={10} /> Verified</span>}
+        <span className="md:hidden flex items-center gap-1 text-slate-400"> • {diffHrs < 1 ? 'Just now' : `${diffHrs}h ago`}</span>
+    </div>
+</div>
                     </div>
 
                     <div className="mt-auto pt-3 md:pt-5 border-t border-slate-100 dark:border-slate-800/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-5 relative z-10">
-                      <div className="flex flex-wrap gap-2">
-                          <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200">{job.category}</div>
-                          {job.job_type && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100">{job.job_type}</div>}
-                          {job.tags && job.tags.length > 0 && (() => {
-    // 🆕 JOBADDER-ONLY: tags array = [category, sub_category], isliye
-    // JobAdder jobs ke liye tags[1] (sub-category) dikhao, tags[0] nahi
-    // — warna Category badge ke saath duplicate ho jata hai.
-    // Baaki sab platforms ke liye purana tags[0] hi chalega, koi change nahi.
-    const displayTag = job.platform === 'JobAdder'
-        ? (job.tags.length > 1 ? job.tags[1] : job.tags[0])
-        : job.tags[0];
-    return (
-        <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-[10px] md:text-xs font-bold text-emerald-600 dark:text-emerald-300 border border-emerald-100">
-            {displayTag}
+                    <div className="flex flex-wrap gap-2">
+    <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200">{job.category}</div>
+    {job.job_type && <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-[10px] md:text-xs font-bold text-blue-600 dark:text-blue-300 border border-blue-100">{job.job_type}</div>}
+    
+    {/* 💰 SMART SALARY TAG FOR ORGANIC JOBS */}
+    {job.salary_range && job.salary_range !== 'Not Disclosed' && job.salary_range !== 'N/A' && job.salary_range.trim() !== '' ? (
+        <div className="flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-[10px] md:text-xs font-bold text-emerald-600 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800/50">
+            <DollarSign size={12} className="flex-shrink-0" />
+            <span className="truncate max-w-[120px] sm:max-w-[150px]">{job.salary_range.replace(/\.000000/g, '')}</span>
         </div>
-    );
-})()}
-                      </div>
+    ) : job.tags && job.tags.length > 0 && (
+        <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+            {job.platform === 'JobAdder' ? (job.tags.length > 1 ? job.tags[1] : job.tags[0]) : job.tags[0]}
+        </div>
+    )}
+</div>
                       <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
                           <button onClick={(e) => { e.preventDefault(); toggleSave(job.id); }} className={`p-2 md:p-3 rounded-xl border transition-all ${isSaved ? 'bg-red-50 border-red-200 text-red-500 dark:bg-red-900/20' : 'bg-transparent border-slate-200 text-slate-400 hover:text-red-500'}`}><Heart size={18} className={isSaved ? "fill-current" : ""} /></button>
                           

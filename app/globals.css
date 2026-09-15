@@ -109,3 +109,8 @@ a:active,
   color: #6366f1 !important; /* Links ko Indigo color do */
   text-decoration: underline !important;
 }
+/* Animated Gradient for NEW tag */
+@keyframes remoteok-rainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}

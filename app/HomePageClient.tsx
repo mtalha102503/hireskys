@@ -2332,7 +2332,7 @@ return (
                         color: 'transparent',
                         WebkitBackgroundClip: 'text',
                         backgroundClip: 'text',
-                        animation: 'remoteok-rainbow 2s linear infinite'
+                        animation: 'remoteok-rainbow 0.5s linear infinite'
                     }}
                 >
                     NEW

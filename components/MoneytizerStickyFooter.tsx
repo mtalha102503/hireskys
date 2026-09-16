@@ -3,68 +3,55 @@ import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export default function StickyFooterAd() {
+export default function MoneytizerStickyFooter() {
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
-  const [shouldLoad, setShouldLoad] = useState(false); 
+  const [shouldLoad, setShouldLoad] = useState(false); // 👈 NAYA: script load ka gate
 
   // 🚀 PATHNAME HOOK: Pata lagane ke liye ke user kis page par hai
-  const pathname = usePathname() || ""; // Default empty string in case pathname is null
-  const isJobPage = pathname.includes("/jobs/");
-
-  // 🛑 NEW: HIDDEN ROUTES LOGIC
-  const hiddenRoutes = ["/redirect", "/login", "/complete-profile", "/auth"];
-  const isHiddenRoute = hiddenRoutes.some((route) => 
-    pathname === route || pathname.startsWith(`${route}/`)
-  );
+  const pathname = usePathname();
+  const isJobPage = pathname?.includes("/jobs/");
 
   // 🚀 SPEED FIX: Ad-script ko page ke critical content ke baad load karo.
+  // Isse initial page load/LCP is heavy third-party script se compete nahi karega.
   useEffect(() => {
-    // 🛑 Agar user hidden page par hai ya ad close kar di hai, to timer start mat karo
-    if (!isVisible || isHiddenRoute) return;
+    if (!isVisible) return;
 
+    // Agar browser "idle" detect kar sakta hai (zyada tar modern browsers), to usay use karo —
+    // ye tab chalega jab browser free ho (koi zaroori kaam na ho raha ho).
     if ('requestIdleCallback' in window) {
       const idleId = (window as any).requestIdleCallback(() => setShouldLoad(true), { timeout: 2000 });
       return () => (window as any).cancelIdleCallback?.(idleId);
     } else {
+      // Fallback (Safari waghera): simple 1.5s delay
       const timer = setTimeout(() => setShouldLoad(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, [isVisible, isHiddenRoute]); // 🛑 isHiddenRoute dependency array me add kiya
+  }, [isVisible]);
 
-  // 🚀 AD INJECTION LOGIC (New Ad Network)
   useEffect(() => {
-    // 🛑 Agar script load nahi karni, container nahi mila, pehle se ad hai, YA hidden route hai, to ruk jao
-    if (!shouldLoad || !adRef.current || adRef.current.hasChildNodes() || isHiddenRoute) return;
+    if (!shouldLoad) return;
 
-    // 1. Configure the ad options
-    const confScript = document.createElement("script");
-    confScript.type = "text/javascript";
-    confScript.innerHTML = `
-      atOptions = {
-        'key' : '8c981f99e2fdcb758347a9099c888033',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
-    `;
+    const script1 = document.createElement("script");
+    script1.src = "//ads.themoneytizer.com/s/gen.js?type=28";
+    script1.async = true;
 
-    // 2. Inject the external ad network script
-    const invokeScript = document.createElement("script");
-    invokeScript.type = "text/javascript";
-    invokeScript.src = "https://environmenttalentrabble.com/8c981f99e2fdcb758347a9099c888033/invoke.js";
-    invokeScript.async = true;
+    const script2 = document.createElement("script");
+    script2.src = "//ads.themoneytizer.com/s/requestform.js?siteId=141745&formatId=28";
+    script2.async = true;
 
-    // Append scripts
-    adRef.current.appendChild(confScript);
-    adRef.current.appendChild(invokeScript);
-  }, [shouldLoad, isHiddenRoute]); // 🛑 isHiddenRoute dependency array me add kiya
+    if (adRef.current && adRef.current.innerHTML === "") {
+      adRef.current.appendChild(script1);
+      adRef.current.appendChild(script2);
+    }
+  }, [shouldLoad]);
 
-  // 🛑 FINAL CHECK: Agar hidden route hai ya ad closed hai, to component ko gayab kardo
-  if (!isVisible || isHiddenRoute) return null;
+  if (!isVisible) return null;
 
   // 🔥 DYNAMIC POSITIONING LOGIC
+  // Job page par mobile ka bottom offset ab JobClient.tsx se live measure hokar
+  // --job-bar-h CSS variable se aayega (hardcoded 80px nahi raha).
+  // Desktop ya non-job pages par bottom-0 hi rahega.
   const style =
     isJobPage
       ? ({ bottom: "var(--job-bar-h, 0px)" } as React.CSSProperties)
@@ -89,7 +76,7 @@ export default function StickyFooterAd() {
         </button>
 
         {/* AD CONTAINER */}
-        <div ref={adRef} className="w-full h-full flex items-center justify-center overflow-hidden"></div>
+        <div id="141745-28" ref={adRef} className="w-full h-full flex items-center justify-center"></div>
       </div>
     </div>
   );

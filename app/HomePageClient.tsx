@@ -49,12 +49,6 @@ const safeStorage = {
     }
   }
 };
-const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
-  ssr: false 
-});
-const InFeedAd = dynamic(() => import('@/components/InFeedAd'), { 
-  ssr: false 
-});
   // Baqi states wese hi rahengi...
 const JOBS_PER_PAGE = 30;
 
@@ -2426,9 +2420,7 @@ return (
                       </div>
                     </div>
                   )}
-                  {(index === 3 || (index > 3 && (index - 3) % 10 === 0)) && (
-                      <InFeedAd />
-                  )}
+                 
                 </div>
                 
               </React.Fragment>

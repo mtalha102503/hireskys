@@ -49,6 +49,9 @@ const safeStorage = {
     }
   }
 };
+const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
+  ssr: false 
+});
   // Baqi states wese hi rahengi...
 const JOBS_PER_PAGE = 30;
 

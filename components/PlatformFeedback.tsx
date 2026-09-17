@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, HeartHandshake, Loader2 } from 'lucide-react';
+import { X, Send, HeartHandshake, Loader2, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { usePathname } from 'next/navigation'; // 👈 1. Naya import add kiya
 
@@ -21,6 +21,7 @@ export default function PlatformFeedback() {
     const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
     const [feedbackText, setFeedbackText] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false); // 👈 YEH NAYI STATE ADD KARO
 
     useEffect(() => {
         // 🛑 3. ROUTE RESTRICTION: Sirf Homepage ('/') ya Job Details ('/jobs/...') par allow karo
@@ -74,18 +75,12 @@ export default function PlatformFeedback() {
     };
 
     const handleSubmit = async () => {
-        if (!selectedEmoji) {
-            toast.error("Please select an emoji first! 🙏");
-            return;
-        }
-
+        if (!selectedEmoji) return;
         setIsSubmitting(true);
 
         try {
-            // 1. FAST CHECK: Server se fetch karne ke bajaye existing state use karo
             const userId = user?.id || null; 
 
-            // 2. PARALLEL EXECUTION: Dono queries aik sath ready karo
             const insertPromise = supabase.from('platform_reviews').insert([{
                 user_id: userId,
                 sentiment: selectedEmoji,
@@ -94,26 +89,30 @@ export default function PlatformFeedback() {
 
             const updatePromise = userId 
                 ? supabase.from('profiles').update({ has_submitted_review: true }).eq('id', userId)
-                : Promise.resolve(); // Agar user nahi hai toh dummy promise
+                : Promise.resolve();
 
-            // 🚀 FIRE TOGETHER: Dono kaam aik sath background mein run honge!
             await Promise.all([insertPromise, updatePromise]);
 
-            // 3. SUCCESS LOGIC
             const storageKey = userId ? `review_done_${userId}` : 'review_done_anonymous';
             localStorage.setItem(storageKey, 'true');
 
-            toast.success("Thank you for your genuine feedback! 💙");
+            // 👇 MAGIC HERE: Submitting band karo, aur Success Screen on karo
+            setIsSubmitting(false);
+            setIsSuccess(true);
             
-            // Fauran modal close kar do bina kisi delay ke
-            setFeedbackText(""); 
-            setSelectedEmoji(null);
-            setIsOpen(false);
+            // 2 Second baad pyara sa fade out ho kar band ho jayega
+            setTimeout(() => {
+                setIsOpen(false);
+                // Modal band hone ke baad aglay session ke liye form reset karo
+                setTimeout(() => {
+                    setIsSuccess(false);
+                    setFeedbackText(""); 
+                    setSelectedEmoji(null);
+                }, 500);
+            }, 2000);
 
         } catch (error: any) {
             console.error("Review Error:", error);
-            toast.error("Something went wrong. Please try again.");
-        } finally {
             setIsSubmitting(false);
         }
     };
@@ -127,87 +126,112 @@ export default function PlatformFeedback() {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-md bg-white dark:bg-[#151b2d] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 md:p-8"
+                        className="relative w-full max-w-md bg-white dark:bg-[#151b2d] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 md:p-8 overflow-hidden"
                     >
-                        <button 
-                            onClick={handleDismiss}
-                            className="absolute top-4 right-4 p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                        >
-                            <X size={20} />
-                        </button>
+                        {/* Close Button sirf tab dikhao jab success na ho */}
+                        {!isSuccess && (
+                            <button 
+                                onClick={handleDismiss}
+                                className="absolute top-4 right-4 p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors z-10"
+                            >
+                                <X size={20} />
+                            </button>
+                        )}
 
-                        <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <HeartHandshake size={32} />
-                            </div>
-                            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
-                                How's your experience?
-                            </h2>
-                            <p className="text-sm text-slate-500 dark:text-slate-400">
-                                You've been with us for a while! We'd love a genuine review to help us improve HireSkys.
-                            </p>
-                        </div>
-
-                        <div className="flex justify-between items-center gap-2 mb-6">
-                            {EMOJIS.map((emoji) => (
-                                <button
-                                    key={emoji.label}
-                                    onClick={() => setSelectedEmoji(emoji.icon)}
-                                    className={`relative flex flex-col items-center p-3 rounded-2xl border transition-all duration-300 ${
-                                        selectedEmoji === emoji.icon 
-                                        ? `${emoji.color} scale-110 shadow-md` 
-                                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-105 grayscale hover:grayscale-0'
-                                    }`}
+                        <AnimatePresence mode="wait">
+                            {isSuccess ? (
+                                /* 🎉 THE SUCCESS SCREEN 🎉 */
+                                <motion.div 
+                                    key="success"
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="text-center py-8"
                                 >
-                                    <span className="text-3xl md:text-4xl leading-none filter drop-shadow-sm">
-                                        {emoji.icon}
-                                    </span>
-                                    {selectedEmoji === emoji.icon && (
-                                        <span className="absolute -bottom-5 text-[10px] font-bold text-slate-500 uppercase tracking-wider animate-in fade-in">
-                                            {emoji.label}
-                                        </span>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 mb-6">
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                                Tell us more (Optional)
-                            </label>
-                            <textarea
-                                value={feedbackText}
-                                onChange={(e) => setFeedbackText(e.target.value)}
-                                placeholder="What do you love? What's missing?"
-                                rows={3}
-                                className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 resize-none transition-all"
-                            />
-                        </div>
-
-                        {/* SUBMIT BUTTON WITH LOADING UI */}
-                        <button
-                            onClick={handleSubmit}
-                            disabled={isSubmitting || !selectedEmoji}
-                            className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 ${
-                                isSubmitting 
-                                ? 'bg-indigo-400 dark:bg-indigo-500 cursor-wait text-white shadow-none' // ⏳ Loading State UI
-                                : !selectedEmoji 
-                                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed' // 🔒 Disabled State UI
-                                    : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 active:scale-95' // ✅ Active State UI
-                            }`}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 size={18} className="animate-spin text-white" /> 
-                                    <span>Submitting Feedback...</span>
-                                </>
+                                    <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/20">
+                                        <CheckCircle size={40} strokeWidth={2.5} />
+                                    </div>
+                                    <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                                        You're Awesome!
+                                    </h2>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                                        Thank you for your feedback. We're working hard to make HireSkys better for you.
+                                    </p>
+                                </motion.div>
                             ) : (
-                                <>
-                                    <Send size={18} /> 
-                                    <span>Submit Feedback</span>
-                                </>
+                                /* 📝 THE FORM SCREEN 📝 */
+                                <motion.div 
+                                    key="form"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                >
+                                    <div className="text-center mb-6">
+                                        <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <HeartHandshake size={32} />
+                                        </div>
+                                        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                                            How's your experience?
+                                        </h2>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                                            You've been with us for a while! We'd love a genuine review to help us improve HireSkys.
+                                        </p>
+                                    </div>
+
+                                    {/* EMOJI ROW */}
+                                    <div className="flex justify-between items-center gap-2 mb-6">
+                                        {EMOJIS.map((emoji) => (
+                                            <button
+                                                key={emoji.label}
+                                                onClick={() => setSelectedEmoji(emoji.icon)}
+                                                className={`relative flex flex-col items-center p-3 rounded-2xl border transition-all duration-300 ${
+                                                    selectedEmoji === emoji.icon 
+                                                    ? `${emoji.color} scale-110 shadow-md` 
+                                                    : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-105 grayscale hover:grayscale-0'
+                                                }`}
+                                            >
+                                                <span className="text-3xl md:text-4xl leading-none filter drop-shadow-sm">
+                                                    {emoji.icon}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* TEXT BOX */}
+                                    <div className="mt-8 mb-6">
+                                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                                            Tell us more (Optional)
+                                        </label>
+                                        <textarea
+                                            value={feedbackText}
+                                            onChange={(e) => setFeedbackText(e.target.value)}
+                                            placeholder="What do you love? What's missing?"
+                                            rows={3}
+                                            className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 resize-none transition-all"
+                                        />
+                                    </div>
+
+                                    {/* SUBMIT BUTTON WITH LOADING UI */}
+                                    <button
+                                        onClick={handleSubmit}
+                                        disabled={isSubmitting || !selectedEmoji}
+                                        className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 ${
+                                            isSubmitting 
+                                            ? 'bg-indigo-400 dark:bg-indigo-500 cursor-wait text-white shadow-none' 
+                                            : !selectedEmoji 
+                                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed' 
+                                                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 active:scale-95'
+                                        }`}
+                                    >
+                                        {isSubmitting ? (
+                                            <><Loader2 size={18} className="animate-spin text-white" /> <span>Submitting...</span></>
+                                        ) : (
+                                            <><Send size={18} /> <span>Submit Feedback</span></>
+                                        )}
+                                    </button>
+                                </motion.div>
                             )}
-                        </button>
+                        </AnimatePresence>
                     </motion.div>
                 </div>
             )}

@@ -79,48 +79,42 @@ export default function PlatformFeedback() {
             return;
         }
 
-        // Button ko Submitting state mein daal do
         setIsSubmitting(true);
 
         try {
-            // 1. Check karo ke user login hai ya nahi (Error nahi phekna ab)
-            const { data: { user: freshUser } } = await supabase.auth.getUser();
-            const userId = freshUser ? freshUser.id : null; // Agar login nahi toh null jayega
+            // 1. FAST CHECK: Server se fetch karne ke bajaye existing state use karo
+            const userId = user?.id || null; 
 
-            // 2. Database mein review daalo
-            const { error: insertError } = await supabase.from('platform_reviews').insert([{
-                user_id: userId, // Logged in hai toh ID, warna Null
+            // 2. PARALLEL EXECUTION: Dono queries aik sath ready karo
+            const insertPromise = supabase.from('platform_reviews').insert([{
+                user_id: userId,
                 sentiment: selectedEmoji,
                 feedback_text: feedbackText.trim() || null
             }]);
 
-            if (insertError) throw insertError; 
+            const updatePromise = userId 
+                ? supabase.from('profiles').update({ has_submitted_review: true }).eq('id', userId)
+                : Promise.resolve(); // Agar user nahi hai toh dummy promise
 
-            // 3. Agar user LOGIN hai, tabhi uski profile update karo
-            if (userId) {
-                await supabase.from('profiles').update({
-                    has_submitted_review: true
-                }).eq('id', userId);
-            }
+            // 🚀 FIRE TOGETHER: Dono kaam aik sath background mein run honge!
+            await Promise.all([insertPromise, updatePromise]);
 
-            // 4. LocalStorage set karo taake dono (logged-in/logged-out) ko dobara tang na kare
+            // 3. SUCCESS LOGIC
             const storageKey = userId ? `review_done_${userId}` : 'review_done_anonymous';
             localStorage.setItem(storageKey, 'true');
 
             toast.success("Thank you for your genuine feedback! 💙");
             
-            // Success ke baad halka sa delay de kar modal close karo (Premium feel)
-            setTimeout(() => {
-                setFeedbackText(""); 
-                setSelectedEmoji(null);
-                setIsOpen(false);
-                setIsSubmitting(false); // Yahan state reset hogi
-            }, 600);
+            // Fauran modal close kar do bina kisi delay ke
+            setFeedbackText(""); 
+            setSelectedEmoji(null);
+            setIsOpen(false);
 
         } catch (error: any) {
-            console.error("Review Error Detailed:", error);
+            console.error("Review Error:", error);
             toast.error("Something went wrong. Please try again.");
-            setIsSubmitting(false); // Error aaye toh button wapis normal kar do
+        } finally {
+            setIsSubmitting(false);
         }
     };
 

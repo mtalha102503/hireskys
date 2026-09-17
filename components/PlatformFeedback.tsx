@@ -79,28 +79,48 @@ export default function PlatformFeedback() {
             return;
         }
 
+        // Button ko Submitting state mein daal do
         setIsSubmitting(true);
 
         try {
-            await supabase.from('platform_reviews').insert([{
-                user_id: user.id,
+            // 1. Check karo ke user login hai ya nahi (Error nahi phekna ab)
+            const { data: { user: freshUser } } = await supabase.auth.getUser();
+            const userId = freshUser ? freshUser.id : null; // Agar login nahi toh null jayega
+
+            // 2. Database mein review daalo
+            const { error: insertError } = await supabase.from('platform_reviews').insert([{
+                user_id: userId, // Logged in hai toh ID, warna Null
                 sentiment: selectedEmoji,
                 feedback_text: feedbackText.trim() || null
             }]);
 
-            await supabase.from('profiles').update({
-                has_submitted_review: true
-            }).eq('id', user.id);
+            if (insertError) throw insertError; 
 
-            localStorage.setItem(`review_done_${user.id}`, 'true');
+            // 3. Agar user LOGIN hai, tabhi uski profile update karo
+            if (userId) {
+                await supabase.from('profiles').update({
+                    has_submitted_review: true
+                }).eq('id', userId);
+            }
+
+            // 4. LocalStorage set karo taake dono (logged-in/logged-out) ko dobara tang na kare
+            const storageKey = userId ? `review_done_${userId}` : 'review_done_anonymous';
+            localStorage.setItem(storageKey, 'true');
 
             toast.success("Thank you for your genuine feedback! 💙");
-            setIsOpen(false);
-        } catch (error) {
-            console.error("Review Error:", error);
+            
+            // Success ke baad halka sa delay de kar modal close karo (Premium feel)
+            setTimeout(() => {
+                setFeedbackText(""); 
+                setSelectedEmoji(null);
+                setIsOpen(false);
+                setIsSubmitting(false); // Yahan state reset hogi
+            }, 600);
+
+        } catch (error: any) {
+            console.error("Review Error Detailed:", error);
             toast.error("Something went wrong. Please try again.");
-        } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false); // Error aaye toh button wapis normal kar do
         }
     };
 
@@ -170,19 +190,28 @@ export default function PlatformFeedback() {
                             />
                         </div>
 
+                        {/* SUBMIT BUTTON WITH LOADING UI */}
                         <button
                             onClick={handleSubmit}
                             disabled={isSubmitting || !selectedEmoji}
-                            className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-                                !selectedEmoji 
-                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed' 
-                                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 active:scale-95'
+                            className={`w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 ${
+                                isSubmitting 
+                                ? 'bg-indigo-400 dark:bg-indigo-500 cursor-wait text-white shadow-none' // ⏳ Loading State UI
+                                : !selectedEmoji 
+                                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed' // 🔒 Disabled State UI
+                                    : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 active:scale-95' // ✅ Active State UI
                             }`}
                         >
                             {isSubmitting ? (
-                                <><Loader2 size={18} className="animate-spin" /> Submitting...</>
+                                <>
+                                    <Loader2 size={18} className="animate-spin text-white" /> 
+                                    <span>Submitting Feedback...</span>
+                                </>
                             ) : (
-                                <><Send size={18} /> Submit Feedback</>
+                                <>
+                                    <Send size={18} /> 
+                                    <span>Submit Feedback</span>
+                                </>
                             )}
                         </button>
                     </motion.div>

@@ -1103,7 +1103,19 @@ const progressPercentage = (completedSteps / totalSteps) * 100;
 return (
     <div className="min-h-screen font-sans text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-[#0B0F19] overflow-x-hidden">
       <Navbar />
-
+      {/* 🌟 FLOATING VERTICAL FEEDBACK BUTTON */}
+      {/* 🌟 FLOATING VERTICAL FEEDBACK BUTTON */}
+      <button
+          onClick={() => {
+              window.dispatchEvent(new Event('open-feedback'));
+          }}
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-[100] bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs md:text-sm py-5 px-2 md:px-2.5 rounded-l-xl shadow-[-4px_0_15px_rgba(0,0,0,0.2)] dark:shadow-[-4px_0_15px_rgba(255,255,255,0.2)] transition-all duration-300 hover:-translate-x-1 cursor-pointer flex items-center justify-center group"
+          style={{ writingMode: 'vertical-rl' }}
+      >
+          <span className="rotate-180 flex items-center gap-2 tracking-[0.2em] uppercase">
+              Feedback
+          </span>
+      </button>
       {showPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="relative bg-white dark:bg-[#151b2d] rounded-3xl shadow-2xl max-w-lg w-full p-8 border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-300">

@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import { createSlug } from '@/lib/utils';
 import CategorySection from "@/components/CategorySection";
+import InFeedAd from "@/components/InFeedAd";
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { CATEGORIES } from '@/lib/categories'; 
 import { countryMap, COUNTRIES } from '@/lib/country';
@@ -2435,7 +2436,23 @@ return (
                       </div>
                     </div>
                   )}
-                 
+                 {/* 📢 NATIVE IN-FEED AD (Exactly 3 times in the feed: 4th, 10th, & 16th position) */}
+                  {[3, 9, 15].includes(index) && (
+                      <div className="w-full flex justify-center py-4 relative z-10 mt-2">
+                          {/* Ad Container - Matches Job Card UI */}
+                          <div className="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800/80 rounded-2xl shadow-sm p-4 w-full max-w-[340px] md:max-w-[360px] flex flex-col items-center justify-center transition-all hover:border-indigo-500/30">
+                              {/* Small "Advertisement" Label */}
+                              <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 self-start">
+                                  Advertisement
+                              </span>
+                              
+                              {/* Actual Ad Component */}
+                              <div className="flex items-center justify-center min-h-[250px] min-w-[300px] overflow-hidden rounded-xl">
+                                  <InFeedAd />
+                              </div>
+                          </div>
+                      </div>
+                  )}
                 </div>
                 
               </React.Fragment>

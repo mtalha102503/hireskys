@@ -194,6 +194,8 @@ export default function Home({
   const [hasMore, setHasMore] = useState(true);
   const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
   const [filterJobType, setFilterJobType] = useState(searchParams.get('type') || ''); 
+  const [filterExperience, setFilterExperience] = useState(searchParams.get('experience') || '');
+  const [showExperienceDropdown, setShowExperienceDropdown] = useState(false);
   const [filterDate, setFilterDate] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [sortOrder, setSortOrder] = useState<'new' | 'trending'>('new');
@@ -415,6 +417,7 @@ useEffect(() => {
       setActiveSubTag(newTag);
       setFilterJobType(searchParams.get('type') || '');
       setFilterCountry(finalCountry); 
+      setFilterExperience(searchParams.get('experience') || '');
   }, [searchParams, seoCategory, seoLocation]);
 
   useEffect(() => {
@@ -428,6 +431,7 @@ useEffect(() => {
         setShowJobTypeDropdown(false);
         setShowDateDropdown(false);
         setShowCountryDropdown(false);
+        setShowExperienceDropdown(false);
       }
       // 👇 Sort Dropdown ko bhi bahar click hone par band karo
       if (sortDropdownRef.current && !(sortDropdownRef.current as any).contains(event.target)) {
@@ -599,7 +603,7 @@ useEffect(() => {
     }, 500);
     
     return () => clearTimeout(timer);
-}, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry, sortOrder, pageParam]);
+}, [searchQuery, activeCategory, activeSubTag, searchType, filterJobType, filterDate, filterCountry, filterExperience, sortOrder, pageParam]);
 
 
   // 2. 🚀 THE SMART TYPING SYNC (Yeh sirf tab chalega jab tum text likhoge)
@@ -884,6 +888,7 @@ if (!recentJobs || recentJobs.length === 0) {
     const filters: string[] = ['approved:=true', 'active:=true'];
 console.log("🔍 FETCHING FROM:", "TYPESENSE", { filters, searchQuery });
     if (filterJobType) filters.push(`job_type:=${filterJobType}`);
+    if (filterExperience) filters.push(`experience_level:=${filterExperience}`);
 
     if (filterDate) {
         const now = new Date();
@@ -1475,7 +1480,48 @@ return (
                                     )}
                                 </AnimatePresence>
                             </div>
+{/* CUSTOM FILTER 4: Experience Level (Logged In) */}
+<div className="relative w-full md:w-auto md:min-w-[200px]">
+    <button 
+        onClick={() => { setShowExperienceDropdown(!showExperienceDropdown); setShowJobTypeDropdown(false); setShowDateDropdown(false); setShowCountryDropdown(false); }}
+        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold shadow-sm transition-all ${
+            showExperienceDropdown 
+            ? 'bg-white dark:bg-[#151b2d] border-amber-500 ring-2 ring-amber-500/20' 
+            : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-amber-300'
+        }`}
+    >
+        <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 max-w-[85%]">
+            <Layers size={16} className="text-amber-500 flex-shrink-0" />
+            <span className="truncate block">{filterExperience || "Experience"}</span>
+        </div>
+        <ChevronDown size={14} className={`text-slate-400 flex-shrink-0 transition-transform duration-300 ${showExperienceDropdown ? 'rotate-180 text-amber-500' : ''}`} strokeWidth={3} />
+    </button>
 
+    <AnimatePresence>
+        {showExperienceDropdown && (
+            <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1 min-w-[200px]"
+            >
+                {["Entry-Level", "Mid-Level", "Senior-Level", "Lead/Manager"].map((exp) => (
+                    <button
+                        key={exp}
+                        onClick={() => { setFilterExperience(exp); setShowExperienceDropdown(false); updateURLParams('experience', exp); }}
+                        className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 rounded-lg transition-colors flex items-center justify-between group"
+                    >
+                        {exp} {filterExperience === exp && <Check size={14} className="text-amber-500" />}
+                    </button>
+                ))}
+                {filterExperience && (
+                    <button onClick={() => { setFilterExperience(""); setShowExperienceDropdown(false); updateURLParams('experience', ''); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1">Clear Filter</button>
+                )}
+            </motion.div>
+        )}
+    </AnimatePresence>
+</div>
                         </div>
                     </div>
 
@@ -1844,7 +1890,7 @@ return (
     
     {/* 🛑 LEFT SIDE: Custom Filters (SIRF LOGGED-OUT USERS KO DIKHENGA) */}
     {!currentUser && (
-        <div className="grid grid-cols-3 gap-2 w-full lg:flex lg:w-auto pb-2 lg:pb-0">
+        <div className="grid grid-cols-2 md:flex gap-2 w-full lg:w-auto pb-2 lg:pb-0">
             
             {/* Filter 1: Job Type */}
             <div className="relative w-full">
@@ -1944,6 +1990,34 @@ return (
                     )}
                 </AnimatePresence>
             </div>
+            {/* CUSTOM FILTER 4: Experience Level (Logged Out) */}
+<div className="relative w-full">
+    <button 
+        onClick={() => { setShowExperienceDropdown(!showExperienceDropdown); setShowJobTypeDropdown(false); setShowDateDropdown(false); setShowCountryDropdown(false); }}
+        className={`w-full flex items-center justify-center lg:justify-between gap-1 sm:gap-2 px-1 sm:px-3 py-2 md:px-4 md:py-2.5 rounded-xl border text-[10px] sm:text-xs md:text-sm font-bold shadow-sm transition-all whitespace-nowrap ${
+            showExperienceDropdown ? 'bg-white dark:bg-[#151b2d] border-amber-500 ring-2 ring-amber-500/20' : 'bg-white dark:bg-[#151b2d] border-slate-200 dark:border-slate-700 hover:border-amber-300'
+        }`}
+    >
+        <Layers size={12} className="text-amber-500 flex-shrink-0 md:w-3.5 md:h-3.5" />
+        {/* Yahan span ke andar truncate lazmi hai taake width bahar na jaye */}
+        <span className="truncate max-w-[80px] sm:max-w-[100px]">{filterExperience || "Experience"}</span>
+        <ChevronDown size={12} className={`text-slate-400 flex-shrink-0 transition-transform ${showExperienceDropdown ? 'rotate-180 text-amber-500' : ''}`} strokeWidth={3} />
+    </button>
+    <AnimatePresence>
+        {showExperienceDropdown && (
+            <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} transition={{ duration: 0.2 }} className="absolute top-full left-0 mt-2 bg-white dark:bg-[#1e2538] border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden z-50 p-1 min-w-[180px]">
+                {["Entry-Level", "Mid-Level", "Senior-Level", "Lead/Manager"].map((exp) => (
+                    <button key={exp} onClick={() => { setFilterExperience(exp); setShowExperienceDropdown(false); updateURLParams('experience', exp); }} className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 rounded-lg transition-colors flex items-center justify-between group">
+                        {exp} {filterExperience === exp && <Check size={14} className="text-amber-500" />}
+                    </button>
+                ))}
+                {filterExperience && (
+                    <button onClick={() => { setFilterExperience(""); setShowExperienceDropdown(false); updateURLParams('experience', ''); }} className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors border-t border-slate-100 dark:border-slate-700 mt-1">Clear Filter</button>
+                )}
+            </motion.div>
+        )}
+    </AnimatePresence>
+</div>
         </div>
     )}
 
@@ -2536,7 +2610,8 @@ return (
             </div>
 
             {/* Grid Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+            {/* Purani Line ko is grid-cols-2 sm:grid-cols-4 wali line se replace karo: */}
+<div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full lg:flex lg:w-auto pb-2 lg:pb-0">
 
               {/* Feature 1: Public Profile */}
               <div className="group relative bg-slate-50/50 dark:bg-[#111625] rounded-[2rem] border border-slate-200/60 dark:border-slate-800/60 p-8 md:p-10 transition-all duration-500 hover:bg-white dark:hover:bg-[#151b2d] hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.15)] hover:-translate-y-2 flex flex-col">

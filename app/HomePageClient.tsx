@@ -1393,7 +1393,7 @@ return (
                             </div>
 
                             {/* CUSTOM FILTER 3: Location / Country (MOVED HERE & UPDATED WITH SEARCH) */}
-                            <div className="relative w-full col-span-2 md:col-auto md:w-auto md:min-w-[220px]">
+                            <div className="relative w-full md:w-auto md:min-w-[220px]">
                                 {/* Trigger Button */}
                                 <button 
                                     onClick={() => { setShowCountryDropdown(!showCountryDropdown); setShowJobTypeDropdown(false); setShowDateDropdown(false); }}

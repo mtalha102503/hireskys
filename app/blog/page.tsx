@@ -117,6 +117,15 @@ const BLOG_POSTS = [
   category: 'Product Updates',
   image: '/blog-mcp-guide.webp',
   },
+  {
+  slug: 'remote-work-experience-gap-2026',
+  title: 'The Remote Work Experience Gap: Are Companies Still Hiring Freshers in 2026?',
+  excerpt: 'We analyzed 14,635 active remote jobs straight from the HireSkys database. The data reveals a shocking truth about the "Experience Gap" and the exact skills you need to bypass it.',
+  date: 'Sep 20, 2026',
+  author: 'Muhammad Talha',
+  category: 'Original Research',
+  image: '/blog-experience-gap.webp',
+  },
 ];
 
 export default function BlogIndex() {

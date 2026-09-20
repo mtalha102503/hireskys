@@ -3,22 +3,18 @@ import { Metadata } from "next";
 import { BLOG_POSTS } from "@/lib/blogData"; 
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-// 👇 FIX 1: Next.js ko batana parta hai ke kon se pages exist karte hain
+import { ArrowLeft, Clock } from "lucide-react"; // 👈 Clock icon add kiya
+
 export async function generateStaticParams() {
   return BLOG_POSTS.map((post) => ({
     slug: post.slug,
   }));
 }
 
-// 👇 FIX 2: Type define kiya (Next.js 15 mein params Promise hota hai)
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-// ---------------------------------------------------------
-// 1. AUTOMATIC SEO GENERATOR (Metadata)
-// ---------------------------------------------------------
 // ---------------------------------------------------------
 // 1. AUTOMATIC SEO GENERATOR (Metadata)
 // ---------------------------------------------------------
@@ -30,14 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const siteUrl = "https://www.hireskys.com";
   const ogImage = post.image.startsWith("/") ? `${siteUrl}${post.image}` : post.image;
-  
-  // 👇 URL variable bana liya taake do jagah use ho sakay
   const postUrl = `${siteUrl}/blog/${slug}`; 
 
   return {
     title: post.title,
     description: post.excerpt,
-    // ✅ PRO FIX: Yahan canonical URL add kiya hai taake Bing/Google khush rahein
     alternates: {
       canonical: postUrl,
     },
@@ -63,16 +56,30 @@ export default async function BlogPostPage({ params }: Props) {
     notFound();
   }
 
-  // JSON-LD for Google
+  // 🚀 VIP FIX: Enhanced JSON-LD for "Original Research" SEO
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "Article", // "BlogPosting" se "Article" zyada strong authority signal deta hai
     "headline": post.title,
+    "description": post.excerpt,
     "image": [`https://www.hireskys.com${post.image}`],
-    "author": { "@type": "Person", "name": post.author },
-    "datePublished": post.date
+    "author": { "@type": "Person", "name": post.author, "jobTitle": post.role },
+    "publisher": {
+      "@type": "Organization",
+      "name": "HireSkys",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.hireskys.com/HireSkys-100x100.png" // 👈 Yahan apne logo ka original path zaroor daalna
+      }
+    },
+    "datePublished": "2026-09-20T08:00:00+00:00", // Yeh dynamically bhi manage ho sakta hai, abhi current article ka timestamp hai
+    "dateModified": "2026-09-20T08:00:00+00:00"
   };
-const hasTOC = post.toc && post.toc.length > 0;
+
+  const hasTOC = post.toc && post.toc.length > 0;
+  // 👈 Check for "Original Research" category to show the data badge
+  const isDataArticle = post.category === "Original Research"; 
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -83,13 +90,11 @@ const hasTOC = post.toc && post.toc.length > 0;
         {/* 🚀 UPGRADED HERO SECTION WITH BACKGROUND IMAGE */}
         <div className="relative pt-40 pb-24 px-4 overflow-hidden border-b border-slate-200 dark:border-slate-800">
           
-          {/* Background Image Cover */}
           <div 
             className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
             style={{ backgroundImage: `url(${post.image})` }}
           ></div>
 
-          {/* Dark Overlay (Taake text clear nazar aaye) */}
           <div className="absolute inset-0 z-10 bg-slate-900/85 dark:bg-[#0B0F19]/90 backdrop-blur-[4px]"></div>
 
           <div className="relative z-20 container mx-auto max-w-4xl text-center">
@@ -106,7 +111,8 @@ const hasTOC = post.toc && post.toc.length > 0;
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Blog
               </Link>
             </div>
-            {/* Main Title (Forced to White for contrast) */}
+            
+            {/* Main Title */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-tight text-white drop-shadow-md">
               {post.title}
             </h1>
@@ -134,13 +140,30 @@ const hasTOC = post.toc && post.toc.length > 0;
             
             {/* Main Article Content */}
             <article className={hasTOC ? "lg:col-span-8" : "w-full"}>
+              
+              {/* 🚀 VIP FIX: Data Snapshot Badge (Sirf Data-Driven articles pe dikhega) */}
+              {isDataArticle && (
+                <div className="flex justify-start mb-8">
+                  <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/50 rounded-xl shadow-sm">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-sm font-black text-emerald-800 dark:text-emerald-400 tracking-wider uppercase flex items-center gap-1.5">
+                        <Clock size={14} />
+                        Data Snapshot: September 20, 2026
+                      </span>
+                  </div>
+                </div>
+              )}
+
               <div 
                 className={`prose prose-lg dark:prose-invert prose-indigo w-full prose-headings:font-bold prose-a:text-indigo-500 prose-headings:scroll-mt-32 ${hasTOC ? 'max-w-none' : 'mx-auto'}`}
                 dangerouslySetInnerHTML={{ __html: post.content }} 
               />
             </article>
 
-            {/* Right Column: Sticky Table of Contents (Sirf tab dikhega agar TOC ho) */}
+            {/* Right Column: Sticky Table of Contents */}
             {hasTOC && (
               <aside className="hidden lg:block lg:col-span-4 sticky top-32">
                 <div className="p-8 bg-white dark:bg-[#111625] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/20 dark:shadow-black/20">

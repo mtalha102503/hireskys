@@ -305,43 +305,6 @@ export default function RootLayout({
             })();
           `}
         </Script>
-
-        {/* 🚀 EZOIC PRIVACY SCRIPTS */}
-        <Script
-          id="ezoic-privacy-min"
-          src="https://cmp.gatekeeperconsent.com/min.js"
-          strategy="beforeInteractive"
-          data-cfasync="false"
-        />
-        <Script
-          id="ezoic-privacy-cmp"
-          src="https://the.gatekeeperconsent.com/cmp.min.js"
-          strategy="beforeInteractive"
-          data-cfasync="false"
-        />
-
-        {/* 🚀 EZOIC HEADER SCRIPTS */}
-        <Script
-          id="ezoic-sa"
-          src="//www.ezojs.com/ezoic/sa.min.js"
-          strategy="afterInteractive"
-        />
-        <Script id="ezoic-standalone" strategy="afterInteractive">
-          {`
-            window.ezstandalone = window.ezstandalone || {};
-            ezstandalone.cmd = ezstandalone.cmd || [];
-          `}
-        </Script>
-        <Script
-          id="ezoic-analytics"
-          src="//ezoicanalytics.com/analytics.js"
-          strategy="afterInteractive"
-        />
-        <Script
-          id="revbid-prebid"
-          src="https://prebid.revbid.net/20838/revbid.js"
-          strategy="afterInteractive"
-        />
       </head>
       <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>
         <script

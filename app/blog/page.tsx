@@ -126,6 +126,15 @@ const BLOG_POSTS = [
   category: 'Original Research',
   image: '/blog-experience-gap.webp',
   },
+  {
+  slug: 'introducing-visatalentusa-h1b-sponsor-database',
+  title: 'Introducing VisaTalentUSA: The H-1B Sponsor Database We Always Wished Existed',
+  excerpt: 'We just launched VisaTalentUSA — a free database of the top 1,000 H-1B sponsors with real salary data, lottery odds calculator, and expert guides. Here is why we built it and how it helps you.',
+  date: 'Oct 11, 2026',
+  author: 'Muhammad Talha',
+  category: 'Launch Announcement',
+  image: '/blog/visatalentusa-launch.svg',
+  },
 ];
 
 export default function BlogIndex() {

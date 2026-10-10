@@ -480,7 +480,7 @@ useEffect(() => {
                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                   </Link>
                   <a
-                    href={"https://visatalentusa.com/sponsors/" + company.slug + "/"}
+                    href="https://visatalentusa.com/sponsors"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-2 w-full sm:w-auto inline-flex justify-center items-center gap-1.5 py-1.5 px-4 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-xs font-semibold rounded-lg transition-all whitespace-nowrap"

@@ -1844,25 +1844,22 @@ return (
       {/* WHY JOIN SECTION (Animated & Interactive) */}
       {/* WHY JOIN SECTION (Premium SaaS Redesign) */}
       
- {/* H-1B Sponsor Database Promo - slim dark bar */}
-<div className="border-y border-slate-800/60 bg-[#0d1220] dark:bg-[#0d1220]">
-  <div className="container mx-auto px-4 max-w-5xl py-3 flex items-center justify-between gap-4">
-    <p className="text-sm text-slate-300 truncate">
-      <span className="font-bold text-white">H-1B Visa?</span>
-      <span className="hidden sm:inline text-slate-400"> Check which companies sponsor on </span>
-      <span className="sm:hidden text-slate-400"> </span>
-      <span className="font-semibold text-blue-400">VisaTalentUSA</span>
-    </p>
+ {/* H-1B Sponsor Database Promo - text only, theme aware */}
+<div className="container mx-auto px-4 max-w-5xl py-6 text-center">
+  <p className="text-base md:text-lg text-slate-900 dark:text-white">
+    Need <span className="font-bold">H-1B sponsorship</span>? Explore the{" "}
+    <span className="font-bold">top 1,000 H-1B sponsors</span> with real salary data on{" "}
     <a
       href="https://visatalentusa.com"
       target="_blank"
       rel="noopener noreferrer"
-      className="shrink-0 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-1.5 text-xs font-bold text-white transition"
+      className="font-bold text-blue-600 dark:text-blue-400 hover:underline"
     >
-      Check Now →
+      VisaTalentUSA →
     </a>
-  </div>
+  </p>
 </div>
+
 
       {/* MAIN CONTENT */}
       <main id="jobs" ref={jobsSectionRef} className="container mx-auto px-4 pt-8 md:pt-12 pb-8 max-w-5xl scroll-mt-24">

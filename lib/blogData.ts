@@ -1918,5 +1918,62 @@ export const BLOG_POSTS: BlogPost[] = [
         </a>
       </div>
     `
+  },
+  {
+    slug: 'introducing-visatalentusa-h1b-sponsor-database',
+    title: 'Introducing VisaTalentUSA: The H-1B Sponsor Database We Always Wished Existed',
+    excerpt: 'We just launched VisaTalentUSA — a free database of the top 1,000 H-1B sponsors with real salary data, lottery odds calculator, and expert guides. Here is why we built it and how it helps you.',
+    date: 'Oct 11, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png',
+    category: 'Launch Announcement',
+    image: '/blog/visatalentusa-launch.svg',
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Every year, hundreds of thousands of talented professionals dream of working in the United States — but most have no idea which companies actually sponsor H-1B visas, what they pay, or what their real chances are. Today, we are fixing that.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        We are thrilled to announce the launch of <a href="https://visatalentusa.com" class="text-blue-600 font-bold hover:underline">VisaTalentUSA</a> — a free, data-driven H-1B sponsor database built by the HireSkys team. It is a brand-new standalone platform dedicated to one mission: <strong>bringing total transparency to the H-1B visa process</strong>.
+      </p>
+      <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 my-10">
+        <img src="/blog/visatalentusa-launch.svg" alt="VisaTalentUSA launch announcement" class="w-full h-auto" width="1200" height="630" />
+      </div>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Why We Built VisaTalentUSA</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        At HireSkys, we help thousands of job seekers find remote work every month. But again and again, we heard the same frustration: <em>"Which companies sponsor visas? Will they pay me fairly? What are my odds?"</em>
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        The information was scattered across government PDFs and outdated forums. Nobody had built a single, trustworthy, <strong>free</strong> resource powered by real data. So we built it ourselves.
+      </p>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">What VisaTalentUSA Offers</h2>
+      <div class="grid md:grid-cols-2 gap-6 my-8">
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3">Top 1,000 H-1B Sponsors</h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Searchable database with real filing counts, median salaries, and DOL LCA certification rates.</p>
+        </div>
+        <div class="p-6 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 dark:border-emerald-800/50">
+          <h3 class="font-black text-xl text-emerald-900 dark:text-emerald-300 mb-3">Lottery Odds Calculator</h3>
+          <p class="text-emerald-800/80 dark:text-emerald-200/80">Interactive tool estimating your H-1B lottery chances by wage level and degree.</p>
+        </div>
+        <div class="p-6 bg-violet-50 dark:bg-violet-900/10 rounded-2xl border border-violet-100 dark:border-violet-800/50">
+          <h3 class="font-black text-xl text-violet-900 dark:text-violet-300 mb-3">Expert Guides</h3>
+          <p class="text-violet-800/80 dark:text-violet-200/80">In-depth guides on the lottery, fees, transfers, and strategies.</p>
+        </div>
+        <div class="p-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-800/50">
+          <h3 class="font-black text-xl text-amber-900 dark:text-amber-300 mb-3">Real DOL Data</h3>
+          <p class="text-amber-800/80 dark:text-amber-200/80">1.5M+ official Department of Labor records. No dummy data — just facts.</p>
+        </div>
+      </div>
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Our Mission</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        VisaTalentUSA exists to <strong>level the playing field</strong>. Whether you are in Lahore, Bangalore, or Manila — you deserve the same transparent information that insiders have. It is free, it will stay free, and it is just getting started.
+      </p>
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 md:p-10 rounded-3xl text-center shadow-2xl mt-12">
+        <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Explore VisaTalentUSA Today</h3>
+        <p class="text-blue-100 mb-8 text-lg font-medium max-w-2xl mx-auto">Search sponsors, calculate lottery odds, and read expert guides — all free.</p>
+        <a href="https://visatalentusa.com" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">Visit VisaTalentUSA</a>
+      </div>
+    `
   }
 ];

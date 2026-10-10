@@ -1174,7 +1174,7 @@ const handleApply = async () => {
     </div>
         {(job.company || companyDetails?.name) && (
           <a
-            href={"https://visatalentusa.com/sponsors/" + getCompanySlug(job.company || companyDetails?.name) + "/"}
+            href="https://visatalentusa.com/sponsors"
             target="_blank"
             rel="noopener noreferrer"
             className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-blue-200 bg-blue-50 p-4 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 transition"
@@ -1186,7 +1186,7 @@ const handleApply = async () => {
                 <p className="text-xs text-slate-600 dark:text-slate-400">Check real filing data, salaries & approval rates on VisaTalentUSA</p>
               </div>
             </div>
-            <span className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white">View Data \u2192</span>
+            <span className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white">View Data →</span>
           </a>
         )}
         <div className="bg-white dark:bg-[#111625] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">

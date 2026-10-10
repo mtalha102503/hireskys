@@ -210,6 +210,7 @@ export default function Footer() {
               <li><Link href="/salary-guide" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Salary Guide</Link></li>
               <li><Link href="/support" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Help & Support</Link></li>
               <li><Link href="/faq" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Faqs</Link></li>
+              <li><a href="https://visatalentusa.com" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">H-1B Sponsor Database</a></li>
             </ul>
           </div>
 

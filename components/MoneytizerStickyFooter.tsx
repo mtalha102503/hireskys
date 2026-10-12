@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerStickyFooter() {
   const adRef = useRef<HTMLDivElement>(null);
@@ -32,18 +33,8 @@ export default function MoneytizerStickyFooter() {
   useEffect(() => {
     if (!shouldLoad) return;
 
-    const script1 = document.createElement("script");
-    script1.src = "//ads.themoneytizer.com/s/gen.js?type=28";
-    script1.async = true;
-
-    const script2 = document.createElement("script");
-    script2.src = "//ads.themoneytizer.com/s/requestform.js?siteId=141745&formatId=28";
-    script2.async = true;
-
-    if (adRef.current && adRef.current.innerHTML === "") {
-      adRef.current.appendChild(script1);
-      adRef.current.appendChild(script2);
-    }
+    // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
+    loadMoneytizerAd(adRef.current, 28, 28);
   }, [shouldLoad]);
 
   if (!isVisible) return null;

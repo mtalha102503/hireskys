@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerMegabanner() {
   const adRef = useRef<HTMLDivElement>(null);
@@ -24,17 +25,9 @@ export default function MoneytizerMegabanner() {
   }, []);
 
   useEffect(() => {
-    if (isInView && adRef.current && adRef.current.innerHTML === "") {
-      const script1 = document.createElement("script");
-      script1.src = "//ads.themoneytizer.com/s/gen.js?type=1"; // type=1 for Megabanner
-      script1.async = true;
-
-      const script2 = document.createElement("script");
-      script2.src = "//ads.themoneytizer.com/s/requestform.js?siteId=141745&formatId=1"; // formatId=1
-      script2.async = true;
-
-      adRef.current.appendChild(script1);
-      adRef.current.appendChild(script2);
+    // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
+    if (isInView) {
+      loadMoneytizerAd(adRef.current, 1, 1); // type=1, formatId=1 for Megabanner
     }
   }, [isInView]);
 

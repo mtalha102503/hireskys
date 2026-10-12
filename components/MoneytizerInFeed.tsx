@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerInFeed() {
   const adRef = useRef<HTMLDivElement>(null);
@@ -25,18 +26,10 @@ export default function MoneytizerInFeed() {
   }, []);
 
   useEffect(() => {
-    // Agar view me aa gaya hai aur ad pehle se load nahi hui, toh ab script inject karo
-    if (isInView && adRef.current && adRef.current.innerHTML === "") {
-      const script1 = document.createElement("script");
-      script1.src = "//ads.themoneytizer.com/s/gen.js?type=2";
-      script1.async = true;
-
-      const script2 = document.createElement("script");
-      script2.src = "//ads.themoneytizer.com/s/requestform.js?siteId=141745&formatId=2";
-      script2.async = true;
-
-      adRef.current.appendChild(script1);
-      adRef.current.appendChild(script2);
+    // Agar view me aa gaya hai toh shared loader se ad inject karo
+    // (gen.js sirf ek dafa load hoga, requestform.js har slot ke liye)
+    if (isInView) {
+      loadMoneytizerAd(adRef.current, 2, 2);
     }
   }, [isInView]);
 

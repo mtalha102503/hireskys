@@ -1,27 +1,14 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function InFeedAd() {
   const adRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // React double render (Strict Mode) mein duplicate scripts load hone se rokay ga
-    if (!adRef.current || adRef.current.hasChildNodes()) return;
-
-    // 1. Moneytizer Script 1 (Gen.js)
-    const script1 = document.createElement("script");
-    script1.src = "//ads.themoneytizer.com/s/gen.js?type=19";
-    script1.async = true;
-
-    // 2. Moneytizer Script 2 (RequestForm.js)
-    const script2 = document.createElement("script");
-    script2.src = "//ads.themoneytizer.com/s/requestform.js?siteId=141745&formatId=19";
-    script2.async = true;
-
-    // Inject scripts into the specific Moneytizer container
-    adRef.current.appendChild(script1);
-    adRef.current.appendChild(script2);
-    
+    // Shared loader: gen.js sirf ek dafa load hoga; requestform.js is slot ke liye.
+    // (Loader khud double-injection se bachata hai — Strict Mode safe.)
+    loadMoneytizerAd(adRef.current, 19, 19);
   }, []);
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerHalfPage() {
   const adRef = useRef<HTMLDivElement>(null);
@@ -24,17 +25,9 @@ export default function MoneytizerHalfPage() {
   }, []);
 
   useEffect(() => {
-    if (isInView && adRef.current && adRef.current.innerHTML === "") {
-      const script1 = document.createElement("script");
-      script1.src = "//ads.themoneytizer.com/s/gen.js?type=3"; // type=3 for Half Page
-      script1.async = true;
-
-      const script2 = document.createElement("script");
-      script2.src = "//ads.themoneytizer.com/s/requestform.js?siteId=141745&formatId=3"; // formatId=3
-      script2.async = true;
-
-      adRef.current.appendChild(script1);
-      adRef.current.appendChild(script2);
+    // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
+    if (isInView) {
+      loadMoneytizerAd(adRef.current, 3, 3); // type=3, formatId=3 for Half Page
     }
   }, [isInView]);
 

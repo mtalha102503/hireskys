@@ -144,7 +144,7 @@ useEffect(() => {
             {/* LOGO */}
             <Link href="/" className="flex items-center gap-5 md:gap-5" onClick={() => setIsOpen(false)}>
               <Image 
-                src="/logo2-small.webp" 
+                src="/logo2.png" 
                 alt="HireSkys Logo"
                 width={0}
                 height={0}

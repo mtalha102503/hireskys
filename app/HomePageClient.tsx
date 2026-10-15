@@ -1731,7 +1731,7 @@ return (
                             className={`opacity-50 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100 grayscale dark:grayscale-0 hover:grayscale-0 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center justify-center ${index === 4 ? 'hidden sm:flex' : 'flex'}`}
                         >
                             <Image 
-                                src={`https://img.logo.dev/${company.domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png`} 
+                                src={`https://img.logo.dev/${company.domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=128&format=webp`} 
                                 alt={company.name} 
                                 width={180} 
                                 height={80} 
@@ -2273,7 +2273,7 @@ return (
                             <div className="flex-shrink-0">
     <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-white p-1.5 md:p-2 border border-indigo-100 dark:border-indigo-800/80 shadow-md flex items-center justify-center">
         <img 
-            src="https://img.logo.dev/whatjobs.com?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png" 
+            src="https://img.logo.dev/whatjobs.com?token=pk_aH9IPqwYQqW08DI-epK7yw&size=128&format=webp" 
             alt="Whatjobs Partner" 
             className="h-full w-full object-contain rounded-lg" 
         />

@@ -94,7 +94,7 @@ export default function ATSLandingPage() {
                 {/* Logo Icon */}
                 <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl shadow-sm border border-slate-200/80 dark:border-slate-700/80 bg-white flex items-center justify-center p-1.5 group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
                   <img 
-                    src={`https://img.logo.dev/${company.domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png`} 
+                    src={`https://img.logo.dev/${company.domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=128&format=webp`} 
                     alt={company.name} 
                     className="h-full w-full object-contain"
                   />

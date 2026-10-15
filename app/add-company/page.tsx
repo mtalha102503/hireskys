@@ -44,13 +44,13 @@ export default function AddCompanyPage() {
       domain = urlObj.hostname.replace(/^www\./, ''); 
       
       if (domain) {
-        setPreviewLogo(`https://img.logo.dev/${domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png`);
+        setPreviewLogo(`https://img.logo.dev/${domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=128&format=webp`);
       }
     } catch (err) {
       // Regex Fallback
       const fallbackDomain = formData.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0];
       if (fallbackDomain) {
-        setPreviewLogo(`https://img.logo.dev/${fallbackDomain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png`);
+        setPreviewLogo(`https://img.logo.dev/${fallbackDomain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=128&format=webp`);
       }
     }
   };

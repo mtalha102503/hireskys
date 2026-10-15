@@ -49,7 +49,7 @@ export default function EmployerNavbar() {
           {/* LOGO AREA */}
           <Link href="/employer/dashboard" className="flex items-center gap-5 md:gap-5" onClick={() => setIsOpen(false)}>
             <Image 
-              src="/logo2-small.webp" // 👇 Wapas logo2.png lagaya
+              src="/logo2.png" // 👇 Wapas logo2.png lagaya
               alt="HireSkys ATS"
               width={0}
               height={0}

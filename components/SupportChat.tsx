@@ -132,7 +132,7 @@ export default function SupportChat() {
                 {/* 🟢 MT ki jagah ab Logo2.png aa gaya */}
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold backdrop-blur-sm overflow-hidden p-1">
                   <img 
-                    src="/logo2.png" 
+                    src="/logo.webp" 
                     alt="HireSkys Logo" 
                     className="w-full h-full object-contain" 
                   />

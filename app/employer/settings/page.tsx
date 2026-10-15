@@ -500,7 +500,7 @@ useEffect(() => {
       let domain = formData.website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0];
       
       if (domain) {
-        const autoLogoUrl = `https://img.logo.dev/${domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=200&format=png`;
+        const autoLogoUrl = `https://img.logo.dev/${domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=128&format=webp`;
         setFormData(prev => ({ ...prev, logo_url: autoLogoUrl }));
       }
     } catch (error) {

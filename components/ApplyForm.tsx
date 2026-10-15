@@ -608,7 +608,7 @@ export default function ApplyForm({ job, onBack }: ApplyFormProps) {
                   >
                     <span>Powered by</span>
                     <div className="flex items-center gap-1.5">
-                      <img src="/logo2-small.webp" alt="HireSkys" className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" />
+                      <img src="/logo2.png" alt="HireSkys" className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" />
                       <span className="text-slate-900 dark:text-white font-black tracking-tight text-sm">HireSkys</span>
                     </div>
                   </a>

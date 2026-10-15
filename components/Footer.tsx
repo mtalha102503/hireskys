@@ -112,7 +112,7 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-5 md:gap-5">
               <Image 
-                src="/logo2.png" 
+                src="/logo2-small.webp" 
                 alt="HireSkys Logo"
                 width={0}
                 height={0}

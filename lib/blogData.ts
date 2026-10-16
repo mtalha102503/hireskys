@@ -2135,7 +2135,7 @@ export const BLOG_POSTS: BlogPost[] = [
         </a>
       </div>
       <div class="text-center my-8">
-        <a href="https://www.hireskys.com/remote-jobs" class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all shadow-lg text-lg">Browse All Remote Jobs →</a>
+        <a href="https://www.hireskys.com" class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all shadow-lg text-lg">Browse All Remote Jobs →</a>
       </div>
 
       <h2 id="step-by-step" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Step-by-Step: How to Land Your First Remote Job</h2>
@@ -2218,7 +2218,7 @@ export const BLOG_POSTS: BlogPost[] = [
       <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 md:p-10 rounded-3xl text-center shadow-2xl mt-12">
         <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Your First Remote Job Is Waiting</h3>
         <p class="text-blue-100 mb-8 text-lg font-medium max-w-2xl mx-auto">Browse verified entry-level remote jobs on HireSkys — no scams, no ghost jobs, just real opportunities.</p>
-        <a href="https://www.hireskys.com/remote-jobs" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">Find Beginner-Friendly Jobs</a>
+        <a href="https://www.hireskys.com" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">Find Beginner-Friendly Jobs</a>
       </div>
     `
   }

@@ -83,6 +83,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const correctSlug = createSlug(job.title, job.id);
   const seoUrl = `https://www.hireskys.com/jobs/${correctSlug}`;
 
+  // 🟢 Expired jobs (active=false) → noindex, taake Google index se nikale.
+  // Sirf DB ka active flag — 60-din wali frontend condition yahan apply nahi hoti.
+  const isExpired = job.active === false;
+
   // ✨ FIX: Ab page title aur description mein exact name use hoga
   const pageTitle = `${job.title} ${exactCompanyName !== "Confidential" ? `at ${exactCompanyName}` : ''} | HireSkys`;
   const summary = `Hiring: ${job.title} at ${exactCompanyName}. Category: ${job.category}. ${job.location === 'Remote' ? '🌍 Remote Work' : `📍 ${job.location}`}. Salary: ${job.salary_range || 'Competitive'}. Apply securely via HireSkys.`;
@@ -133,17 +137,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [jobImage],
     },
 
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
+    robots: isExpired
+      ? { index: false, follow: true }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+          },
+        },
   };
 }
 

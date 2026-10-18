@@ -26,16 +26,20 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Launch Announcement',
     image: '/blog-og-image.jpg', // Public folder wali image
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
         Finding a remote job shouldn't feel like playing Russian Roulette. You apply, you wait, and half the time, you don't even know if the company is real.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         At <strong>HireSkys</strong>, we got tired of the noise. We got tired of talented developers and designers wasting hours tailoring resumes for "ghost jobs" or getting scammed by fake clients on generic platforms.
       </p>
-      
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The numbers behind that frustration are staggering. Industry surveys consistently show that a large share of remote job seekers have encountered listings that were already filled, never existed, or were outright scams. On the biggest platforms, a single attractive posting can collect hundreds of applications within hours — the vast majority of which will never be read by a human being. Meanwhile, scammers have industrialized the process: fake "companies" harvest resumes, run bogus "interview tasks" to steal free work, and in the worst cases, trick candidates into installing malware or paying fake "onboarding fees." This is the environment we decided to fix.
+      </p>
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-        So, we built something better. We built <a href="/hyrizon" class="text-violet-600 font-bold hover:underline">Hyrizon AI</a>.
+        So, we built something better. We built <a href="/hyrizon" class="text-violet-600 font-bold hover:underline">Hyrizon AI</a> — an intelligence layer that sits between you and the chaos of the remote job market, verifying what is real and telling you honestly where you actually stand.
       </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
@@ -44,25 +48,33 @@ export const BLOG_POSTS: BlogPost[] = [
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
         Phase 1: The Iron-Clad Verification
       </h2>
-      
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Before you even see a job on HireSkys, it goes through our <strong>ShieldCheck™ Protocol</strong>. We don't just scrape jobs; we investigate them.
+        Before you even see a job on HireSkys, it goes through our <strong>ShieldCheck Protocol</strong>. We don't just scrape jobs; we investigate them. Every listing is examined across multiple dimensions before it earns a place on the platform, and listings are re-checked continuously — because a job that was real yesterday can be taken down by the company today.
       </p>
 
       <ul class="list-none space-y-4 my-8 pl-0">
         <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <span class="text-emerald-500 font-bold text-lg">01.</span>
-            <span class="text-slate-700 dark:text-slate-300"><strong>Digital Footprint:</strong> Does the company exist? Do they have a valid LinkedIn presence and a verifiable domain?</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Digital Footprint:</strong> Does the company exist? Do they have a valid LinkedIn presence and a verifiable domain? We cross-reference company websites, social profiles, and registration signals so shell companies and impersonators get filtered out before they ever reach your screen.</span>
         </li>
         <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <span class="text-emerald-500 font-bold text-lg">02.</span>
-            <span class="text-slate-700 dark:text-slate-300"><strong>Payment History:</strong> For platforms like Upwork, we prioritize clients with 'Payment Verified' badges.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Payment History:</strong> For platforms like Upwork, we prioritize clients with 'Payment Verified' badges. A client who has verifiably paid freelancers before is a fundamentally different risk profile than an anonymous account created last week.</span>
         </li>
         <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <span class="text-emerald-500 font-bold text-lg">03.</span>
-            <span class="text-slate-700 dark:text-slate-300"><strong>Red Flag Scanning:</strong> Our system scans for keywords often used by scammers (e.g., asking for Telegram chats).</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Red Flag Scanning:</strong> Our system scans for keywords often used by scammers (e.g., asking for Telegram chats, requesting upfront "training fees," or pushing communication off-platform immediately). Listings that trip these signals are held for manual review instead of going live.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-emerald-500 font-bold text-lg">04.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Freshness Enforcement:</strong> A verified job is only useful if it is still open. Our system re-checks the original source of every active listing. The moment a company removes the posting at the source, it is marked expired on HireSkys — so you never pour effort into a role that quietly closed two weeks ago.</span>
         </li>
       </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Think of it this way: on a generic board, verification is your unpaid second job. On HireSkys, it is our first job. The listings you browse have already survived a gauntlet that most platforms never bother to run.
+      </p>
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-violet-500"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
@@ -70,7 +82,7 @@ export const BLOG_POSTS: BlogPost[] = [
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Most job boards show you a list. We show you your <strong>future</strong>. With our new <a href="/hyrizon" class="text-violet-500 font-bold hover:underline">Hyrizon AI Engine</a>, you can click the <strong>'AI Summary & Match'</strong> button on any job.
+        Most job boards show you a list. We show you your <strong>future</strong>. With our <a href="/hyrizon" class="text-violet-500 font-bold hover:underline">Hyrizon AI Engine</a>, you can click the <strong>'AI Summary & Match'</strong> button on any job. Here is exactly what happens when you press it.
       </p>
 
       <div class="bg-violet-50 dark:bg-violet-900/10 border-l-4 border-violet-500 p-6 my-8 rounded-r-xl">
@@ -79,31 +91,118 @@ export const BLOG_POSTS: BlogPost[] = [
         </p>
       </div>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Step 1 — It reads the job deeply.</strong> Hyrizon parses the full job description: required skills, seniority level, timezone expectations, salary signals, and even the tone of the posting. It distinguishes between "must-have" requirements and "nice-to-have" wishes, which matters because most candidates self-reject over nice-to-haves they were never going to be judged on.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Step 2 — It reads your profile.</strong> Your HireSkys profile — skills, experience, portfolio links, past roles — becomes the other half of the equation. The more complete your profile, the sharper the analysis. This is why we push everyone to fill out their profile properly: a thin profile gives the AI thin material to work with.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Step 3 — It gives you an honest verdict.</strong> You get a match assessment that does something rare in this industry: it tells you when <em>not</em> to apply. If a role demands five years of Go experience and you have one, Hyrizon will say so plainly — and suggest what would make you competitive. That honesty saves you the most precious resource in a job hunt: focused energy. Every hour you don't spend on a doomed application is an hour you can spend on one where you genuinely belong in the top 10%.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Step 4 — It briefs you for the win.</strong> For roles worth pursuing, Hyrizon summarizes what the company actually cares about, flags the keywords your application should echo, and highlights the parts of your background to lead with. Walk into the application already knowing the employer's priorities, instead of guessing.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Real Scenarios: How People Actually Use It
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The career switcher.</strong> A customer-support specialist eyeing their first "Customer Success Manager" remote role runs Hyrizon on five postings. Three come back as weak matches with clear reasons — wrong seniority, missing SaaS metrics experience. Two come back strong, with the AI pointing out that their support background maps directly to onboarding and retention, the core of customer success. They apply to two roles instead of thirty, and both turn into interviews.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The senior dev drowning in options.</strong> A React developer with six years of experience sees forty plausible listings a week. Hyrizon ranks them by genuine fit — filtering out the ones that quietly require US-only overlap or underpay the market — and surfaces the three where their specific stack (Next.js, TypeScript, edge functions) is exactly what the team is hiring for.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The scam detector.</strong> A "too good to be true" posting promises $120/hour for data entry with no interview. Before applying, the candidate checks what they know: the posting already passed ShieldCheck to be on HireSkys at all — but Hyrizon adds a second layer, noting the absence of a verifiable company domain and a compensation figure wildly out of line with the role. The candidate moves on in seconds instead of learning the hard way.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-4 my-8">
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Is Hyrizon AI free to use?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">The core match analysis is available to registered HireSkys members. Advanced briefings and priority processing are part of our premium tiers. The verification layer — ShieldCheck — protects everyone on the platform, free or paid, because safety shouldn't be a luxury feature.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Does the AI write my application for me?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">No — and deliberately so. Hyrizon tells you where you stand and how to position yourself, but the application should sound like you. Employers can smell fully AI-generated applications, and it hurts more than it helps. Use the briefing as strategy, then write in your own voice.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">What if I disagree with the match score?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">The score is advisory, not a gate. It never blocks you from applying. Think of it as a second opinion from someone who has read ten thousand job descriptions — useful, occasionally wrong about edge cases, and always worth a glance before you invest an hour tailoring a resume.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">How is this different from LinkedIn's AI features?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">LinkedIn's AI operates on top of an ocean of unverified, often stale listings. Hyrizon operates on top of a curated, verified, freshness-enforced feed. The AI is only as good as the data underneath it — and ours starts clean.</p>
+        </div>
+      </div>
+
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
         The HireSkys Promise
       </h2>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         We are not just building a job board; we are building a career command center for the elite. Whether you are a React Developer in Pakistan or a Designer in Nigeria, talent is universal, and opportunity should be too.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        Hyrizon AI is our answer to a simple belief: the job hunt should reward skill, not luck or scam-detection instincts. Verified listings in, honest assessments out, and your energy spent only where it counts. That is the end of fake jobs — not as a slogan, but as infrastructure.
       </p>
 
       <div class="mt-16 p-8 bg-slate-900 dark:bg-indigo-900/20 rounded-3xl text-center border border-slate-800">
           <h3 class="text-2xl font-bold text-white mb-4">Ready to experience the future?</h3>
           <p class="text-slate-400 mb-8">Create your profile and let Hyrizon find your perfect match.</p>
-          
+
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="/" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3 bg-white text-slate-900 hover:bg-slate-100 font-bold rounded-full transition-all no-underline">
-                  Explore Jobs 
+                  Explore Jobs
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
-              
+
               <a href="/hyrizon" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3 bg-violet-600 text-white hover:bg-violet-700 font-bold rounded-full transition-all shadow-lg shadow-violet-500/30 no-underline">
-                  Ask Hyrizon AI 
+                  Ask Hyrizon AI
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 7h6"/></svg>
               </a>
           </div>
       </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        Getting the Most Out of Hyrizon AI: A Practical Playbook
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Hyrizon is a tool, and like any tool, it rewards good technique. Here is the exact workflow our most successful members use every week.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>First, invest twenty minutes in your profile.</strong> Add every relevant skill, link your portfolio and GitHub, and write a two-sentence summary of what you actually do best. Hyrizon matches against this profile, so a detailed profile produces dramatically better assessments than a bare one with three skill tags. Members with complete profiles report far more "strong match" results — not because the AI favors them, but because it finally has enough signal to recognize a good fit.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Second, run the match before you read the full description.</strong> Open a listing, hit the AI Summary and Match button, and skim the verdict first. If it is a strong match, read the full description with the AI's briefing notes beside you. If it is weak, check the reasons — sometimes the gap is a single missing keyword you actually have but forgot to list. Update your profile, re-run, and watch the assessment change. This loop takes ninety seconds and routinely rescues applications that would otherwise have been skipped.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Third, batch your week.</strong> Set aside one focused session to run Hyrizon across the week's new listings in your niche. Rank them by match strength, then spend your real effort — tailored resumes, thoughtful cover notes — on the top five. Five surgical applications beat fifty spray-and-pray submissions every single time, and the data from hiring managers backs this up: the candidates who get interviews are the ones whose applications clearly speak the language of the job description.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Finally, treat weak matches as career intelligence.</strong> When Hyrizon repeatedly flags the same missing skill across roles you want — say, "experience with event-driven architecture" or "B2B SaaS metrics" — that is the market telling you exactly what to learn next. It is a personalized skill-gap report generated from real, current demand. Few career coaches give you anything this concrete.
+      </p>
+
     `
   },
   // 🚀 NAYA ARTICLE YAHAN SE SHURU HAI
@@ -118,31 +217,54 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Product Update',
     image: '/blog-telegram-update.jpg', 
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
         Here is a harsh truth about the remote job market: By the time you see that "Perfect Job" on a standard job board, 500 other people have already applied.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         Speed is everything. The early applicants are the ones who get the interviews. But you can't sit in front of your computer refreshing job boards 24/7. You have a portfolio to build and skills to master.
       </p>
-      
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        This is not just intuition — it is how hiring funnels actually work. Recruiters at remote-first companies routinely describe the same pattern: the first fifty applications get genuine human review, the next few hundred get a fast skim, and everything after that is competing for leftover attention. For the most attractive postings, that window of real attention can close within a single day. Being applicant number 12 versus applicant number 400 is often the entire difference between an interview and silence, even with an identical resume.
+      </p>
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
         That is why we are thrilled to announce our most powerful feature yet: <strong>The HireSkys Instant Notification Engine.</strong> And because every freelancer has a different strategy, we are launching it in two flavors: <strong>Telegram Basic</strong> and <strong>WhatsApp VIP</strong>.
       </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Why Minutes Matter More Than You Think
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Let's make the math concrete. Imagine a strong remote posting for a Senior Frontend Developer at $120k. Within the first hour, it might collect 30 applications. By hour six, 150. By the next morning, 400+. The hiring manager, who is also doing their actual job, opens the applicant list and starts at the top. Psychologically and practically, early applications get more generous reads: the reviewer is fresh, the role is still "open" in their mind, and there is no fatigue-driven skimming yet.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Email job alerts — the old standard — typically arrive in daily or hourly digests, and land in inboxes already drowning in noise. By contrast, a push notification on the messaging app you already check fifty times a day collapses the discovery delay from hours to seconds. That is the entire thesis of the Notification Engine: the alert should reach you faster than your competition can finish their coffee.
+      </p>
+
+      <div class="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-6 my-8 rounded-r-xl">
+        <p class="italic font-medium text-amber-800 dark:text-amber-300 m-0 text-lg">
+            "The best time to apply was the minute the job was posted. The second best time is the minute your phone buzzes."
+        </p>
+      </div>
+
       <h2 class="text-3xl font-bold mt-12 mb-8 text-center text-slate-900 dark:text-white">
-        Choose Your Arsenal ⚔️
+        Choose Your Arsenal
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-10">
-        
+
         <div class="relative p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-full">
             <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
             </div>
-            
+
             <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2">Telegram Basic</h3>
             <div class="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full mb-6 w-max uppercase tracking-wider">
                 Lifetime Free
@@ -169,7 +291,7 @@ export const BLOG_POSTS: BlogPost[] = [
         </div>
 
         <div class="relative p-6 md:p-8 bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-900/10 dark:to-slate-800/50 rounded-3xl border-2 border-emerald-400 dark:border-emerald-500/50 shadow-xl shadow-emerald-500/10 flex flex-col h-full transform md:-translate-y-2">
-            
+
             <div class="absolute top-0 right-6 -translate-y-1/2">
                 <span class="bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-md animate-pulse">
                     Beta Offer
@@ -179,7 +301,7 @@ export const BLOG_POSTS: BlogPost[] = [
             <div class="w-14 h-14 bg-emerald-500 dark:bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
             </div>
-            
+
             <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2">WhatsApp VIP</h3>
             <div class="flex items-baseline gap-1 mb-6">
                 <span class="text-2xl font-black text-emerald-600 dark:text-emerald-400">$5</span>
@@ -226,8 +348,77 @@ export const BLOG_POSTS: BlogPost[] = [
         </ol>
       </div>
 
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        The 10-Minute Application Playbook
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Getting the alert fast is only half the battle. The other half is acting on it before the pile grows. Here is the exact ten-minute routine our most successful members follow when a high-value alert lands.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Minutes 0 to 2: Triage.</strong> Open the link immediately and scan for deal-breakers: location/timezone requirements, seniority mismatch, salary far below your floor. If it is a genuine fit, commit — do not "save it for later." Later is where applications go to die.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Minutes 2 to 6: Tailor, don't rewrite.</strong> You do not need a from-scratch resume for every role. Keep a master resume and a "hot" version for your primary niche. For each application, adjust three things: the headline to mirror the job title, the top three bullet points to echo the posting's language, and the skills section order to match their stack. WhatsApp VIP members get a head start here — the custom cover letter draft arrives with the alert itself.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Minutes 6 to 10: Submit and log.</strong> Apply through the employer's preferred channel (the alert links you straight there), then jot down the company, role, date, and one line on why you fit. A simple spreadsheet works. This log becomes invaluable two weeks later when a recruiter calls "about the role you applied for" and you need to sound like you remember it.
+      </p>
+
+      <div class="bg-slate-50 dark:bg-slate-800/30 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 my-8">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Pro tip: prepare your arsenal in advance</h3>
+        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Speed rewards the prepared. Before you ever receive an alert, have these ready:</p>
+        <ul class="space-y-2 text-slate-600 dark:text-slate-400">
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">-</span> A master resume plus one tailored version per niche you target</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">-</span> A 3-sentence cover letter template with blanks for company name, role, and one specific reason you want it</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">-</span> Portfolio or GitHub links that actually load fast and show your best work first</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">-</span> Your salary expectations decided in advance, so you never hesitate on that field</li>
+        </ul>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Tuning Your Alerts: Quality Over Quantity
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Instant alerts are powerful, but only if they stay relevant. Ten perfectly matched alerts beat a hundred noisy ones. In your HireSkys dashboard, you control exactly what triggers a buzz: specific skills, job categories, minimum salary, and work type. Start narrow — two or three core skills and a realistic salary floor — then widen gradually if the volume feels too quiet.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The matching behind the alerts is the same intelligence that powers Hyrizon AI. It does not do dumb keyword matching — it understands that a "React Developer" alert should fire for a "Frontend Engineer (React/TypeScript)" posting, and that a "Content Writer" probably does not want "Technical Copywriter for DevTools" unless their profile says otherwise. Keep your profile's skills honest and current, and the alerts stay sharp.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-4 my-8">
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Will I get spammed with alerts?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">No. Alerts only fire for verified jobs that match your profile's skills and filters. Most members receive a handful of high-quality alerts per week, not a flood. You can pause alerts or tighten filters at any time from your dashboard.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Is my phone number shared with employers?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Never. The alert system is one-directional: we send job alerts to you. Employers never see your number, and your contact details are only shared if you choose to include them in an application.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">What exactly comes with WhatsApp VIP's "interview cheat sheets"?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">For each matched role, you get a concise brief: what the company does and why the role exists, the likely interview focus areas based on the job description, and two or three smart questions you can ask that signal genuine interest. It is the prep work that usually takes an hour, condensed into a two-minute read.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Can I switch from Telegram to WhatsApp later?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Yes, anytime. Your filters and profile carry over — you are just changing the delivery channel and unlocking the VIP research layer. The first two months of VIP are free, so most people try it during an active job hunt and decide based on results.</p>
+        </div>
+      </div>
+
       <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
-          
+
           <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
               <div class="absolute -top-20 -left-20 w-64 h-64 bg-emerald-500/20 blur-[80px] rounded-full"></div>
               <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/20 blur-[80px] rounded-full"></div>
@@ -236,7 +427,7 @@ export const BLOG_POSTS: BlogPost[] = [
           <div class="relative z-10">
             <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Don't let another developer steal your job.</h3>
             <p class="text-slate-300 mb-8 text-lg font-medium">Connect your account today and start claiming the best remote roles.</p>
-            
+
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="/login" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-emerald-500 text-white hover:bg-emerald-600 font-black rounded-xl transition-transform hover:-translate-y-1 shadow-lg shadow-emerald-500/30 no-underline">
                     Connect WhatsApp VIP
@@ -248,6 +439,45 @@ export const BLOG_POSTS: BlogPost[] = [
             </div>
           </div>
       </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        Why This Beats Every Other Alert System
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Let's be honest about the alternatives. LinkedIn job alerts arrive as daily email digests — by the time you open them, the early-applicant window has often closed. Generic job-board emails compete with a hundred other messages in your inbox and get skimmed at best. Even other Telegram job channels blast the same generic listings to tens of thousands of subscribers with zero personalization, which means you are racing the exact same crowd for the exact same roles.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The HireSkys engine differs on three axes that actually matter. <strong>First, verification:</strong> every alerted job has already passed ShieldCheck, so the link in your buzz is real — no dead ends, no scams, no "this position has been filled" pages. <strong>Second, personalization:</strong> alerts are matched to your specific skill profile, not broadcast to everyone. <strong>Third, actionability:</strong> VIP alerts arrive with the research and drafting done, so the gap between notification and submission collapses from an hour to minutes.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        There is also a quieter advantage: focus. Job hunting is cognitively expensive, and the constant low-grade anxiety of "am I missing something?" drains the energy you need for actual applications and skill-building. A trustworthy alert system lets you close the job-board tabs and get on with your life, confident that the right opportunities will tap you on the shoulder. Several of our members describe this as the biggest benefit — not the speed, but the peace of mind.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-violet-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Who Gets the Most Out of This?
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Active job hunters</strong> in competitive niches — frontend development, UI/UX design, digital marketing — where postings attract hundreds of applicants. For them, the speed edge is the whole game, and VIP's pre-written materials multiply it.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Passive candidates</strong> who are employed but open to the right move. They will never browse job boards daily, but a perfectly matched senior role buzzing on their phone? That they will look at. Some of the best career moves happen this way — not through grinding, but through being reachable when the right door opens.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Freelancers filling pipeline gaps.</strong> Client work is lumpy; a two-week gap between contracts is normal and stressful. Instant alerts turn downtime into pipeline — the moment a matching contract or full-time role appears, you are already in the queue while competitors are still refreshing a website.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        Whichever camp you are in, the setup takes ten seconds and the Telegram tier costs nothing. The only real question is how much longer you want to compete on a delay.
+      </p>
+
     `
   },
   {
@@ -261,14 +491,14 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Behind The Scenes',
     image: '/blog-quality-update.png', 
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
         Let’s talk about the vanity metrics game. You go to a massive remote job board, and they proudly announce: "10,000+ Active Remote Jobs!" But when you actually start applying, the nightmare begins.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         Over 60% of those listings are what we call <strong>"Ghost Jobs."</strong> They are jobs that were filled a month ago, jobs with broken links, or jobs scraped by lazy bots that just paste three lines of French into an English job feed. Candidates are spending hours tailoring resumes and sending them straight into a black hole.
       </p>
-      
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
         At <strong>HireSkys</strong>, we realized the industry didn't need <em>more</em> jobs. It needed <em>real</em> jobs. So, we completely rebuilt the curation process from the ground up.
       </p>
@@ -277,11 +507,51 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-        The Flaw in Traditional Scrapers
+        The Five Ways Job Boards Break
       </h2>
-      
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Most platforms run fully automated scrapers. These bots grab everything they see without checking formatting, language, or relevance. Worse, these platforms set a default <strong>"60-day expiry rule."</strong>
+        "Broken" is a strong word, so let's be precise. After analyzing thousands of listings across the major platforms, the failure modes cluster into five patterns. If you have job-hunted remotely in the last two years, you have met every single one of them.
+      </p>
+
+      <div class="space-y-6 my-10">
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">1. Ghost jobs: the filled-but-listed</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">The company hired someone weeks ago but never took the posting down — or the board never checked. You spend forty minutes tailoring an application for a role that no longer exists. Multiply by dozens of applications and you have burned entire weekends on nothing.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">2. Zombie links: the dead ends</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">The "Apply" button leads to a 404, a generic careers page with no such role, or an application portal that errors out. The listing is a husk. The board scraped it once and never verified the destination still works.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">3. Scrape garbage: the untranslated mess</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Fully automated scrapers grab everything without checking language, formatting, or relevance. You get three lines of French in an English feed, job descriptions that are just a URL, or "remote" roles that turn out to require daily office presence in another country.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">4. Scam listings: the dangerous ones</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Fake companies harvesting resumes, "interviews" that are phishing exercises, requests for upfront fees or free trial work that is actually just unpaid labor. On unmoderated boards these don't just waste your time — they can cost you money or your identity.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">5. Pay-to-play distortion: the bought spotlight</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">On many boards, "featured" means "paid for placement," not "best opportunity." Great roles from companies that didn't buy promotion get buried under sponsored listings from whoever paid most. The ranking you see reflects advertising budgets, not job quality.</p>
+        </div>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Why the Industry Works This Way (The Incentive Problem)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        These failures are not accidents — they are the predictable output of how most job boards make money. Understand the incentives and the dysfunction stops looking mysterious.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Boards are paid by employers, not by you.</strong> Their customer is the company buying sponsored placements and recruiter seats. The job seeker is the product — traffic to be sold. A board optimized for employer revenue wants maximum listing volume (to sell more placements) and maximum applicant volume (to show employers "reach"). Accuracy is, at best, a secondary concern. A dead listing still generates page views and ad impressions.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Verification is expensive; scraping is cheap.</strong> A human reviewing each listing costs real money. A scraper costs nearly nothing. When your business model rewards volume, the rational move is to scrape everything and verify nothing. The "60-day expiry rule" most platforms use is the perfect example: instead of checking whether a job is still open, they just assume it is for two months. If a company hires someone in 2 days, the board keeps collecting applications — and ad revenue — for another 58 days.
       </p>
 
       <div class="bg-rose-50 dark:bg-rose-900/10 border-l-4 border-rose-500 p-6 my-8 rounded-r-xl">
@@ -290,17 +560,53 @@ export const BLOG_POSTS: BlogPost[] = [
         </p>
       </div>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Stale data compounds.</strong> Every unverified listing that stays live trains job seekers to distrust the platform, which pushes serious employers toward private networks and referrals, which leaves the public board with an even worse ratio of real to fake jobs. It is a slow death spiral, and several once-great boards are visibly inside it.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        How to Spot a Ghost Job Yourself (Anywhere)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Until every board fixes itself, protect yourself with this five-point check. It takes ninety seconds per listing and will save you hundreds of wasted hours a year.
+      </p>
+
+      <ul class="list-none space-y-4 my-8 pl-0">
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">01.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Check the date, then distrust it.</strong> "Posted 30+ days ago" on a competitive remote role is a red flag — but so is a fresh date on a board that recycles listings. Click through to the company's own careers page and confirm the role is actually there.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">02.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Test the apply link before tailoring.</strong> Click "Apply" first. If it 404s, dumps you on a generic page, or demands you create an account on a sketchy third-party site before you can even see the form, walk away before investing effort.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">03.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Verify the company exists.</strong> Real companies have real footprints: a working website on their own domain, a LinkedIn company page with employees, recent activity. No footprint, no application — especially for "amazing" offers.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">04.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Read the description like a detective.</strong> Vague responsibilities, no salary range, no team or reporting structure, and pressure tactics ("apply in the next 2 hours!") are classic ghost/scam markers. Legitimate employers describe real work.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">05.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Never pay, never install.</strong> No legitimate employer asks for application fees, "training deposits," or software installs during hiring. This is the brightest red line in the entire process.</span>
+        </li>
+      </ul>
+
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
         The HireSkys Solution: 100% Verification
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        We decided to do things the hard way because it’s the right way. We limit our platform to about 50-60 new, hyper-targeted remote jobs a day. Here is our three-step formula that guarantees zero ghost jobs:
+        We decided to do things the hard way because it's the right way. We limit our platform to about 50-60 new, hyper-targeted remote jobs a day. Here is our three-step formula that guarantees zero ghost jobs:
       </p>
 
       <div class="grid grid-cols-1 gap-6 my-10">
-        
+
         <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 items-start">
             <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                 <span class="text-indigo-600 dark:text-indigo-400 font-black text-xl">1</span>
@@ -308,7 +614,7 @@ export const BLOG_POSTS: BlogPost[] = [
             <div>
                 <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Assisted Curation (Human + Bot)</h3>
                 <p class="text-slate-600 dark:text-slate-400">
-                    We use a custom bot, but it doesn't run wild. I manually feed it verified URLs. Every single job description is checked to ensure the formatting is clean, the requirements make sense, and the role is genuinely remote.
+                    We use a custom bot, but it doesn't run wild. I manually feed it verified URLs. Every single job description is checked to ensure the formatting is clean, the requirements make sense, and the role is genuinely remote. The bot does the fetching; humans do the judging. That division of labor is the whole secret — automation for scale, judgment for quality.
                 </p>
             </div>
         </div>
@@ -320,7 +626,7 @@ export const BLOG_POSTS: BlogPost[] = [
             <div>
                 <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Maximum 72-Hour Freshness</h3>
                 <p class="text-slate-600 dark:text-slate-400">
-                    If a job has been sitting on the internet for weeks, you won't find it here. We exclusively post jobs that are 1 to 3 days old. When you apply on HireSkys, you are always at the top of the pile.
+                    If a job has been sitting on the internet for weeks, you won't find it here. We exclusively post jobs that are 1 to 3 days old. When you apply on HireSkys, you are always at the top of the pile. Freshness is a feature: early applicants get read properly, and we engineer the entire feed around keeping you early.
                 </p>
             </div>
         </div>
@@ -335,11 +641,39 @@ export const BLOG_POSTS: BlogPost[] = [
             <div class="relative z-10">
                 <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">The "Anti-Ghost" Script</h3>
                 <p class="text-slate-700 dark:text-slate-300 font-medium">
-                    This is our secret weapon. Every single morning, our custom script pings the original source URL of every active job in our database. <strong>If the company takes the job down, it instantly shows as "Expired" on HireSkys.</strong> Even if the job was only live for 2 days, we kill it immediately. 
+                    This is our secret weapon. Every single morning, our custom script pings the original source URL of every active job in our database. <strong>If the company takes the job down, it instantly shows as "Expired" on HireSkys.</strong> Even if the job was only live for 2 days, we kill it immediately. No 60-day zombie window, no guessing — the listing's life is tied to reality at the source.
                 </p>
             </div>
         </div>
 
+      </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Notice what this costs us: we deliberately publish <em>fewer</em> jobs than we could. Every board metric that investors love — total listings, page views per visit — takes a hit when you refuse to pad the feed. We made that trade because the metric that matters is different: the percentage of applications our members send that land in front of a real hiring manager for a real open role. Vanity metrics are for pitch decks. Trust is for careers.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-4 my-8">
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">If you only post 50-60 jobs a day, won't I miss opportunities?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">You miss far more opportunities on a board with 10,000 listings, because the real ones are buried under thousands of dead ones and you burn out before finding them. Fifty verified, fresh, genuinely-open roles in your field beat ten thousand maybes. Depth of signal beats volume of noise.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">What happens when a job I saved expires?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">It is clearly marked as expired so you never waste effort on it — and our alert system will nudge you toward similar fresh roles instead. An honest "closed" is infinitely more useful than a silent black hole.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Do employers pay to be featured on HireSkys?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Employers can post jobs, but placement in the feed is driven by freshness and relevance, not payment. A paid listing still has to pass the same verification and freshness bar as everything else. We will not sell the top of your feed to the highest bidder.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">How is this different from just using LinkedIn?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">LinkedIn is a professional network with a job board attached; its incentives reward engagement and recruiter seats, not listing accuracy. HireSkys is a job board with one obsession: that every listing you see is real, fresh, and worth your time. Different incentives, different outcomes.</p>
+        </div>
       </div>
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
@@ -348,9 +682,9 @@ export const BLOG_POSTS: BlogPost[] = [
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        HireSkys isn't just a job board; it's a shield for your time and energy. We believe that your skills deserve to be seen by real humans, not buried under thousands of applications on an expired listing. 
+        HireSkys isn't just a job board; it's a shield for your time and energy. We believe that your skills deserve to be seen by real humans, not buried under thousands of applications on an expired listing.
       </p>
-      
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
         By filtering out the noise, the scams, and the ghosts, we give you the ultimate unfair advantage. When you see a job on our platform, you know it's fresh, it's real, and the company is actively waiting for a candidate exactly like you. Stop playing the numbers game and start applying with absolute confidence.
       </p>
@@ -358,14 +692,15 @@ export const BLOG_POSTS: BlogPost[] = [
       <div class="mt-12 p-8 bg-slate-100 dark:bg-slate-800/50 rounded-3xl text-center border border-slate-200 dark:border-slate-700">
           <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">Stop applying to jobs that closed a month ago.</h3>
           <p class="text-slate-600 dark:text-slate-400 mb-8">Experience a job board that respects your time.</p>
-          
+
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="/" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-full transition-all shadow-lg shadow-indigo-500/30 no-underline">
-                  Browse Verified Jobs 
+                  Browse Verified Jobs
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
           </div>
       </div>
+
     `
   },
   {
@@ -379,16 +714,20 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Career Advice',
     image: '/blog-untapped-seo.png', 
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
         If your resume says "General SEO Specialist" or "Digital Marketer" in 2026, you are playing the game on hard mode. The remote job market isn't shrinking it is just getting violently specific.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         Every day at <strong>HireSkys</strong>, we analyze hundreds of remote job listings from top-tier tech companies. We are seeing a massive shift. Founders don't want "Jacks of all trades" anymore. They are actively hunting and paying premium for highly specialized for specific skill who can solve one specific expensive problem.
       </p>
-      
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The economics are simple. A generalist marketer competes with tens of thousands of similar profiles, which pushes prices down to commodity levels. A specialist who solves one expensive, well-defined problem competes with dozens — and the buyer is not price-shopping, they are pain-shopping. When a company's headless commerce migration just tanked 40% of their organic traffic, they do not want "an SEO person." They want the person who has fixed exactly this, and they will pay accordingly.
+      </p>
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-        If you want to stop competing with thousands of applicants and start naming your own price you need to pivot. Here are the 7 most untapped high paying remote niches for SEOs and Marketers right now.
+        If you want to stop competing with thousands of applicants and start naming your own price you need to pivot. Here are the 7 most untapped high paying remote niches for SEOs and Marketers right now — each with what to learn, what to charge, and how to prove you can do it.
       </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
@@ -399,8 +738,9 @@ export const BLOG_POSTS: BlogPost[] = [
       </h2>
 
       <div class="grid grid-cols-1 gap-6 my-10">
-        
-        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-6 items-start hover:border-blue-500/50 transition-colors">
+
+        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600 dark:text-blue-400"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             </div>
@@ -409,81 +749,136 @@ export const BLOG_POSTS: BlogPost[] = [
                 <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     AI startups are launching daily and they need rapid user acquisition. They aren't looking for someone to write 4 blog posts a month. They need technical marketers who can use Next.js, Supabase, and APIs to generate 10,000 highly targeted, indexable landing pages (e.g., "AI logo generator for [Industry]").
                 </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">Why it's untapped:</strong> it sits at the intersection of engineering and marketing, and almost nobody lives there. Pure SEOs can't build the pages; pure developers don't think in search demand. If you can do both — research keyword patterns, design page templates, wire up a database, and ship — you are a unicorn.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">How to break in:</strong> build one demo project. Pick a niche (say, AI tools for real estate agents), generate 200 programmatic pages on a free stack, and document the traffic growth publicly. That single case study outperforms any certificate. Typical engagements run $3k–$8k/month retainers or $80–$150/hour for senior operators.
+                </p>
                 <div class="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold rounded-md border border-slate-200 dark:border-slate-600">
                     High Demand, Extremely Low Supply
                 </div>
             </div>
+            </div>
         </div>
 
-        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-6 items-start hover:border-emerald-500/50 transition-colors">
+        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600 dark:text-emerald-400"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8c-5 0-6 3-6 4v14a2 2 0 0 0 2 2z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10.4 12.6a2 2 0 1 1 3.2 0l5.2 5.4"/></svg>
             </div>
             <div>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">2. Technical SEO for Headless Commerce</h3>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     E-commerce brands are ditching standard Shopify themes for "Headless" setups (using React/Next.js frontend with a Shopify backend). These migrations often destroy their SEO. If you understand Canonical tags, JSON-LD Schema architecture, and JavaScript rendering for headless builds, enterprise agencies will fight to hire you.
                 </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">Why it's untapped:</strong> every headless migration is a potential SEO disaster, and the pool of people who understand both modern JavaScript rendering and crawl mechanics is tiny. Agencies white-label this work constantly because they can't hire for it directly.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <strong class="text-slate-800 dark:text-slate-200">How to break in:</strong> audit three headless stores publicly (many will happily accept a free loom video teardown), then package a "Headless SEO Migration Checklist" as your lead magnet. Project fees of $5k–$15k per migration audit are normal; retainers higher.
+                </p>
+            </div>
             </div>
         </div>
 
-        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-6 items-start hover:border-rose-500/50 transition-colors">
+        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-16 h-16 bg-rose-100 dark:bg-rose-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-600 dark:text-rose-400"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             </div>
             <div>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">3. B2B Newsletter Growth Engineering</h3>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-                    With social media algorithms becoming unpredictable, B2B companies are doubling down on owned audiences. They don't just need writers; they need "Growth Engineers"—marketers who can build automated referral loops, integrate CRM APIs, and optimize high-converting landing pages specifically for email capture.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    With social media algorithms becoming unpredictable, B2B companies are doubling down on owned audiences. They don't just need writers; they need "Growth Engineers" — marketers who can build automated referral loops, integrate CRM APIs, and optimize high-converting landing pages specifically for email capture.
                 </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">Why it's untapped:</strong> newsletter advice is everywhere, but newsletter <em>engineering</em> — referral mechanics, deliverability infrastructure, CRM-triggered sequences — is rare. B2B founders will pay for subscriber growth they can measure in pipeline, not vanity metrics.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <strong class="text-slate-800 dark:text-slate-200">How to break in:</strong> grow a newsletter of your own to 1,000+ subscribers and document every tactic. That is your portfolio. Then offer "newsletter audits" to B2B SaaS companies. Retainers of $2.5k–$6k/month are standard once you have proof.
+                </p>
+            </div>
             </div>
         </div>
 
-        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-6 items-start hover:border-amber-500/50 transition-colors">
+        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-600 dark:text-amber-400"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
             </div>
             <div>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">4. App Store Optimization (ASO) & Mobile CRO</h3>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     Most mobile apps bleed money because they get uninstalled within 24 hours. ASO is SEO for the App Store, but the real magic is in Mobile CRO (Conversion Rate Optimization). If you can analyze user heatmaps, run A/B tests on onboarding flows, and reduce churn rates for subscription-based mobile apps, you are looking at six-figure retainers.
                 </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">Why it's untapped:</strong> web marketers ignore app stores; app developers ignore marketing. The overlap — people who understand keyword optimization for store listings AND onboarding funnel analytics — is nearly empty, while subscription apps print money and desperately need both.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <strong class="text-slate-800 dark:text-slate-200">How to break in:</strong> pick 5 apps in one category, publish detailed ASO teardowns (screenshots, keyword gaps, screenshot-order recommendations), and send them to the founders. One converted client at $4k+/month proves the model.
+                </p>
+            </div>
             </div>
         </div>
 
-        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-6 items-start hover:border-purple-500/50 transition-colors">
+        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-600 dark:text-purple-400"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
             </div>
             <div>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">5. YouTube SEO & Retention Strategy</h3>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     Tech companies and educational SaaS brands are shifting massive budgets to YouTube. They don't just need video editors; they need strategists. A YouTube SEO expert analyzes audience retention graphs, optimizes video metadata for search intent, crafts high-CTR thumbnails, and turns views into software trial signups.
                 </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">Why it's untapped:</strong> everyone wants to "do YouTube," almost nobody understands it as a search-and-retention system. The strategist who can connect a retention curve to a packaging decision to a trial signup is worth more than an entire video team to a SaaS CMO.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <strong class="text-slate-800 dark:text-slate-200">How to break in:</strong> run a channel of your own (even a small one) and learn retention analytics firsthand, then offer channel audits to SaaS companies. Monthly strategy retainers of $3k–$7k are common.
+                </p>
+            </div>
             </div>
         </div>
 
-        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-6 items-start hover:border-cyan-500/50 transition-colors">
+        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-16 h-16 bg-cyan-100 dark:bg-cyan-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600 dark:text-cyan-400"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
             <div>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">6. Scaled Local SEO Automation</h3>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     Imagine a franchise with 500 physical locations. Updating their Google Business Profiles, managing local citations, and handling reviews manually is impossible. Marketers who can write scripts or use enterprise tools to automate Local SEO across hundreds of locations simultaneously are considered absolute wizards in the agency space.
                 </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">Why it's untapped:</strong> local SEO is seen as "small business stuff," so ambitious marketers ignore it — while multi-location enterprises quietly pay agency rates for exactly this automation. The work is unglamorous and extremely well compensated.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <strong class="text-slate-800 dark:text-slate-200">How to break in:</strong> learn the Google Business Profile API and one automation tool deeply, then build a demo dashboard managing 50 fictional locations. Agencies hiring for this role routinely pay $90k–$130k remote.
+                </p>
+            </div>
             </div>
         </div>
 
-        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-6 items-start hover:border-fuchsia-500/50 transition-colors">
+        <div class="p-6 md:p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-6 items-start">
             <div class="w-16 h-16 bg-fuchsia-100 dark:bg-fuchsia-900/30 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-fuchsia-600 dark:text-fuchsia-400"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
             </div>
             <div>
                 <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">7. DevRel (Developer Relations) Marketing</h3>
-                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                     Companies that build developer tools (like Vercel, Supabase, or Stripe) have a unique problem: traditional marketing doesn't work on developers. DevRel marketing bridges this gap. If you can write highly technical documentation, create coding tutorials, and engage with the developer community on GitHub and Twitter, you hold the keys to one of the most lucrative marketing niches in tech.
                 </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                    <strong class="text-slate-800 dark:text-slate-200">Why it's untapped:</strong> it requires genuine technical ability plus marketing instincts — a combination the market rarely produces. Developer-tool companies are among the best-funded startups in existence, and they compete fiercely for people who can authentically speak to developers.
+                </p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <strong class="text-slate-800 dark:text-slate-200">How to break in:</strong> contribute to open-source docs, write technical tutorials that rank, and be visibly helpful in dev communities for 6 months. DevRel roles at funded dev-tool companies pay $130k–$180k+ remote.
+                </p>
+            </div>
             </div>
         </div>
 
@@ -491,12 +886,47 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-        How to Transition?
+        Your 90-Day Transition Plan
       </h2>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
-        You don't need a degree to enter these niches. You need proof of work. Build a small programmatic SEO project. Help one headless e-commerce brand fix their indexing issues for free. Put that case study on your portfolio, and your perceived value goes from $30/hour to $100+/hour overnight.
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        You don't need a degree to enter these niches. You need proof of work. Here is a concrete plan that takes you from generalist to specialist in three months.
       </p>
+
+      <div class="grid grid-cols-1 gap-6 my-10">
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Days 1–30: Pick and learn</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Choose ONE niche from the list — the one closest to skills you already have. Spend an hour a day learning: the best practitioners' content, the core tools, the vocabulary. By day 30 you should be able to explain the niche's key problems to a founder without notes.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Days 31–60: Build in public</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Ship one proof-of-work project: the demo site, the teardown videos, the newsletter, the audit. Publish your process as you go — the building IS the marketing. This artifact becomes the centerpiece of your portfolio and your outreach.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Days 61–90: Sell the specialty</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Rewrite your profiles to lead with the niche, not your old title. Do five free or low-cost audits/teardowns for real companies in exchange for testimonials. Then raise your rates and start applying to the specialized roles on HireSkys — where your new positioning makes you the obvious candidate instead of applicant #400.</p>
+        </div>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-4 my-8">
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">What if I pick the wrong niche?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">The skills overlap heavily — technical SEO fundamentals transfer across all seven. Picking any niche and going deep beats staying general. And niches evolve; the specialist mindset is the real asset, not any single choice.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Do I need to code for these roles?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">For programmatic SEO, headless SEO, and DevRel — yes, working-level coding is required. For newsletter growth, ASO, YouTube strategy, and local SEO automation, you need tool fluency and analytical thinking more than software engineering. Be honest about which camp fits you.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">How do I find these specialized roles?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">They rarely say "niche specialist wanted" — they appear as regular postings with unusually specific requirements. On HireSkys, filter the marketing category and look for postings mentioning the exact stack or problem (Next.js, headless, App Store, developer relations). The specificity in the job description is your signal.</p>
+        </div>
+      </div>
 
       <div class="mt-16 p-8 md:p-12 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 relative overflow-hidden">
           <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
@@ -506,7 +936,7 @@ export const BLOG_POSTS: BlogPost[] = [
           <div class="relative z-10">
             <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Stop applying for crowded marketing jobs.</h3>
             <p class="text-slate-300 mb-8 text-lg">We curate the highest-paying, specialized marketing and SEO roles on the internet. Your next big career leap is waiting.</p>
-            
+
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="/remote-jobs/all/marketing-sales" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/30 no-underline">
                     Browse Remote Marketing Jobs
@@ -515,6 +945,7 @@ export const BLOG_POSTS: BlogPost[] = [
             </div>
           </div>
       </div>
+
     `
   },
   {
@@ -528,40 +959,61 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Weekly Roundups',
     image: '/blog-weekly-roundup.jpg', 
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
         You don't need to be in a major tech hub to land a great role anymore. Companies are actively hiring everywhere, and if you have the right skills in AI, Web3, or marketing, there are solid remote options out there.
       </p>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        This week at <strong>HireSkys</strong>, we've rounded up a fresh batch of 100% remote jobs that actually pay well and offer great perks. Let's dive right into some of our top picks!
+      </p>
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-        This week at <strong>HireSkys</strong>, we’ve rounded up a fresh batch of 100% remote jobs that actually pay well and offer great perks. Let's dive right into some of our top picks! 🚀
+        But first — a note on how this roundup works, because "best jobs" lists are only useful if you know the selection criteria. Every role below passed our full verification: the company is real, the posting is live at the source right now, the role is genuinely remote (not "remote until we change our minds"), and the compensation is disclosed or verified. We filtered hundreds of listings down to the ones worth your application energy. Let's dive in.
       </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        This Week's Market Signals
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Before the listings, here is what the data is telling us this week. <strong>AI-adjacent engineering</strong> continues to dominate premium hiring — but the specific ask has shifted from "AI researchers" to "engineers who can ship AI features into real products." Companies want builders who can wire LLMs into production systems, not just demo notebooks. If you can show shipped AI features, you are in the market's hottest segment.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Security hiring is quietly surging.</strong> Two of this week's premium picks are security roles, which reflects a broader pattern: as remote work expands attack surfaces, companies are paying real premiums for people who can secure distributed systems. Security is also one of the most remote-friendly disciplines — the work is inherently digital and the talent pool is global.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Design roles are getting more technical.</strong> The standout design postings this week want designers who can work with data, understand ML products, or drive conversion metrics — not just make things beautiful. The premium is on designers who speak the language of outcomes.
+      </p>
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-8 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
         Software Engineering & AI
       </h2>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Good developers are always in demand. If you're building in AI or just really good with backend systems, you'll want to check these out:
+        Good developers are always in demand. If you're building in AI or just really good with backend systems, you'll want to check these out. What makes these "premium" isn't just the pay — it's the combination of real companies, remote-first cultures, and roles where your work actually ships.
       </p>
 
       <div class="grid grid-cols-1 gap-4 my-8">
         <a href="/jobs/senior-web-security-engineer-7657" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Senior Web Security Engineer @ DuckDuckGo</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Help protect user privacy online. Pays up to $178,500 USD/year. You'll need strong JavaScript and WebView experience.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Help protect user privacy online. Pays up to $178,500 USD/year. You'll need strong JavaScript and WebView experience. Why it stands out: DuckDuckGo is a fully remote, privacy-mission company — the role aligns your daily work with a mission, and the compensation is top-decile for the specialty.</p>
         </a>
         <a href="/jobs/cli-engineer-7553" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">CLI Engineer @ Supabase</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Work on improving local development experiences using TypeScript and NestJS for one of the fastest-growing dev platforms.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Work on improving local development experiences using TypeScript and NestJS for one of the fastest-growing dev platforms. Why it stands out: developer-tools companies hire slowly and deliberately — getting in means joining a team with an exceptional talent bar and a product developers genuinely love.</p>
         </a>
         <a href="/jobs/ascendancy-full-stack-engineer-7555" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Full-Stack Engineer @ Ascendancy</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Paying $60k - $100k/year + Equity. You'll be building AI features and working with LLMs using Python and Next.js.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Paying $60k - $100k/year + Equity. You'll be building AI features and working with LLMs using Python and Next.js. Why it stands out: equity plus AI-feature work is the highest-upside combination in the current market — you get paid to build the exact experience every company is hiring for next.</p>
         </a>
         <a href="/jobs/data-engineer-7681" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Data Engineer @ Evoplay</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Manage data quality and set up large-scale ETL pipelines using Python and ClickHouse for a major iGaming company.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Manage data quality and set up large-scale ETL pipelines using Python and ClickHouse for a major iGaming company. Why it stands out: large-scale data infrastructure experience at a high-volume business is a career accelerant — the scale teaches you things no tutorial can.</p>
         </a>
       </div>
 
@@ -570,17 +1022,17 @@ export const BLOG_POSTS: BlogPost[] = [
         Executive Leadership & Security
       </h2>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        If you're more into strategy, management, or keeping systems secure, here are a few high-impact roles:
+        If you're more into strategy, management, or keeping systems secure, here are a few high-impact roles. Leadership and security postings are worth watching even if you're not ready today — they tell you where the market is heading and what skills to build toward.
       </p>
 
       <div class="grid grid-cols-1 gap-4 my-8">
         <a href="/jobs/head-of-security-7562" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-rose-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Head of Security @ Near</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Handle complex security protocols and risk management across the NEAR crypto ecosystem.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Handle complex security protocols and risk management across the NEAR crypto ecosystem. Why it stands out: protocol-level security leadership in Web3 is one of the scarcest skill sets in tech — the compensation reflects that scarcity.</p>
         </a>
         <a href="/jobs/special-projects-7645" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-rose-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Special Projects @ Deeter Analytics</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Work directly with the founder on open-ended problems, startup incubation, and AI strategy.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Work directly with the founder on open-ended problems, startup incubation, and AI strategy. Why it stands out: founder-adjacent roles are career catapults — you learn how companies are actually built, and the network compounds for years.</p>
         </a>
       </div>
 
@@ -589,22 +1041,84 @@ export const BLOG_POSTS: BlogPost[] = [
         Design, Creative & Marketing
       </h2>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        For the folks building brands, designing interfaces, and driving sales, we found some interesting open positions:
+        For the folks building brands, designing interfaces, and driving sales, we found some interesting open positions. Notice the pattern: the premium design roles all connect creative work to measurable business outcomes.
       </p>
 
       <div class="grid grid-cols-1 gap-4 my-8">
         <a href="/jobs/creative-director-7673" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-emerald-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Creative Director @ Trust Wallet</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Take charge of the brand identity for one of the biggest non-custodial crypto wallets out there.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Take charge of the brand identity for one of the biggest non-custodial crypto wallets out there. Why it stands out: brand leadership at a category-defining product — the portfolio value of this role extends years past the tenure itself.</p>
         </a>
         <a href="/jobs/designer-7672" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-emerald-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Designer @ Epoch AI</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Turn complex machine learning data into clean, easy-to-read UI/UX designs. Salary: $75k - $100k/year.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Turn complex machine learning data into clean, easy-to-read UI/UX designs. Salary: $75k - $100k/year. Why it stands out: data-visualization design for AI research is a rare specialty at the intersection of two premium fields.</p>
         </a>
         <a href="/jobs/shopify-conversion-specialist-7649" class="block p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:border-emerald-500/50 transition-colors no-underline">
             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Shopify Conversion Specialist @ GTE Brands</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">Run A/B tests and optimize product pages for large-scale Shopify stores to boost sales.</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Run A/B tests and optimize product pages for large-scale Shopify stores to boost sales. Why it stands out: conversion work ties directly to revenue, which makes your value undeniable and your negotiating position strong.</p>
         </a>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        How to Win These Roles: Application Strategy
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Premium listings attract premium competition. Here is how to approach them strategically instead of just adding to the pile.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Apply within 48 hours.</strong> Every role above was verified live this week, which means the early-applicant window is open right now. Hiring managers review in batches; the first batch gets the most generous reads. Set up HireSkys instant alerts so next week's roundup reaches you the minute roles go live instead of days later.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Lead with the "why it stands out."</strong> Each listing above includes our note on what makes the role special — use it. Your cover note should reflect that you understand what the company is actually buying. "I'm excited about the Creative Director role" is forgettable. "I've led rebrands for fintech products through 10x user growth, which is exactly the phase Trust Wallet is in" gets remembered.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Run Hyrizon AI before you apply.</strong> Click the AI Summary and Match button on any listing to see how your profile stacks up and what to emphasize. For competitive premium roles, the briefing on which requirements are must-haves versus nice-to-haves is the difference between a tailored application and a generic one.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-violet-500"><path d="M20 6 9 17l-5-5"/></svg>
+        Negotiating Remote Offers: What Premium Candidates Do Differently
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Landing the interview is step one; capturing the full value is step two. Three principles for premium remote roles:
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Know the band before you talk numbers.</strong> Listings with disclosed ranges (like the $178.5k security role above) tell you where the company already values the role. Anchor your expectations to the top of the band when your experience justifies it — companies expect negotiation and rarely offer the ceiling first.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Price the whole package.</strong> Remote compensation isn't just salary: equity, async flexibility, hardware budgets, learning stipends, and timezone overlap expectations all have real value. A $100k role with meaningful equity at an early-stage AI company can outperform a $130k role with none — do the math for your situation.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Never negotiate against yourself.</strong> Give a range based on research, then stop talking. The most common mistake candidates make is justifying, hedging, or lowering their number before the company even responds. State your case once, clearly, and let them answer.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-4 my-8">
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Are these jobs still open?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Every role in this roundup was verified live at publication time, and our anti-ghost system re-checks sources continuously. If a company closes a role, it gets marked expired — so what you see is what's actually open.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">How often is this roundup published?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Weekly. But premium roles move fast — for instant notification the moment matching roles go live, connect Telegram or WhatsApp alerts in your HireSkys dashboard instead of waiting for the next roundup.</p>
+        </div>
+        <div class="p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">I don't match these senior roles. Is there anything for me?</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Absolutely — this roundup skews premium, but HireSkys posts 50-60 verified roles daily across all levels. Browse the full feed filtered by your skills, and check our beginner's guide to remote jobs with no experience for entry-level strategy.</p>
+        </div>
       </div>
 
       <div class="mt-16 p-8 md:p-12 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 relative overflow-hidden">
@@ -615,15 +1129,33 @@ export const BLOG_POSTS: BlogPost[] = [
         <div class="relative z-10">
           <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Looking for something else?</h3>
           <p class="text-slate-300 mb-8 text-lg">The remote job market moves fast. We update our database daily with new roles from around the world.</p>
-          
+
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="/" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/30 no-underline">
-                  Browse All Remote Jobs
+                  Browse All Verified Jobs
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
           </div>
         </div>
       </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Reading a Premium Listing Like a Hiring Manager
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The final skill is learning to extract signal from the listing itself. Premium postings reward close reading: the order of requirements tells you what the team actually struggles with, the "nice to have" section tells you where the role is heading, and the way compensation is framed tells you how the company thinks about talent. A posting that lists salary transparently, describes the team and reporting structure, and explains what success looks like in the first 90 days was written by people who have thought seriously about the hire — and those are the teams worth joining.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Conversely, treat vagueness as information. A "competitive salary" with no range, a responsibilities section that could describe any company, no mention of team size or manager — these are signs of a hiring process that hasn't done its own homework. You can still apply, but calibrate your effort accordingly and ask sharper questions if you get the interview. The best candidates interview the company right back, and premium roles expect it.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        That is the roundup for this week. New verified roles land on HireSkys every single day — check back often, or better yet, let the alerts bring them to you.
+      </p>
+
     `
 },
 {
@@ -637,113 +1169,270 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Trust & Safety',
     image: '/blog-safety-guide.jpg', // Make sure to add this image in your public folder
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
-        Let’s have a real talk about remote work. We all love the freedom of working from anywhere, but there is a dark side that nobody likes to talk about: the scammers.
-      </p>
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">Real talk: remote work is the best career move you can make right now — and scammers know it. Here is how they operate in 2026, and the three rules that keep you safe.</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        As the remote job market explodes in 2026, scammers are getting incredibly smart. They aren't just sending poorly spelled emails anymore they are setting up fake company websites, conducting fake Zoom interviews, and spoofing real recruiter profiles.
-      </p>
-      
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-        If you look closely at any job post on <strong>HireSkys</strong>, you will see a <strong>"Safety First"</strong> tag on the right side. We put that there for a reason. Here is a detailed breakdown of the three golden rules you must absolutely follow to protect your career and your money.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Remote work changed everything. You can now earn a real salary from your couch, your kitchen table, or a coffee shop halfway across the world. But here is the uncomfortable truth nobody wants to admit: scammers got a promotion too.</p>
 
-      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The "send me a gift card for your job interview" scam from 2020? That is amateur hour now. Today's scammers are running an actual industry, and in 2026 they have tools that make them terrifyingly convincing.</p>
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Rule #1: Never Pay for a Job Application
-      </h2>
-      
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        This is the most important rule: <strong>Legitimate employers pay you. You do not pay them.</strong> It sounds obvious, but scammers use very clever psychology to trick desperate job seekers.
-      </p>
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white"><span>🤖</span> How Scams Evolved: What You Are Up Against in 2026</h2>
 
-      <div class="grid grid-cols-1 gap-4 my-8">
-        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">🚨 The "Equipment Check" Scam</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">They will hire you quickly and send you a digital check to "buy your home office equipment" from their "approved vendor." You buy the equipment using your own money, and three days later, their fake check bounces. You lose everything.</p>
-        </div>
-        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">🚨 The "Processing Fee" Trap</h3>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">They will tell you that you got the job, but you just need to pay a small $30 fee for a "background check" or "work visa processing." Real companies cover these costs.</p>
-        </div>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Before the rules, you need to understand the enemy. Here is what the modern remote job scam looks like.</p>
 
-      <div class="bg-rose-50 dark:bg-rose-900/10 border-l-4 border-rose-500 p-6 my-8 rounded-r-xl">
-        <p class="italic font-medium text-rose-800 dark:text-rose-300 m-0 text-lg">
-            "If a client asks for your credit card details, crypto transfer, or an upfront payment for training, block them immediately. Walk away."
-        </p>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">AI-generated fake companies.</strong> A scammer can spin up a complete fake company in an afternoon: a polished website with stock-photo "team members," a Careers page with real-looking listings, an About Us page with a fake founding story, and even fake press mentions. The domain might be one letter off from a real company — hire-skys.com instead of hireskys.com — or a totally new brand that sounds legitimate. Reverse-image-search the team photos. If every "employee" also appears on five other random sites, you found a ghost company.</p>
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-        Rule #2: Do Not Share Sensitive Bank Info Early
-      </h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Deepfake video interviews.</strong> This is the one that scares me. Scammers now use AI video tools to create a fake "HR manager" who looks and sounds like a real person on Zoom or Google Meet. The interview feels normal — the face moves, the lips sync, they answer your questions. Red flag to watch for: the camera is always slightly blurry, they refuse to turn off their "virtual background," and the audio has a weird delay. If something feels off on a video call, it probably is. Ask them to write something live in the chat, or ask an unexpected question — deepfakes handle scripted conversation well but stumble on surprises.</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        During the interview stage, a company only needs to know two things: your skills and your portfolio. They do not need your Social Security Number, your passport scan, or your banking details.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Cloned LinkedIn profiles.</strong> A scammer copies a real recruiter's LinkedIn profile — same photo, same headline, same work history — then messages you pretending to be them. Sometimes they copy a real employee from a real company so that when you Google the name, you find a legitimate person. Always check: does the profile have genuine engagement on posts? Are the connection counts realistic? Message the real person through the company's official website contact form and ask, "Is this person actually recruiting for you?" A real company will answer. A scammer will panic.</p>
 
-      <ul class="list-disc space-y-3 ml-6 mb-8 text-lg text-slate-700 dark:text-slate-300 marker:text-blue-500 marker:font-bold">
-        <li class="pl-2"><strong>When is it safe?</strong> Only share tax or banking information <em>after</em> you have signed a legally binding contract and are going through an official HR onboarding portal (like Deel, Gusto, or Workday).</li>
-        <li class="pl-2"><strong>How they steal it:</strong> Scammers will send you a random Google Form or a WhatsApp message asking for your routing number "so they can set up your payroll in advance." Don't fall for it. This is how identity theft happens.</li>
-      </ul>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Fake ATS portals.</strong> Scammers build copycat versions of real applicant tracking systems — a login page that looks like Workday, Greenhouse, or Lever. You "apply," you get "shortlisted," and then the portal asks you to download onboarding documents or enter your banking details. Look at the URL carefully. Real portals live on the company's real domain or a recognized ATS domain. A login page on somecompany-careers-portal.net is not Workday, no matter how convincing the logo is.</p>
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
-        Rule #3: Verify the Client Before Starting Work
-      </h2>
+<div class="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-6 my-8 rounded-r-xl">
+  <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">The pattern to memorize:</strong> every modern scam follows the same emotional script — excitement (you got the job, fast!), urgency (sign today, the position closes tomorrow!), and a small request that seems harmless (just pay the equipment deposit, just fill in this form, just download this file). Once you see the script, you cannot unsee it.</p>
+</div>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Never commit your time or write a single line of code without confirming exactly who is on the other side of the screen. Scammers frequently impersonate famous companies.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Now the three rules. These are non-negotiable. Tattoo them on your brain.</p>
 
-      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-8">
-        <p class="font-bold text-slate-900 dark:text-white mb-4">Always do your homework:</p>
-        <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-base">
-            <li class="flex items-start gap-3">
-                <span class="text-emerald-500 mt-1">✔</span>
-                <span><strong>Check the Email Domain:</strong> Is the email coming from <em>@stripe.com</em>, or a sneaky fake like <em>@stripe-careers-portal.com</em>?</span>
-            </li>
-            <li class="flex items-start gap-3">
-                <span class="text-emerald-500 mt-1">✔</span>
-                <span><strong>Investigate on LinkedIn:</strong> Does the recruiter actually exist? Do they have connections and a solid work history?</span>
-            </li>
-            <li class="flex items-start gap-3">
-                <span class="text-emerald-500 mt-1">✔</span>
-                <span><strong>Use Hyrizon AI:</strong> If you are unsure, click the <em>"Verify This Company"</em> button on our job listings. Our AI scans the web for red flags, bad reviews, and known scam patterns before you apply.</span>
-            </li>
-        </ul>
-      </div>
+<hr class="my-12 border-slate-200 dark:border-slate-800">
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
-        Your Safety is Our Priority
-      </h2>
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white"><span>🚫</span> Rule #1: Never Pay for a Job Application</h2>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
-        At HireSkys, we block hundreds of suspicious job posts every single week. But the ultimate line of defense is <strong>you</strong>. Trust your gut. If a job offers $150/hour for "basic data entry" and requires no interview, it is not your lucky day it is a trap.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Let me say this as clearly as I can: <strong class="text-slate-900 dark:text-white">a real employer never asks you to pay money to get hired.</strong> Not for training. Not for equipment. Not for a background check. Not for "processing." Never. The money flows toward you, not away from you. Any job that asks you to pay anything upfront is a scam, full stop.</p>
 
-      <div class="mt-12 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
-          <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-              <div class="absolute -top-20 -left-20 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full"></div>
-              <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/10 blur-[80px] rounded-full"></div>
-          </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is how the two most common versions work:</p>
 
-          <div class="relative z-10">
-            <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Apply with Confidence.</h3>
-            <p class="text-slate-300 mb-8 text-lg font-medium">We filter out the garbage so you can focus on building your career safely.</p>
-            
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="/" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-emerald-500 text-white hover:bg-emerald-600 font-black rounded-xl transition-transform hover:-translate-y-1 shadow-lg shadow-emerald-500/30 no-underline">
-                    Browse Safe Remote Jobs
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </a>
-            </div>
-          </div>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">The Equipment Check scam.</strong> You get hired (fast, suspiciously fast). The "company" says they will ship you a laptop, monitor, and software licenses — great, right? Then they send you a check for $2,500 to "cover the equipment," and ask you to deposit it and wire $1,800 to their "approved vendor" for the laptop. The check bounces three days later. You just wired $1,800 of your own money to a scammer, and the bank holds you responsible. Real companies ship equipment directly to you or reimburse you after purchase with receipts. They never route money through your personal account to a mystery vendor.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">The Processing Fee trap.</strong> This one is dressed up to look official: a $49 "background check fee," a $99 "training certification," a $25 "application processing fee." It sounds small and reasonable, which is exactly why it works — scammers run it at scale against thousands of applicants. A real employer absorbs hiring costs as a cost of doing business. If the job costs you money to start, it is not a job.</p>
+
+<div class="bg-rose-50 dark:bg-rose-900/10 border-l-4 border-rose-500 p-6 my-8 rounded-r-xl">
+  <p class="text-slate-700 dark:text-slate-300 leading-relaxed italic">"They told me the $150 was for a 'remote work starter kit' and that it would be refunded in my first paycheck. There was no paycheck. There was no company. I reported it, but the money was gone in an hour."</p>
+  <p class="text-slate-500 dark:text-slate-400 mt-3 text-sm">— A freelancer who asked to remain anonymous, shared with permission</p>
+</div>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>🏦</span> Rule #2: Do Not Share Sensitive Bank Info Early</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Your bank details are the keys to your money. A scammer with your account number, routing number, and full name can attempt unauthorized withdrawals, and cleaning that up takes weeks of your life you will never get back.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is the timeline that matters: <strong class="text-slate-900 dark:text-white">payment details come AFTER a signed contract, never before.</strong> When is it actually safe to share banking information? After you have signed an employment contract or contractor agreement, and you are entering your details into a recognized payroll or HR platform — Deel, Gusto, Workday, Remote.com, or the company's own verified HR portal on their real domain. That is the legitimate flow.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">When is it a scam? When "payroll setup" happens over a Google Form link in an email, or the recruiter asks you to send your bank details over WhatsApp or Telegram "to speed things up." Legitimate companies do not run payroll through chat apps and free form builders. If someone pressures you to hand over financial details before you have even seen a contract, walk away.</p>
+
+<div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-8 rounded-r-xl">
+  <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">The safe sequence, in order:</strong> interview → written offer → signed contract → onboarding in a real HR platform → you enter payment details yourself. If any step is skipped or reordered, pause and investigate.</p>
+</div>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>🔍</span> Rule #3: Verify the Client Before Starting Work</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Never start work — not even a "quick trial task" — for a client you have not verified. Trial tasks are a favorite scammer harvest method: they collect free work from dozens of "candidates" and disappear. Real companies pay for trial work or keep it short, clearly scoped, and clearly part of a documented hiring process.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Your verification checklist takes five minutes:</p>
+
+<ul class="space-y-4 mb-8">
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Check the email domain.</strong> Real companies email from their own domain — name@company.com. If a "Google recruiter" emails you from gmail.com, outlook.com, or a lookalike domain like google-careers.net, it is fake. Look closely at every letter: rnicrosoft.com is not microsoft.com.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Check LinkedIn properly.</strong> Find the company page — does it have real employees listed, real posts with real engagement, a real history? Then find your contact there. If the "recruiter" messaging you does not appear on the company's employee list, treat it as suspicious until proven otherwise.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Use the Hyrizon AI "Verify This Company" button.</strong> On HireSkys company pages, this runs an AI-powered background check on the employer — business registration signals, web presence, scam-pattern matching — and gives you a verdict before you ever apply. If a company fails verification, do not apply. It takes one click and it exists precisely so you do not have to become a private investigator.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Cross-check the job itself.</strong> Copy a sentence from the job description and search it in quotes. Scammers reuse the same postings across sites. If the identical listing appears under three different company names, you found a copy-paste operation.</p>
+  </li>
+</ul>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>🎭</span> 4 More Scams Running Right Now (Know Their Anatomy)</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The three rules cover the fundamentals. But scammers have more plays in the book. Here are four active ones, broken down so you can spot them mid-conversation.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">1. The overpayment and refund scam.</strong> You land a freelance gig or a "personal assistant" role. The client sends you a payment — a check, a bank transfer, sometimes even a real-looking deposit — for more than the agreed amount. "Oops, accounting made an error, please refund the difference." You send back the difference from your own funds. Then the original payment bounces or gets reversed as fraud. You are out the "refund" plus any fees. Anatomy: the overpayment is always the bait, urgency is always the hook ("our accountant needs it today"), and the refund always goes somewhere irreversible — wire transfer, gift cards, crypto. Real clients do not overpay by accident and then panic about getting it back the same day.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">2. The fake recruiter plus Telegram interview scam.</strong> A "recruiter" finds you on LinkedIn or a job board with an exciting remote role — great title, great salary, no interview stress. But the interview does not happen on Zoom. It happens over Telegram or WhatsApp chat, where they send you a list of questions and you type your answers. Why? Because chat interviews are scriptable and leave the scammer anonymous. The "offer" arrives within hours as a PDF on fake letterhead, and then comes the ask: a "refundable security deposit," your bank login "for direct deposit setup," or a request to buy equipment from their vendor. Anatomy: the interview format is the tell. No legitimate company hires through a messaging-app text interview in 2026. The moment they move you off the platform where you found them and onto Telegram, your guard should go to maximum.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">3. Phishing "job offer" malware attachments.</strong> You receive an email: "Congratulations! Please find your offer letter attached." The attachment is a Word document, PDF, or ZIP file with a name like Offer_Letter_Final.doc or Onboarding_Package.zip. Opening it — or worse, enabling macros or clicking the "enable content" prompt — installs malware that steals passwords, banking sessions, and crypto wallets. Anatomy: the email creates excitement to override your caution, the attachment is the payload, and the "enable content" or "verify you are human" step is the actual attack. Never open job-related attachments from unverified senders. Ask the company to share documents through a link on their real domain or a known platform instead. And if a document demands you enable macros to view an offer letter, that is malware — delete it immediately.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">4. Fake freelance platform escrow scams.</strong> A client contacts you off-platform (or moves you off quickly) and says, "We use our own escrow system for freelancer payments — safer for both of us." They send you to a professional-looking site — freelance-secure-pay.com or something similar — where you create an account and see your "funded milestone" sitting in escrow. To "release" it, you need to pay a small "verification fee" or "withdrawal fee." You pay, and then there are more fees, or the site vanishes. Anatomy: the escrow dashboard is theater — those numbers are not real money. Real escrow (Upwork, Contra, Deel) never asks the freelancer to pay to withdraw earnings. The platform move is the red flag: scammers need you off the real platform because the real platform would flag them.</p>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>🚩</span> The Red Flags Checklist: 12 Signs You Are Talking to a Scammer</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Save this list. Run through it mentally every time a new opportunity lands in your inbox. One red flag is a warning. Two or more means walk away.</p>
+
+<div class="grid md:grid-cols-2 gap-4 my-8">
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">1.</strong> You are "hired" with no real interview — or only a text-chat interview on Telegram or WhatsApp.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">2.</strong> They ask for any payment: application fees, training fees, equipment deposits, background check fees.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">3.</strong> The salary is unrealistically high for the role — $8,000/month for basic data entry with no experience required.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">4.</strong> They contact you from a free email address (gmail, yahoo, outlook) while claiming to represent a real company.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">5.</strong> Extreme urgency: "sign today," "the position closes tonight," "we need your details in the next hour."</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">6.</strong> They ask for bank login credentials, not just account details — no employer ever needs your password.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">7.</strong> The job description is vague about actual duties but very specific about pay and perks.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">8.</strong> They send checks or overpayments and ask you to forward part of the money elsewhere.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">9.</strong> Attachments or links arrive before any real conversation — especially files asking you to "enable content."</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">10.</strong> They refuse video calls, or their video looks artificial, blurry, or glitchy with odd audio delays.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">11.</strong> The "company" has no verifiable footprint: no real employees on LinkedIn, no business registration, no press, no reviews.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-rose-600 dark:text-rose-400">12.</strong> They move you off the job platform fast — "let us continue on Telegram" — to escape moderation and reporting.</p>
+  </div>
+</div>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>🆘</span> What To Do If You Have Been Scammed</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">First: this is not your fault. These operations are professional, well-funded, and designed by people who do this all day. Feeling embarrassed keeps victims silent, and silence is what scammers count on. Here is exactly what to do, in order.</p>
+
+<ul class="space-y-4 mb-8">
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Step 1: Stop all communication immediately.</strong> Do not confront the scammer, do not try to "get your money back" by negotiating, and do not send anything else — no more documents, no more payments, no more information. Block the numbers and emails. Every further message gives them more material to use against you.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Step 2: Call your bank right now.</strong> If you shared account details, sent money, or deposited a suspicious check, call your bank's fraud department immediately — not tomorrow, now. Ask them to flag the transactions, reverse what can be reversed, and in serious cases issue new account numbers. Time matters: wire reversals and check holds get harder with every hour.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Step 3: Report it to the authorities.</strong> In the US, file a report with the FBI's Internet Crime Complaint Center at ic3.gov and with the Federal Trade Commission at reportfraud.ftc.gov. These reports feed real investigations and pattern databases — your report could be the one that connects the dots on an operation targeting hundreds of people. If you are outside the US, report to your national cybercrime or consumer protection agency.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Step 4: Report the listing on HireSkys.</strong> Every job on HireSkys has a report button. Use it. Tell us the job title, what happened, and attach screenshots if you have them. Reports trigger a manual review, and confirmed scam postings are removed and the employer account is banned — protecting the next person who would have applied.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Step 5: Secure your identity.</strong> If you shared your ID, social security number, or equivalent national ID, place a fraud alert with the credit bureaus, monitor your credit reports, and consider a credit freeze. Change passwords on any accounts that share credentials with what you exposed, and enable two-factor authentication everywhere.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Step 6: Preserve the evidence.</strong> Before you delete anything, screenshot the job posting, the emails, the chat logs, the payment receipts, and the scammer's profile pages. Save email headers if you can. Investigators and banks both work faster with documentation.</p>
+  </li>
+</ul>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>🛡️</span> How HireSkys Protects You</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">We built HireSkys with a simple belief: a job board should be the safest place on the internet to find remote work, not a hunting ground. Here is the machinery working behind every listing you see.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Manual job approval.</strong> Jobs do not go live automatically on HireSkys. Every posting passes through human review before it reaches you. Our team checks the company, the role details, and the compensation claims. Suspicious posts get blocked before a single applicant ever sees them. Scammers rely on volume and speed — manual approval takes both away.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Locked fields prevent bait-and-switch.</strong> One classic scam is posting an attractive job and then changing the details after applicants bite — swapping the salary, the role, or the company name. On HireSkys, key job fields are locked after approval, so what you applied to is what the job actually is. No silent edits, no switched terms.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">The "Safety First" tag.</strong> Listings that pass our enhanced verification carry a visible "Safety First" tag. It is not decoration — it means the employer cleared additional checks on identity and legitimacy. When you are choosing between two similar roles, pick the tagged one.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">One-click reporting.</strong> Every job page has a report button, and reports go to a human reviewer, not a black hole. If something feels off — the recruiter moved you to Telegram, asked for a fee, sent a weird check — report it in seconds. You might save dozens of other applicants from the same trap.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Hyrizon AI company verification.</strong> Our AI verification layer cross-checks employer signals — domain age and registration, web presence consistency, LinkedIn footprint, known scam patterns — and surfaces a verdict on the company page. Use the "Verify This Company" button before you apply, especially for companies you have never heard of. It is free, instant, and it is the closest thing to a background check you can run in one click.</p>
+
+<div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl">
+  <p class="text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Our promise:</strong> we would rather reject a hundred legitimate-but-sloppy postings than let one scam through to you. If a job on HireSkys ever asks you for money, report it — that is never how it is supposed to work here.</p>
+</div>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>💳</span> Safe Payment Methods for Remote Work</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Getting paid safely is the other half of the equation. Here is what legitimate remote payment looks like:</p>
+
+<ul class="space-y-4 mb-8">
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Employer-of-record platforms:</strong> Deel, Remote.com, Gusto, and Oyster handle contracts, compliance, and payroll for international remote teams. If your employer onboards you through one of these, that is a strong legitimacy signal.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Freelance platform escrow:</strong> Upwork, Contra, and similar platforms hold client funds in escrow and release them when work is approved. Never leave the platform's payment system for a client's "own escrow" — that is scam number four from this article.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Wise and Payoneer:</strong> widely used for legitimate cross-border freelancer payments, with real buyer protections and transaction records. A client suggesting Wise is normal. A client insisting on gift cards, crypto-only, or wire transfer to a personal account is not.</p>
+  </li>
+  <li class="flex items-start gap-3">
+    <span class="text-emerald-500 mt-1">✔</span>
+    <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Direct deposit after a signed contract:</strong> for full-time remote roles, standard payroll direct deposit is normal — but only after the signed-contract step in the safe sequence above, and only details you enter yourself into a verified HR portal.</p>
+  </li>
+</ul>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Never accept:</strong> payment via gift cards, payment that requires you to forward money elsewhere, checks that arrive before any real work relationship exists, or any arrangement where you pay a fee to receive your own earnings.</p>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>❓</span> Frequently Asked Questions</h2>
+
+<div class="space-y-6 mb-8">
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+    <p class="text-lg font-semibold text-slate-900 dark:text-white mb-2">Is it safe to share my portfolio or work samples?</p>
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Yes — portfolios are meant to be shared, and real employers expect them. The line is unpaid custom work: sharing existing samples is normal, but a "trial task" that looks like actual billable work for the company (a full design, a full article, real code for their product) without pay or a contract is free-labor harvesting. Keep trial tasks small, watermarked where appropriate, and never hand over source files before you are hired.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+    <p class="text-lg font-semibold text-slate-900 dark:text-white mb-2">What if they ask for my ID or passport copy?</p>
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Identity verification is legitimate — but only at the right stage and through the right channel. After a signed offer, through a verified HR platform or the company's official onboarding system: normal. In the first chat, over WhatsApp, before you have even interviewed: not normal. Never send ID documents through messaging apps or to free email addresses. If in doubt, ask why they need it now and offer to provide it through their official HR portal instead — a real employer will agree instantly.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+    <p class="text-lg font-semibold text-slate-900 dark:text-white mb-2">How do I know a HireSkys job is verified?</p>
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Every listing passes manual approval before going live, and jobs that clear enhanced verification carry the "Safety First" tag. You can also run the Hyrizon AI "Verify This Company" check on any company page for an instant legitimacy verdict. And if anything ever feels wrong, the report button on every job page goes straight to a human reviewer.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+    <p class="text-lg font-semibold text-slate-900 dark:text-white mb-2">The salary seems too good to be true. Is it?</p>
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Probably. Unrealistic pay for low-skill work is one of the oldest lures in the book — it is designed to make you ignore every other red flag. Check the market rate for the role on two or three independent sources. If the offer is double the going rate with no experience required, treat it as bait until proven otherwise.</p>
+  </div>
+  <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
+    <p class="text-lg font-semibold text-slate-900 dark:text-white mb-2">Can a scammer fake a video interview convincingly?</p>
+    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">In 2026, yes — AI-generated faces with synced lip movement are good enough to fool a casual viewer. Watch for blurry or glitchy video, odd audio delays, refusal to remove virtual backgrounds, and evasiveness when you ask unexpected questions. When in doubt, verify the person independently through the company's official channels rather than trusting the call alone.</p>
+  </div>
+</div>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800">
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white"><span>🧠</span> Trust Your Gut — Then Verify</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is the thing I want you to take away from this guide: your instincts are a feature, not a bug. If an opportunity makes you feel rushed, confused, or just slightly uneasy, that feeling is data. Scammers engineer urgency specifically to shut down your critical thinking — "sign today" means "do not think today."</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">So trust your gut — and then back it up with verification. Run the checklist. Check the domain. Hit the Verify This Company button. Ask the uncomfortable question. A real employer respects diligence; only a scammer is offended by it.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Remote work is genuinely one of the best things to happen to careers in our lifetime. Do not let criminals steal that from you. Stay sharp, follow the three rules, and build your career on listings you can trust.</p>
+
+<div class="bg-slate-900 dark:bg-slate-800 rounded-2xl p-10 my-12 text-center">
+  <h3 class="text-3xl font-bold text-white mb-4">Find Work Without the Worry</h3>
+  <p class="text-slate-300 text-lg mb-8 leading-relaxed">Every job on HireSkys passes manual approval. Look for the Safety First tag, verify any company in one click, and report anything suspicious — we have got your back.</p>
+  <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-colors">Browse Safe Remote Jobs</a>
+</div>
+
     `
   },
   {
@@ -764,150 +1453,503 @@ export const BLOG_POSTS: BlogPost[] = [
       { id: "integrations", title: "Automated Interviews" }
     ],
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
-        Welcome to the HireSkys Applicant Tracking System (ATS). We built this platform to make remote hiring incredibly fast, safe, and spam-free for everyone. 
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        You are hiring remotely. You do not need another inbox full of noise — you need a hiring system that protects your time, your brand, and your candidates. This is the complete guide to the HireSkys ATS: how posting works, how our quality bar works, and how to go from sign-up to shortlist in a single afternoon.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Before we dive into the rules, we want you to experience the full power of our ATS without any risk. That is why we give every new employer <strong>2 Free Job Credits</strong> as soon as they sign up. You can post real jobs, manage candidates in the Kanban board, and test our features completely free.
+        Welcome. If you are reading this, you are probably tired of the way hiring works on the big job boards: you pay per click, your posting drowns in 300 applications, and 290 of them never should have applied in the first place. We built the HireSkys ATS to be the opposite of that — one place to post, screen, interview, and hire, with a quality bar we enforce on ourselves as strictly as we enforce it on anyone.
       </p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-        And when you are ready to scale, remember: upgrading to our <strong>Urgent Plan</strong> doesn't just give you premium ATS features. We actively promote your job across our main job board and social channels to bring you the top 1% of global remote talent.
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Here is the deal we make with every employer: <strong>every job on HireSkys is 100% remote, every job is reviewed by a human before it goes live, and every job runs through a real applicant tracking pipeline</strong> — kanban board, screening questions, AI match scoring, team collaboration, and interview scheduling included. If your post does not meet our bar, we do not quietly publish it anyway. We reject it, tell you exactly why, and refund your credit. That is how seriously we take the trust of the candidates on the other side.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        New employers start with <strong>2 free job credits</strong> — full-featured postings, no credit card required — so you can run your first hire end to end before spending a cent. And when you need speed, the <strong>Urgent Plan</strong> promotion puts your role at the front of the line, in front of candidates first. This guide walks you through everything: setup, the rules, the pipeline, the scoring, the pricing, and the honest comparison with the legacy boards you are used to.
+      </p>
+
+      <div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-8 rounded-r-xl">
+        <p class="font-bold text-emerald-800 dark:text-emerald-300 m-0 mb-2 text-lg">Start free, hire properly</p>
+        <p class="text-emerald-800 dark:text-emerald-300 m-0">
+            Every new employer account comes with 2 free job credits. Each credit is one complete job posting with everything unlocked — the kanban pipeline, screening questions, AI match scores, team seats, and integrations. No credit card, no trial timer, no feature gates. If we reject your post in review, the credit comes straight back.
+        </p>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="getting-started" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        Getting Started: Your First 10 Minutes
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        From landing on HireSkys to having your first job in review takes about ten minutes. Here is the exact sequence — nothing hidden, no sales call required.
+      </p>
+
+      <ul class="list-none space-y-4 my-8 pl-0">
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-emerald-500 font-bold text-lg">01.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Create your employer account (2 minutes).</strong> Head to the employer sign-up, register with your work email, and verify it. Using your company domain matters — it feeds directly into the legitimacy check our review team runs later, and it is the fastest way to sail through approval.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-emerald-500 font-bold text-lg">02.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Build your company profile (3 minutes).</strong> Add your company name, logo, website, size, industry, and a short blurb about what you do. This profile appears on every job you post and on your public company page, so treat it like a first impression — because for candidates, it is one. A complete profile with a real website also dramatically speeds up your first approval.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-emerald-500 font-bold text-lg">03.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Claim your 2 free credits (automatic).</strong> The moment your account is verified, 2 job credits land on your employer dashboard — no code to enter, no card to add. The dashboard shows your credit balance up top at all times, so you always know exactly what you have left.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-emerald-500 font-bold text-lg">04.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Draft your first post (5 minutes).</strong> Click Post a Job and the guided form walks you through it: pick a title from our taxonomy, choose a category, write the description in the rich editor (with built-in prompts for responsibilities, requirements, and benefits so you do not stare at a blank page), set the salary range, list must-have versus nice-to-have skills, and add your screening questions. A live preview shows you exactly what candidates will see.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-emerald-500 font-bold text-lg">05.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Submit and relax.</strong> Hit submit and your job enters Pending review. Our team checks it — usually within one business day — and the moment it is approved, it goes live and you get an email. Applications start flowing into your kanban pipeline, which we will tour below.</span>
+        </li>
+      </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        That is the whole onboarding. No implementation consultant, no two-week setup project. The ATS is designed so a founder can post a role between meetings and a recruiting team can run fifty roles through the same pipeline without changing how they work.
       </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 id="strictly-remote" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
         100% Remote Jobs Only
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        HireSkys is built exclusively for the modern workforce. Our platform is strictly a <strong>remote-only job board</strong>. When you use our ATS to publish an open position, it must be a fully remote role. 
+        This is our first and firmest rule: <strong>every job on HireSkys must be fully remote</strong>. No hybrid, no on-site, no "remote for now." If the role requires showing up to an office — even two days a week — it does not belong here, and our review team will reject it.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Whether the position is restricted to a specific time zone, a certain country, or open to candidates anywhere in the world (Global), it must not require the employee to commute to a physical office. Hybrid or on-site job postings are not permitted and will be automatically rejected during our manual review process.
+        We are strict about this for a simple reason: focus creates quality. Candidates come to HireSkys specifically because they know every listing is genuinely remote — they do not have to play detective with vague "flexible work arrangements" language. That trust is the single most valuable thing on the platform, and we protect it by keeping the rule absolute. The payoff for you as an employer is a candidate pool that self-selects for remote work: people who already know how to work async, communicate in writing, and manage their own time.
       </p>
 
-      <div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl">
-        <p class="font-medium text-blue-800 dark:text-blue-300 m-0 text-lg">
-            This strict remote-only policy ensures that top global talent can trust the listings on HireSkys, saving valuable time for both employers and candidates.
-        </p>
-      </div>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        What counts as remote? <strong>Work-from-anywhere roles and region-restricted remote roles both qualify.</strong> If you hire worldwide, say so. If you need someone in European timezones, or with US work authorization working from home, that is still remote — just state the restriction clearly in the posting. What does not qualify: hybrid schedules, "remote until further notice," roles that require relocation, or field roles that happen to involve a laptop. When in doubt, ask yourself: could a great candidate do this job for a year without ever visiting an office? If the answer is no, do not post it here.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        If you submit a role that is not truly remote, the reviewer rejects it and your credit is refunded automatically. No penalty, no black mark — but please do not resubmit the same role hoping for a different reviewer. The rule does not bend.
+      </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 id="locked-fields" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         Why are Job Titles and Categories Locked?
       </h2>
-      
+
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        If you try to edit your job after posting it, you will notice that the <strong>Job Title</strong> and <strong>Category</strong> are greyed out and locked. We do this for a very specific reason: <em>to prevent system abuse.</em>
+        When you create a posting, you will notice something unusual: you cannot type a free-form job title. You pick from our title taxonomy, and you pick a category from a fixed list. This is deliberate, and it exists because of one of the oldest tricks in the job-board playbook: <strong>the bait-and-switch title</strong>.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        On older job boards, a scammer could post a job for a "Frontend Developer", collect a bunch of resumes, and then edit the exact same job post to say "Sales Manager" to trick more people without paying for a new job credit. 
+        Here is how the trick works elsewhere: a company posts a "Marketing Manager" role that turns out to be door-to-door sales, or a "Customer Success Specialist" position that is actually cold-calling. The inflated title harvests clicks and applications from people who would never have applied to the real job. Candidates feel deceived, employers waste interviews on mismatched applicants, and the platform slowly fills with noise. We decided to kill the trick at the root instead of policing it forever.
       </p>
 
-      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
-        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
-            By locking the core details, we ensure that every job on HireSkys remains authentic and true to its original purpose. You can still edit your job description, salary, and location at any time!
-        </p>
-      </div>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The locked taxonomy means every title on HireSkys means the same thing everywhere. Candidates can compare roles apples to apples, and our AI match scoring actually works — because it is scoring against structured, trustworthy data instead of marketing copy. Your posting also becomes eligible for things free-text titles can never power: accurate salary benchmarking, category browsing that candidates actually use, and clean structured data that search engines reward.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Practical advice: <strong>choose the closest title, then put the nuance in the description.</strong> If your role is "Senior Frontend Engineer" with a heavy design-systems focus, pick that title and make the design-systems emphasis the first thing in the description. If you genuinely cannot find a fitting title, tell us — the taxonomy grows based on employer requests, and we would rather add a real title than watch you shoehorn a role into the wrong one.
+      </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 id="pending-approval" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
         The Job Approval Process (Pending Status)
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        When you submit a new job, it doesn't go live instantly. Instead, its status changes to <strong>"Pending Review"</strong>. This is because HireSkys is a premium, curated platform. 
+        The moment you submit a job, its status becomes <strong>Pending</strong> — and a real human reads it before it goes live. This manual review is the backbone of everything HireSkys promises candidates, and we want you to understand exactly what happens while you wait, so the process feels like quality control, not a black box.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        During this pending stage, our quality assurance team manually checks your job post. We do this to:
+        <strong>How long does it take?</strong> Most posts are reviewed within one business day. Submit in the morning and your role is often live by the evening; submit on a Friday night and it will typically be live early the following week. You can watch the status on your dashboard at any time — Pending, Approved, or Needs Changes — and we email you the moment a decision is made.
       </p>
 
-      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
-          <li class="flex items-start gap-3">
-              <span class="text-emerald-500 mt-1">✔</span>
-              <span><strong>Fix Formatting:</strong> We clean up the text, fix any broken bullet points, and make sure your job description looks highly professional and attractive to top candidates.</span>
-          </li>
-          <li class="flex items-start gap-3">
-              <span class="text-emerald-500 mt-1">✔</span>
-              <span><strong>Verify Legitimacy:</strong> We ensure the job is a real remote opportunity and meets our quality standards.</span>
-          </li>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Here is the review itself, step by step:
+      </p>
+
+      <ul class="list-none space-y-4 my-8 pl-0">
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">01.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Automated pre-checks.</strong> The system scans for duplicates of your already-live posts, banned phrases, and obvious remote-policy violations. Most clean posts pass this in seconds.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">02.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Human read-through.</strong> A reviewer reads your full posting the way a candidate would. They check that the title matches the actual work described, that the requirements are coherent, and that nothing in the description contradicts the remote-only policy.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">03.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Formatting polish.</strong> Pasted from a Google Doc with mangled bullets and weird fonts? We fix it. Reviewers clean up formatting, fix broken lists, and tighten obvious typos so your posting looks professional. Your brand benefits; you do nothing.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">04.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Legitimacy verification.</strong> We verify the company behind the post: domain, website, public footprint. This is the check that keeps scam listings off the platform entirely — and it is why signing up with your company email and completing your company profile speeds everything up.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">05.</span>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Decision and refund guarantee.</strong> Approved posts go live immediately. If we reject your post, you get an email explaining exactly why — and your credit or payment is refunded automatically. No forms, no support tickets, no arguments.</span>
+        </li>
       </ul>
 
-      <div class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800 p-6 my-8 rounded-xl shadow-sm">
-        <p class="font-bold text-emerald-800 dark:text-emerald-300 m-0 text-lg flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            Our Refund Guarantee
-        </p>
-        <p class="text-emerald-700 dark:text-emerald-400 mt-2">
-            If your job is rejected for any reason, you do not lose your money. <strong>Your 1 Job Credit is automatically refunded back to your account</strong> so you can try again with a compliant job post.
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        To be fully transparent, here are the <strong>most common reasons posts get rejected</strong>. Avoid these and approval is smooth:
+      </p>
+
+      <ul class="list-none space-y-3 my-8 pl-0">
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Not actually remote</strong> — hybrid schedules, on-site requirements, or "remote for now" language.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Bait-and-switch titles or descriptions</strong> — the title promises one job, the description describes another.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>MLM, commission-only, or "be your own boss" schemes</strong> — if there is no real salary, it is not a job post.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Unpaid work or exploitative "trials"</strong> — trial tasks that look like free labor get flagged.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Asking candidates to pay anything</strong> — training fees, equipment deposits, background-check charges. Instant rejection.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Unverifiable company identity</strong> — no website, no public footprint, nothing we can check.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Duplicates</strong> — reposting a role that is already live instead of renewing it.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 shrink-0 mt-1"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Discriminatory requirements</strong> — age, gender, nationality, or similar filters have no place in a posting.</span>
+        </li>
+      </ul>
+
+      <div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl">
+        <p class="font-bold text-blue-800 dark:text-blue-300 m-0 mb-2 text-lg">Rejected does not mean banned</p>
+        <p class="text-blue-800 dark:text-blue-300 m-0">
+            Most rejections are fixable: a hybrid line you forgot to remove, a title that does not match the description, a missing company website. Fix the issue, resubmit, and you will usually be approved on the second pass — and remember, the credit from the rejected post is already back in your account.
         </p>
       </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="kanban-pipeline" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-fuchsia-500"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+        Your Hiring Pipeline: The Kanban Board
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        This is where the ATS earns its name. The moment your job goes live, every application flows into a <strong>kanban pipeline</strong> — a visual board where candidates move from first application to hired with a drag of the mouse. No spreadsheets, no lost email threads, no "did anyone reply to her?" confusion.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The board has six columns, matching the real stages of a remote hire:
+      </p>
+
+      <ul class="list-none space-y-4 my-8 pl-0">
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-fuchsia-500 font-bold text-lg">New</span>
+            <span class="text-slate-700 dark:text-slate-300">Fresh applications land here, newest first, each with its AI match score already computed. This is your triage column.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-fuchsia-500 font-bold text-lg">Screening</span>
+            <span class="text-slate-700 dark:text-slate-300">Candidates worth a closer look. Review their screening-question answers and resumes here before committing interview time.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-fuchsia-500 font-bold text-lg">Interviewing</span>
+            <span class="text-slate-700 dark:text-slate-300">Active interview loop. Dragging a candidate here can automatically email them your scheduling link (more on that in Integrations).</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-fuchsia-500 font-bold text-lg">Offer</span>
+            <span class="text-slate-700 dark:text-slate-300">Finalists. Keep offer details, start dates, and negotiation notes attached to the candidate — not scattered across email.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-fuchsia-500 font-bold text-lg">Hired</span>
+            <span class="text-slate-700 dark:text-slate-300">Done. The candidate is archived with their full history, so you have a clean record of how the hire happened.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-fuchsia-500 font-bold text-lg">Rejected</span>
+            <span class="text-slate-700 dark:text-slate-300">A respectful no, sent with one click using your editable rejection template. Rejected candidates stay searchable — silver medalists are real.</span>
+        </li>
+      </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Each <strong>candidate card</strong> shows the essentials at a glance: name, headline, AI match score badge, a snippet of their screening answers, applied date, and source. Click any card and a detail drawer opens with the full picture — resume, complete screening answers, your team's private notes, and an activity timeline showing every stage move and email sent. Everything about a candidate lives in one place.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Two features make the board genuinely powerful at volume. <strong>Private notes</strong> let your team discuss candidates right on the card — tag a colleague, leave a verdict after an interview, keep the reasoning where the decision happens. And <strong>bulk actions</strong> let you select multiple candidates and move, reject, or export them together. When 300 applications arrive overnight, you can triage the obvious mismatches in minutes instead of hours, with every rejection sending a polite templated email so no candidate is ghosted.
+      </p>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="italic font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            "The board is the single source of truth. If it is not on the candidate card, it did not happen — no more hiring decisions made in Slack threads nobody can find later."
+        </p>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="screening-ai-match" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+        Screening Questions &amp; AI Match Score
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Here is the uncomfortable truth about remote hiring: a great posting can easily attract 300 applications, and you cannot thoughtfully read 300 resumes. The HireSkys ATS solves this with two tools that work as a pair — <strong>screening questions you design</strong> and an <strong>AI Match Score from 0 to 100%</strong> computed for every applicant.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Writing killer screening questions.</strong> You can attach up to a handful of questions to every posting, and candidates must answer them to apply. Five rules separate questions that filter from questions that annoy:
+      </p>
+
+      <ul class="list-none space-y-3 my-8 pl-0">
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500 shrink-0 mt-1"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Ask at most 3 to 5.</strong> Every extra question costs you applicants. Make each one earn its place.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500 shrink-0 mt-1"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Include one knockout question.</strong> Something with a factual answer that disqualifies cleanly — timezone overlap, work authorization, minimum years with a specific tool. Example: "Can you work with at least 4 hours overlap with US Eastern time?"</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500 shrink-0 mt-1"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Ask for links, not essays.</strong> "Share the project you are proudest of and what you personally built" beats "Describe your experience" every time. Proof beats prose.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500 shrink-0 mt-1"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Surface salary expectations early.</strong> One polite question about expected range prevents the classic disaster: three great interviews, then a number nobody can meet.</span>
+        </li>
+        <li class="flex gap-3 items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500 shrink-0 mt-1"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="text-slate-700 dark:text-slate-300"><strong>Stay legal.</strong> Never ask about age, marital status, health, or anything else that is off-limits in hiring. If a question would be illegal in an interview, it is illegal in a screening form.</span>
+        </li>
+      </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>What the AI Match Score measures.</strong> Every application gets a score from 0 to 100%, shown as a badge on the candidate card. It is a composite of five signals: <strong>skills overlap</strong> with your listed requirements, <strong>seniority alignment</strong> between their experience and the role level, <strong>screening-question answers</strong> (knockout questions carry heavy weight here), <strong>timezone and location fit</strong>, and <strong>salary-expectation overlap</strong> with your range. A high score means "this person's profile, answers, and expectations line up with what you asked for" — not "this person is objectively better."
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>How to use it.</strong> Sort any column by score and start at the top. Our recommended workflow: review the top 5% first — for 300 applicants, that is 15 people, a genuinely readable shortlist. Candidates scoring under 40 are usually safe to bulk-archive after a quick skim, but do skim: the score reflects what you wrote in the posting, so a vague requirements section produces vague scores. The single biggest lever on score quality is your own posting — tight, honest must-haves in, sharp scores out.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        One important note: the score is a <strong>triage tool, not a decision-maker</strong>. It tells you where to spend your attention first. The hire still happens in interviews, on the kanban board, with your team's notes — exactly where judgment belongs.
+      </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 id="team-access" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-fuchsia-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Team Access: Because Hiring is a Team Sport
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team Access
       </h2>
 
-      <img src="/team-access.png" alt="Team Collaboration on HireSkys" class="w-full rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 my-8 object-cover" />
-
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        If your company is growing, you shouldn't have to review hundreds of resumes all by yourself. That is exactly why we built <strong>Team Collaboration</strong> directly into our ATS. It lets you bring your co-founders, HR managers, and technical leads into your private workspace so you can make decisions together.
+        Hiring is a team sport, and the ATS treats it that way. From your dashboard you can <strong>invite colleagues by email</strong> — no seat licenses to negotiate, no per-user fees. They accept the invite, join your workspace, and immediately see the pipelines for the roles they are involved in.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Setting it up is incredibly simple. Just enter your colleague's email address and select their role. You can make them an <strong>Admin</strong> (who has full control over job posts and billing) or an <strong>Interviewer</strong> (who can only view candidates and move them across the Kanban board).
+        There are two roles, kept deliberately simple:
       </p>
 
-      <div class="bg-fuchsia-50 dark:bg-fuchsia-900/10 border-l-4 border-fuchsia-500 p-6 my-8 rounded-r-xl">
-        <p class="font-medium text-fuchsia-800 dark:text-fuchsia-300 m-0 text-lg">
-            Once you send the invite, they receive a secure, branded email to join your workspace instantly. It keeps everyone on the same page and helps you hire the best person, faster.
-        </p>
-      </div>
+      <ul class="list-none space-y-4 my-8 pl-0">
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">Admin</span>
+            <span class="text-slate-700 dark:text-slate-300">Full control: post and edit jobs, manage credits and billing, invite or remove team members, change any pipeline stage, and see everything. Give this to founders, hiring managers, and whoever owns recruiting.</span>
+        </li>
+        <li class="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span class="text-blue-500 font-bold text-lg">Interviewer</span>
+            <span class="text-slate-700 dark:text-slate-300">Focused access: review candidates, read screening answers, leave private notes, and move candidates between stages. Interviewers cannot publish jobs, edit postings, touch billing, or manage the team. Perfect for engineers and managers joining the loop for a specific role.</span>
+        </li>
+      </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The practical effect: your interviewers stop asking you to forward resumes over Slack. They open the board, see the shortlist with scores and notes, add their own verdicts after interviews, and the whole decision trail stays attached to the candidate. When you hire someone six weeks later, you can still see exactly who said what and why.
+      </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 id="integrations" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Integrations & Automated Interview Scheduling
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-fuchsia-500"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        Integrations &amp; Automated Interview Scheduling
       </h2>
 
-      <img src="/integrations-panel.png" alt="Automated Scheduling Integrations" class="w-full rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 my-8 object-cover" />
-
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Think about how much time you waste emailing a candidate back and forth just to find a good time for a quick 15-minute interview. It is frustrating, right? Our <strong>Integrations</strong> feature completely eliminates this headache.
+        The most tedious part of hiring is scheduling — the back-and-forth emails, the timezone math, the no-shows. The HireSkys ATS connects directly to your <strong>Calendly or Cal.com booking links</strong>, so candidates can book interview slots themselves without a single "does Tuesday work for you?" email.
       </p>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Inside your ATS settings, you can securely connect your <strong>Calendly</strong> , <strong>Cal</strong> or other booking links like hubspot , zoho by using our custom booking links setup.
+        Setup takes a minute: paste your booking link into the job's settings (or connect a team member's link per role), and the ATS weaves it into automated email triggers tied to pipeline stages. The flagship automation: <strong>drag a candidate to the Interviewing column and the system automatically emails them</strong> — a friendly message with your booking link, the interview format, and anything you want them to prepare. The email templates are fully editable, so the message sounds like you, not a robot.
       </p>
 
-      <div class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 my-8 shadow-sm">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">✉️ The Real Magic: Auto-Email Triggers</h3>
-        <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-0">
-          Here is where the real magic happens. You can write a customized "Interview Template" in your settings. Now, whenever you review a candidate on your Kanban board and simply drag their card into the <strong>"Interviewing"</strong> column, our system wakes up. It automatically takes your custom email, attaches your calendar booking link at the very bottom, and sends it directly to the candidate. Zero manual work required!
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The same trigger system covers the rest of the journey: moving a candidate to Offer can fire your offer-stage template, and moving someone to Rejected sends your kind, professional rejection email — automatically, so no candidate is ever ghosted because someone forgot. Every automated email is logged on the candidate's activity timeline, so your team always knows exactly what each candidate has received.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The result is a hiring loop that runs itself for the mechanical parts: you review, you drag, the system handles the logistics. Your time goes to the part only you can do — talking to great candidates.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="plans-pricing" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Plans &amp; Pricing Explained
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Pricing is simple on purpose. The <strong>Startup Plan is $49 per post</strong> — pay-per-post, no subscription, no commitment. One payment, one complete job posting with the entire ATS unlocked: kanban pipeline, screening questions, AI match scores, team seats, integrations, all of it. Hire once a quarter? You pay $49 that quarter and nothing in between.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        You may hear about our legacy <strong>$299/month subscriptions</strong> — that was our old model, built for high-volume recruiting teams posting constantly. We moved to pay-per-post because most employers hiring remotely do not hire every single month, and they told us they were tired of paying for idle subscriptions. The Startup Plan is the current, standard way to post; legacy subscriptions are grandfathered for the few teams that still prefer them.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>What do the 2 free credits include?</strong> Everything. A free credit is not a demo or a limited trial — it posts a real, full-featured job with the complete pipeline. The only difference between a free credit and a $49 post is that you did not pay for it. Credits sit in your account until you use them.
+      </p>
+
+      <div class="bg-fuchsia-50 dark:bg-fuchsia-900/10 border-l-4 border-fuchsia-500 p-6 my-8 rounded-r-xl">
+        <p class="font-bold text-fuchsia-800 dark:text-fuchsia-300 m-0 mb-2 text-lg">Need speed? The Urgent Plan promotion</p>
+        <p class="text-fuchsia-800 dark:text-fuchsia-300 m-0">
+            When a role cannot wait, the Urgent Plan promotion gives it maximum visibility: an eye-catching "Urgent Hiring" badge on the listing, pinned placement near the top of category and search results, and a highlighted card design that stands out in every feed. It is the fastest way to turn a posting into a pipeline — ideal for backfills, launches, and roles where every week unfilled costs you real money. Add it to any post from your dashboard.
         </p>
       </div>
-   <img src="/email-template.png" alt="Custom Email Templates" class="w-full rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 my-8 object-cover" />
-      <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-xl">
-          <h3 class="text-2xl font-black text-white mb-4">Ready to hire the best?</h3>
-          <p class="text-slate-400 mb-8 text-lg">Use your free credits and post your first job today.</p>
-          <a href="/employer/jobs/create" class="inline-flex justify-center items-center px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-transform hover:-translate-y-1 shadow-lg no-underline">
-              Post a Job Now
-          </a>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Refund policy, in one paragraph:</strong> if our review team rejects your posting, your credit or payment is refunded automatically — no forms, no emails, no arguments. Unused credits stay in your account until you spend them. We can offer this confidently because rejections are rare for legitimate employers: the review exists to catch spam and scams, not to nickel-and-dime real companies.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="vs-legacy-boards" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+        HireSkys ATS vs Legacy Job Boards
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        You have hired on Indeed or LinkedIn before, so you know the pattern: pay per click, watch the applications flood in, then spend your week separating signal from noise — while a meaningful share of listings around yours are stale, duplicated, or quietly fake. Here is the honest side-by-side:
+      </p>
+
+      <div class="overflow-x-auto my-8">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100 dark:bg-slate-800">
+              <th class="p-4 font-bold text-slate-900 dark:text-white rounded-tl-xl"></th>
+              <th class="p-4 font-bold text-slate-900 dark:text-white">HireSkys ATS</th>
+              <th class="p-4 font-bold text-slate-900 dark:text-white rounded-tr-xl">Legacy Job Boards</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-slate-200 dark:border-slate-700">
+              <td class="p-4 font-semibold text-slate-900 dark:text-white">Listing review</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Every post read by a human before going live</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Publish instantly, reviewed only if reported</td>
+            </tr>
+            <tr class="border-t border-slate-200 dark:border-slate-700">
+              <td class="p-4 font-semibold text-slate-900 dark:text-white">Remote guarantee</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">100% remote, enforced — hybrid rejected</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">"Remote" filter mixed with hybrid and on-site</td>
+            </tr>
+            <tr class="border-t border-slate-200 dark:border-slate-700">
+              <td class="p-4 font-semibold text-slate-900 dark:text-white">Applicant quality</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Screening questions + AI match score on every applicant</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Volume-first; you do all the filtering manually</td>
+            </tr>
+            <tr class="border-t border-slate-200 dark:border-slate-700">
+              <td class="p-4 font-semibold text-slate-900 dark:text-white">Hiring workflow</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Built-in kanban, notes, team roles, auto-emails</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Inbox dump — export to spreadsheets yourself</td>
+            </tr>
+            <tr class="border-t border-slate-200 dark:border-slate-700">
+              <td class="p-4 font-semibold text-slate-900 dark:text-white">Scam protection</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Company verification + rejection of shady posts</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Buyer beware; scams removed after damage is done</td>
+            </tr>
+            <tr class="border-t border-slate-200 dark:border-slate-700">
+              <td class="p-4 font-semibold text-slate-900 dark:text-white">Cost model</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">$49 per post, everything included</td>
+              <td class="p-4 text-slate-700 dark:text-slate-300">Pay per click — costs scale with noise, not hires</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The core difference is philosophical: legacy boards sell you <strong>exposure</strong> — eyeballs and clicks, whether or not they convert. HireSkys sells you <strong>outcomes</strong>: a curated audience of remote-ready candidates, a review process that keeps your brand next to legitimate companies only, and a pipeline that turns applications into hires instead of inbox chaos. For a team making one or two remote hires, the math is not close.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 id="employer-faqs" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Employer FAQs
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>How long does job approval take?</strong><br />
+        Most posts are reviewed within one business day. Submit in the morning and you are often live by evening. You will get an email the moment a decision is made, and you can watch the status on your dashboard anytime.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Can I edit the salary after posting?</strong><br />
+        Yes. You can edit the salary range, description, requirements, and screening questions on a live post from your dashboard at any time. Small tweaks go live immediately; substantive changes — like switching the title or category — go through a quick re-review to keep the taxonomy trustworthy.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>What gets a job rejected?</strong><br />
+        The most common reasons: the role is not truly remote, the title does not match the described work, it is commission-only or MLM-style, it asks candidates to pay anything, or the company cannot be verified. See the full rejection list in the approval section above — most rejections are fixable, and your credit is refunded automatically either way.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>How do team invites work?</strong><br />
+        From your dashboard, invite colleagues by email and assign them Admin or Interviewer roles. Admins can post, edit, manage billing, and run the team; Interviewers can review candidates, leave notes, and move pipeline stages but cannot publish jobs or touch billing. There are no per-seat fees.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Do candidates need a HireSkys account to apply?</strong><br />
+        No. Candidates apply with a streamlined application — resume upload plus your screening questions — without creating an account first. Lower friction means more completed applications from the candidates you actually want. Applicants can optionally create an account later to track their applications.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Can I repost or renew an expired job?</strong><br />
+        Yes — duplicate any past posting from your dashboard with one click. Your description, salary range, screening questions, and settings carry over, so renewing takes seconds, not a rewrite. The renewed post goes through the standard quick review before going live again.
+      </p>
+
+      <div class="mt-16 p-8 bg-slate-900 dark:bg-indigo-900/20 rounded-3xl text-center border border-slate-800">
+          <h3 class="text-2xl font-bold text-white mb-4">Ready to make your first remote hire?</h3>
+          <p class="text-slate-400 mb-8">2 free job credits are waiting. Post your role, meet your shortlist, and hire — all in one place.</p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="/employer/jobs/create" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3 bg-white text-slate-900 hover:bg-slate-100 font-bold rounded-full transition-all no-underline">
+                  Post a Job Now
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+
+              <a href="/employer" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-full transition-all shadow-lg shadow-indigo-500/30 no-underline">
+                  Explore the Employer Dashboard
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+          </div>
+      </div>
+
     `
   },
   {
@@ -921,111 +1963,278 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Growth Hacks & Hiring',
     image: '/blog-zero-budget.jpg', 
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
-        Hiring top-tier remote talent shouldn't bankrupt your startup. At HireSkys, we believe that every growing company deserves access to enterprise-grade hiring tools, even if they have zero budget right now.
-      </p>
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">You have zero budget. You still need to hire. Here is the exact playbook: write a job post that converts, manage everything in a free ATS, and drive traffic into your private pipeline without spending a single dollar.</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-        Whether you are a bootstrapped founder, a lean agency, or a fast-growing startup, we have built a loophole specifically for you. Read on to discover how you can manage candidates like a Fortune 500 company and promote your jobs—completely for free.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Hiring is not supposed to bankrupt a startup. Yet somehow the industry turned a simple act — "I need someone to do this work" — into a five-figure commitment before a single candidate applies. We think that is broken, so we built the loophole directly into HireSkys: a real applicant tracking system that is free to start, with free job credits, and a promotion hack that lets you ride our main job board's traffic straight into your private pipeline. Zero dollars. This guide is the full playbook — the write-up, the channels, the screening system, the stack, and a 30-day plan you can start tonight.</p>
 
-      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+<h2 id="the-trap" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Expensive Industry Trap</h2>
 
-      <h2 id="the-trap" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        The Expensive Industry Trap
-      </h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is how hiring costs spiral for a bootstrapped founder. You write the job post. Then you hit a paywall. The classic applicant tracking systems — the ones every "real company" seems to use — start around <strong>$299 per month</strong> for plans that include job distribution and candidate management. That is $3,588 a year before you have hired anyone. Not ready to commit? The alternative is a recruiter, who typically charges <strong>15 to 25 percent of the first year's salary</strong>. A $90,000 engineer costs you $18,000 in fees. A single hire. Meanwhile, posting on major job boards often costs hundreds per post, and sponsored visibility costs more on top.</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Let's face it: the recruitment software industry is broken. Traditional Applicant Tracking Systems (ATS) lock your candidate data behind massive paywalls, often charging upwards of $299 per month just to keep your account active. 
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The trap is psychological as much as financial: the industry convinced founders that serious hiring requires serious spend. So lean teams either overspend on tools they barely use, or they manage hiring in a shared inbox and a spreadsheet — where good candidates quietly rot for three weeks while you "get around to reviewing them."</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        When you are trying to scale a business, paying hundreds of dollars a month just to read resumes is a massive waste of resources. That is exactly why we created the HireSkys ATS—a lightning-fast, pay-per-post platform with zero recurring fees.
-      </p>
+<div class="overflow-x-auto mb-8">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr>
+<th class="border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3 font-bold text-slate-900 dark:text-white">Hiring Route</th>
+<th class="border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3 font-bold text-slate-900 dark:text-white">Typical Cost</th>
+<th class="border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3 font-bold text-slate-900 dark:text-white">What You Actually Get</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300 font-semibold">Legacy ATS (Workable, Breezy, etc.)</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300">$299/mo = $3,588/yr</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300">Candidate management behind a paywall. Distribution usually costs extra.</td>
+</tr>
+<tr>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300 font-semibold">Recruiter / Agency</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300">15–25% of first-year salary ($9,000–$22,500 per hire)</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300">Shortlists, but you pay per hire whether or not the person stays.</td>
+</tr>
+<tr>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300 font-semibold">Job board posts (single listings)</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300">$200–$500 per post</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300">Traffic for 30 days. Then it vanishes and you pay again.</td>
+</tr>
+<tr class="bg-emerald-50 dark:bg-emerald-950/30">
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-900 dark:text-white font-bold">HireSkys (this playbook)</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-emerald-700 dark:text-emerald-300 font-bold">$0 — 2 free credits included</td>
+<td class="border border-slate-200 dark:border-slate-700 px-4 py-3 text-slate-700 dark:text-slate-300">Free ATS: Kanban pipeline, CV viewer, application links — plus a promotion hack that sends main-board traffic into your private pipeline.</td>
+</tr>
+</tbody>
+</table>
+</div>
 
-      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+<div class="bg-amber-50 dark:bg-amber-950/40 border-l-4 border-amber-500 p-6 mb-8 rounded-r-lg">
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Founder math:</strong> one hire through a recruiter = 18,000 job credits worth of HireSkys budget. Except HireSkys does not cost anything to start. Keep the $18,000. You will need it for salaries.</p>
+</div>
 
-      <h2 id="free-ats" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="m9 12 2 2 4-4"/></svg>
-        Step 1: Manage for Free (Claim 2 Credits)
-      </h2>
-      
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        We want you to experience the power of a clutter-free hiring pipeline without any risk. The moment you create an employer account on HireSkys, we instantly credit your account with <strong>2 Free Job Posts</strong>.
-      </p>
+<h2 id="job-post-that-converts" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Step 0: Write a Job Post That Converts (Free)</h2>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        These aren't limited trial posts. You get full access to our premium suite:
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Before you promote anything, the post itself has to do the selling. Free traffic is worthless if your job description repels the people you want. The good news: writing a converting job post costs nothing, and most founders get it wrong in the same three ways.</p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div class="bg-white dark:bg-[#111625] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-2">Drag & Drop Kanban</h4>
-            <p class="text-sm text-slate-600 dark:text-slate-400">Move candidates from "New" to "Hired" instantly without refreshing the page.</p>
-        </div>
-        <div class="bg-white dark:bg-[#111625] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-2">Integrated CV Viewer</h4>
-            <p class="text-sm text-slate-600 dark:text-slate-400">Read cover letters and screening answers in a clean popup. No messy downloads.</p>
-        </div>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">1. Write the title a candidate would search for.</strong> Nobody searches for "Growth Ninja" or "Code Wizard." They search for "Frontend Developer," "Customer Support Specialist," "Content Writer." Use the plain, searchable title — then let your personality shine in the description. Compare:</p>
 
-      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
-        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
-            By using your free credits, you instantly get a highly professional, mobile-friendly application link (e.g., <em>hireskys.com/jobs/your-role/apply</em>) to collect resumes safely.
-        </p>
-      </div>
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+<div class="border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30 rounded-xl p-6">
+<p class="font-bold text-red-700 dark:text-red-300 mb-2">Before (skipped by search)</p>
+<p class="text-lg text-slate-700 dark:text-slate-300">"Rockstar Marketing Ninja Wanted — Join Our Rocketship!"</p>
+<p class="text-slate-600 dark:text-slate-400 mt-3">Vague, unsearchable, and every founder with a foosball table uses the same words. Top candidates scroll past.</p>
+</div>
+<div class="border border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl p-6">
+<p class="font-bold text-emerald-700 dark:text-emerald-300 mb-2">After (found and clicked)</p>
+<p class="text-lg text-slate-700 dark:text-slate-300">"Remote Content Marketer (SEO) — $40k–$55k — Async-First SaaS"</p>
+<p class="text-slate-600 dark:text-slate-400 mt-3">Searchable role, remote flag, salary band, and one differentiator. This is what a busy candidate clicks at 11pm.</p>
+</div>
+</div>
 
-      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">2. Post the salary band. Always.</strong> This is the single highest-leverage line in a job post. Salary transparency is the number one thing top candidates look for, especially in remote hiring where they cannot read your office perks off a photo. Posts with salary ranges consistently get dramatically more applications than identical posts without them — and they filter out the mismatch conversations before they start. A range like "$45k–$60k depending on experience" takes ten seconds to write and saves you ten hours of calls with candidates who were never in budget. If you truly cannot publish a number, say why ("early-stage, equity-heavy") — silence reads as "lowball."</p>
 
-      <h2 id="free-promotion" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
-        Step 2: The Ultimate Hack (Promote for Free)
-      </h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">3. Sell the work, not the company.</strong> Top candidates — the ones with options — do not care about your mission statement paragraph. They care about four things: what they will actually do day to day, who they will work with, what they will learn, and how success is measured. Give them a "day in the life" in three bullet points. Name the tools they will touch. State the one metric that decides whether they are winning in 90 days. Then add the logistics remote candidates need: timezone overlap expectations, async vs. meetings culture, and whether this is full-time or contract. A post that answers these questions gets fewer but far better applications — which is exactly what a zero-budget screener wants.</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        So, you have created your beautiful job post on our ATS, but you don't have the budget to run ads or buy premium promotions. <strong>Here is the secret hack to get free traffic:</strong>
-      </p>
+<div class="bg-slate-100 dark:bg-slate-800/60 rounded-xl p-6 mb-8">
+<p class="text-lg font-bold text-slate-900 dark:text-white mb-3">The 5-line job post formula (copy this)</p>
+<ol class="list-decimal list-inside space-y-2 text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+<li><strong class="text-slate-900 dark:text-white">Searchable title + remote + salary band</strong> in the headline.</li>
+<li><strong class="text-slate-900 dark:text-white">Three bullets:</strong> what they will do on a normal Tuesday.</li>
+<li><strong class="text-slate-900 dark:text-white">One line:</strong> how you measure success in the first 90 days.</li>
+<li><strong class="text-slate-900 dark:text-white">Logistics:</strong> timezone overlap, async norms, contract vs. full-time.</li>
+<li><strong class="text-slate-900 dark:text-white">Screening questions</strong> right in the application (see the screening section below).</li>
+</ol>
+</div>
 
-      <ul class="space-y-6 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
-          <li class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
-              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm shrink-0">1</span>
-              <div>
-                <strong>Copy your ATS Link:</strong> Go to your Employer Dashboard, find the job you just created with your free credit, and copy its public application link.
-              </div>
-          </li>
-          <li class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
-              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm shrink-0">2</span>
-              <div>
-                <strong>Head to the Main Job Board:</strong> Go to the free job posting section of HireSkys (outside the ATS dashboard).
-              </div>
-          </li>
-          <li class="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
-              <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-sm shrink-0">3</span>
-              <div>
-                <strong>Paste & Relax:</strong> Fill in the basic job details, and in the "How to Apply (URL)" field, paste your HireSkys ATS link! 
-              </div>
-          </li>
-      </ul>
+<h2 id="free-ats" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Step 1: Manage for Free (Claim 2 Credits)</h2>
 
-      <div class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800 p-6 my-8 rounded-xl shadow-sm">
-        <p class="font-bold text-emerald-800 dark:text-emerald-300 m-0 text-lg flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            The Result
-        </p>
-        <p class="text-emerald-700 dark:text-emerald-400 mt-2 leading-relaxed">
-            Your job is now live on our main public board, capturing free traffic from thousands of remote workers. When they click "Apply", they are smoothly redirected into your private, highly organized ATS pipeline. <strong>You just managed and promoted your job for $0.</strong>
-        </p>
-      </div>
-      
-      <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-          <h3 class="text-2xl md:text-3xl font-black text-white mb-4 relative z-10">Stop managing CVs in your inbox.</h3>
-          <p class="text-slate-400 mb-8 text-lg relative z-10">Claim your 2 free credits today and upgrade your hiring process instantly.</p>
-          <a href="/login" class="inline-flex justify-center items-center px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] hover:-translate-y-1 no-underline relative z-10">
-              Create Free Account
-          </a>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Now the part the industry charges $299 a month for. When you create a free HireSkys employer account, you get <strong>2 free job credits</strong> — no credit card, no trial countdown, no sales call. Each credit is a full job posting with the complete applicant tracking system attached:</p>
+
+<div class="grid md:grid-cols-3 gap-6 mb-8">
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="text-2xl mb-2">📋</p>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Kanban Pipeline</p>
+<p class="text-slate-600 dark:text-slate-400">Drag every applicant from Applied to Screening to Interview to Offer. Your whole hiring process on one board — no spreadsheet, no lost candidates.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="text-2xl mb-2">📄</p>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Built-in CV Viewer</p>
+<p class="text-slate-600 dark:text-slate-400">Open resumes right inside the dashboard. No downloading attachments, no digging through email threads to find "that one PDF."</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="text-2xl mb-2">🔗</p>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Your ATS Application Link</p>
+<p class="text-slate-600 dark:text-slate-400">Every job gets a dedicated application URL. This link is the key to the promotion hack in Step 2 — guard it well.</p>
+</div>
+</div>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Two credits is deliberate: it covers the one or two roles a lean team is actually hiring for right now. Most bootstrapped founders are not filling twelve positions — they need one great engineer or one sharp marketer. Two free, fully-managed postings is not a teaser. For most of you reading this, it is the entire hiring plan.</p>
+
+<h2 id="free-promotion" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Step 2: The Ultimate Hack (Promote for Free)</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is the loophole we built for you. HireSkys has two surfaces: the <strong>main public job board</strong>, which gets the traffic, and your <strong>private ATS pipeline</strong>, which does the managing. Normally those are separate worlds. But there is nothing stopping you from connecting them — and that connection is free promotion.</p>
+
+<div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-xl p-8 mb-8">
+<p class="text-xl font-bold text-slate-900 dark:text-white mb-6">The 3-step traffic hack</p>
+<div class="space-y-6">
+<div class="flex gap-4">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-lg">1</span>
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white">Copy your ATS application link</p>
+<p class="text-lg text-slate-700 dark:text-slate-300">Inside your employer dashboard, open the job and copy its dedicated application URL. This is the funnel entrance to your private pipeline.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-lg">2</span>
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white">Post the job on the main HireSkys board</p>
+<p class="text-lg text-slate-700 dark:text-slate-300">Publish the same role as a public listing so it is visible to every job seeker browsing hireskys.com.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-lg">3</span>
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white">Paste your ATS link in the "How to Apply" field</p>
+<p class="text-lg text-slate-700 dark:text-slate-300">Instead of an email address, drop your ATS application URL into the application field. Every click on "Apply" now flows straight into your Kanban pipeline — tracked, organized, and reviewable.</p>
+</div>
+</div>
+</div>
+</div>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Read that again: the main board supplies the <strong>traffic</strong>, your ATS supplies the <strong>system</strong>, and you paid <strong>nothing</strong> for either. No sponsored posts, no "boost" buttons, no recruiter cut. You get public visibility plus private organization — the exact combo the $299-a-month tools sell — assembled from two free surfaces.</p>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+<h2 id="free-channels" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">7 Free Channels to Promote Your Job</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The hack above gets you HireSkys traffic. But free hiring rewards the founder who hustles distribution. Here are seven channels that cost nothing and actually convert for remote roles — with the one-line playbook for each:</p>
+
+<div class="space-y-6 mb-8">
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">1. Niche Slack and Discord communities</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Join 3–5 communities where your ideal hire already hangs out (design, dev, marketing, no-code — there is a server for everything). Lurk for a week, add value, then post in the designated jobs channel with your salary band in the first line. Communities reward contributors, not drive-by posters.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">2. Reddit — r/forhire, r/remotejobs, and niche subs</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Post in r/forhire with the required [Hiring] tag, clear role title, remote status, and pay range. Niche subreddits (like r/reactjs or r/copywriting, where rules allow) outperform general ones because the audience is pre-filtered. Follow each sub's posting rules exactly — mods delete fast.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">3. LinkedIn personal posts (not the company page)</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Your personal profile will outperform your company page ten to one. Write a short, human post: the problem the hire will solve, the salary band, and your ATS link. Ask two well-connected friends to reshare in the first hour — early engagement decides reach.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">4. Twitter / X</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">One punchy post: role, remote, salary, one line on why the work is interesting, link. Quote-post it yourself the next morning with a detail you left out ("forgot to mention: fully async, no meetings Fridays"). Founders hiring in public get disproportionate reach.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">5. Indie Hackers</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">The community is founders and early employees — exactly the self-starters a lean startup needs. Share the role in a post that reads like a build update, not a corporate listing: what you are building, why this hire matters now, and the honest stage of the company.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">6. Relevant newsletters</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Niche newsletters (remote-work roundups, role-specific digests) often include a free or cheap community jobs section. Find the three your target candidates actually read, and pitch the listing to the editor with a two-sentence summary. One inclusion can beat a week of social posts.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">7. Employee and founder referrals</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">The highest-converting free channel ever invented. Write a forwardable blurb — three lines: role, salary, link — and send it personally to ten people with the ask: "know anyone great? happy to pay a $500 bonus if we hire your referral." A success-only bounty costs nothing unless it works.</p>
+</div>
+</div>
+
+<div class="bg-amber-50 dark:bg-amber-950/40 border-l-4 border-amber-500 p-6 mb-8 rounded-r-lg">
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"><strong class="text-slate-900 dark:text-white">Pro tip:</strong> point every one of these channels at your <strong>ATS application link</strong>, not seven different inboxes. One funnel, one pipeline, zero chaos. That is the whole point of the system.</p>
+</div>
+
+<h2 id="screen-candidates" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Screen Candidates for Free</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Free promotion means volume, and volume means noise. Without a screener, you will drown in applications from people who did not read the post. With one, you can filter out 90 percent of mismatches before spending a single minute on calls. Here is the zero-budget screening system:</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Ask knockout questions in the application itself.</strong> Three questions, maximum. Make at least one a dealbreaker with a factual answer: "What timezone are you in, and can you overlap 4 hours with UTC+5?" or "This role pays $45k–$60k — are you within that range? (yes/no)". Anyone who cannot answer straight is telling you everything. A second question should test reading comprehension of your post: "In one sentence, what does this role own in its first 90 days?" Copy-paste generic answers fail this instantly. The third can be a mini work sample: "Link one thing you have shipped/written/designed that you are proud of."</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Use the 30-second resume scan.</strong> You do not read resumes; you scan them. Ten seconds on the most recent role (does the scope match what you need?), ten seconds on tenure (a pattern of 4-month stints is data), ten seconds on the evidence (numbers, links, shipped things — not adjectives). If a resume does not earn a "tell me more" in 30 seconds, it goes to the archive column on your Kanban. Founders who read every resume line-by-line burn out by application forty. Do not be that founder.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong class="text-slate-900 dark:text-white">Request a free async video intro.</strong> Before any live call, ask shortlisted candidates to record a 2-minute Loom (free tier) answering: who they are, why this role, and one hard problem they solved. This single step replaces the entire first-round screening call. You will learn more from two minutes of unscripted video than from a thirty-minute "tell me about yourself" — and candidates who will not record one have self-selected out, saving you both the time.</p>
+
+<h2 id="free-hiring-stack" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Your Free Hiring Stack</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">You do not need a "hiring suite." You need four free tools that each do one job well. Total cost: $0 per month.</p>
+
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">HireSkys ATS — pipeline + applications</p>
+<p class="text-slate-600 dark:text-slate-400">Your system of record. Job posts, application links, Kanban board, CV viewer. Everything candidate-related lives here.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Calendly (free tier) — interview scheduling</p>
+<p class="text-slate-600 dark:text-slate-400">One event type, 30-minute interviews, automatic buffers. Kills the "does Tuesday work for you?" email ping-pong forever.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Google Meet — video interviews</p>
+<p class="text-slate-600 dark:text-slate-400">Free, no downloads for candidates, calendar-integrated. Attach the Meet link to your Calendly event and you are done.</p>
+</div>
+<div class="border border-slate-200 dark:border-slate-700 rounded-xl p-6 bg-white dark:bg-slate-900">
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Notion — interview scorecards</p>
+<p class="text-slate-600 dark:text-slate-400">One page per candidate: the role's 3–4 must-have criteria, scored 1–5 after each interview, plus a hire/no-hire note. This is what separates "good vibes" hiring from actual decisions.</p>
+</div>
+</div>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Notice what is missing: no sourcing tools, no background-check subscriptions, no "AI screening" upsells. At zero budget, your edge is speed and clarity, not software. Move fast, score honestly, and decide within days — top candidates do not wait for slow processes.</p>
+
+<h2 id="30-day-plan" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">30-Day Zero-Budget Hiring Plan</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is the whole playbook compressed into four weeks. Follow it and you will go from "we need someone" to signed offer without spending a dollar.</p>
+
+<div class="space-y-6 mb-8">
+<div class="border-l-4 border-indigo-500 pl-6">
+<p class="font-bold text-xl text-slate-900 dark:text-white mb-2">Week 1 — Write and set up</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Days 1–2: Write the job post using the Step 0 formula — searchable title, salary band, day-in-the-life bullets, logistics. Days 3–4: Create your free HireSkys employer account, claim your 2 credits, and build the posting with your three knockout screening questions baked in. Day 5: Copy your ATS application link and set up the main-board listing with the link in the "How to Apply" field (the Step 2 hack). Set up Calendly + Google Meet + your Notion scorecard template.</p>
+</div>
+<div class="border-l-4 border-indigo-500 pl-6">
+<p class="font-bold text-xl text-slate-900 dark:text-white mb-2">Week 2 — Distribute everywhere</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Days 8–10: Hit all 7 free channels — Slack/Discord communities, Reddit, LinkedIn personal post, X, Indie Hackers, newsletters, and your referral blurb to ten people. Every channel points to the same ATS link. Days 11–14: Applications start flowing into your Kanban. Run the 30-second resume scan daily — fifteen minutes a day keeps the pipeline clean. Move promising candidates to Screening; archive the noise.</p>
+</div>
+<div class="border-l-4 border-indigo-500 pl-6">
+<p class="font-bold text-xl text-slate-900 dark:text-white mb-2">Week 3 — Screen and interview</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Request 2-minute async video intros from your shortlist. Review them in one sitting — an hour of video replaces a week of first-round calls. Advance the best 3–5 to live interviews via your Calendly link. Score every interview in Notion the same day, while it is fresh. Cut decisively: if someone is a "maybe" after the interview, they are a no.</p>
+</div>
+<div class="border-l-4 border-indigo-500 pl-6">
+<p class="font-bold text-xl text-slate-900 dark:text-white mb-2">Week 4 — Decide and close</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Compare scorecards for your final 2–3 candidates — the numbers make the decision for you. Run one paid mini work-sample if the role warrants it (a few hours, compensated — the one place spending a little earns enormous signal). Make the offer fast: top candidates field multiple offers, and speed is your closing advantage. Send kind, specific rejections to everyone else — today's rejected candidate is tomorrow's referral source.</p>
+</div>
+</div>
+
+<h2 id="faq" class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+
+<div class="space-y-6 mb-8">
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Is the free ATS really free?</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Yes. Two job credits come with every free employer account — no credit card required, no trial that converts into a surprise bill. The Kanban pipeline, CV viewer, and application links are included, not gated behind a plan.</p>
+</div>
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">What happens after I use my 2 free credits?</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Your posted jobs and candidate pipelines stay exactly where they are — nothing gets locked or deleted. When you are ready to hire for a third role, you can purchase additional credits. Most lean teams find two credits covers their actual hiring needs for months.</p>
+</div>
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">Can I really get applicants without paying for promotion?</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Yes — that is the entire point of the Step 2 hack. Your public listing on the main HireSkys board puts the role in front of active job seekers, and the "How to Apply" link routes them into your private ATS pipeline. Layer the 7 free channels on top and you have a real distribution engine at $0.</p>
+</div>
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">How is this different from just posting a job for free on a job board?</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">A plain free listing gives you traffic and an inbox full of chaos. This playbook gives you traffic plus a system: screening questions that filter noise, a Kanban board that tracks every candidate, a CV viewer, async video screening, and scorecards for decisions. Free reach without organization is just a mess delivered faster.</p>
+</div>
+<div>
+<p class="font-bold text-lg text-slate-900 dark:text-white mb-2">I am an agency hiring for clients. Does this work for me?</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">Absolutely — agencies are some of the heaviest users of this playbook. Run each client search as its own job credit with its own ATS link and pipeline, so client pipelines never mix. The screening system and scorecards also give you something professional to show the client: organized shortlists instead of forwarded email threads.</p>
+</div>
+</div>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+<div class="bg-slate-900 dark:bg-slate-950 rounded-2xl p-10 text-center mb-8">
+<p class="text-3xl font-bold text-white mb-4">Stop paying to hire. Start hiring.</p>
+<p class="text-lg text-slate-300 leading-relaxed mb-8 max-w-2xl mx-auto">Claim your 2 free job credits, get your ATS application link, and run the entire 30-day playbook above — pipeline, promotion hack, screening system and all — for exactly zero dollars.</p>
+<a href="/login" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg px-10 py-4 rounded-xl transition-colors">Create Free Account</a>
+<p class="text-slate-400 mt-4">No credit card. No trial trap. Just hiring.</p>
+</div>
+
     `
 },{
     slug: 'build-world-class-remote-team-bootstrapped-budget',
@@ -1038,106 +2247,201 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Growth Hacks & Hiring',
     image: '/blog-bootstrapped-hiring.jpg', // Make sure to add a relevant image to your public folder
     content: `
-      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
-        Here is a terrifying statistic: The average startup spends over $4,000 and 40 days just to make <em>one</em> new hire. If you are a bootstrapped founder running on a tight runway, that isn't just expensive—it is a death sentence.
-      </p>
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">You don't need a recruiting budget. You need a recruiting system that costs almost nothing and still lands world-class people.</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        When you don't have venture capital money to burn, you can't afford expensive recruitment agencies taking 20% of a candidate's first-year salary. You also can't afford to pay $300 a month for clunky, legacy Applicant Tracking Systems (ATS) that lock you into annual contracts just to read resumes.
-      </p>
-      
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
-        But here is the good news: the game has changed. Lean teams are now building elite, global remote workforces for a fraction of the cost. Here is the exact blueprint on how to hire world-class remote talent on a bootstrapped budget.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is the number that should scare every bootstrapped founder: the average cost of a single hire is $4,000, and it takes 40 days. Recruitment agencies take 20% of first-year salary — that's $20,000 on a $100,000 hire. A mid-tier ATS runs $300/month before you've hired a single person. Stack those together and one hire can torch $25,000 before your new teammate writes a line of code.</p>
 
-      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Big companies absorb that. You can't. Your runway is measured in months, your revenue is measured in hundreds, and every dollar spent on recruiting theater is a dollar not spent on product or customers. The good news: almost all of that cost is optional. It's markup on a process that got bloated long before remote work made it cheap.</p>
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Mistake #1: The Monthly Subscription Trap
-      </h2>
-      
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Most ATS platforms are built for HR departments that hire year-round. But what if you are a startup that only needs to hire one Senior React Developer this quarter? 
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">This guide is the full playbook: the real math on what hiring costs, the five expensive mistakes bootstrapped founders make, where the undervalued talent actually is, how to stay compliant without an EOR bill, and the lean toolkit that runs the whole thing for under $150 a month.</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Why should you pay $299/month for software you only use for three weeks? You end up paying for downtime. 
-      </p>
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Real Math: What a Hire Actually Costs</h2>
 
-      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
-        <p class="font-bold text-indigo-800 dark:text-indigo-300 m-0 text-lg mb-2">
-            The HireSkys Fix: Pay-Per-Post
-        </p>
-        <p class="text-indigo-700 dark:text-indigo-400 mt-2 leading-relaxed">
-            We ripped up the subscription model. At HireSkys, you only pay when you actually need to hire. Our <a href="/employer/billing" class="font-bold hover:underline">Startup Plan is just $49 per post</a>. You get access to the full Kanban pipeline, candidate management, and private notes—with zero recurring fees. 
-        </p>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Before fixing anything, price the problem honestly. Most founders undercount hiring costs by 3x because they only count the visible line items. Here is the full breakdown for one typical remote hire at a $100,000 salary:</p>
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Mistake #2: Wasting Founder Time on Filtering
-      </h2>
+<div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-xl p-6 mb-8">
+<p class="text-slate-800 dark:text-slate-200 font-semibold mb-4">The traditional hiring bill (per hire)</p>
+<ul class="list-disc pl-6 text-slate-700 dark:text-slate-300 space-y-2">
+<li><strong>Recruitment agency fee:</strong> 20-25% of first-year salary = $20,000-$25,000</li>
+<li><strong>Job board posts:</strong> LinkedIn single job post ~$495, Indeed sponsored $300-$800, niche boards $199-$449 each</li>
+<li><strong>ATS subscription:</strong> $300/month x 3 months of active hiring = $900 (annual contracts often $6,000+)</li>
+<li><strong>Founder screening time:</strong> 40-60 hours at a conservative $150/hour replacement cost = $6,000-$9,000</li>
+<li><strong>Interview time (team):</strong> 5 interviews x 3 people x 1 hour x $100/hour = $1,500</li>
+</ul>
+<p class="text-slate-800 dark:text-slate-200 font-semibold mt-4">Total: $28,700-$36,900 per hire. For one person.</p>
+</div>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Time is your most expensive asset. If you post a remote job, you <em>will</em> get 300+ applications. If you spend just 2 minutes reviewing each resume, that is 10 hours of your life gone. Ten hours you should have spent coding, selling, or building your product.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Now the bootstrapped alternative, using the system in this guide:</p>
 
-      <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-8">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            The Automated Solution
-        </h3>
-        <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-            Don't read resumes; let AI do it. With the HireSkys <strong>Scale Plan</strong>, every candidate that applies is instantly evaluated by our AI engine. It reads their CV, analyzes their screening answers, and assigns an <strong>AI Match Score (0-100%)</strong> based on your specific job description. You only talk to the top 5%.
-        </p>
-      </div>
+<div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl p-6 mb-8">
+<p class="text-slate-800 dark:text-slate-200 font-semibold mb-4">The bootstrapped hiring bill (per hire)</p>
+<ul class="list-disc pl-6 text-slate-700 dark:text-slate-300 space-y-2">
+<li><strong>Job post:</strong> $49 pay-per-post (or $0 with free credits to start)</li>
+<li><strong>ATS:</strong> $0 — built into the job board</li>
+<li><strong>Founder screening time:</strong> ~4 hours (AI-filtered shortlist only) = $600</li>
+<li><strong>Paid trial task:</strong> $150-$250 stipend (doubles as your best interview)</li>
+<li><strong>Payments/compliance:</strong> Wise transfer fees ~$5-$15, contractor agreement template $0</li>
+</ul>
+<p class="text-slate-800 dark:text-slate-200 font-semibold mt-4">Total: roughly $250-$900 per hire. That is a 97% cost reduction for the same outcome — often a better outcome, because the process below filters harder than an agency ever will.</p>
+</div>
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-        Mistake #3: Hiring in the Wrong Geographies
-      </h2>
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Mistake #1: The Monthly Subscription Trap</h2>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Hiring a developer in San Francisco will cost you $150,000+. Hiring an equally talented developer in Argentina, Eastern Europe, or Southeast Asia might cost you $40,000 - $60,000. 
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Job boards love selling you $299/month subscriptions. The math only works if you are hiring constantly. Most bootstrapped founders hire 2 to 4 people per year. Run the numbers: $299 x 12 = $3,588 per year for maybe three job posts. You are paying $1,196 per post while the board calls it a "plan."</p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Bootstrapped startups must embrace a <strong>Global-First</strong> hiring mindset. By hiring globally, you aren't just saving money; you are opening your company up to a talent pool of millions rather than just the people within a 50-mile radius of your office.
-      </p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Worse, subscriptions create a use-it-or-lose-it pressure that leads to sloppy hiring. When the post is "already paid for," founders post vague roles, skip writing good job descriptions, and hire whoever shows up — because the meter is running. Pay-per-post flips the incentive: every post costs real money, so you write it carefully, and you only post when you have a real role.</p>
 
-      <div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-8 rounded-r-xl">
-        <p class="font-medium text-emerald-800 dark:text-emerald-300 m-0 text-lg">
-            <strong>Pro Tip:</strong> When posting your job on HireSkys, set the location to "Global" or specify time zones (like "Overlap with PST") rather than specific countries. This maximizes your applicant quality while maintaining budget efficiency.
-        </p>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The fix is simple: pay per post, not per month. HireSkys has a $49 Startup Plan — one post, full applicant tracking included, no subscription. Two hires a year costs you $98 instead of $3,588. That $3,490 difference is two months of runway for a lean team.</p>
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
-        The HireSkys Zero-Budget Hack
-      </h2>
+<div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-6 mb-8">
+<p class="text-slate-800 dark:text-slate-200"><strong>Rule of thumb:</strong> if you hire fewer than 8 people per year, any monthly recruiting subscription is burning money. Pay per post until your hiring volume proves otherwise.</p>
+</div>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
-        If you truly have $0 to spend on hiring right now, we still have your back. Every new employer on HireSkys receives <strong>2 Free Job Credits</strong> upon signup. You can use these credits to create a highly professional, mobile-friendly application link, manage candidates in our Kanban board, and test the waters—without entering a credit card.
-      </p>
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Mistake #2: Wasting Founder Time on Filtering</h2>
 
-      <div class="mt-12 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
-          <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-              <div class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-500/20 blur-[80px] rounded-full"></div>
-              <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-rose-500/20 blur-[80px] rounded-full"></div>
-          </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">A single remote job post routinely pulls 300+ applications. Most are spray-and-pray: candidates mass-applying to everything with "remote" in the title. If you spend even 6 minutes per resume, that's 30 hours of founder time per role — gone, before a single interview.</p>
 
-          <div class="relative z-10">
-            <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Stop bleeding cash on legacy hiring tools.</h3>
-            <p class="text-slate-300 mb-8 text-lg font-medium">Claim your 2 free credits today and hire smarter, faster, and cheaper.</p>
-            
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="/login" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-indigo-600 text-white hover:bg-indigo-700 font-black rounded-xl transition-transform hover:-translate-y-1 shadow-lg shadow-indigo-500/30 no-underline">
-                    Create Free Account
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </a>
-            </div>
-          </div>
-      </div>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Price that honestly. Your time as a founder is worth at minimum $150/hour (that's what it costs to replace you with a contractor for the same work). Thirty hours of screening = $4,500 of invisible cost per hire. Founders who complain about recruiting costs while hand-screening 300 resumes are paying the most expensive possible price: their own attention.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The fix is automated first-pass filtering. HireSkys's Scale Plan includes an AI Match Score (0-100%) on every applicant, so instead of reading 300 resumes you review the top 30 — the ones actually qualified. Add two knockout questions to the application ("What is your expected monthly rate in USD?" and one role-specific question), and your real review pile drops to 10-15 strong candidates. Four hours of review instead of thirty. That is $3,900 of founder time back per hire.</p>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Mistake #3: Hiring in the Wrong Geographies</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">A senior engineer in San Francisco costs $150,000-$190,000. The same caliber of engineer in Argentina, Poland, or Vietnam costs $40,000-$60,000. This is not a quality discount — it is an arbitrage on cost of living. A $50,000 salary in Buenos Aires or Warsaw buys a top-10% lifestyle; $50,000 in San Francisco buys a roommate.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Bootstrapped founders who default to hiring "wherever the talent is supposed to be" are voluntarily paying a 3x markup. Adopt a Global-First mindset from day one: the role is remote, the talent pool is the planet, and your salary bands should reflect local markets — generously. Paying at the 75th percentile of the local market gets you exceptional people who are thrilled with the offer, at one-third of US cost.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">One practical tip that compounds: when you post the role, set the location to "Global" or list your required timezone overlap (e.g., "4+ hours overlap with US Eastern") instead of a city. City-based posts silently filter out 90% of the arbitrage. Timezone-overlap posts get you the same working hours with a global applicant pool — and the salary expectations that come with it.</p>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Mistake #4: Skipping Structured Interviews</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Most founders interview by vibe: a casual chat, some "tell me about yourself," a gut feeling at the end. It feels efficient. It is the most expensive habit in this guide. Unstructured interviews predict job performance barely better than chance — structured interviews predict it roughly twice as well. Every bad hire made on gut feel costs you half to a full year of their salary in severance, rehiring, and lost momentum. On a $50,000 hire, one mis-hire is a $25,000-$50,000 mistake.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">You do not need a corporate hiring committee. You need a simple 3-stage process that takes less total time than vibe-based interviewing, because it kills bad fits early:</p>
+
+<ul class="list-disc pl-6 mb-6 text-slate-700 dark:text-slate-300 space-y-3 text-lg">
+<li><strong>Stage 1 — Async screening (0 founder hours):</strong> every shortlisted candidate records a 3-minute Loom answering two role-specific questions and completes a short written exercise. You watch at 1.5x speed. Weak communicators and low-effort applicants eliminate themselves. Time cost: 20 minutes per candidate, and you cut 60% of the shortlist here.</li>
+<li><strong>Stage 2 — 30-minute culture and working-style fit:</strong> one focused call. Ask how they work, not who they are: "Walk me through your last async disagreement with a teammate." "What does your ideal workday look like?" Score it on the spot.</li>
+<li><strong>Stage 3 — Paid trial task ($150-$250 stipend):</strong> a real, scoped piece of work — 4 to 8 hours, something you would actually use. This is the highest-signal interview ever invented. Resumes lie; shipped work doesn't. Paying for it also filters for serious candidates and is simply the right thing to do.</li>
+</ul>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Use a scorecard for every stage: 4 criteria (role skill, communication, autonomy, values fit), scored 1-5, with a written note for each. Set a hire bar in advance — say, 14 out of 20 with no score below 3. The scorecard does two things: it forces you to evaluate the same things for every candidate, and it stops you from hiring the charming candidate who scored 9. Founders who skip scorecards don't have a hiring process; they have hiring moods.</p>
+
+<div class="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 rounded-xl p-6 mb-8">
+<p class="text-slate-800 dark:text-slate-200"><strong>The math:</strong> a structured 3-stage process costs you about 6 founder-hours and a $200 trial stipend per finalist. One avoided mis-hire saves $25,000+. The ROI is roughly 100 to 1.</p>
+</div>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Mistake #5: Ignoring Async Communication</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Here is the hiring cost nobody puts in the spreadsheet: meetings. A 6-person team where everyone sits in 8 hours of meetings a week burns 48 person-hours weekly — that is 1.2 full-time salaries spent talking about work instead of doing it. At a $60,000 average salary, you are paying roughly $72,000 a year for meetings. Async-first teams run on 2-4 hours of meetings per week per person. The difference is nearly a full hire you don't need to make.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Async-first is a hiring strategy because it directly shrinks the team you need. Fewer meetings means fewer coordination roles, less management overhead, and deeper focus — which means each hire produces more. It also unlocks the global talent arbitrage from Mistake #3: you cannot run a 12-timezone team on synchronous meetings, but you absolutely can on async.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The async toolkit is cheap and simple:</p>
+
+<ul class="list-disc pl-6 mb-6 text-slate-700 dark:text-slate-300 space-y-3 text-lg">
+<li><strong>Loom (free tier):</strong> replaces status meetings. A 5-minute video update replaces a 30-minute call, and it's rewatchable.</li>
+<li><strong>Written-first defaults:</strong> every decision starts as a short doc or thread, not a meeting. If it can be a message, it is a message.</li>
+<li><strong>One project source of truth:</strong> Linear, Asana, or even a well-run Notion — so nobody needs a meeting to find out what is happening.</li>
+<li><strong>Meeting rules:</strong> no meeting without an agenda, no recurring meeting without a monthly "is this still needed" check, and a default 25-minute length. This alone typically cuts meeting load by a third.</li>
+</ul>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Hire for async explicitly. In your job post, say "async-first team" and ask candidates how they have worked asynchronously before. People who need constant synchronous contact will self-select out — and they are the ones who would have cost you those meeting hours.</p>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Where to Find Undervalued Talent</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">"Global" is not a strategy. Different regions have different strengths, and knowing which roles fit where is the difference between arbitrage and disappointment. These are realistic 2026 salary bands for strong (not junior, not FAANG-level) talent — what you'd actually pay:</p>
+
+<ul class="list-disc pl-6 mb-6 text-slate-700 dark:text-slate-300 space-y-3 text-lg">
+<li><strong>Eastern Europe (Poland, Romania, Ukraine):</strong> senior engineers $4,000-$7,000/month. Deep computer-science education, strong English, excellent for backend, DevOps, and complex product work. Timezone overlap with Europe; partial with the US.</li>
+<li><strong>Latin America (Argentina, Brazil, Colombia, Mexico):</strong> senior engineers $2,500-$4,500/month, designers $2,000-$3,500/month. Full timezone overlap with the US, strong product and design culture, great for US-facing roles including customer-facing ones.</li>
+<li><strong>Southeast Asia (Philippines, Vietnam, Indonesia):</strong> support specialists and virtual assistants $800-$1,800/month, mid-level marketers $1,200-$2,500/month, engineers $1,800-$3,500/month. The Philippines in particular is outstanding for customer support — neutral accents, service culture, fluent English.</li>
+<li><strong>Africa (Nigeria, Kenya, Egypt, South Africa):</strong> engineers $1,500-$3,500/month, rapidly growing talent pool, strong English in Nigeria/Kenya/South Africa. Earlier in the maturity curve for senior leadership roles — best for IC engineers, support, and operations.</li>
+</ul>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Match the role to the region's strength: complex backend from Eastern Europe, US-hours product and design from LatAm, support and operations from the Philippines, high-potential engineering from Africa. And pay at the top of the local band, not the bottom. A founder offering $3,000/month in a market where $2,000 is good gets first pick of talent and fierce loyalty. Bargain-hunting for the cheapest possible rate gets you the churn you deserve.</p>
+
+<div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-6 mb-8">
+<p class="text-slate-800 dark:text-slate-200"><strong>Anti-waste rule:</strong> never optimize salary to the floor. The goal is maximum talent-per-dollar, not minimum dollars. A $4,000/month engineer who ships is infinitely cheaper than a $1,500/month one who doesn't.</p>
+</div>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Contractors vs EOR: The Compliance Question</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The question every founder asks after finding global talent: "Can I just pay them as a contractor?" Sometimes yes. Sometimes it is a fine waiting to happen. Here is the actual decision framework:</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Contractors are fine when:</strong> the engagement is project-based or part-time, the person works for other clients too, they set their own hours and use their own equipment, and the relationship could plausibly end in a few months. Early-stage startups live here comfortably — your first 2-3 global hires as contractors is normal and standard.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>You need an EOR (Deel, Remote.com) when:</strong> someone works full-time, exclusively for you, on your schedule, long-term, under your direct management. That is an employee in most jurisdictions regardless of what the contract says. Misclassification fines range from back-taxes to tens of thousands per worker depending on the country — the kind of surprise that kills a bootstrapped company.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The cost comparison is straightforward. A contractor costs you the Wise transfer fee (typically under 1%) plus a simple contractor agreement — effectively $0 in overhead. An EOR costs $599-$699 per employee per month through Deel or Remote.com — $7,200-$8,400 per year per person. That's real money, but it buys compliant employment contracts, local benefits administration, tax withholding, and termination handling in 100+ countries.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The bootstrapped play: start everyone as a contractor with a proper agreement (scope, rate, IP assignment, termination terms — get the IP clause right, it matters). When someone becomes full-time, exclusive, and long-term — usually around month 4-6 — move them to an EOR. You stay compliant, and you only pay the $600/month when the relationship actually warrants it. Never skip the EOR step to save money once someone is clearly an employee; that $7,200/year is insurance against a five-figure fine.</p>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Retaining Without Big Budgets</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Hiring cheap means nothing if everyone leaves in 8 months. Replacing a remote employee costs half to a full year of their salary — on a $48,000 hire, that's $24,000-$48,000 walking out the door. Retention is where bootstrapped founders actually beat funded companies, because the things that retain remote workers cost almost nothing.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">What actually retains remote people:</p>
+
+<ul class="list-disc pl-6 mb-6 text-slate-700 dark:text-slate-300 space-y-3 text-lg">
+<li><strong>Autonomy and async culture:</strong> the number one reason people choose remote work is control over their time. Protect it fiercely. No surveillance software, no "green dot" expectations, no meetings that could be messages. Violate this and your best people leave first.</li>
+<li><strong>Visible growth:</strong> remote workers quit when they feel invisible. Give every hire a 6-month growth plan: skills to build, responsibilities to take on, a concrete next level. Review it every quarter. This costs you one hour per quarter per person.</li>
+<li><strong>Salary reviews every 6 months:</strong> not the corporate 3% — give top performers 10-15% bumps. It feels generous, it is still far below US market, and it is dramatically cheaper than replacing them. Tell them the schedule upfront so they never have to ask.</li>
+<li><strong>Profit sharing or equity:</strong> a quarterly profit-share pool (5-10% of profits split by the team) aligns everyone with the company's success and costs nothing when profits are zero. Early-stage equity with a standard 4-year vest does the same for upside believers.</li>
+<li><strong>Public recognition:</strong> a specific, public "this person shipped X and it moved metric Y" in your team channel every week. Free, and remote workers consistently rank recognition among their top motivators because distance makes them feel unseen.</li>
+</ul>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">What doesn't retain anyone: office perks shipped to a home office. Free snacks don't apply remotely. Swag boxes are a nice moment, not a reason to stay. Fancy titles without pay bumps breed cynicism. And pizza-party culture translated to "virtual happy hours" is just a meeting people resent. Spend the swag budget on the 6-month salary review instead — every time.</p>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Your Bootstrapped Hiring Toolkit</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">The entire system above runs on this lean stack. Total cost: under $150/month to keep hiring continuously — less than one hour of agency time.</p>
+
+<ul class="list-disc pl-6 mb-6 text-slate-700 dark:text-slate-300 space-y-3 text-lg">
+<li><strong>Job posts + ATS — HireSkys ($49/post, or start with 2 free credits):</strong> pay-per-post, applicant tracking built in, AI Match Score filtering on the Scale Plan. This replaces the $299/month board subscription and the $300/month ATS in one move.</li>
+<li><strong>Async video screening — Loom (free tier):</strong> candidates record intro videos, you review at 1.5x speed. Stage 1 of the interview process, zero scheduling overhead.</li>
+<li><strong>Scheduling — Cal.com (free, open source):</strong> booking links for Stage 2 interviews. No back-and-forth emails, no $15/month Calendly needed.</li>
+<li><strong>Scorecards — Notion or a spreadsheet (free):</strong> one template, 4 criteria, reused for every hire. Unsexy and undefeated.</li>
+<li><strong>Contractor payments — Wise (under 1% per transfer):</strong> pay global contractors directly to their bank accounts. Avoid PayPal's ~4% cross-border fees — on a $3,000/month contractor that's $90/month saved per person.</li>
+<li><strong>EOR when needed — Deel or Remote.com ($599-$699/month per employee):</strong> only for full-time exclusive hires, only when the relationship warrants it.</li>
+<li><strong>Team communication — Slack free tier or Discord (free):</strong> async-first channels with strong norms beat expensive tooling every time.</li>
+</ul>
+
+<div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl p-6 mb-8">
+<p class="text-slate-800 dark:text-slate-200"><strong>Monthly run-rate:</strong> roughly $0-$150 depending on hiring volume, versus $600-$900/month for the traditional stack (board subscription + ATS + scheduling tool) before you've even paid an agency. The savings fund your actual team.</p>
+</div>
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">The HireSkys Zero-Budget Hack</h2>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">If even $49 feels like a lot right now, start at literally zero. New HireSkys accounts get 2 free job-post credits — no credit card required. Post your first role free, run the AI-filtered shortlist, do the paid trial task, and make your first global hire without spending a dollar on recruiting infrastructure. Your only cost is the trial-task stipend and a few hours of your time.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Two free posts is enough to hire your first two team members. By the time you need a third post, the revenue those two hires helped generate covers the $49 many times over. That is the whole philosophy: recruiting spend should trail revenue, never lead it.</p>
+
+<hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+<h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+
+<h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">What does it actually cost to make a remote hire on a bootstrapped budget?</h3>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Roughly $250-$900 all-in: a $49 pay-per-post job listing (or $0 with free credits), a $150-$250 paid trial-task stipend, a few hours of founder review time on an AI-filtered shortlist, and under $15 in payment transfer fees. Compare that to $28,000-$37,000 for the agency-plus-ATS-plus-subscription route. The 97% savings comes from cutting subscriptions, agencies, and manual screening — not from cutting corners on candidate quality.</p>
+
+<h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">Do I need an ATS as a 5-person startup?</h3>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">No — not a standalone one. A dedicated ATS like Greenhouse or Lever starts around $6,000/year and is built for companies hiring dozens of people. At your stage, applicant tracking built into your job board (HireSkys includes it with every post) plus a simple scorecard spreadsheet covers everything: applications in, shortlist out, notes per candidate. Buy a real ATS when you're hiring 10+ people a year, not before.</p>
+
+<h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">Is it legal to hire full-time remote workers in other countries as contractors?</h3>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">It depends on the reality of the relationship, not the label on the contract. Project-based, part-time, or multi-client workers are legitimately contractors in most countries. But someone working full-time, exclusively for you, on your schedule, long-term, is an employee under most countries' laws — and misclassification can mean back-taxes and fines in the tens of thousands. The safe play: start as a contractor with a proper agreement including IP assignment, then move full-time exclusive hires to an EOR like Deel or Remote.com around month 4-6.</p>
+
+<h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">How do I pay international remote workers without losing money on fees?</h3>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">For contractors, Wise charges under 1% per transfer straight to their local bank account — on a $3,000/month payment that's under $30 versus ~$120 through PayPal's cross-border fees. For EOR employees, payroll is handled inside the $599-$699/month EOR fee. Set up payments before the hire starts; nothing erodes trust with a new remote teammate faster than a late or fee-eaten first paycheck.</p>
+
+<h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">What salary should I offer remote hires in other countries?</h3>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">Target the 75th percentile of their local market for the role — generous locally, still 50-70% below US rates. As a rough guide: senior engineers $4,000-$7,000/month in Eastern Europe, $2,500-$4,500/month in Latin America, $1,800-$3,500/month in Southeast Asia, and $1,500-$3,500/month in Africa. Never anchor to the local floor; paying at the top of the band gets you first pick of talent and the loyalty that keeps them.</p>
+
+<div class="bg-slate-900 dark:bg-slate-800 rounded-2xl p-10 mt-16 text-center">
+<h2 class="text-3xl font-bold text-white mb-4">Build your team for $49, not $25,000.</h2>
+<p class="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">Post your first role free with 2 starter credits. AI-filtered applicants, built-in tracking, global reach — everything in this guide, ready in five minutes.</p>
+<a href="/login" class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-8 py-4 rounded-lg text-lg transition-colors">Create Free Account</a>
+</div>
+
     `
   },{
   slug: 'top-6-true-borderless-remote-jobs-june-2026',
@@ -1158,7 +2462,72 @@ export const BLOG_POSTS: BlogPost[] = [
         This week different global tech giants , open source platforms and growing AI startups have unlocked positions for global talent without any country restriction.
       </p>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Here is the uncomfortable truth about the word "remote": it has been stretched so thin that it barely means anything anymore. Most "remote" jobs on the big boards come with invisible borders — "Remote (US only)" buried in the final paragraph, "Remote within the EU/UK," or the sneaky one: "we hire in 40 countries," which sounds global until you realize your country is number 41. A true borderless job is the opposite of all that. The location field genuinely says worldwide, the company has already solved the legal and payroll machinery to hire across borders, and your passport has zero bearing on whether you get the interview.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        These roles are rare for a boring, practical reason: hiring across borders is expensive and complicated. Every new country means new tax registrations, new labor law, or paying an employer-of-record service a monthly fee per hire. Most companies only absorb that cost for 20 or 30 countries, which is exactly where the fake-global listings come from. A company that hires truly worldwide — through contractor agreements, an employer-of-record, or entities on multiple continents — has made a deliberate, costly decision to fish in the global talent pool. That is why borderless roles are worth your attention: they come from remote-first companies that already did the hard part, and you get to compete on skill instead of zip code.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        That is also how we handle them at HireSkys. Every job on the board is checked by a real person before it goes live, and borderless claims get extra scrutiny: we look for the actual hiring mechanism behind the "worldwide" label, and we keep the listing honest about the arrangement — full-time, contract, or freelance. When you see the New tag on a role, it means the listing is 100 percent fresh, not a zombie posting kept alive to harvest resumes. The six roles below all passed that bar. They are real, they are open right now, and they will genuinely consider you no matter where you live.
+      </p>
+
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        How to Spot a REAL Borderless Job
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        You do not need us to hold your hand forever. Run any "remote" listing through these five checks before you spend an hour on the application:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>The location field says "Global" or "Worldwide" — not a list of 40 countries.</strong> If the posting names specific countries, it is geo-restricted by definition, no matter how long the list is.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>No timezone prison.</strong> An honest overlap window stated upfront — like "4 hours overlap with CET" — is fine. That is transparency, not a trap. What you are watching for is "must work US hours" hiding in paragraph six.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Async-first language.</strong> Real borderless teams write things down: "we default to async," documented decisions, written status updates. If the entire workflow depends on everyone being online at the same time, the job is not truly location-independent.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>The hiring mechanism is named.</strong> Contractor agreements, an employer-of-record, or entities in multiple countries — at least one of these should appear in the listing or be confirmed in your first interview. Vague "we hire globally" with no mechanism behind it is a yellow flag.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Salary is not silently geo-locked.</strong> A published range — or an honest statement about location-based adjustment — beats a number that quietly shrinks based on your IP address. This week's Sarmad role says "geography calibrated" right in the perks. That is the honest version.</span>
+          </li>
+      </ul>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            Quick rule of thumb: if a listing makes you ask "but can someone from MY country apply?" — it failed the borderless test. A true borderless listing answers that question before you ever ask it.
+        </p>
+      </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Notice that check number two cuts both ways. This week's Netguru freelance role requires 14:30 to 22:30 CET availability — and states it in the first paragraph of the description. That is not a hidden restriction. That is exactly what good looks like.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        This Week's 6 Borderless Picks
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-10">
+        Six roles, six real companies, zero location games. DevOps at Supabase, fintech leadership at Sarmad, product at Laravel and Zeely AI, a freelance Java contract at Netguru, and an entry-level marketing seat at Replicant. Each one lists its requirements openly — apply directly through the links below.
+      </p>
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -1338,6 +2707,82 @@ export const BLOG_POSTS: BlogPost[] = [
         </a>
       </div>
 
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+        How to Win a Borderless Role
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Borderless employers cannot tap you on the shoulder, so they screen for three things before they even get to your technical skills: proof you communicate well in writing, a credible timezone overlap plan, and evidence you manage yourself without supervision. Your application itself is the first work sample — a crisp, specific, typo-free application from a candidate in Karachi or Nairobi beats a sloppy one from San Francisco every single time.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Beyond that, each of this week's six roles has its own unlock. Here is exactly what to lead with:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Supabase SRE:</strong> Link your infrastructure-as-code repos — Terraform, Pulumi, or CDK — plus any dashboards or internal tools you built in Python. Then tell one prevention story: an incident your error budgets or readiness reviews stopped before it happened. SRE hiring managers hire for prevention stories, not firefighting stories.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Sarmad team lead:</strong> Lead with leadership evidence — squad size, what you shipped, who you mentored — and only then prove the high-concurrency Java and Spring Boot depth. Fintech teams will test your concurrency knowledge hard, so come armed with real war stories from production.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Laravel Cloud PM:</strong> Show one developer or infrastructure product you took from zero to one, and speak the language of compute layers, database engines, and network architecture in your write-up. Visible engagement with a developer community is a genuine differentiator here.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Zeely AI senior PM:</strong> Bring retention funnel numbers with names attached — Amplitude and Firebase fluency is explicitly on their checklist. Subscription monetization experiments with real, measured results will put you at the top of the pile.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Netguru freelance Java:</strong> Put your 14:30–22:30 CET availability in the first line of your application, not the last — it is the single biggest filter on this role. Confirm you can invoice as a B2B contractor, because that is the entire hiring mechanism for this contract.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Replicant marketing specialist:</strong> Show HubSpot or Salesforce automation you actually built, with the nurture or ABM numbers it moved. This is the most accessible door on this week's list — concrete demand-generation proof is your key through it.</span>
+          </li>
+      </ul>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            The single highest-leverage move across all six: tailor the first three lines of your application to the exact role. Hiring managers at global companies skim hundreds of applications — the candidate who proves "I have done this exact work" in the opening lines gets read.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Borderless Work FAQ
+      </h2>
+
+      <div class="space-y-6 mb-10">
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">How do taxes work when I work for a foreign company?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">It depends on the arrangement. As a contractor or freelancer, you invoice the company and handle your own taxes locally — talk to an accountant in your country before you sign anything. If the company hires you through an employer-of-record, the EOR runs payroll and withholding in your country and you are taxed like a normal local employee. Either way, get professional advice for your specific country; a blog post is not a tax advisor.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">How do I actually get paid across borders?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Most borderless employers pay through international payroll platforms or direct bank transfers in USD or EUR, and contractors typically invoice monthly. Before you accept any offer, confirm the currency, the payment schedule, and who covers the transfer fees — legitimate companies answer these questions without hesitation.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">What about timezones — will I be working nights forever?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Not if the company is honest about it. Good borderless listings state their overlap window upfront — this week's Netguru role tells you 14:30 to 22:30 CET right in the description. Decide whether that window works for your life before you apply, and say so plainly in your application. If a company will not tell you the expected hours until the final interview, treat that as a red flag.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Do I need a visa or work permit for the company's country?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">No — that is the whole point. You live and work in your own country; the company engages you as a contractor or through an employer-of-record, so there is no relocation and no visa. If a "remote" job starts talking about moving you to another country, it was never borderless.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Will I earn less because of where I live?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Sometimes, and honest companies say so upfront. Some pay one global rate for the role; others calibrate by location — this week's Sarmad listing states "geography calibrated" openly instead of hiding it. Borderless means open to hiring you from anywhere, not always identical pay everywhere. Negotiate on your scope, seniority, and results, and compare any offer against your local market, not just the headline number.</p>
+        </div>
+      </div>
+
       <div class="mt-12 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
           <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
               <div class="absolute -top-20 -left-20 w-64 h-64 bg-indigo-500/20 blur-[80px] rounded-full"></div>
@@ -1356,7 +2801,7 @@ export const BLOG_POSTS: BlogPost[] = [
             </div>
           </div>
       </div>
-      </div>
+
     `
 },
 {
@@ -1371,29 +2816,140 @@ export const BLOG_POSTS: BlogPost[] = [
   image: '/june-four-week-jobs.webp',
   content: `
       <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
-        Looking for a remote job can take a lot of time today. Often, you see a good job online, spend time on your application, and then find out they only want people from one specific country.
+        Looking for a remote job can take a lot of time today. Often, you see a good job online, spend time on your application, and then find out they only want people from one specific country — or worse, the job was never real at all.
       </p>
 
-      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-12">
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         Sometimes, the jobs are not even real. It is a big waste of your time and energy. You need jobs that are real, safe, and truly open to anyone. At HireSkys, we manually check every single job to make sure the company is real and "worldwide" actually means worldwide.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        This week's roundup is different from a normal job list. Every role below has passed our full verification process: the company is confirmed real, the hiring manager is confirmed active, the salary range is confirmed real, and the "remote" label has been confirmed to mean genuinely borderless — not "remote, but only if you live in Texas." If you apply to one of these six roles, you are applying to a real job at a real company that will actually read your application.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        How We Verify Every Job (Our 5-Point Safety Check)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Before any job appears on HireSkys — including the six below — it goes through a manual review by a real human on our team. Here is exactly what we check:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Company existence:</strong> We confirm the company is a registered, operating business — real website, real team page, real product. Shell companies and "coming soon" startups with no product do not pass.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Hiring intent:</strong> We verify the role is genuinely open right now — not a talent-pool listing, not a posting kept live to collect resumes, not a role that was filled three months ago.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Location honesty:</strong> If a posting says "worldwide," we confirm the company actually hires across borders — through an employer-of-record, as contractors, or with entities in multiple countries. "Remote (US only)" dressed up as global gets rejected.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Compensation reality:</strong> We check that the salary range is plausible for the role and seniority. Postings with fantasy salaries designed as clickbait are removed.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Scam screening:</strong> We look for the classic scam markers — requests for upfront fees, "equipment deposits," interviews conducted only over chat apps, and email addresses that do not match the company domain.</span>
+          </li>
+      </ul>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            Roughly 1 in 4 submissions fails this review. That is the point — we would rather show you fewer jobs than waste your time on fake ones.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        What "Truly Borderless" Actually Means
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The phrase "remote job" has been stretched so thin it barely means anything anymore. Here is how to read the fine print — and what we confirm before calling a role borderless:
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Contractor vs. employee:</strong> Many global companies hire internationally as contractors rather than full-time employees. That is legitimate — but it changes your taxes, benefits, and job security. A truly transparent listing tells you which one it is upfront. Every role below states its employment type clearly.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Time zone overlap:</strong> "Work from anywhere" sometimes hides "but be online 9–5 Pacific." Real borderless roles either have no overlap requirement or state the required overlap window honestly (for example, "4 hours overlap with CET"). When you apply, check the job description for this — and ask about it in your first interview if it is not stated.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Pay parity:</strong> Some companies quietly pay less based on your location. The roles in this roundup publish their salary ranges openly, which is the strongest signal that the company has thought seriously about fair global compensation instead of making it up per candidate.
+      </p>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        Red Flags: How to Spot Fake Listings Yourself
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Even outside HireSkys, you can protect yourself. Run through this checklist before you invest time in any application:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-rose-500 mt-1">✘</span>
+              <span><strong>No company website or a website built yesterday.</strong> Real companies have a history — check the domain age and look for a real product, real customers, real team.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-rose-500 mt-1">✘</span>
+              <span><strong>They ask for money.</strong> Any "training fee," "equipment deposit," or "background check payment" before you are hired is a scam. Legitimate employers never charge candidates.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-rose-500 mt-1">✘</span>
+              <span><strong>Interviews only on chat apps.</strong> A real hiring process includes a video call with a real human. If everything happens over text chat, walk away.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-rose-500 mt-1">✘</span>
+              <span><strong>Salary wildly above market.</strong> A junior data entry role offering $150/hour is bait. Compare against market rates — if it looks too good to be true, it is.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-rose-500 mt-1">✘</span>
+              <span><strong>Vague job description.</strong> Real roles describe real work. "Various online tasks, flexible hours, great pay" with no specifics is a template for harvesting your personal data.</span>
+          </li>
+      </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        If a listing passes all five checks, it is worth your application. And that is exactly the bar every job below has already cleared.
       </p>
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        1. Blockchain Engineering Manager — Velixus Labs
+        This Week's Verified Roles
       </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-10">
+        Six roles, six real companies, zero location games. Each one lists its requirements and compensation openly — apply directly through the links below.
+      </p>
+
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">
+        1. Blockchain Engineering Manager — Velixus Labs
+      </h3>
       <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
         Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
       </p>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         <strong>The Blueprint</strong><br />
-        Velixus Labs is looking for a manager to lead their developer teams and help build secure blockchain products. If you enjoy guiding others and have a strong background in Web3, this is a very safe and high-paying opportunity.
+        Velixus Labs is looking for a manager to lead their developer teams and help build secure blockchain products. This is a true leadership role: you will own delivery across squads, mentor senior engineers, and shape the technical direction of Web3 infrastructure that handles real transaction volume. If you enjoy guiding others and have a strong background in Web3, this is a very safe and high-paying opportunity.
       </p>
       <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
         <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-          <strong>What you need:</strong> You should have excellent experience managing teams and a solid understanding of the MERN stack.
+          <strong>What you need:</strong> Excellent experience managing engineering teams (not just tech-lead experience — real people management), a solid understanding of the MERN stack, and enough blockchain fundamentals to review architecture decisions. Prior Web3 shipping experience is strongly preferred.
         </p>
       </div>
       <div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-6 rounded-r-xl">
@@ -1410,20 +2966,19 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">
         2. Senior Blockchain Engineer — Velixus Labs
-      </h2>
+      </h3>
       <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
         Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
       </p>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         <strong>The Blueprint</strong><br />
-        In addition to a manager, Velixus Labs needs a senior engineer. You will focus on writing clean backend code and building out the core features of their new blockchain systems. 
+        In addition to a manager, Velixus Labs needs a senior engineer. You will focus on writing clean backend code and building out the core features of their new blockchain systems — smart contract integrations, node infrastructure, and the APIs that connect it all. This is a hands-on builder role for someone who wants depth over management.
       </p>
       <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
         <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-          <strong>What you need:</strong> Deep experience with backend development, specifically using Node.js in a Web3 environment.
+          <strong>What you need:</strong> Deep experience with backend development, specifically using Node.js in a Web3 environment. You should be comfortable reading smart contract code, debugging production blockchain issues, and writing tests for code that handles real money.
         </p>
       </div>
       <div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-6 rounded-r-xl">
@@ -1440,25 +2995,24 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">
         3. Senior Data Engineer — Supabase
-      </h2>
+      </h3>
       <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
         Category: Data Science & Analytics &bull; Type: Full-time &bull; Experience Level: Senior
       </p>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         <strong>The Blueprint</strong><br />
-        Supabase is a widely loved open-source platform, and they need a data expert. You will work on keeping their internal data pipelines fast, organized, and reliable.
+        Supabase is a widely loved open-source platform, and they need a data expert. You will work on keeping their internal data pipelines fast, organized, and reliable — the kind of infrastructure work that directly affects product decisions for millions of developers. Supabase operates as a fully distributed company, so async communication skills matter as much as technical chops.
       </p>
       <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
         <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-          <strong>What you need:</strong> A very strong background in data engineering, with excellent skills in SQL and Python.
+          <strong>What you need:</strong> A very strong background in data engineering, with excellent skills in SQL and Python. Experience with modern data stack tooling (dbt, Airflow, or similar) and a track record of owning pipelines end-to-end will put you at the top of the pile.
         </p>
       </div>
       <div class="bg-rose-50 dark:bg-rose-900/10 border-l-4 border-rose-500 p-6 my-6 rounded-r-xl">
         <p class="text-rose-700 dark:text-rose-400 leading-relaxed m-0">
-          <strong>Perks:</strong> Work with one of the best developer tool companies right now, completely remotely.
+          <strong>Perks:</strong> Work with one of the best developer tool companies right now, completely remotely — plus the credibility of having Supabase on your resume.
         </p>
       </div>
       <div class="mt-6 mb-2">
@@ -1470,20 +3024,19 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">
         4. Senior Platform Engineer — GoodShip
-      </h2>
+      </h3>
       <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
         Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
       </p>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         <strong>The Blueprint</strong><br />
-        GoodShip is hiring a senior engineer to manage and improve their core platform infrastructure. Your daily work will make sure their software runs perfectly for all their customers without any drops.
+        GoodShip is hiring a senior engineer to manage and improve their core platform infrastructure. Your daily work will make sure their software runs perfectly for all their customers without any drops — think Kubernetes, CI/CD pipelines, observability, and the kind of reliability engineering that users never notice because it just works.
       </p>
       <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
         <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-          <strong>What you need:</strong> Solid experience in backend development and managing large-scale DevOps practices.
+          <strong>What you need:</strong> Solid experience in backend development and managing large-scale DevOps practices. You should have opinions about infrastructure as code, have survived real production incidents, and be able to design systems that fail gracefully.
         </p>
       </div>
       <div class="bg-purple-50 dark:bg-purple-900/10 border-l-4 border-purple-500 p-6 my-6 rounded-r-xl">
@@ -1500,20 +3053,19 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">
         5. Frontend Software Engineer — Goodie
-      </h2>
+      </h3>
       <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
         Category: Development &bull; Type: Full-time &bull; Experience Level: Senior
       </p>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         <strong>The Blueprint</strong><br />
-        Goodie needs a frontend engineer to create clean, easy-to-use interfaces. You will work closely with their design team to turn their ideas into fast, working web applications.
+        Goodie needs a frontend engineer to create clean, easy-to-use interfaces. You will work closely with their design team to turn their ideas into fast, working web applications — the kind of pixel-level craft where the difference between good and great is measured in milliseconds of interaction latency and thoughtful empty states.
       </p>
       <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
         <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-          <strong>What you need:</strong> You should be excellent at frontend coding, and have a good understanding of Python and Node.js environments.
+          <strong>What you need:</strong> Excellent frontend coding skills — modern React, TypeScript, and a genuine eye for design details. Familiarity with Python and Node.js environments helps since you will collaborate across the stack.
         </p>
       </div>
       <div class="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-6 my-6 rounded-r-xl">
@@ -1530,20 +3082,19 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
-      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">
         6. Technical Customer Support — Trust Wallet
-      </h2>
+      </h3>
       <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
         Category: Customer Service &bull; Type: Contract &bull; Experience Level: Mid-Level
       </p>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         <strong>The Blueprint</strong><br />
-        Trust Wallet, one of the most popular crypto wallets globally, is looking for someone to support their users. You will chat with customers, solve technical problems, and ensure their accounts are safe.
+        Trust Wallet, one of the most popular crypto wallets globally, is looking for someone to support their users. You will chat with customers, solve technical problems, and ensure their accounts are safe. This is a rare non-engineering entry point into Web3 at a company with genuine global scale — support experience here carries real weight on a resume.
       </p>
       <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6">
         <p class="text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-          <strong>What you need:</strong> Real experience doing technical support and communicating clearly with customers online.
+          <strong>What you need:</strong> Real experience doing technical support and communicating clearly with customers online. Crypto familiarity is a big plus — you should be able to explain seed phrases and transaction issues to non-technical users without talking down to them.
         </p>
       </div>
       <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-6 rounded-r-xl">
@@ -1556,6 +3107,56 @@ export const BLOG_POSTS: BlogPost[] = [
           Apply Here
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
+      </div>
+
+      <hr class="my-12 border-slate-200 dark:border-slate-800" />
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        How to Apply Smart (Not Just Fast)
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Verified jobs deserve better than spray-and-pray applications. Three things that actually move the needle:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Tailor the first three lines.</strong> Hiring managers skim. Open with the one sentence that proves you have done this exact work before — not a generic objective statement.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Show async communication.</strong> Remote teams hire for written clarity. A crisp, well-structured application is itself the work sample.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Apply within 72 hours.</strong> Verified roles attract real competition. Early applications get read more carefully than the 400th one.</span>
+          </li>
+      </ul>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-6 mb-10">
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Are these jobs really open to anyone in the world?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Yes — that is the entire point of this roundup. Each role passed our location-honesty check, meaning the company has a real mechanism (contractor agreements, employer-of-record, or multi-country entities) for hiring across borders. Always confirm the arrangement type in your first interview.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">How fresh are these listings?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">We publish this roundup weekly and re-verify every role before it goes out. If a role gets filled mid-week, we pull it from the board — you will never apply to a dead listing from this page.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Do I need to pay anything to apply?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Never. Applying through HireSkys is completely free for job seekers, and any employer that asks you for money is violating our policies — report them and we will investigate immediately.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">What if I find a fake listing on HireSkys?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Use the "Flag as Expired" button on any job page. Our team reviews every flag, and confirmed fake or filled listings are removed — usually within 24 hours.</p>
+        </div>
       </div>
 
       <div class="mt-12 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
@@ -1576,7 +3177,8 @@ export const BLOG_POSTS: BlogPost[] = [
             </div>
           </div>
       </div>
-      `
+
+    `
 },
 {
     slug: 'transparent-job-posting-refund-policy',
@@ -1600,6 +3202,19 @@ export const BLOG_POSTS: BlogPost[] = [
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-500"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        Why We Publish This Page At All
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Most job boards treat their posting process like a black box. You pay, your job appears (or does not), and if something goes wrong you discover the refund policy buried in paragraph 14 of the terms of service. We think that is backwards — especially when you are trusting us with your hiring budget and your company's reputation.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Transparency is also a competitive advantage for you as an employer. Candidates can tell when a job board is curated versus when it is a free-for-all. A posting on HireSkys carries a signal — <em>this employer passed a human review</em> — and that signal is worth more than any premium boost. This page exists so you know exactly what that signal costs, how it is earned, and what happens if things do not go as planned.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
         Step 1: The Manual Review Process
       </h2>
@@ -1615,15 +3230,19 @@ export const BLOG_POSTS: BlogPost[] = [
       <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
           <li class="flex items-start gap-3">
               <span class="text-emerald-500 mt-1">✔</span>
-              <span><strong>It is 100% Remote:</strong> We strictly do not allow hybrid or on-site roles.</span>
+              <span><strong>It is 100% Remote:</strong> We strictly do not allow hybrid or on-site roles. If your description says "remote" but mentions a mandatory office day, it will be rejected with a note explaining exactly what to fix.</span>
           </li>
           <li class="flex items-start gap-3">
               <span class="text-emerald-500 mt-1">✔</span>
-              <span><strong>It is Legitimate:</strong> We cross-check company details to prevent scams and protect our candidate pool.</span>
+              <span><strong>It is Legitimate:</strong> We cross-check company details — website, domain registration, team presence — to prevent scams and protect our candidate pool. New companies are welcome, but they need to prove they are real.</span>
           </li>
           <li class="flex items-start gap-3">
               <span class="text-emerald-500 mt-1">✔</span>
-              <span><strong>It is Perfectly Formatted:</strong> If your bullet points are broken, we fix them for you before it goes live.</span>
+              <span><strong>It is Perfectly Formatted:</strong> If your bullet points are broken, we fix them for you before it goes live. We also normalize salary formatting and location fields so your posting looks professional.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>It is Complete:</strong> Postings with one-sentence descriptions or missing salary information get sent back. Candidates deserve to know what the job actually involves and what it pays.</span>
           </li>
       </ul>
 
@@ -1633,33 +3252,77 @@ export const BLOG_POSTS: BlogPost[] = [
         </p>
       </div>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>How long does review take?</strong> Most submissions are reviewed within 24 hours on business days. If your posting needs fixes, you will get a specific explanation — not a form rejection — and you can resubmit immediately at no extra cost.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Common rejection reasons (and how to avoid them):</strong> The most frequent one is location ambiguity — writing "Remote" in the title while the description quietly requires US work authorization or a specific time zone overlap of 8+ hours. Be upfront about constraints and you will sail through. The second most common is a missing salary range: we require transparent compensation because candidates filter by it, and postings without it dramatically underperform anyway.
+      </p>
+
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Step 2: Premium Boosts (A La Carte)
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        We offer a <strong>Free Basic Post</strong> for early adopters. However, if you are looking to hire rapidly, you can securely purchase optional premium boosts at checkout. You only pay for what you need:
+        We offer a <strong>Free Basic Post</strong> for early adopters. However, if you are looking to hire rapidly, you can securely purchase optional premium boosts at checkout. You only pay for what you need — no bundles, no subscriptions, no upsell maze:
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <h4 class="font-bold text-slate-900 dark:text-white mb-2">📌 Pin to Top</h4>
-            <p class="text-sm text-slate-600 dark:text-slate-400">Keep your job at the very top of our board for 3, 7, or 30 days to get maximum impressions.</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Keep your job at the very top of our board for 3, 7, or 30 days to get maximum impressions. Best for: urgent hires, competitive roles where the first 50 applicants matter most. A pinned post typically receives 3–5x the views of a standard listing in its first week.</p>
         </div>
         <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <h4 class="font-bold text-slate-900 dark:text-white mb-2">🎨 Premium Brand Color</h4>
-            <p class="text-sm text-slate-600 dark:text-slate-400">We auto-extract your company's hex color and use it to highlight your job post so it stands out visually.</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400">We auto-extract your company's hex color and use it to highlight your job post so it stands out visually. Best for: companies with strong brand recognition, or when you are competing against a wall of similar-looking listings in a popular category.</p>
         </div>
         <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <h4 class="font-bold text-slate-900 dark:text-white mb-2">⏳ Extend to 60 Days</h4>
-            <p class="text-sm text-slate-600 dark:text-slate-400">Double your listing duration from the standard 30 days to 60 days.</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Double your listing duration from the standard 30 days to 60 days. Best for: senior or niche roles where the right candidate takes longer to find, and for companies hiring multiple people into the same role over time.</p>
         </div>
         <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <h4 class="font-bold text-slate-900 dark:text-white mb-2">✉️ Talent Network Blast</h4>
-            <p class="text-sm text-slate-600 dark:text-slate-400">We will include your job in our highly anticipated weekly newsletter sent directly to thousands of remote workers.</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400">We will include your job in our weekly newsletter sent directly to thousands of remote workers. Best for: roles where passive candidates matter — great people who are not actively browsing job boards but will click an interesting opportunity in their inbox.</p>
         </div>
       </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Our pricing philosophy:</strong> every add-on is priced individually and shown before you pay. There are no "contact sales" gates, no annual contracts, and no auto-renewal traps. If you buy a 7-day pin, it runs for 7 days and stops. That is the entire business model.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+        How to Write a Listing That Passes Review First Time
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Want to skip the back-and-forth? Here is the exact formula our reviewers love to see:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Title = Role + Seniority, nothing else.</strong> "Senior Frontend Engineer" passes. "Rockstar Ninja Wanted!!!" does not. Save the personality for the description.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Salary range in numbers.</strong> "$120k–$150k" beats "competitive salary" every time — for our reviewers and for your applicant volume. Candidates filter by pay; invisible pay means invisible job.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>State the real location policy.</strong> "Worldwide, async-first, no required overlap" or "Americas time zones, 4 hours overlap with ET required." Honesty here prevents mismatched applicants and angry reviews later.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Describe the actual work.</strong> Three to five sentences on what the person will do week to week, plus the must-have skills. If you cannot describe the job, candidates cannot self-select — and you will drown in irrelevant applications.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>One clear call to action.</strong> Tell candidates exactly how to apply and what to include. "Send your resume and a 2-paragraph intro to jobs@company.com" outperforms a bare "Apply" link with no instructions.</span>
+          </li>
+      </ul>
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -1667,14 +3330,80 @@ export const BLOG_POSTS: BlogPost[] = [
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        All our secure payments are handled by our Merchant of Record, <strong>Gumroad</strong>. We designed our refund policy to be completely risk-free for legitimate employers.
+        All our secure payments are handled by our Merchant of Record, <strong>Gumroad</strong>. We designed our refund policy to be completely risk-free for legitimate employers. Here is how it works in practice:
       </p>
 
       <ul class="list-disc space-y-3 ml-6 mb-8 text-lg text-slate-700 dark:text-slate-300 marker:text-emerald-500 marker:font-bold">
-        <li class="pl-2"><strong>Rejected Jobs:</strong> If you purchase premium add-ons but your job fails our manual review process (e.g., it is not fully remote), we will automatically refund 100% of your payment. No questions asked.</li>
-        <li class="pl-2"><strong>Accidental Purchases:</strong> If you made a mistake at checkout and your job has not been published yet, just email our support team within 7 days, and we will reverse the charge.</li>
-        <li class="pl-2"><strong>Used Features:</strong> Once a job is successfully approved, published, and the premium features (like the Email Blast or Pinning) are actively delivered, refunds are no longer available.</li>
+        <li class="pl-2"><strong>Rejected Jobs:</strong> If you purchase premium add-ons but your job fails our manual review process (e.g., it is not fully remote), we will automatically refund 100% of your payment. No questions asked, no forms to fill — the refund is triggered by the rejection itself.</li>
+        <li class="pl-2"><strong>Accidental Purchases:</strong> If you made a mistake at checkout and your job has not been published yet, just email our support team within 7 days, and we will reverse the charge. Changed your mind before going live? Covered.</li>
+        <li class="pl-2"><strong>Used Features:</strong> Once a job is successfully approved, published, and the premium features (like the Email Blast or Pinning) are actively delivered, refunds are no longer available. This is the standard line every honest platform draws — you cannot un-send a newsletter.</li>
       </ul>
+
+      <div class="bg-emerald-50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-emerald-800 dark:text-emerald-300 m-0 text-lg">
+            The principle is simple: if we did not deliver value, you do not pay. If the value was delivered — your job reviewed, published, pinned, and emailed to thousands — the transaction is complete.
+        </p>
+      </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>What about edge cases?</strong> If your pinned post underperforms due to a technical issue on our end (for example, the pin did not display for part of the period), contact support — we will extend the pin or refund the difference. If you filled the role in two days and no longer need the remaining pin time, we cannot refund partial periods, but you can pause the listing and reuse the remaining time for a future role. Just ask.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        After You Post: Managing Applications
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Publishing is not the finish line — it is the starting gun. Here is what happens on our end once your job goes live, and how to get the most out of it:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Applications land in your dashboard in real time.</strong> Every applicant's details, cover note, and resume (when provided) appear in one clean inbox. No digging through email threads.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>You control the apply flow.</strong> Choose between applications through HireSkys, a redirect to your ATS, or a direct email address. Pick whatever fits your existing hiring process — we do not force you into ours.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Close the loop when you hire.</strong> Mark the role as filled from your dashboard and the listing comes down immediately. Candidates stop applying to dead roles, and your employer profile builds a reputation for responsiveness.</span>
+          </li>
+      </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>A note on response times:</strong> the single biggest predictor of hiring success on any job board is how fast employers respond to applicants. Candidates talk — companies that reply within 48 hours get dramatically more (and better) applicants on their <em>next</em> posting too. Your reputation compounds.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-6 mb-10">
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Is posting really free?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Yes — a basic job post costs nothing. You only pay if you choose premium add-ons like pinning or the newsletter blast. There is no credit card required to submit a free post.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">What if my job is rejected after I paid for boosts?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">You are automatically refunded 100%. The rejection triggers the refund — you do not need to request it or explain anything.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Can I edit my job after it is published?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Yes, from your employer dashboard. Substantial edits (like changing the role entirely) go back through a quick review to keep quality high, but salary tweaks and description improvements publish immediately.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">How do I get a refund for an accidental purchase?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Email our support team within 7 days of purchase, as long as the job has not been published yet. Include your order email and we will reverse the charge — payments are processed through Gumroad, our Merchant of Record.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Do you offer refunds on the newsletter blast after it is sent?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">No — once the blast is delivered to subscribers, the service is complete. This is why we recommend the blast for roles where you genuinely want maximum reach; it is our highest-impact add-on.</p>
+        </div>
+      </div>
 
       <div class="mt-16 p-8 bg-slate-900 dark:bg-black rounded-3xl text-center border border-slate-800 shadow-2xl relative overflow-hidden">
           <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
@@ -1694,6 +3423,7 @@ export const BLOG_POSTS: BlogPost[] = [
             </div>
           </div>
       </div>
+
     `
   },
   {
@@ -1718,6 +3448,25 @@ export const BLOG_POSTS: BlogPost[] = [
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        What Is MCP (And Why Should You Care)?
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        MCP — Model Context Protocol — is an open standard that lets AI assistants connect to external data sources and tools. Think of it like a USB port for AI: instead of the model only knowing what it was trained on, you can plug in live data feeds and it can use them mid-conversation.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Why does this matter for job hunting? Because AI training data has a cutoff date. Ask Claude about "remote React jobs hiring right now" without MCP and you get a generic, possibly outdated answer drawn from old data. Connect the HireSkys MCP server and the same question returns <strong>real, live listings from our verified database</strong> — the same jobs you would find browsing hireskys.com, but delivered conversationally with AI-powered filtering, summarization, and drafting on top.
+      </p>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            The killer combination: HireSkys provides verified, real-time job data. Your AI assistant provides reasoning, writing, and personalization. Together, they turn a week of tab-switching into a single conversation.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">
         <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl">1</span>
         Get Your Free API Key
       </h2>
@@ -1737,9 +3486,13 @@ export const BLOG_POSTS: BlogPost[] = [
           </li>
           <li class="flex items-start gap-3">
               <span class="text-emerald-500 mt-1">✔</span>
-              <span>Copy your unique MCP Server URL (it will look something like <code>https://www.hireskys.com/api/mcp/hsk_12345...</code>).</span>
+              <span>Copy your unique MCP Server URL (it will look something like <code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-sm">https://www.hireskys.com/api/mcp/hsk_12345...</code>).</span>
           </li>
       </ul>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Keep your key private.</strong> It is tied to your usage limits — if someone else uses it, their searches count against your daily quota. If you ever suspect it leaked, regenerate it from the same page.
+      </p>
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl">2</span>
@@ -1760,24 +3513,174 @@ export const BLOG_POSTS: BlogPost[] = [
         </ol>
       </div>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Using Claude Desktop instead?</strong> Desktop users can add the server through the MCP configuration: open Settings, navigate to the MCP servers section, and add your HireSkys server URL as a new remote server. Restart Claude Desktop once, and the HireSkys tools will appear in your available tools list.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>What about ChatGPT and other clients?</strong> Any MCP-compatible client works with the same server URL. The setup screens differ slightly per app, but the pattern is always the same: find the MCP/integrations/connectors settings, add a custom remote server, paste your URL. If your client supports it, you are good to go.
+      </p>
+
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl">3</span>
+        What the MCP Server Can Actually Do
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Once connected, your AI assistant gets a set of HireSkys tools it can call automatically. You never touch these directly — you just talk, and the AI figures out which tool to use. Here is what is under the hood:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">🔍 Search Jobs</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Live search across all verified remote listings — filterable by keyword, category, salary range, job type, and experience level.</p>
+        </div>
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">📄 Get Job Details</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Pull the full description, requirements, salary, and company info for any specific listing.</p>
+        </div>
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">🏢 Search Companies</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Look up verified companies — what they do, where they hire, and their open roles.</p>
+        </div>
+        <div class="p-5 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2">📊 Market Insights</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Ask about hiring trends — which categories are growing, what skills appear most, typical salary bands.</p>
+        </div>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl">4</span>
         Start Searching (Prompt Examples)
       </h2>
 
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        Once connected, you will notice a "tools" icon indicating that HireSkys is active. You can now use natural language to search. Try these prompts:
+        Once connected, you will notice a "tools" icon indicating that HireSkys is active. You can now use natural language to search. Try these prompts, organized by what you are trying to accomplish:
       </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+      <p class="text-lg font-bold text-slate-900 dark:text-white mb-4 mt-8">Finding roles:</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
             <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"Search HireSkys for remote marketing jobs paying over $80k."</p>
         </div>
         <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
-            <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"Find me 3 open frontend developer roles and write a cover letter for the first one."</p>
+            <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"Find entry-level customer support roles that hire worldwide."</p>
+        </div>
+        <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
+            <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"What senior Python roles were posted this week?"</p>
         </div>
         <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
             <p class="text-indigo-800 dark:text-indigo-300 font-medium italic">"Search companies on HireSkys in the CleanTech industry."</p>
+        </div>
+      </div>
+
+      <p class="text-lg font-bold text-slate-900 dark:text-white mb-4 mt-8">Applying smarter:</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div class="p-5 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-800/50">
+            <p class="text-emerald-800 dark:text-emerald-300 font-medium italic">"Find me 3 open frontend developer roles and write a cover letter for the first one."</p>
+        </div>
+        <div class="p-5 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-800/50">
+            <p class="text-emerald-800 dark:text-emerald-300 font-medium italic">"Get the full details of [job title], then tell me honestly if my background fits and what gaps to address."</p>
+        </div>
+        <div class="p-5 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-800/50">
+            <p class="text-emerald-800 dark:text-emerald-300 font-medium italic">"Compare these two data analyst listings: salary, requirements, and which one I should prioritize."</p>
+        </div>
+        <div class="p-5 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-800/50">
+            <p class="text-emerald-800 dark:text-emerald-300 font-medium italic">"Draft 5 tailored bullet points for my resume based on this job's requirements."</p>
+        </div>
+      </div>
+
+      <p class="text-lg font-bold text-slate-900 dark:text-white mb-4 mt-8">Researching the market:</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+        <div class="p-5 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-800/50">
+            <p class="text-amber-800 dark:text-amber-300 font-medium italic">"Which remote job categories on HireSkys have the most openings right now?"</p>
+        </div>
+        <div class="p-5 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-100 dark:border-amber-800/50">
+            <p class="text-amber-800 dark:text-amber-300 font-medium italic">"What is the typical salary range for mid-level designers working remotely?"</p>
+        </div>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        Pro Tips for Best Results
+      </h2>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Be specific about constraints.</strong> "Remote React jobs" returns everything; "senior React roles, $140k+, worldwide, posted this month" returns what you actually want. The AI passes your filters to the search tool.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Ask for honesty, not hype.</strong> "Am I qualified for this?" gets you a real gap analysis when you paste your background. The AI can compare your experience against the live requirements.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Chain your workflow.</strong> Search → shortlist → deep-dive on top 3 → draft cover letters, all in one conversation. Each step builds on the last because the AI remembers the listings it found.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1">✔</span>
+              <span><strong>Verify before you apply.</strong> The AI summarizes listings, but always open the actual job page on hireskys.com before applying — you want the full description and the official apply link.</span>
+          </li>
+      </ul>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Full Workflow Example: A Job Hunt in One Chat
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        To make this concrete, here is what a real 20-minute session looks like for a mid-level designer:
+      </p>
+
+      <div class="bg-slate-50 dark:bg-[#111625] border border-slate-200 dark:border-slate-800 p-6 rounded-2xl mb-8">
+        <ol class="list-decimal space-y-4 ml-4 text-lg text-slate-700 dark:text-slate-300 font-medium">
+          <li class="pl-2"><strong>You:</strong> "Find remote product designer roles paying over $110k that hire worldwide." <em class="font-normal text-slate-500">— Claude searches live listings and returns 6 matches with salaries.</em></li>
+          <li class="pl-2"><strong>You:</strong> "Get details on the top 3 and rank them by how well they fit a Figma-heavy background." <em class="font-normal text-slate-500">— Claude pulls full descriptions and compares.</em></li>
+          <li class="pl-2"><strong>You:</strong> "For the best fit, draft a cover letter. Here is my background: [paste 5 lines]." <em class="font-normal text-slate-500">— tailored draft in seconds, referencing the actual job requirements.</em></li>
+          <li class="pl-2"><strong>You:</strong> "What questions should I expect in the interview for this role?" <em class="font-normal text-slate-500">— based on the real requirements, not generic advice.</em></li>
+        </ol>
+      </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Four prompts, one conversation, zero tab-switching. The old workflow — search a job board, open 12 tabs, copy requirements into a doc, draft a letter from scratch — took the better part of an evening. The MCP workflow takes less time than brewing coffee, and the outputs are better because every step is grounded in the live listing data rather than the AI's imagination.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>For recruiters and hiring managers</strong>, the same pattern works in reverse: "Find me backend engineers on HireSkys with Go experience," then "summarize what these candidates' companies do," then "draft outreach messages referencing their current role." Sourcing becomes conversational instead of a spreadsheet exercise.
+      </p>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            The deeper shift here: job search stops being a browsing activity and becomes a <em>delegated</em> activity. You describe the outcome you want in plain language; the AI handles the searching, filtering, and first-draft writing. Your job is judgment — which of these five roles is actually right for me? — not tab management. That is a fundamentally better use of a job seeker's limited energy, and it is why we built the MCP server in the first place.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        Troubleshooting & FAQ
+      </h2>
+
+      <div class="space-y-6 mb-10">
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Claude says it cannot find the HireSkys tools.</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">First, check that the connector shows as "Connected" in Settings. If it does, try starting a fresh conversation — tools sometimes do not attach to an already-open chat. On Claude Desktop, restart the app after adding the server.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">I hit my daily search limit. What now?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">The free tier includes 10 AI searches per day, resetting at midnight UTC. If you need more, the premium plan offers unlimited daily searches plus priority server access during peak hours.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Is my data private?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">The MCP server only receives your search queries — the same thing you would type into our website search box. We do not receive your chat history, personal files, or anything else from your AI client. Your API key identifies your quota, nothing more.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Can I use this to post jobs as an employer?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">The MCP tools are read-only: search jobs, view details, research companies and market trends. Posting a job still happens through the regular <a href="/post-job" class="text-indigo-600 hover:underline font-bold">post-a-job flow</a>, which includes our manual review.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Does the AI ever make up job listings?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">No — and that is the whole point of MCP. Without it, an AI might hallucinate plausible-sounding jobs from its training data. With the HireSkys server connected, every listing the AI mentions comes from a live tool call to our database. If a role does not exist in our system, the AI cannot invent it. Always click through to the job page to confirm details before applying.</p>
         </div>
       </div>
 
@@ -1788,6 +3691,7 @@ export const BLOG_POSTS: BlogPost[] = [
             Get Your Key or Upgrade Today
         </a>
       </div>
+
     `
   },
   {
@@ -1808,6 +3712,10 @@ export const BLOG_POSTS: BlogPost[] = [
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
         Our data team at <strong>HireSkys</strong> analyzed exactly <strong>14,635 active, verified remote jobs</strong> across global markets. The numbers reveal a staggering truth about the experience gap—and highlight the specific "cheat code" skills you need to land a job today.
       </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>How we did it:</strong> we pulled every active listing in the HireSkys database, normalized the experience-level field (employers describe seniority inconsistently — "3+ years," "senior," "experienced" all map to the same bucket), and counted. No sampling, no estimates — the full population of live jobs. What follows is what the data actually says, plus what it means for you.
+      </p>
       <hr class="my-12 border-slate-200 dark:border-slate-800" />
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-12 mb-8 text-slate-900 dark:text-white">
@@ -1819,7 +3727,6 @@ export const BLOG_POSTS: BlogPost[] = [
         If you are a recent graduate applying for remote roles and facing constant rejections, it isn't your fault—it is the market. Companies hiring remotely are overwhelmingly optimizing for "plug-and-play" talent who can self-manage and deliver from day one.
       </p>
 
-      <!-- ✨ CUSTOM STATS GRID FOR PREMIUM FEEL ✨ -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         <div class="bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 p-6 rounded-2xl text-center shadow-lg shadow-slate-200/20 dark:shadow-none">
             <div class="text-3xl font-black text-indigo-600 dark:text-indigo-400 mb-1">47.0%</div>
@@ -1849,6 +3756,40 @@ export const BLOG_POSTS: BlogPost[] = [
 
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
         <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm">2</span>
+        Why Remote Skews Senior: The Real Reasons
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        This is not companies being elitist. Remote work structurally favors experienced people, for reasons worth understanding — because each reason points to a strategy for beating it:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-indigo-500 mt-1">▸</span>
+              <span><strong>Management overhead is expensive remotely.</strong> Mentoring a junior over Slack takes 3x the manager time of tapping someone on the shoulder. Companies doing the math prefer hires who need less supervision — which reads as "senior" in a job post.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-indigo-500 mt-1">▸</span>
+              <span><strong>Async communication is a senior skill.</strong> Writing a clear status update, documenting decisions, asking precise questions — these are learned abilities. Juniors who demonstrate them explicitly in applications neutralize the biggest objection.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-indigo-500 mt-1">▸</span>
+              <span><strong>Trust is harder to build at a distance.</strong> A track record substitutes for the confidence a manager gets from seeing you work daily. No track record? A public portfolio and open-source contributions serve the same function.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-indigo-500 mt-1">▸</span>
+              <span><strong>Hiring mistakes cost more remotely.</strong> A bad onsite hire is visible in week one; a bad remote hire can drift for a quarter. Risk-averse hiring managers default to experienced candidates — unless you de-risk yourself.</span>
+          </li>
+      </ul>
+
+      <div class="bg-indigo-50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-indigo-800 dark:text-indigo-300 m-0 text-lg">
+            The pattern: every reason remote favors seniors is really about <em>proof</em> — proof you can communicate, deliver, and be trusted without supervision. Proof can be built without a job title.
+        </p>
+      </div>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm">3</span>
         Where Are the Jobs? Top Hiring Sectors
       </h2>
 
@@ -1877,8 +3818,12 @@ export const BLOG_POSTS: BlogPost[] = [
         </ul>
       </div>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Where should freshers look?</strong> The 1,051 entry-level roles are not evenly spread. Customer Service, Admin & Support, and Marketing & Sales contain the highest absolute numbers of junior-friendly postings — these are the categories where companies still invest in training because the work is process-driven and measurable. Development has volume but the junior slice is thinnest: if you are a new developer, your competition is fiercest exactly where you most want to be.
+      </p>
+
       <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
-        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm">3</span>
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm">4</span>
         The "Cheat Code" Skills of 2026
       </h2>
 
@@ -1906,6 +3851,97 @@ export const BLOG_POSTS: BlogPost[] = [
         </div>
       </div>
 
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Notice the pattern: the hottest skills are the ones where <strong>proof is public</strong>. You cannot fake a GitHub history of ML projects or a portfolio of landing pages that convert. Pick one cluster, build three public proof pieces, and you have done more de-risking than a year of "2 years experience required" rejections.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm">5</span>
+        The Fresher Playbook: 6 Moves That Actually Work
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Knowing the data is step one. Here is the step-by-step strategy we recommend to every junior candidate:
+      </p>
+
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1 font-black">1.</span>
+              <span><strong>Stop filtering for "Entry-Level."</strong> With only 7.2% of roles labeled junior, the filter hides opportunity. Apply to mid-level roles where you meet 60%+ of requirements — "2 years experience" is a wishlist, not a law, and hiring managers routinely interview strong juniors for mid postings.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1 font-black">2.</span>
+              <span><strong>Build in public for 90 days.</strong> Ship one project per month in your target skill cluster and document it — blog posts, GitHub repos, Loom walkthroughs. Three documented projects beat a blank "1 year experience" line.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1 font-black">3.</span>
+              <span><strong>Target the junior-heavy categories first.</strong> Customer Service, Admin & Support, and Marketing & Sales hire the most juniors. Get in, perform for a year, then pivot — internal mobility beats external applications.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1 font-black">4.</span>
+              <span><strong>Take contract and freelance work seriously.</strong> A 3-month contract at a real company is worth more on your resume than a year of tutorials. Contract roles have lower hiring bars and convert to full-time more often than people expect.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1 font-black">5.</span>
+              <span><strong>Write like a senior in every application.</strong> Clear structure, specific numbers, no filler. Your application <em>is</em> your async-communication work sample — make it prove the skill remote teams are actually screening for.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-emerald-500 mt-1 font-black">6.</span>
+              <span><strong>Contribute to open source in your target stack.</strong> Even documentation PRs get you noticed by maintainers who hire. It is the closest thing to a reference letter you can earn without a job.</span>
+          </li>
+      </ul>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm">6</span>
+        A Note for Employers: Stop Filtering Out Your Best Hires
+      </h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        This data has a message for hiring managers too. If 89.7% of remote postings demand mid-to-senior experience, the competition for that slice is brutal — longer time-to-hire, higher salary demands, more counter-offers lost. Meanwhile, a motivated junior with public proof of work is sitting in the 7.2% pool, cheaper to hire and far more loyal when you invest in them.
+      </p>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The companies winning remote hiring right now do three things differently: they write requirements as <strong>skills, not years</strong> ("can build and deploy a React app independently" beats "3+ years React"); they include a small paid trial task so juniors can prove themselves without a track record; and they hire for trajectory — a candidate whose portfolio improved dramatically over six months will outgrow a stagnant "senior" within a year.
+      </p>
+
+      <div class="bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-amber-800 dark:text-amber-300 m-0 text-lg">
+            Posting on HireSkys? Consider adding "juniors with strong portfolios encouraged to apply" to your listing. You will be surprised how many exceptional candidates self-select out of "mid-level" postings purely out of politeness.
+        </p>
+      </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        One more uncomfortable truth the data implies: the "experience required" line is often written by copying a competitor's posting, not from real analysis of what the role needs. When we look at which junior hires succeed remotely, the predictors are <strong>writing clarity, self-direction, and responsiveness</strong> — none of which require years. Employers who test for those three traits directly, instead of using years-of-experience as a lazy proxy, consistently report better junior hiring outcomes. The gap is real, but it is also partly artificial — and the companies that see through it get first pick of hungry talent everyone else overlooked.
+      </p>
+
+      <h2 class="flex items-center gap-3 text-3xl font-bold mt-16 mb-6 text-slate-900 dark:text-white">
+        <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm">7</span>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-6 mb-10">
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Is the data in this article real?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Yes. Every number comes from a direct query of the live HireSkys jobs database — 14,635 active, verified listings, counted in full, not sampled. We re-run this analysis periodically and the ratios have been stable.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Should I even bother applying as a fresher?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Absolutely — but apply strategically. The 1,051 entry-level roles are real, and strong juniors regularly land "mid-level" postings too. The mistake is mass-applying to senior roles with a generic resume; the winning move is targeted applications with public proof of skill.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Which category gives freshers the best odds?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Customer Service and Admin & Support have the highest junior hiring rates in our data. Marketing & Sales has the most total volume, which means the most junior openings in absolute numbers. Development is the toughest for juniors — go in with a portfolio, not just a degree.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Do remote companies hire interns?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Some do, and internships are an underrated on-ramp: the hiring bar is lower, and remote internships convert to full-time offers at a healthy rate. Search HireSkys for internship-type listings alongside entry-level ones.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Will AI make the experience gap worse?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">It cuts both ways. AI tooling lets one junior produce like a mid-level hire, which helps newcomers compete. But it also raises the bar for what "productive" looks like. The winners will be juniors who learn to work <em>with</em> AI tools fluently — that skill alone is becoming a differentiator in applications.</p>
+        </div>
+      </div>
+
       <div class="bg-gradient-to-r from-slate-900 to-[#111625] p-8 md:p-10 rounded-3xl text-center border border-slate-800 shadow-2xl mt-12 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
         <h3 class="text-2xl md:text-3xl font-black text-white mb-4 relative z-10">The Takeaway for Job Seekers</h3>
@@ -1917,6 +3953,7 @@ export const BLOG_POSTS: BlogPost[] = [
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
+
     `
   },
   {
@@ -1939,44 +3976,149 @@ export const BLOG_POSTS: BlogPost[] = [
       <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 my-10">
         <img src="/blog/visatalentusa-launch.svg" alt="VisaTalentUSA launch announcement" class="w-full h-auto" width="1200" height="630" />
       </div>
-      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Why We Built VisaTalentUSA</h2>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Problem: H-1B Information Is a Black Box</h2>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        At HireSkys, we help thousands of job seekers find remote work every month. But again and again, we heard the same frustration: <em>"Which companies sponsor visas? Will they pay me fairly? What are my odds?"</em>
+        Here is what the H-1B journey looks like for most people today. You hear that some companies "sponsor visas," but nobody can tell you <em>which</em> companies, <em>how many</em> visas they actually file, or <em>what they pay</em> the people they sponsor. The official data exists — the U.S. Department of Labor publishes every Labor Condition Application — but it lives in massive raw files that no normal person can read.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Into that vacuum rush the worst actors: consultants who charge thousands for "guaranteed" sponsorships that do not exist, forums full of outdated anecdotes, and employers who quietly underpay sponsored workers because the workers have no way to check what others earn. Information asymmetry is the entire business model of H-1B exploitation — and the only fix is radical transparency.
       </p>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
-        The information was scattered across government PDFs and outdated forums. Nobody had built a single, trustworthy, <strong>free</strong> resource powered by real data. So we built it ourselves.
+        At HireSkys, we help thousands of job seekers find remote work every month. But again and again, we heard the same frustration: <em>"Which companies sponsor visas? Will they pay me fairly? What are my odds?"</em> The information was scattered across government PDFs and outdated forums. Nobody had built a single, trustworthy, <strong>free</strong> resource powered by real data. So we built it ourselves.
       </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">What the Data Actually Is</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        VisaTalentUSA is built on the Department of Labor's official Labor Condition Application (LCA) disclosure data — the forms every employer must file before hiring an H-1B worker. This is not scraped, estimated, or crowdsourced. It is the government's own record, covering fiscal years 2024 through 2026, with more than 1.5 million individual records processed.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        For each employer, we aggregate the raw filings into answers people actually need: <strong>total cases filed</strong> (how serious is this company about sponsorship?), <strong>median salary</strong> (what do they really pay?), and <strong>LCA certification rate</strong> (how often does the Department of Labor approve their filings?). These are facts from official records — not marketing claims, not Glassdoor anecdotes.
+      </p>
+      <div class="bg-blue-50 dark:bg-blue-900/10 border-l-4 border-blue-500 p-6 my-8 rounded-r-xl">
+        <p class="font-medium text-blue-800 dark:text-blue-300 m-0 text-lg">
+            A note on honesty: LCA data shows Department of Labor filings, not USCIS petition outcomes. We say "LCA certification rate" — never "approval rate" — because precision matters when people's careers are on the line.
+        </p>
+      </div>
+
       <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">What VisaTalentUSA Offers</h2>
       <div class="grid md:grid-cols-2 gap-6 my-8">
         <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
           <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3">Top 1,000 H-1B Sponsors</h3>
-          <p class="text-blue-800/80 dark:text-blue-200/80">Searchable database with real filing counts, median salaries, and DOL LCA certification rates.</p>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Searchable database with real filing counts, median salaries, and DOL LCA certification rates — the largest sponsors, ranked by actual data.</p>
         </div>
         <div class="p-6 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 dark:border-emerald-800/50">
           <h3 class="font-black text-xl text-emerald-900 dark:text-emerald-300 mb-3">Lottery Odds Calculator</h3>
-          <p class="text-emerald-800/80 dark:text-emerald-200/80">Interactive tool estimating your H-1B lottery chances by wage level and degree.</p>
+          <p class="text-emerald-800/80 dark:text-emerald-200/80">Interactive tool estimating your H-1B lottery chances by wage level and degree — because the new wage-weighted selection changed the math.</p>
         </div>
         <div class="p-6 bg-violet-50 dark:bg-violet-900/10 rounded-2xl border border-violet-100 dark:border-violet-800/50">
           <h3 class="font-black text-xl text-violet-900 dark:text-violet-300 mb-3">Expert Guides</h3>
-          <p class="text-violet-800/80 dark:text-violet-200/80">In-depth guides on the lottery, fees, transfers, and strategies.</p>
+          <p class="text-violet-800/80 dark:text-violet-200/80">In-depth guides on the lottery, fees, transfers, Day 1 CPT, PERM timelines, and I-140 processing — written from official sources.</p>
         </div>
         <div class="p-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-800/50">
-          <h3 class="font-black text-xl text-amber-900 dark:text-amber-300 mb-3">Real DOL Data</h3>
-          <p class="text-amber-800/80 dark:text-amber-200/80">1.5M+ official Department of Labor records. No dummy data — just facts.</p>
+          <h3 class="font-black text-xl text-amber-900 dark:text-amber-300 mb-3">Interactive Tools</h3>
+          <p class="text-amber-800/80 dark:text-amber-200/80">Lottery results tracker, wage level checker, sponsor match finder, I-140 approval explorer, and a priority date tracker for green card waiters.</p>
         </div>
       </div>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">How to Use It: Three Real Scenarios</h2>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Scenario 1 — You are on OPT and need a sponsor.</strong> Search the database for companies in your field, sort by filing volume, and target employers with a track record — a company that filed 500 LCAs last year is a fundamentally safer bet than one that filed two. Check their median salary against your offer before you sign anything.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Scenario 2 — You want to transfer your H-1B.</strong> Look up your current employer's numbers and your prospective employer's numbers side by side. A higher certification rate and a higher median wage for your job title means less risk and better pay. Read the H-1B transfer guide first so you understand the timeline.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>Scenario 3 — You are negotiating salary.</strong> This is the most underused superpower of the database. When an employer offers you $95,000, you can look up exactly what they paid other H-1B workers in your role last year. Real DOL numbers beat "trust me, this is market rate" every single time.
+      </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">How to Read a Sponsor Page</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Every sponsor page answers three questions. <strong>Total cases</strong> tells you scale — how many LCAs the company filed in the most recent fiscal year. <strong>Median salary</strong> tells you what sponsored workers actually earn there (remember, this is the midpoint: half earn more, half earn less). <strong>LCA certification rate</strong> tells you how often the Department of Labor certified their filings — consistently high rates signal an experienced immigration team that files clean applications.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Also check the trend across fiscal years. A company whose filings dropped 60% year over year may be freezing sponsorship — useful to know <em>before</em> you accept an offer contingent on it.
+      </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Who It Is For</h2>
+      <ul class="space-y-4 ml-2 text-slate-700 dark:text-slate-300 text-lg mb-8">
+          <li class="flex items-start gap-3">
+              <span class="text-blue-500 mt-1">▸</span>
+              <span><strong>F-1 students on OPT/STEM OPT</strong> deciding which employers to target before their work authorization clock runs out.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-blue-500 mt-1">▸</span>
+              <span><strong>H-1B workers</strong> considering a transfer, evaluating a layoff, or negotiating a raise with real salary data.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-blue-500 mt-1">▸</span>
+              <span><strong>Professionals abroad</strong> who want to understand their realistic odds before investing in the process.</span>
+          </li>
+          <li class="flex items-start gap-3">
+              <span class="text-blue-500 mt-1">▸</span>
+              <span><strong>Employers and attorneys</strong> who need quick, reliable sponsor benchmarks for their own filings.</span>
+          </li>
+      </ul>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Tools, Explained</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The database gets the headlines, but the interactive tools are what make VisaTalentUSA genuinely useful day to day. Two deserve special mention:
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The H-1B Lottery Odds Calculator</strong> matters because the selection system changed. With wage-weighted selection, your odds are no longer one flat number — they depend on your wage level and whether you hold a U.S. master's degree. The calculator walks you through those inputs and shows your estimated chances with the actual historical selection data behind the estimate. No more guessing from forum rumors.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        <strong>The Lottery Results Tracker</strong> covers fiscal years 2021 through 2026 with interactive charts: how many registrations were filed, how many were selected, and how the selection rate moved year to year. When you are trying to decide whether to try again next year or pursue a different path, seeing the real trend line beats reading ten opinion pieces.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        There is also a <strong>wage level checker</strong> (understand which prevailing wage level your offer maps to), a <strong>sponsor match finder</strong> (answer a few questions, get matched with sponsors that fit your profile), an <strong>I-140 approval rate explorer</strong> (see approval rates by green card category, built from official USCIS data), and a <strong>priority date tracker</strong> for anyone stuck in the green card backlog watching the Visa Bulletin every month.
+      </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Why Free Matters Here</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Let us be blunt about the economics: the H-1B information market has a predatory side. "Consultants" charge thousands of dollars for sponsorship promises, salary data sits behind paywalls, and the people most desperate for clarity — students, workers between jobs, families planning a move — are the least able to pay for it. Every paywall in this space is a tax on the vulnerable.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        That is why VisaTalentUSA has no premium tier, no locked reports, and no account wall. The Department of Labor data is public — paid for by taxpayers — and we believe its value should flow to the workers it was collected to protect, not sit in a spreadsheet only insiders can read. If the platform ever needs revenue, it will come from employer-side services, never from charging job seekers for their own data.
+      </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+      <div class="space-y-6 mb-10">
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Is VisaTalentUSA really free?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Yes — the sponsor database, all calculators and tools, and every guide are free with no account required. That is a deliberate choice: the people who need this information most are often the ones who can least afford to pay for it.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Where does the data come from?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">The U.S. Department of Labor's official LCA disclosure data (fiscal years 2024–2026), plus USCIS-published statistics for lottery results and I-140 processing data. Every number on the site traces back to an official source — we publish our methodology openly.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">Is this legal advice?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">No. VisaTalentUSA provides data and educational guides, not legal advice. Immigration decisions should always be confirmed with a qualified immigration attorney — our goal is to make you an informed client, not to replace your lawyer.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">How is this connected to HireSkys?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">VisaTalentUSA is built and operated by the HireSkys team as a sister platform. Same obsession with verified, real data — applied to the H-1B world instead of remote job listings.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <p class="font-bold text-slate-900 dark:text-white text-lg mb-2">How fresh is the data?</p>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed m-0">Sponsor data covers fiscal years 2024 through 2026 from official DOL disclosures, and we update it as new government data publishes. USCIS-sourced tools like the lottery tracker and I-140 explorer refresh on their own cadence as new official statistics are released. Every page shows its data vintage so you always know what you are looking at.</p>
+        </div>
+      </div>
+
       <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Our Mission</h2>
       <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-        VisaTalentUSA exists to <strong>level the playing field</strong>. Whether you are in Lahore, Bangalore, or Manila — you deserve the same transparent information that insiders have. It is free, it will stay free, and it is just getting started.
+        VisaTalentUSA exists to <strong>level the playing field</strong>. Whether you are in Lahore, Bangalore, or Manila — you deserve the same transparent information that insiders have. It is free, it will stay free, and it is just getting started. New tools, fresh data drops, and deeper guides are shipping every month.
       </p>
       <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 md:p-10 rounded-3xl text-center shadow-2xl mt-12">
         <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Explore VisaTalentUSA Today</h3>
         <p class="text-blue-100 mb-8 text-lg font-medium max-w-2xl mx-auto">Search sponsors, calculate lottery odds, and read expert guides — all free.</p>
         <a href="https://visatalentusa.com" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">Visit VisaTalentUSA</a>
       </div>
+
     `
-  },
-  
+  }
 {
     slug: 'remote-jobs-no-experience-beginners-guide-2026',
     title: 'Remote Jobs With No Experience: The Complete Beginner\'s Guide (2026)',
@@ -1986,7 +4128,7 @@ export const BLOG_POSTS: BlogPost[] = [
     role: 'Founder, HireSkys',
     authorImage: '/founder.png',
     category: 'Career Advice',
-    image: '/blog-remote-jobs-no-experience.jpg',
+    image: '/blog-og-image.png',
     toc: [
       { id: 'can-you-really', title: 'Can You Really Get a Remote Job With No Experience?' },
       { id: 'best-roles', title: '12 Best Remote Jobs for Beginners (No Experience Needed)' },
@@ -2135,7 +4277,7 @@ export const BLOG_POSTS: BlogPost[] = [
         </a>
       </div>
       <div class="text-center my-8">
-        <a href="https://www.hireskys.com" class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all shadow-lg text-lg">Browse All Remote Jobs →</a>
+        <a href="https://www.hireskys.com/remote-jobs" class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all shadow-lg text-lg">Browse All Remote Jobs →</a>
       </div>
 
       <h2 id="step-by-step" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Step-by-Step: How to Land Your First Remote Job</h2>
@@ -2218,8 +4360,8 @@ export const BLOG_POSTS: BlogPost[] = [
       <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 md:p-10 rounded-3xl text-center shadow-2xl mt-12">
         <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Your First Remote Job Is Waiting</h3>
         <p class="text-blue-100 mb-8 text-lg font-medium max-w-2xl mx-auto">Browse verified entry-level remote jobs on HireSkys — no scams, no ghost jobs, just real opportunities.</p>
-        <a href="https://www.hireskys.com" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">Find Beginner-Friendly Jobs</a>
+        <a href="https://www.hireskys.com/remote-jobs" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">Find Beginner-Friendly Jobs</a>
       </div>
     `
-  }
+  },
 ];

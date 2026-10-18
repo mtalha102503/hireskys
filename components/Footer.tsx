@@ -131,22 +131,22 @@ export default function Footer() {
             
            {/* SOCIAL & COMMUNITY ICONS */}
             <div className="flex flex-wrap gap-2 pt-2">
-              <a href="https://x.com/hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-slate-200 dark:hover:bg-slate-800 dark:hover:text-indigo-400 transition-all duration-300">
+              <a href="https://x.com/hireskys" aria-label="HireSkys on X" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-slate-200 dark:hover:bg-slate-800 dark:hover:text-indigo-400 transition-all duration-300">
                 <XIcon className="w-4 h-4" />
               </a>
-              <a href="https://www.instagram.com/hireskys/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#E1306C] hover:bg-[#E1306C]/10 dark:hover:bg-[#E1306C]/20 dark:hover:text-[#E1306C] transition-all duration-300">
+              <a href="https://www.instagram.com/hireskys/" aria-label="HireSkys on Instagram" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#E1306C] hover:bg-[#E1306C]/10 dark:hover:bg-[#E1306C]/20 dark:hover:text-[#E1306C] transition-all duration-300">
                 <InstagramIcon className="w-4 h-4" />
               </a>
-              <a href="https://www.threads.net/@hireskys" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-black hover:bg-slate-200 dark:hover:bg-white/10 dark:hover:text-white transition-all duration-300">
+              <a href="https://www.threads.net/@hireskys" aria-label="HireSkys on Threads" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-black hover:bg-slate-200 dark:hover:bg-white/10 dark:hover:text-white transition-all duration-300">
                 <FaThreads className="w-4 h-4" />
               </a>
-              <a href="https://discord.gg/BmfgGfX5" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#5865F2] hover:bg-[#5865F2]/10 dark:hover:bg-[#5865F2]/20 dark:hover:text-[#5865F2] transition-all duration-300">
+              <a href="https://discord.gg/BmfgGfX5" aria-label="HireSkys Discord" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#5865F2] hover:bg-[#5865F2]/10 dark:hover:bg-[#5865F2]/20 dark:hover:text-[#5865F2] transition-all duration-300">
                 <DiscordIcon className="w-4 h-4" />
               </a>
-              <a href="https://t.me/hireskys_jobs" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#0088cc] hover:bg-[#0088cc]/10 dark:hover:bg-[#0088cc]/20 dark:hover:text-[#0088cc] transition-all duration-300">
+              <a href="https://t.me/hireskys_jobs" aria-label="HireSkys Telegram" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-[#0088cc] hover:bg-[#0088cc]/10 dark:hover:bg-[#0088cc]/20 dark:hover:text-[#0088cc] transition-all duration-300">
                 <TelegramIcon className="w-4 h-4" />
               </a>
-              <a href="mailto:contact@hireskys.com" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all duration-300">
+              <a href="mailto:contact@hireskys.com" aria-label="Email HireSkys" className="p-2 rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all duration-300">
                 <MailIcon className="w-4 h-4" />
               </a>
             </div>
@@ -222,6 +222,7 @@ export default function Footer() {
               <li><Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Terms of Service</Link></li>
               <li><Link href="/cookie-policy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Cookie Policy</Link></li>
               <li><Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact Us</Link></li>
               <li><Link href="/refund-policy" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Refund and Cancellation</Link></li>
               <li><Link href="/sitemap.xml" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Sitemap</Link></li>
             </ul>

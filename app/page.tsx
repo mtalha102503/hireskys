@@ -98,6 +98,35 @@ if (pageRaw > 0) {
   };
 }
 
+// 🧱 Homepage skeleton — white page + spinner ki jagah, taake loading me bhi page jaisa lage
+function HomePageSkeleton() {
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] animate-pulse">
+      {/* Navbar placeholder */}
+      <div className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" />
+      {/* Hero/search placeholder */}
+      <div className="max-w-5xl mx-auto px-4 pt-10">
+        <div className="h-8 w-2/3 mx-auto bg-slate-200 dark:bg-slate-800 rounded-lg" />
+        <div className="h-4 w-1/2 mx-auto mt-3 bg-slate-200 dark:bg-slate-800 rounded" />
+        <div className="h-14 mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl" />
+        {/* Job card skeletons */}
+        <div className="mt-8 space-y-4">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-28 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
+              <div className="h-5 w-1/3 bg-slate-200 dark:bg-slate-800 rounded" />
+              <div className="h-4 w-1/4 mt-2 bg-slate-200 dark:bg-slate-800 rounded" />
+              <div className="flex gap-2 mt-3">
+                <div className="h-6 w-16 bg-slate-200 dark:bg-slate-800 rounded-full" />
+                <div className="h-6 w-20 bg-slate-200 dark:bg-slate-800 rounded-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // 🚀 ASYNC MAIN PAGE COMPONENT (SERVER-SIDE FETCHING)
 export default async function Page({ searchParams }: Props) {
   const resolvedParams = await searchParams || {};
@@ -157,7 +186,7 @@ const categoryRaw = typeof resolvedParams?.category === 'string' && resolvedPara
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
       
-      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>}>
+      <Suspense fallback={<HomePageSkeleton />}>
         {/* 3. 🚀 PASS DATA TO CLIENT COMPONENT */}
         <HomePageClient 
             serverJobs={initialJobs || []} 

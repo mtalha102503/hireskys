@@ -18,8 +18,8 @@ const contactCards = [
     icon: MessageCircle,
     title: 'Job Seeker Support',
     desc: 'Questions about applying, your profile, saved jobs, or job alerts.',
-    email: 'support@hireskys.com',
-    href: 'mailto:support@hireskys.com',
+    email: 'contact@hireskys.com',
+    href: 'mailto:contact@hireskys.com',
   },
   {
     icon: Building2,
@@ -32,8 +32,8 @@ const contactCards = [
     icon: Flag,
     title: 'Report a Job Listing',
     desc: 'Found a scam, expired, or misleading job post? Tell us — we act fast.',
-    email: 'support@hireskys.com',
-    href: 'mailto:support@hireskys.com?subject=Report%20a%20job%20listing',
+    email: 'contact@hireskys.com',
+    href: 'mailto:contact@hireskys.com?subject=Report%20a%20job%20listing',
   },
 ];
 

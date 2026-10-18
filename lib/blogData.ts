@@ -4118,8 +4118,8 @@ export const BLOG_POSTS: BlogPost[] = [
       </div>
 
     `
-  }
-{
+  },
+  {
     slug: 'remote-jobs-no-experience-beginners-guide-2026',
     title: 'Remote Jobs With No Experience: The Complete Beginner\'s Guide (2026)',
     excerpt: 'Yes, you CAN get a remote job with zero experience. Here are the 12 best beginner-friendly remote roles, real entry-level listings hiring right now, and a step-by-step plan to land your first one.',

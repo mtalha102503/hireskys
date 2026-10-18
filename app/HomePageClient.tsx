@@ -8,7 +8,10 @@ import InFeedAd from "@/components/InFeedAd";
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { CATEGORIES } from '@/lib/categories'; 
 import { countryMap, COUNTRIES } from '@/lib/country';
-import { motion, AnimatePresence } from "framer-motion";
+// Lightweight shim — framer-motion ke ~100KB ke baghair, koi visual toot-phoot nahi
+const motion: any = { div: (props: any) => { const { initial, animate, exit, transition, ...rest } = props; return <div {...rest} />; } };
+const AnimatePresence = (props: any) => <>{props.children}</>;
+
 import React from 'react';
 import { 
   Search, Globe, Briefcase, ShieldCheck, 

@@ -1,35 +1,16 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerMegabanner() {
   const adRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "200px" } 
-    );
-
-    if (adRef.current) {
-      observer.observe(adRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
+  // INSTANT LOAD (user directive 2026-10-20): no lazy gate — load on mount so
+  // the ad request starts immediately with the page.
   useEffect(() => {
     // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
-    if (isInView) {
-      loadMoneytizerAd(adRef.current, 1, 1); // type=1, formatId=1 for Megabanner
-    }
-  }, [isInView]);
+    loadMoneytizerAd(adRef.current, 1, 1); // type=1, formatId=1 for Megabanner
+  }, []);
 
   return (
     <div className="w-full flex flex-col items-center justify-center my-6 py-2 bg-slate-50/50 dark:bg-[#111625] rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 transition-all">

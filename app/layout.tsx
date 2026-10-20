@@ -138,6 +138,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* ⚡ AD SPEED: Moneytizer ad server se pehle hi connection tayyar rakho,
+            taake ad scripts bina DNS/connection delay ke foran load hon */}
+        <link rel="preconnect" href="https://ads.themoneytizer.com" />
+        <link rel="dns-prefetch" href="https://ads.themoneytizer.com" />
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){

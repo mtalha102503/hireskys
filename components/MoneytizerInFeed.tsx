@@ -1,37 +1,15 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerInFeed() {
   const adRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
 
+  // INSTANT LOAD (user directive 2026-10-20): no lazy gate — load on mount.
   useEffect(() => {
-    // Scroll observer: Jab user ad ke 200px qareeb aaye tabhi script chalay ga
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.disconnect(); // Ek dafa load hone ke baad observer band kar do
-        }
-      },
-      { rootMargin: "200px" } 
-    );
-
-    if (adRef.current) {
-      observer.observe(adRef.current);
-    }
-
-    return () => observer.disconnect();
+    // Shared loader: gen.js sirf ek dafa load hoga, requestform.js har slot ke liye
+    loadMoneytizerAd(adRef.current, 2, 2);
   }, []);
-
-  useEffect(() => {
-    // Agar view me aa gaya hai toh shared loader se ad inject karo
-    // (gen.js sirf ek dafa load hoga, requestform.js har slot ke liye)
-    if (isInView) {
-      loadMoneytizerAd(adRef.current, 2, 2);
-    }
-  }, [isInView]);
 
   return (
     <div className="w-full flex flex-col items-center justify-center my-6 md:my-8 py-4 bg-slate-50/50 dark:bg-[#111625] rounded-[2rem] border border-dashed border-slate-200 dark:border-slate-800 transition-all hover:bg-white dark:hover:bg-[#151b2d] hover:shadow-xl hover:shadow-indigo-500/5">

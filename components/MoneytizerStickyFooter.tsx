@@ -7,35 +7,19 @@ import { loadMoneytizerAd } from "./moneytizer-loader";
 export default function MoneytizerStickyFooter() {
   const adRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
-  const [shouldLoad, setShouldLoad] = useState(false); // 👈 NAYA: script load ka gate
 
   // 🚀 PATHNAME HOOK: Pata lagane ke liye ke user kis page par hai
   const pathname = usePathname();
   const isJobPage = pathname?.includes("/jobs/");
 
-  // 🚀 SPEED FIX: Ad-script ko page ke critical content ke baad load karo.
-  // Isse initial page load/LCP is heavy third-party script se compete nahi karega.
+  // INSTANT LOAD (user directive 2026-10-20): purana idle/1.5s delay gate
+  // khatam — ad page khulte hi load hoga, koi intezaar nahi.
   useEffect(() => {
     if (!isVisible) return;
 
-    // Agar browser "idle" detect kar sakta hai (zyada tar modern browsers), to usay use karo —
-    // ye tab chalega jab browser free ho (koi zaroori kaam na ho raha ho).
-    if ('requestIdleCallback' in window) {
-      const idleId = (window as any).requestIdleCallback(() => setShouldLoad(true), { timeout: 2000 });
-      return () => (window as any).cancelIdleCallback?.(idleId);
-    } else {
-      // Fallback (Safari waghera): simple 1.5s delay
-      const timer = setTimeout(() => setShouldLoad(true), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (!shouldLoad) return;
-
     // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
     loadMoneytizerAd(adRef.current, 28, 28);
-  }, [shouldLoad]);
+  }, [isVisible]);
 
   if (!isVisible) return null;
 

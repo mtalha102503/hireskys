@@ -4,6 +4,7 @@ import Script from 'next/script';
 import ConditionalChat from '@/components/ConditionalChat';
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
+import AtsFooter from "@/components/AtsFooter";
 import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
@@ -138,6 +139,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* 🎯 ATS SUBDOMAIN: paint se pehle hi pehchan laga do taake
+            ats.hireskys.com par foran ATS wali chrome (navbar/footer) dikhe,
+            asal site par is ka koi asar nahi */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if(window.location.hostname==='ats.hireskys.com'){document.documentElement.classList.add('ats-host')}`,
+          }}
+        />
         {/* ⚡ AD SPEED: Moneytizer ad server se pehle hi connection tayyar rakho,
             taake ad scripts bina DNS/connection delay ke foran load hon */}
         <link rel="preconnect" href="https://ads.themoneytizer.com" />
@@ -342,12 +351,21 @@ export default function RootLayout({
             <main className="flex-grow">
               {children}
             </main>
-            <Footer />
+            <div className="chrome-main">
+              <Footer />
+            </div>
+            <div className="chrome-ats">
+              <AtsFooter />
+            </div>
           </div>
           <ConsentBanner />
           <ConditionalChat />
-          <MoneytizerStickyFooter/>
-          <PlatformFeedback />
+          <div className="chrome-main">
+            <MoneytizerStickyFooter/>
+          </div>
+          <div className="chrome-main">
+            <PlatformFeedback />
+          </div>
         </ThemeProvider>
         <GoogleOneTap />
         <GoogleAnalytics gaId="G-PZ6099S6LJ" />

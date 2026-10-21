@@ -114,3 +114,21 @@ a:active,
     0% { background-position: 0% 50%; }
     100% { background-position: 200% 50%; }
 }
+
+/* ============ ATS SUBDOMAIN CHROME (ats.hireskys.com) ============ */
+/* Default (asal site): .chrome-main wali cheezain dikhti hain.
+   Jab <html> par .ats-host class ho (subdomain par paint se pehle lagti hai),
+   to asal site ki chrome chhup jati hai aur ATS ki apni chrome dikhti hai.
+   display:contents ki wajah se layout par koi farq nahi parta. */
+.chrome-main {
+  display: contents;
+}
+.chrome-ats {
+  display: none;
+}
+html.ats-host .chrome-main {
+  display: none;
+}
+html.ats-host .chrome-ats {
+  display: contents;
+}

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import AtsNavbar from '@/components/AtsNavbar';
 import { 
   Layout, CheckCircle2, ArrowRight, Bot, Globe, 
   CreditCard, Briefcase, X, Star, Sparkles, TrendingUp,
@@ -22,7 +23,12 @@ const TRUSTED_COMPANIES = [
 export default function ATSLandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100 pb-20 selection:bg-indigo-500/30">
-      <Navbar />
+      <div className="chrome-main">
+        <Navbar />
+      </div>
+      <div className="chrome-ats">
+        <AtsNavbar />
+      </div>
 
       {/* 🚀 1. HERO SECTION */}
       <div className="relative pt-24 pb-20 lg:pt-32 lg:pb-24 overflow-hidden">

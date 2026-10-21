@@ -201,7 +201,7 @@ useEffect(() => {
   </span>
 </Link>
               {!user && (
-                <Link href="/ats" className="relative flex items-center gap-2 text-sm font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-700/50 px-4 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                <Link href="https://ats.hireskys.com" className="relative flex items-center gap-2 text-sm font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-700/50 px-4 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
                     <span className="flex h-2 w-2 relative">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600 dark:bg-indigo-400"></span>
@@ -320,7 +320,7 @@ useEffect(() => {
                     </Link>
                 )}
                 {!user && (
-                    <Link href="/ats" onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-500">
+                    <Link href="https://ats.hireskys.com" onClick={() => setIsOpen(false)} className="flex items-center gap-2 py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-500">
                         <LayoutDashboard size={18} /> Free ATS
                     </Link>
                 )}

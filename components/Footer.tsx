@@ -189,7 +189,7 @@ export default function Footer() {
                 <li><Link href="/post-job" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Post a Job</Link></li>
                 <li><Link href="/add-company" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Add Company</Link></li>
                 <li>
-                  <Link href="/ats" className="group inline-flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                  <Link href="https://ats.hireskys.com" className="group inline-flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                     Free ATS 
                     <span className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded shadow-sm group-hover:scale-105 transition-transform">
                       Hot

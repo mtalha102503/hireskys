@@ -24,10 +24,23 @@ export async function middleware(request: NextRequest) {
   if (host === ATS_HOST) {
     const { pathname, search } = request.nextUrl
 
-    // ats.hireskys.com/  ->  andar se /ats wali screen (URL saaf rehta hai)
+    // Subdomain ki apni SEO files (asal site ki robots/sitemap mehfooz rehti hain)
+    if (pathname === '/robots.txt') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/ats-robots.txt'
+      return NextResponse.rewrite(url)
+    }
+    if (pathname === '/sitemap.xml') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/ats-sitemap.xml'
+      return NextResponse.rewrite(url)
+    }
+
+    // ats.hireskys.com/  ->  andar se /ats-home wali screen (URL saaf rehta hai)
+    // /ats-home ki apni SEO pehchan hai (canonical/OG sab ats.hireskys.com par)
     if (pathname === '/') {
       const url = request.nextUrl.clone()
-      url.pathname = '/ats'
+      url.pathname = '/ats-home'
       return NextResponse.rewrite(url)
     }
 
@@ -70,7 +83,7 @@ export const config = {
     // asal site ki requests is se bilkul mutaasir nahi hongi.
     {
       source:
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|webm|ico|txt|xml)$).*)',
+        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|webm|ico)$).*)',
       has: [{ type: 'host', value: 'ats.hireskys.com' }],
     },
   ],

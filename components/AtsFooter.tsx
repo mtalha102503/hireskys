@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 // 🎯 ATS subdomain ki apni saaf footer — sirf product, company aur legal links.
 // Job-board wala bara crowded footer yahan nahi chalega.
@@ -10,11 +11,19 @@ export default function AtsFooter() {
           {/* Brand */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-indigo-600 text-lg font-black text-white shadow-md shadow-indigo-500/30">
-                H
-              </span>
+              <Image
+                src="/logo.webp"
+                alt="HireSkys Logo"
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="h-9 w-auto object-contain"
+              />
               <span className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
-                HireSkys <span className="text-indigo-600 dark:text-indigo-400">ATS</span>
+                HireSkys
+              </span>
+              <span className="rounded-md bg-indigo-600 px-2 py-0.5 text-xs font-black tracking-wide text-white">
+                ATS
               </span>
             </Link>
             <p className="mt-4 max-w-sm text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400">

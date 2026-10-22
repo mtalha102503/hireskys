@@ -94,6 +94,22 @@ export default function ApplyPage() {
     setSubmitting(true);
 
     try {
+      // 🟢 Job ki pehli stage ka naam (Phase 1 custom pipelines);
+      //    stage na mile to default 'New' — application kabhi ruke gi nahi
+      let firstStageName = 'New';
+      try {
+        const { data: stageRow } = await supabase
+          .from('job_stages')
+          .select('name')
+          .eq('job_id', job.id)
+          .order('position', { ascending: true })
+          .limit(1)
+          .single();
+        if (stageRow?.name) firstStageName = stageRow.name;
+      } catch {
+        // default pipeline ka pehla stage 'New' hi hai
+      }
+
       // 🟢 ATS (applications table) mein candidate ka data insert karna
       const { error } = await supabase
         .from('applications')
@@ -105,7 +121,7 @@ export default function ApplyPage() {
           portfolio_link: formData.portfolioLink,
           cover_letter: formData.coverLetter,
           candidate_timezone: formData.timezone,
-          status: 'New',
+          status: firstStageName,
           ai_match_score: Math.floor(Math.random() * (99 - 60 + 1)) + 60 // Abhi fake score 60-99 de rahe hain
         });
 

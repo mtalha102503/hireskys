@@ -29,8 +29,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to update status in database" }, { status: 500 });
     }
 
-    // 2. 🎯 ANTI-GHOSTING LOGIC: Agar naya status 'Rejected' hai, toh auto-email bhejo
-    if (newStatus === 'Rejected') {
+    // 2. 🎯 Stage ki KIND nikalo (Phase 1 custom stages): rejection email
+    //    ab naam par nahi, rejected-KIND wale stage par fire hoti hai —
+    //    employer stage ka naam badal de, tab bhi email sahi chalegi.
+    //    job_stages na mile to purana naam wala rule fallback hai.
+    let newKind: string | null = null;
+    try {
+      const { data: stageRow } = await supabaseAdmin
+        .from('job_stages')
+        .select('kind')
+        .eq('job_id', application.job_id)
+        .eq('name', newStatus)
+        .single();
+      newKind = stageRow?.kind || null;
+    } catch {
+      newKind = null;
+    }
+    const isRejectedStage = newKind ? newKind === 'rejected' : newStatus === 'Rejected';
+
+    // 3. 🎯 ANTI-GHOSTING LOGIC: Agar naya stage rejected-KIND ka hai, toh auto-email bhejo
+    if (isRejectedStage) {
       
       // Job ka Title fetch karo
       const { data: job } = await supabaseAdmin

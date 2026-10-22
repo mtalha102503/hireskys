@@ -88,6 +88,22 @@ export async function POST(req: Request) {
     const finalLink = `https://hireskys.com/jobs/${insertedJob.slug}/apply`;
     await supabaseAdmin.from('jobs').update({ link: finalLink }).eq('id', insertedJob.id);
 
+    // 6. Phase 1: Nayi job ki default pipeline stages seed karo.
+    //    Fail ho jaye to job posting NAHI rukti — board default stages par chalti hai.
+    try {
+      const { error: stageError } = await supabaseAdmin.from('job_stages').insert([
+        { job_id: insertedJob.id, name: 'New', kind: 'applied', position: 0, color: 'blue' },
+        { job_id: insertedJob.id, name: 'Shortlisted', kind: 'screening', position: 1, color: 'emerald' },
+        { job_id: insertedJob.id, name: 'Interview', kind: 'interview', position: 2, color: 'purple' },
+        { job_id: insertedJob.id, name: 'Offer', kind: 'offer', position: 3, color: 'amber' },
+        { job_id: insertedJob.id, name: 'Hired', kind: 'hired', position: 4, color: 'green' },
+        { job_id: insertedJob.id, name: 'Rejected', kind: 'rejected', position: 5, color: 'slate' }
+      ]);
+      if (stageError) console.error('Stage seeding failed (non-fatal):', stageError.message);
+    } catch (stageErr) {
+      console.error('Stage seeding failed (non-fatal):', stageErr);
+    }
+
     return NextResponse.json({ success: true, message: "Job successfully posted!", job: insertedJob });
 
   } catch (error: any) {

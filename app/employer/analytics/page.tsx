@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { fetchStagesByJob, kindOfStatus } from '@/lib/pipeline';
 import { 
   BarChart3, Users, Briefcase, TrendingUp, 
   Loader2, MousePointerClick, Activity, ChevronRight,Lock,
@@ -19,7 +20,7 @@ export default function AnalyticsPage() {
     totalJobs: 0,
     totalApplicants: 0,
     avgMatchScore: 0, // 👈 VIP JADOO: Naya Metric
-    pipeline: { new: 0, shortlisted: 0, interview: 0, rejected: 0 },
+    pipeline: { new: 0, shortlisted: 0, interview: 0, offer: 0, hired: 0, rejected: 0 },
     topJobs: [] as any[]
   });
 
@@ -75,18 +76,23 @@ async function fetchAnalytics() {
         let applicantsCount = 0;
         let totalScore = 0;
         let scoredAppsCount = 0;
-        let pipelineCounts = { new: 0, shortlisted: 0, interview: 0, rejected: 0 };
+        let pipelineCounts = { new: 0, shortlisted: 0, interview: 0, offer: 0, hired: 0, rejected: 0 };
+        // 🟢 Phase 1: har job ki custom stages se status -> kind mapping
+        const stagesByJob = await fetchStagesByJob(supabase, jobsData.map((j: any) => j.id));
         
         const jobsWithStats = jobsData.map(job => {
           const apps = job.applications || [];
           applicantsCount += apps.length;
 
           apps.forEach((app: any) => {
-            const status = (app.status || 'New').toLowerCase();
-            if (status === 'new') pipelineCounts.new++;
-            else if (status === 'shortlisted') pipelineCounts.shortlisted++;
-            else if (status === 'interview') pipelineCounts.interview++;
-            else if (status === 'rejected') pipelineCounts.rejected++;
+            // 🟢 Phase 1: naam ki jagah stage KIND se bucket (custom stages safe)
+            const kind = kindOfStatus(stagesByJob[job.id], app.status || 'New');
+            if (kind === 'applied') pipelineCounts.new++;
+            else if (kind === 'screening' || kind === 'custom') pipelineCounts.shortlisted++;
+            else if (kind === 'interview') pipelineCounts.interview++;
+            else if (kind === 'offer') pipelineCounts.offer++;
+            else if (kind === 'hired') pipelineCounts.hired++;
+            else if (kind === 'rejected') pipelineCounts.rejected++;
             else pipelineCounts.new++; 
 
             if (app.ai_match_score) {
@@ -235,7 +241,7 @@ async function fetchAnalytics() {
             <div className="group relative">
               <div className="flex justify-between text-sm font-bold mb-2">
                 <span className="text-slate-600 dark:text-slate-400 uppercase tracking-wider text-xs flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-blue-500"></div> Total Applications</span>
-                <span className="text-slate-900 dark:text-white font-black">{stats.pipeline.new + stats.pipeline.shortlisted + stats.pipeline.interview + stats.pipeline.rejected}</span>
+                <span className="text-slate-900 dark:text-white font-black">{stats.pipeline.new + stats.pipeline.shortlisted + stats.pipeline.interview + stats.pipeline.offer + stats.pipeline.hired + stats.pipeline.rejected}</span>
               </div>
               <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-5 overflow-hidden shadow-inner">
                 <div 
@@ -287,6 +293,34 @@ async function fetchAnalytics() {
               </div>
             </div>
             
+            {/* Offer */}
+            <div className="group">
+              <div className="flex justify-between text-sm font-bold mb-2">
+                <span className="text-slate-600 dark:text-slate-400 uppercase tracking-wider text-xs flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-amber-500"></div> Offer</span>
+                <span className="text-slate-900 dark:text-white font-black">{stats.pipeline.offer}</span>
+              </div>
+              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-5 overflow-hidden shadow-inner flex justify-end">
+                <div
+                  className="bg-gradient-to-l from-amber-500 to-amber-400 h-full rounded-full transition-all duration-1000 ease-out delay-300 group-hover:opacity-80"
+                  style={{ width: `${(stats.pipeline.offer / maxPipeline) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Hired */}
+            <div className="group">
+              <div className="flex justify-between text-sm font-bold mb-2">
+                <span className="text-slate-600 dark:text-slate-400 uppercase tracking-wider text-xs flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-green-600"></div> Hired</span>
+                <span className="text-slate-900 dark:text-white font-black">{stats.pipeline.hired}</span>
+              </div>
+              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-5 overflow-hidden shadow-inner flex justify-end">
+                <div
+                  className="bg-gradient-to-l from-green-600 to-green-500 h-full rounded-full transition-all duration-1000 ease-out delay-500 group-hover:opacity-80"
+                  style={{ width: `${(stats.pipeline.hired / maxPipeline) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
             {/* Rejected Info Box (No Bar Needed) */}
             <div className="mt-8 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex justify-between items-center">
                <div className="flex items-center gap-3">

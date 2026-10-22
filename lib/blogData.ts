@@ -4556,4 +4556,218 @@ export const BLOG_POSTS: BlogPost[] = [
     `
   },
 
+{
+    slug: 'forward-deployed-engineer-jobs',
+    title: 'Forward Deployed Engineer (FDE) Jobs: What the Role Is, Salary & Live Openings (2026)',
+    excerpt: 'Forward deployed engineer is the breakout job title of the AI era. Here is what FDEs actually do (from real job descriptions), what they earn (from 47 live US listings), the skills employers screen for, and the FDE jobs hiring right now.',
+    date: 'Oct 22, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png',
+    category: 'Career Advice',
+    image: '/blog-og-image.png',
+    toc: [
+      { id: 'live-openings', title: 'Live Forward Deployed Engineer Jobs (Hiring Now)' },
+      { id: 'what-is-fde', title: 'What Is a Forward Deployed Engineer?' },
+      { id: 'day-to-day', title: 'What FDEs Actually Do, From Real Job Descriptions' },
+      { id: 'salary', title: 'Forward Deployed Engineer Salary (Real Listing Data)' },
+      { id: 'skills', title: 'Skills Employers Ask For' },
+      { id: 'fde-vs', title: 'FDE vs Solutions Engineer vs Software Engineer' },
+      { id: 'how-to-get-hired', title: 'How to Get Hired as an FDE' },
+      { id: 'faq', title: 'Frequently Asked Questions' },
+    ],
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        <strong>Forward deployed engineer (FDE)</strong> has gone from an obscure Palantir job title to the role every AI company is suddenly hiring. This guide explains what the job actually is — using real, currently-open job descriptions, not recycled definitions — what FDEs earn according to live listings, and which companies are hiring FDEs right now.
+      </p>
+
+      <h2 id="live-openings" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Live Forward Deployed Engineer Jobs (Hiring Now)</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        HireSkys currently lists <strong>68 active forward deployed engineer jobs</strong>, 47 of them remote roles in the United States — at AI platforms, developer infrastructure companies, vertical AI startups and defense tech firms. These six show the range of the market (all with published salaries):
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-6 my-8">
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3"><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-22581">Forward Deployed Engineer — Tines</a></h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80 mb-3">Remote (United States) · Senior-Level · <strong>$230K–$280K OTE</strong></p>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Founding member of Tines' forward deployed team, embedded with strategic enterprise customers to drive AI adoption. The top of the current market. <strong>Apply →</strong></p>
+        </div>
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3"><a href="https://www.hireskys.com/jobs/senior-forward-deployed-engineer-25226">Senior Forward Deployed Engineer — SecurityScorecard</a></h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80 mb-3">Remote (United States) · Senior-Level · <strong>$180,000–$240,000</strong></p>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Senior FDE role at the security ratings platform — customer deployments at enterprise scale. <strong>Apply →</strong></p>
+        </div>
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3"><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-applied-ai-23242">Forward Deployed Engineer, Applied AI — Juniper Square</a></h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80 mb-3">Remote (United States) · Senior-Level · <strong>$165,000–$200,000</strong></p>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Build and run custom AI agents for private-markets clients — discovery, build, deployment and operation, owned end to end. <strong>Apply →</strong></p>
+        </div>
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3"><a href="https://www.hireskys.com/jobs/senior-forward-deployed-engineer-17861">Senior Forward Deployed Engineer — Second Front Systems</a></h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80 mb-3">Remote (United States) · Senior-Level · <strong>$160,000–$200,000</strong></p>
+          <p class="text-blue-800/80 dark:text-blue-200/80">The defense-tech flavour of FDE: deploying into defense and intelligence environments, including classified facilities. <strong>Apply →</strong></p>
+        </div>
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3"><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-20107">Forward Deployed Engineer — TalentPluto</a></h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80 mb-3">Remote (United States) · Mid-Level · <strong>$150K–$220K base + equity</strong></p>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Own integrations, pilots and technical onboarding at an early-stage startup — and feed what breaks in the field back into the product. <strong>Apply →</strong></p>
+        </div>
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3"><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-ai-infrastructure-at-runpod-30903">Forward Deployed Engineer (AI Infrastructure) — Runpod</a></h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80 mb-3">Remote (United States) · Mid-Level · <strong>$100,000–$160,000</strong></p>
+          <p class="text-blue-800/80 dark:text-blue-200/80">GPU cloud infrastructure deployments — a good example of an FDE role that does not require a decade of experience. <strong>Apply →</strong></p>
+        </div>
+      </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        More live FDE openings on HireSkys right now:
+      </p>
+      <ul class="list-disc pl-8 mb-8 text-lg text-slate-700 dark:text-slate-300 space-y-3">
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-fde-api-ai-connectivity-platform-26058"><strong>Forward Deployed Engineer — Kong</strong></a> — API &amp; AI connectivity platform, enterprise implementations and migrations</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-26576"><strong>Forward Deployed Engineer — Render</strong></a> — Render's first FDE hire, cloud platform for AI-native apps</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-19721"><strong>Forward Deployed Engineer — Hippocratic AI</strong></a> — production AI agents for health systems (RAG pipelines, EHR integrations)</li>
+        <li><a href="https://www.hireskys.com/jobs/senior-forward-deployed-engineer-25020"><strong>Senior Forward Deployed Engineer — Webflow</strong></a> — zone-based pay up to $210,000</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-29015"><strong>Forward Deployed Engineer — Veeam</strong></a> — $102,200–$234,800 by location zone</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-data-engineer-25586"><strong>Forward Deployed Data Engineer — Datafold</strong></a> — AI-automated data platform migrations (Databricks/Snowflake)</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-fde-20878"><strong>Forward Deployed Engineer — LiveKit</strong></a> — real-time AI infrastructure, US/Canada</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-applied-ai-23243"><strong>Forward Deployed Engineer, Applied AI — Juniper Square</strong></a> — the mid-level version, $130,000–$160,000</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-19587"><strong>Forward Deployed Engineer — Loadsmart</strong></a> — logistics platform, Chicago/US remote</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-20032"><strong>Forward Deployed Engineer — Edia</strong></a> — education AI</li>
+        <li><a href="https://www.hireskys.com/jobs/forward-deployed-engineer-fde-at-clutch-23801"><strong>Forward Deployed Engineer — Clutch</strong></a> — fintech for credit unions</li>
+        <li><a href="https://www.hireskys.com/jobs/founding-member-forward-deployed-engineering-fde-team-29874"><strong>Founding FDE Team Member — Docebo</strong></a> — build the function from zero</li>
+      </ul>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        <em>All listings verified live on HireSkys on October 22, 2026. Several employers do not publish salary — the next sections use only the listings that do.</em>
+      </p>
+
+      <h2 id="what-is-fde" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">What Is a Forward Deployed Engineer?</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        A forward deployed engineer is a software engineer who works <strong>inside the customer's environment</strong> instead of on the vendor's core product. The model was pioneered by Palantir, which discovered that its data platform only created value when its own engineers sat with customers, understood their operations, and built the final solution on site. The FDE is that engineer: part builder, part consultant, part product scout.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Why is every AI company hiring them now? Because AI products fail in the demo-to-production gap. A model that dazzles in a sales call still needs data pipelines, integrations with the customer's systems (EHRs, CRMs, data warehouses), security reviews and workflow redesign before it runs a real business process. Companies learned that shipping an engineer with the product closes that gap weeks or months faster — so AI labs, AI platforms and vertical AI startups have adopted the Palantir playbook wholesale. Interest in the role has surged over the past year, and hiring has followed.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        The one-line test: if the job description says you will <strong>own a customer's deployment outcome end to end</strong> — discovery, build, launch, iteration — it is a real FDE role, whatever the exact title.
+      </p>
+
+      <h2 id="day-to-day" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">What FDEs Actually Do, From Real Job Descriptions</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        We read the live FDE job descriptions currently on HireSkys. Stripped of buzzwords, the job repeats the same five motions everywhere:
+      </p>
+      <ul class="list-disc pl-8 mb-8 text-lg text-slate-700 dark:text-slate-300 space-y-3">
+        <li><strong>You embed with the customer.</strong> Tines hires FDEs "embedded directly with our most strategic enterprise customers." Juniper Square puts it bluntly: "You are in the room with the client, not behind a ticket queue."</li>
+        <li><strong>You own deployments end to end.</strong> Discovery, scoping, architecture, build, go-live, iteration. Hippocratic AI expects an FDE to own a complete AI deployment — RAG pipeline, integrations, production launch, monitoring — within the first 90 days.</li>
+        <li><strong>You build production systems, not slideware.</strong> Real integrations: APIs, webhooks, EHRs, data warehouses, MCP/tool-calling layers, migration tooling (Kong, Datafold). This is engineering work with deadlines measured in customer outcomes.</li>
+        <li><strong>You are the customer's trusted technical face.</strong> Training end users in the morning, presenting a business case to a CTO in the afternoon (Tines lists both). Communication is a core skill, not a soft extra.</li>
+        <li><strong>You carry the field back into the product.</strong> Nearly every description — Second Front, TalentPluto, Juniper Square — makes the FDE a direct input into the product roadmap, because they see where the product breaks in the real world first.</li>
+      </ul>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        There are also distinct flavours: <strong>AI deployment FDEs</strong> (Hippocratic AI, Juniper Square — agents and RAG in production), <strong>platform/infrastructure FDEs</strong> (Kong, Render, Runpod, Datafold — implementations, migrations, integrations), and <strong>defense FDEs</strong> (Second Front Systems — deployments into defense and intelligence environments, sometimes classified facilities, where security eligibility matters).
+      </p>
+
+      <h2 id="salary" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Forward Deployed Engineer Salary (Real Listing Data)</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Most salary pages guess. Here are the actual numbers from the live market: of the 47 US FDE listings on HireSkys today, <strong>16 publish a salary range</strong>. Across those 16, advertised pay spans <strong>$100,000 to $280,000</strong>, and the middle of the market — the median of the range midpoints — sits at about <strong>$180,000</strong>.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-6 my-8">
+        <div class="p-6 bg-green-50 dark:bg-green-900/10 rounded-2xl border border-green-100 dark:border-green-800/50">
+          <h3 class="font-black text-xl text-green-900 dark:text-green-300 mb-3">Mid-Level FDE</h3>
+          <p class="text-green-800/80 dark:text-green-200/80">Live ranges cluster around <strong>$100K–$220K</strong>. Runpod lists $100–160K; Juniper Square's mid-level Applied AI role lists $130–160K; TalentPluto lists $150–220K plus equity.</p>
+        </div>
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3">Senior FDE</h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Typically <strong>$160K–$280K</strong>. Second Front and Juniper Square list $160–200K; SecurityScorecard $180–240K; Tines tops the board at $230–280K OTE.</p>
+        </div>
+        <div class="p-6 bg-purple-50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-800/50">
+          <h3 class="font-black text-xl text-purple-900 dark:text-purple-300 mb-3">Read the Fine Print</h3>
+          <p class="text-purple-800/80 dark:text-purple-200/80">Some figures are <strong>OTE</strong> (base + variable), some base only, startups add <strong>equity</strong>, and several companies (Webflow, Veeam) pay by <strong>location zone</strong>. Compare total comp, not headlines.</p>
+        </div>
+      </div>
+
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        Why so high for a "customer-facing" role? Because the FDE sits on the revenue line: a failed enterprise deployment is a lost contract, and a successful one expands. Companies are paying senior-engineer money for engineers who can both write the code and carry the room.
+      </p>
+
+      <h2 id="skills" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Skills Employers Ask For</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Across the current listings, the screening pattern is consistent:
+      </p>
+      <ul class="list-disc pl-8 mb-8 text-lg text-slate-700 dark:text-slate-300 space-y-3">
+        <li><strong>Real software engineering.</strong> Full-stack development, APIs and integrations, debugging across a customer's stack end to end. Most roles ask for several years of building production software.</li>
+        <li><strong>AI deployment literacy (for AI roles).</strong> LLM applications, RAG pipelines, tool-calling/agent integrations, evaluation and monitoring. Hippocratic AI's description reads like an AI engineering checklist because the deployment IS AI engineering.</li>
+        <li><strong>Data and platform fluency.</strong> Warehouses (Snowflake, Databricks), pipelines, cloud infrastructure — the systems FDEs integrate with daily.</li>
+        <li><strong>Customer presence.</strong> Running discovery with non-technical stakeholders, translating business pain into a technical plan, training users, handling a CTO's hard questions.</li>
+        <li><strong>Autonomy in ambiguity.</strong> "Thrive in ambiguity" (Tines), "operate independently" (Juniper Square), founding-team roles (Render's first FDE, Tines' founding FDE team, Docebo's founding member) — there is often no playbook yet; you write it.</li>
+        <li><strong>Domain eligibility where it matters.</strong> Defense roles may involve classified environments; healthcare roles touch regulated data. Background and compliance requirements appear in the fine print — read it before applying.</li>
+      </ul>
+
+      <h2 id="fde-vs" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">FDE vs Solutions Engineer vs Software Engineer</h2>
+      <div class="grid md:grid-cols-3 gap-6 my-8">
+        <div class="p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
+          <h3 class="font-black text-xl text-indigo-900 dark:text-indigo-300 mb-3">Forward Deployed Engineer</h3>
+          <p class="text-indigo-800/80 dark:text-indigo-200/80">Builds custom solutions <strong>on</strong> the product, inside one customer's environment. Owns the deployment outcome after the sale. Success = the customer runs it in production.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="font-black text-xl text-slate-900 dark:text-slate-200 mb-3">Solutions Engineer</h3>
+          <p class="text-slate-600 dark:text-slate-300">Mostly <strong>pre-sales</strong>: demos, proofs of concept, technical validation during the deal. Hands over at signature; rarely owns the long production tail.</p>
+        </div>
+        <div class="p-6 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <h3 class="font-black text-xl text-slate-900 dark:text-slate-200 mb-3">Software Engineer (Product)</h3>
+          <p class="text-slate-600 dark:text-slate-300">Builds the <strong>core product</strong> for all customers from inside the vendor. Deepest technical focus, least customer contact.</p>
+        </div>
+      </div>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+        Titles blur in practice — some "solutions" roles are really FDE roles and vice versa. Judge by the description: whoever owns the deployment after the contract is signed is doing FDE work.
+      </p>
+
+      <h2 id="how-to-get-hired" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">How to Get Hired as an FDE</h2>
+      <ul class="list-disc pl-8 mb-8 text-lg text-slate-700 dark:text-slate-300 space-y-3">
+        <li><strong>Step 1 — Prove you ship, not just code.</strong> FDE interviews hunt for end-to-end ownership stories: a system you designed, deployed and kept alive in front of real users. Side projects with actual users beat algorithm trivia here.</li>
+        <li><strong>Step 2 — Get fluent in the AI deployment stack.</strong> Build one real thing: a RAG pipeline over real documents, an agent with tool-calling, an integration between two production systems. The current descriptions name these patterns explicitly.</li>
+        <li><strong>Step 3 — Show customer range.</strong> Consulting, solutions, support engineering, founding-engineer and technical customer-success experience all translate. Prepare stories about ambiguous problems, unhappy stakeholders and trade-offs you owned.</li>
+        <li><strong>Step 4 — Pick your flavour.</strong> AI deployment, platform/infrastructure, data, or defense — the listings above split cleanly into these, and each screens differently. Apply where your background already rhymes.</li>
+        <li><strong>Step 5 — Expect a hybrid interview loop.</strong> Typically: a coding/technical deep-dive, a system-design or deployment-scenario exercise, and a customer-simulation conversation. Companies are testing whether they can put you in front of their biggest customer alone.</li>
+      </ul>
+
+      <h2 id="faq" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+
+      <h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">Is a forward deployed engineer a real coding job?</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Yes. FDEs write production code — integrations, data pipelines, AI agents, migration tooling — inside customer environments. The difference from a product engineering role is where the code runs and who it serves: one customer's deployment, owned end to end, instead of the vendor's core product.
+      </p>
+
+      <h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">What is the average forward deployed engineer salary?</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Based on the 16 US listings on HireSkys that publish ranges today (checked October 22, 2026), FDE pay spans $100,000–$280,000 with the middle of the market around $180,000. Senior roles typically list $160K–$280K (Tines tops the current board at $230–280K OTE); mid-level roles cluster around $100K–$220K, sometimes plus equity. Some employers pay by location zone.
+      </p>
+
+      <h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">Do forward deployed engineers travel?</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        It varies by company. The current listings are remote-first US roles, but the work is customer-facing: expect periodic on-site time at customer offices for kickoffs, launches and escalations — and in defense roles, work inside secure facilities. Ask about the travel expectation in the first interview; good employers state it plainly.
+      </p>
+
+      <h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">How is an FDE different from a solutions engineer?</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Solutions engineers mostly work pre-sales — demos and proofs of concept that help win the deal. Forward deployed engineers own what happens after the deal: building, deploying and operating the solution in the customer's production environment. If the role owns the deployment outcome, it is FDE work regardless of the title on the posting.
+      </p>
+
+      <h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">Do I need AI experience to become an FDE?</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        For AI-company roles, increasingly yes — those deployments are AI systems, so RAG, agents and LLM integration experience is screened for. But platform, infrastructure and data FDE roles (Kong, Render, Datafold in the listings above) hire strong generalist engineers with integration and migration experience. Match the flavour of role to the background you already have.
+      </p>
+
+      <h3 class="text-xl font-bold mt-8 mb-3 text-slate-900 dark:text-white">Which companies are hiring forward deployed engineers now?</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        On HireSkys today: Tines, Kong, Render, SecurityScorecard, Juniper Square, Hippocratic AI, Webflow, Veeam, LiveKit, Datafold, Second Front Systems and dozens more — 68 active FDE-titled listings in total, 47 of them US remote. The full set is linked at the top of this page.
+      </p>
+
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 md:p-10 rounded-3xl text-center shadow-2xl mt-12">
+        <h3 class="text-2xl md:text-3xl font-black text-white mb-4">68 FDE Jobs Are Live Right Now</h3>
+        <p class="text-blue-100 mb-8 text-lg font-medium max-w-2xl mx-auto">From founding FDE roles at AI startups to $280K senior seats — browse the openings and apply directly.</p>
+        <a href="https://www.hireskys.com/jobs/forward-deployed-engineer-22581" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">See the Top-Paying FDE Job</a>
+      </div>
+    `
+  },
 ];

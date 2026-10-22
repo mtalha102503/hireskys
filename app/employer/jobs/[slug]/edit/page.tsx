@@ -11,6 +11,7 @@ import {
   HelpCircle, Plus, Trash2, Lock
 } from 'lucide-react';
 import Link from 'next/link';
+import PipelineStages from '@/components/employer/PipelineStages';
 import 'react-quill-new/dist/quill.snow.css';
 
 // ReactQuill ko dynamic import karna zaroori hai Next.js mein
@@ -39,6 +40,7 @@ export default function EditJobPage() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [jobMeta, setJobMeta] = useState<{ id: number; employer_id: string } | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -82,6 +84,8 @@ export default function EditJobPage() {
         router.push('/employer/jobs');
         return;
       }
+
+      setJobMeta({ id: job.id, employer_id: job.employer_id });
 
       // Data form mein bhar do
       setFormData({
@@ -546,6 +550,13 @@ const formatLocation = (loc: string) => {
           </div>
 
         </form>
+      )}
+
+      {/* 🟢 Phase 1: Per-job hiring pipeline (custom stages) */}
+      {jobMeta && (
+        <div className="mt-8">
+          <PipelineStages jobId={jobMeta.id} employerId={String(jobMeta.employer_id)} />
+        </div>
       )}
     </div>
   );

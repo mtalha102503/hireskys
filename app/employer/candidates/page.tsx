@@ -4,22 +4,20 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { fetchStagesByJob, sortedStages, kindOfStatus, stageByKind, STAGE_COLORS, KIND_COLUMNS, PipelineStage, StageKind } from '@/lib/pipeline';
 import { 
   Users, Search, Clock, Globe,Lock, FileText, 
   Mail, Loader2, ChevronDown,CheckCircle, Bookmark,Star,LayoutGrid, List, CheckSquare,AlertCircle,Calendar, ChevronRight, X, Link as LinkIcon, Save,Phone, Linkedin, HelpCircle, Download, History, GitCommit // 👈 Download, History, GitCommit add kiya
 } from 'lucide-react';
 
-const COLUMNS = [
-  { id: 'New', title: 'New Applied', color: 'border-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400' },
-  { id: 'Shortlisted', title: 'Shortlisted', color: 'border-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
-  { id: 'Interview', title: 'Interviewing', color: 'border-purple-500', bg: 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400' },
-  { id: 'Rejected', title: 'Rejected', color: 'border-slate-400', bg: 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400' },
-];
+
 
 export default function CandidatesBoard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [candidates, setCandidates] = useState<any[]>([]);
   const [selectedJob, setSelectedJob] = useState("All");
+  const [stagesByJob, setStagesByJob] = useState<Record<number, PipelineStage[]>>({});
+  const [jobIdByTitle, setJobIdByTitle] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   // 🟢 VIP JADOO: Enterprise Features States
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban'); // Toggle ke liye
@@ -101,6 +99,14 @@ const [overallRating, setOverallRating] = useState(0);
 
         if (error) throw error;
         setCandidates(data || []);
+
+        // 🟢 Phase 1: har job ki custom pipeline stages + title->id map
+        const appsData = data || [];
+        const titleToId: Record<string, number> = {};
+        appsData.forEach((c: any) => { if (c.jobs?.title && c.job_id) titleToId[c.jobs.title] = c.job_id; });
+        setJobIdByTitle(titleToId);
+        const stageJobIds = [...new Set(appsData.map((c: any) => c.job_id).filter(Boolean))] as number[];
+        setStagesByJob(await fetchStagesByJob(supabase, stageJobIds));
       }
     } catch (error) {
       console.error("Error fetching candidates:", error);
@@ -108,6 +114,23 @@ const [overallRating, setOverallRating] = useState(0);
       setLoading(false);
     }
   }
+// 🟢 Phase 1: Custom pipeline helpers
+  const stagesFor = (jobId: number) => sortedStages(stagesByJob[jobId]);
+  const kindFor = (c: any): StageKind => kindOfStatus(stagesByJob[c.job_id], c.status);
+  const stageNameForKind = (jobId: number, kind: StageKind) => stageByKind(stagesByJob[jobId], kind)?.name;
+
+  type BoardColumn = { id: string; title: string; kind: StageKind; color: string; bg: string };
+  const boardColumns: BoardColumn[] = selectedJob === "All"
+    ? KIND_COLUMNS.map(kc => ({ id: `kind:${kc.kind}`, title: kc.title, kind: kc.kind, color: STAGE_COLORS[kc.color].border, bg: STAGE_COLORS[kc.color].bg }))
+    : stagesFor(jobIdByTitle[selectedJob] ?? -1).map(s => ({ id: s.name, title: s.name, kind: s.kind, color: (STAGE_COLORS[s.color] || STAGE_COLORS.blue).border, bg: (STAGE_COLORS[s.color] || STAGE_COLORS.blue).bg }));
+
+  const inColumn = (c: any, column: BoardColumn) =>
+    selectedJob === "All" ? kindFor(c) === column.kind : c.status === column.id;
+  const inSelectedJob = (c: any) => selectedJob === "All" || c.jobs?.title === selectedJob;
+  const columnCount = (column: BoardColumn) => candidates.filter(c => inColumn(c, column) && inSelectedJob(c)).length;
+  const dropTargetName = (candidate: any, column: BoardColumn) =>
+    selectedJob === "All" ? (stageNameForKind(candidate.job_id, column.kind) || candidate.status) : column.id;
+
 // 🟢 VIP JADOO: Smart Country Flag Generator
 // 🟢 VIP JADOO: Get Country Code for Universal Image Flags
 const getCountryCode = (countryName: string) => {
@@ -397,12 +420,13 @@ const getCountryCode = (countryName: string) => {
         throw new Error(data.error || "Failed to update status");
       }
 
-      // 4. 🚀 Trigger the emails based on status
-      if (newStatus === 'Interview' && targetCandidate && targetCandidate.status !== 'Interview') {
+      // 4. 🚀 Trigger the emails based on stage KIND (Phase 1 custom stages)
+      const targetKind = targetCandidate ? kindOfStatus(stagesByJob[targetCandidate.job_id], newStatus) : null;
+      if (targetKind === 'interview' && targetCandidate && targetCandidate.status !== newStatus) {
         await sendInterviewInvite(targetCandidate); // Interview wali mail yahan se jayegi
-      } else if (newStatus === 'Rejected') {
+      } else if (targetKind === 'rejected') {
         // Rejection wali mail hamari backend API ne automatically bhej di hai!
-        showNotification(`Candidate moved to Rejected. Auto-email sent!`, "success");
+        showNotification(`Candidate moved to ${newStatus}. Auto-email sent!`, "success");
       }
 
     } catch (error: any) {
@@ -411,25 +435,43 @@ const getCountryCode = (countryName: string) => {
       fetchApplications(); // Revert UI if API fails
     }
   }
-// 🟢 VIP JADOO: Bulk Status Update
-  async function handleBulkUpdate(newStatus: string) {
+// 🟢 VIP JADOO: Bulk Status Update (Phase 1: kind-based —
+// har candidate apni job ke usi-KIND wale stage me jata hai)
+  async function handleBulkUpdateKind(kind: StageKind) {
     if (selectedIds.length === 0) return;
-    
+
+    const selected = candidates.filter(c => selectedIds.includes(c.id));
+    const groups = new Map<string, string[]>();
+    const targetById = new Map<string, string>();
+    for (const c of selected) {
+      const target = stageNameForKind(c.job_id, kind);
+      if (!target || target === c.status) continue;
+      targetById.set(c.id, target);
+      if (!groups.has(target)) groups.set(target, []);
+      groups.get(target)!.push(c.id);
+    }
+
+    if (groups.size === 0) {
+      showNotification("Selected candidates are already in that stage", "warning");
+      return;
+    }
+
     try {
-      // 1. Optimistic UI Update (Foran screen par change karo)
-      setCandidates(candidates.map(c => 
-        selectedIds.includes(c.id) ? { ...c, status: newStatus } : c
+      // 1. Optimistic UI Update
+      setCandidates(candidates.map(c =>
+        targetById.has(c.id) ? { ...c, status: targetById.get(c.id)! } : c
       ));
 
-      // 2. Database mein bulk update karo (.in query use karke)
-      const { error } = await supabase
-        .from('applications')
-        .update({ status: newStatus })
-        .in('id', selectedIds);
+      // 2. Database mein group-wise bulk update
+      for (const [targetName, ids] of groups) {
+        const { error } = await supabase
+          .from('applications')
+          .update({ status: targetName })
+          .in('id', ids);
+        if (error) throw error;
+      }
 
-      if (error) throw error;
-
-      showNotification(`Successfully moved ${selectedIds.length} candidates to ${newStatus}`, "success");
+      showNotification(`Successfully moved ${targetById.size} candidates`, "success");
       setSelectedIds([]); // Selection clear kardo
 
     } catch (error: any) {
@@ -732,13 +774,13 @@ const getCountryCode = (countryName: string) => {
             <span className="text-xs font-medium opacity-80 mr-2 hidden sm:block">Move to:</span>
             
             {/* Status change karne wale buttons */}
-            {COLUMNS.map(col => (
-              <button 
-                key={col.id} 
-                onClick={() => handleBulkUpdate(col.id)}
+            {KIND_COLUMNS.map(kc => (
+              <button
+                key={kc.kind}
+                onClick={() => handleBulkUpdateKind(kc.kind)}
                 className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold transition-colors"
               >
-                {col.title}
+                {kc.title}
               </button>
             ))}
             
@@ -761,7 +803,7 @@ const getCountryCode = (countryName: string) => {
           /* 🟢 KANBAN BOARD VIEW               */
           /* ================================== */
           <div className="flex gap-6 min-w-max h-full items-start">
-            {COLUMNS.map((column) => (
+            {boardColumns.map((column) => (
               <div 
                 key={column.id} 
                 className="w-80 flex flex-col gap-4"
@@ -770,7 +812,8 @@ const getCountryCode = (countryName: string) => {
                   e.preventDefault();
                   const draggedCandidateId = e.dataTransfer.getData("candidateId");
                   if (draggedCandidateId) {
-                    updateStatus(draggedCandidateId, column.id);
+                    const dragged = candidates.find(c => c.id === draggedCandidateId);
+                    if (dragged) updateStatus(draggedCandidateId, dropTargetName(dragged, column));
                   }
                 }}
               >
@@ -778,14 +821,14 @@ const getCountryCode = (countryName: string) => {
                 <div className={`flex items-center justify-between p-3 md:p-4 rounded-t-2xl rounded-b-xl border-t-[4px] ${column.color} bg-white dark:bg-[#111625] shadow-sm border-x border-b border-slate-100 dark:border-slate-800`}>
                   <h3 className="font-black text-slate-800 dark:text-white text-sm tracking-tight">{column.title}</h3>
                   <span className={`text-[10px] font-black px-2.5 py-1 rounded-full shadow-inner ${column.bg}`}>
-                    {candidates.filter(c => c.status === column.id).length}
+                    {columnCount(column)}
                     
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-3 min-h-[200px]">
                   {/* 🟢 VIP UI: Cute Empty State */}
-                  {candidates.filter(c => c.status === column.id).length === 0 && (
+                  {columnCount(column) === 0 && (
                     <div className="flex flex-col items-center justify-center p-8 mt-2 border-2 border-dashed border-slate-200 dark:border-slate-800/60 rounded-2xl bg-slate-50/50 dark:bg-[#0B0F19]/30 transition-all duration-500">
                       {/* Ghost/Empty Icon */}
                       <div className="w-12 h-12 mb-3 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center text-slate-300 dark:text-slate-600">
@@ -800,7 +843,7 @@ const getCountryCode = (countryName: string) => {
 
                   {/* 🟢 CANDIDATE CARDS */}
                   {candidates
-                    .filter(c => c.status === column.id)
+                    .filter(c => inColumn(c, column))
                     .filter(c => selectedJob === "All" || c.jobs?.title === selectedJob) 
                     .filter(c => {
                       const name = c.profiles?.full_name || 'Unknown';
@@ -895,7 +938,7 @@ const getCountryCode = (countryName: string) => {
                             )}
 
                             {/* 📅 Smart Interview Date Badge / Button */}
-                            {candidate.status === 'Interview' && (
+                            {kindFor(candidate) === 'interview' && (
                               candidate.interview_date ? (
                                 <span className="flex items-center gap-1 bg-purple-50 dark:bg-purple-500/10 px-2.5 py-1 rounded border border-purple-100 dark:border-purple-900/30 text-purple-700 dark:text-purple-400 font-black shadow-sm">
                                   <Clock size={12} className="text-purple-500" />
@@ -925,9 +968,12 @@ const getCountryCode = (countryName: string) => {
                                 onChange={(e) => updateStatus(candidate.id, e.target.value)}
                                 className="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 py-1.5 pl-2 pr-6 rounded focus:outline-none focus:border-indigo-500 cursor-pointer"
                               >
-                                {COLUMNS.map(col => (
-                                  <option key={col.id} value={col.id}>{col.title}</option>
+                                {stagesFor(candidate.job_id).map(s => (
+                                  <option key={s.name} value={s.name}>{s.name}</option>
                                 ))}
+                                {!stagesFor(candidate.job_id).some(s => s.name === candidate.status) && (
+                                  <option value={candidate.status}>{candidate.status}</option>
+                                )}
                               </select>
                               <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                             </div>
@@ -1095,7 +1141,8 @@ const getCountryCode = (countryName: string) => {
                             onChange={(e) => updateStatus(candidate.id, e.target.value)}
                             className="appearance-none bg-slate-50 dark:bg-[#111625] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 py-1.5 px-3 rounded-lg cursor-pointer outline-none hover:border-indigo-400 transition-colors shadow-sm"
                           >
-                            {COLUMNS.map(col => <option key={col.id} value={col.id}>{col.title}</option>)}
+                            {stagesFor(candidate.job_id).map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
+                            {!stagesFor(candidate.job_id).some(s => s.name === candidate.status) && <option value={candidate.status}>{candidate.status}</option>}
                           </select>
                         </td>
                       </tr>
@@ -1230,13 +1277,13 @@ const getCountryCode = (countryName: string) => {
                 
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <button 
-                    onClick={() => { updateStatus(selectedCandidate.id, 'Rejected'); setSelectedCandidate(null); }}
+                    onClick={() => { updateStatus(selectedCandidate.id, stageNameForKind(selectedCandidate.job_id, 'rejected') || 'Rejected'); setSelectedCandidate(null); }}
                     className="flex-1 sm:flex-none px-6 py-2.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold text-sm rounded-xl transition-colors"
                   >
                     Reject
                   </button>
                   <button 
-                    onClick={() => { updateStatus(selectedCandidate.id, 'Interview'); setSelectedCandidate(null); }}
+                    onClick={() => { updateStatus(selectedCandidate.id, stageNameForKind(selectedCandidate.job_id, 'interview') || 'Interview'); setSelectedCandidate(null); }}
                     className="flex-1 sm:flex-none px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
                   >
                     Move to Interview
@@ -1244,7 +1291,7 @@ const getCountryCode = (countryName: string) => {
                 </div>
               </div>
               {/* 🟢 VIP JADOO: Manual Interview Date Setter */}
-              {selectedCandidate.status === 'Interview' && (
+              {kindFor(selectedCandidate) === 'interview' && (
                 <div className="p-4 rounded-xl border border-purple-200 dark:border-purple-800/50 bg-purple-50/50 dark:bg-purple-900/10">
                   <div className="flex items-center justify-between">
                     <div>

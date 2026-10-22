@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { getActiveWorkspaceId } from '@/lib/workspace';
+import { fetchStagesByJob, kindOfStatus, stageByKind, PipelineStage } from '@/lib/pipeline';
 export default function EmployerDashboard() {
   const [user, setUser] = useState<any>(null);
   const [company, setCompany] = useState<any>(null);
@@ -23,6 +24,7 @@ export default function EmployerDashboard() {
   // 🟢 VIP JADOO: Alert Dismiss State
   const [dismissAlert, setDismissAlert] = useState(false);
 const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
+  const [stagesByJob, setStagesByJob] = useState<Record<number, PipelineStage[]>>({});
   const [noteText, setNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
 
@@ -142,11 +144,15 @@ const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
       if (error) throw error;
 
       const apps = applications || [];
+
+      // 🟢 Phase 1: custom stages — status naam ki jagah kind se ginna
+      const stagesMap = await fetchStagesByJob(supabase, (jobs || []).map((j: any) => j.id));
+      setStagesByJob(stagesMap);
       setStats({
         activeJobs: activeJobsCount,
         totalApplicants: apps.length,
-        shortlisted: apps.filter(a => a.status === 'Shortlisted').length,
-        pending: apps.filter(a => a.status === 'New').length,
+        shortlisted: apps.filter(a => ['screening', 'custom'].includes(kindOfStatus(stagesMap[a.job_id], a.status))).length,
+        pending: apps.filter(a => kindOfStatus(stagesMap[a.job_id], a.status) === 'applied').length,
       });
 
       setRecentApplicants(apps.slice(0, 6));
@@ -442,8 +448,11 @@ const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
 
                     <td className="px-6 py-5">
                       <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
-                        app.status === 'Shortlisted' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 
-                        app.status === 'Rejected' ? 'bg-red-50 text-red-500 border-red-200' :
+                        kindOfStatus(stagesByJob[app.job_id], app.status) === 'screening' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+                        kindOfStatus(stagesByJob[app.job_id], app.status) === 'interview' ? 'bg-purple-50 text-purple-600 border-purple-200' :
+                        kindOfStatus(stagesByJob[app.job_id], app.status) === 'offer' ? 'bg-amber-50 text-amber-600 border-amber-200' :
+                        kindOfStatus(stagesByJob[app.job_id], app.status) === 'hired' ? 'bg-green-50 text-green-700 border-green-200' :
+                        kindOfStatus(stagesByJob[app.job_id], app.status) === 'rejected' ? 'bg-red-50 text-red-500 border-red-200' :
                         'bg-blue-50 text-blue-600 border-blue-200'
                       }`}>
                         {app.status}
@@ -562,13 +571,13 @@ const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
                 
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <button 
-                    onClick={() => { updateStatus(selectedCandidate.id, 'Rejected'); setSelectedCandidate(null); }}
+                    onClick={() => { updateStatus(selectedCandidate.id, stageByKind(stagesByJob[selectedCandidate.job_id], 'rejected')?.name || 'Rejected'); setSelectedCandidate(null); }}
                     className="flex-1 sm:flex-none px-6 py-2.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold text-sm rounded-xl transition-colors"
                   >
                     Reject
                   </button>
                   <button 
-                    onClick={() => { updateStatus(selectedCandidate.id, 'Interview'); setSelectedCandidate(null); }}
+                    onClick={() => { updateStatus(selectedCandidate.id, stageByKind(stagesByJob[selectedCandidate.job_id], 'interview')?.name || 'Interview'); setSelectedCandidate(null); }}
                     className="flex-1 sm:flex-none px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg transition-all"
                   >
                     Move to Interview

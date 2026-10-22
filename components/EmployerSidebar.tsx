@@ -21,7 +21,7 @@ export default function EmployerSidebar() {
       if (error) throw error;
       
       // Logout hone ke baad user ko kahan bhejna hai? (e.g., '/', '/login')
-      router.push('/login'); 
+      router.push('/ats-login'); 
     } catch (error: any) {
       alert("Error logging out: " + error.message);
     }

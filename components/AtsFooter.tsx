@@ -56,7 +56,7 @@ export default function AtsFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="transition hover:text-indigo-600 dark:hover:text-indigo-400">
+                <Link href="/ats-login" className="transition hover:text-indigo-600 dark:hover:text-indigo-400">
                   Employer Login
                 </Link>
               </li>

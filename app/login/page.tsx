@@ -82,6 +82,10 @@ export default function Login() {
             <p className="mt-12 text-center text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
                 By continuing, you agree to HireSkys' <Link href="/terms" className="underline hover:text-indigo-500">Terms of Service</Link> and <Link href="/privacy" className="underline hover:text-indigo-500">Privacy Policy</Link>.
             </p>
+
+            <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400 font-medium">
+                Hiring for your company? <a href="https://ats.hireskys.com/ats-login" className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">Employer ATS Login →</a>
+            </p>
         </div>
       </div>
 

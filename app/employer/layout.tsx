@@ -1,4 +1,5 @@
 import EmployerNavbar from '@/components/EmployerNavbar';
+import EmployerGate from '@/components/employer/EmployerGate';
 import EmployerSidebar from '@/components/EmployerSidebar'; // 👈 Naya Import
 import VIPWhatsApp from '@/components/SupportChat';
 
@@ -26,7 +27,7 @@ export default function EmployerLayout({
         {/* 📌 MAIN CONTENT AREA */}
         <main className="flex-1 min-w-0 overflow-y-auto h-[calc(100vh-64px)]">
           <div className="p-6 md:p-8 max-w-7xl mx-auto">
-            {children}
+            <EmployerGate>{children}</EmployerGate>
           </div>
         </main>
       </div> 

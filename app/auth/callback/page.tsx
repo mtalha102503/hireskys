@@ -46,6 +46,26 @@ export default function AuthCallbackPage() {
           }
         }
 
+        // 🟢 ATS INTENT: user ATS ke apne login/signup se aya hai
+        const atsIntent = typeof window !== 'undefined' ? localStorage.getItem('auth_intent') : null;
+        if (atsIntent) {
+          localStorage.removeItem('auth_intent');
+          if (atsIntent === 'ats') {
+            if (!userRole) {
+              // Bilkul naya user seedha ATS se — role-selection ka chakkar nahi,
+              // employer mark karke onboarding par bhejo
+              await supabase.auth.updateUser({ data: { role: 'employer' } });
+              router.push('/employer/settings');
+              return;
+            }
+            // Employer ho ya seeker — employer area par bhejo. Seeker ko wahan
+            // EmployerGate wazeh choice dega (switch ya board par wapas) —
+            // koi silent mixup nahi hoga.
+            router.push('/employer/dashboard');
+            return;
+          }
+        }
+
         // 🎯 FINAL ROUTING LOGIC
 
         // A. Agar bilkul naya user hai (ya khali auto-generated profile hai) -> Role Selection

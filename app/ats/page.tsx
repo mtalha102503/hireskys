@@ -41,7 +41,7 @@ export default function ATSLandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold rounded-2xl transition-all duration-300 shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-1 flex items-center justify-center gap-2">
+              <Link href="/ats-login" className="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold rounded-2xl transition-all duration-300 shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-1 flex items-center justify-center gap-2">
                 Create Employer Account <ArrowRight size={20} />
               </Link>
               <a href="#pricing" className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-[#111625] text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/80 text-lg font-bold rounded-2xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center shadow-sm">
@@ -428,7 +428,7 @@ export default function ATSLandingPage() {
                   <HelpCircle size={12} /> Learn how to promote for 100% free
                 </Link>
               </div>
-              <Link href="/login?plan=trial" className="block w-full py-4 text-center rounded-xl font-bold bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 transition-all duration-300 mt-auto">
+              <Link href="/ats-login?plan=trial" className="block w-full py-4 text-center rounded-xl font-bold bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 transition-all duration-300 mt-auto">
                 Claim 2 Credits
               </Link>
             </div>
@@ -466,7 +466,7 @@ export default function ATSLandingPage() {
                   <span>No AI Automation Features</span>
                 </li>
               </ul>
-              <Link href="/login?plan=startup" className="block w-full py-4 text-center rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all duration-300 mt-auto">
+              <Link href="/ats-login?plan=startup" className="block w-full py-4 text-center rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all duration-300 mt-auto">
                 Select Startup Plan
               </Link>
             </div>
@@ -506,7 +506,7 @@ export default function ATSLandingPage() {
                   <span>Embed Jobs on Career Page</span>
                 </li>
               </ul>
-              <Link href="/login?plan=scale" className="block w-full py-4 text-center rounded-xl font-black bg-white text-indigo-600 hover:bg-slate-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.03] mt-auto">
+              <Link href="/ats-login?plan=scale" className="block w-full py-4 text-center rounded-xl font-black bg-white text-indigo-600 hover:bg-slate-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.03] mt-auto">
                 Select Scale Plan
               </Link>
             </div>
@@ -544,7 +544,7 @@ export default function ATSLandingPage() {
                   <span>Priority 24/7 VIP Support</span>
                 </li>
               </ul>
-              <Link href="/login?plan=urgent" className="block w-full py-4 text-center rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all duration-300 mt-auto">
+              <Link href="/ats-login?plan=urgent" className="block w-full py-4 text-center rounded-xl font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-all duration-300 mt-auto">
                 Select Urgent Plan
               </Link>
             </div>
@@ -575,7 +575,7 @@ export default function ATSLandingPage() {
                 <div className="text-3xl font-black text-white mb-1">$445</div>
                 <div className="text-sm font-medium text-slate-500">($89 / post)</div>
               </div>
-              <Link href="/login?plan=bulk" className="mt-4 w-full py-3 bg-slate-700/80 hover:bg-slate-600 text-white font-bold rounded-xl transition-colors text-sm shadow-sm flex items-center justify-center">
+              <Link href="/ats-login?plan=bulk" className="mt-4 w-full py-3 bg-slate-700/80 hover:bg-slate-600 text-white font-bold rounded-xl transition-colors text-sm shadow-sm flex items-center justify-center">
                 Select 5 Credits
               </Link>
             </div>
@@ -592,7 +592,7 @@ export default function ATSLandingPage() {
                 <div className="text-3xl font-black text-white mb-1">$790</div>
                 <div className="text-sm font-medium text-indigo-300/70">($79 / post)</div>
               </div>
-              <Link href="/login?plan=bulk" className="mt-4 w-full py-3 bg-white text-indigo-900 hover:bg-indigo-50 font-black rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.25)] flex items-center justify-center gap-2 text-sm">
+              <Link href="/ats-login?plan=bulk" className="mt-4 w-full py-3 bg-white text-indigo-900 hover:bg-indigo-50 font-black rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.25)] flex items-center justify-center gap-2 text-sm">
                 Get Bulk Credits <ArrowRight size={16} />
               </Link>
             </div>

@@ -45,7 +45,7 @@ export default function AtsNavbar() {
         {/* Actions */}
         <div className="flex items-center gap-3 sm:gap-5">
           <Link
-            href="/login"
+            href="/ats-login"
             className="text-sm font-bold text-slate-700 dark:text-slate-200 transition hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             Log in

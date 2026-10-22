@@ -8,18 +8,6 @@ import {
   CreditCard, Briefcase, X, Star, Sparkles, TrendingUp,
   FileText, Building2, Zap, AlertOctagon, Layers, HelpCircle, Users, CalendarDays, Mail,ChevronDown
 } from 'lucide-react';
-const TRUSTED_COMPANIES = [
-  { name: "Confluent", domain: "Confluent.io" },
-  { name: "Distro", domain: "distro.io" },
-  { name: "Motive", domain: "gomotive.com" },
-  { name: "Alphasense", domain: "alpha-sense.com" },
-  { name: "Discord", domain: "discord.com" },
-  { name: "Render", domain: "render.com" },
-  { name: "Notion", domain: "notion.so" },
-  { name: "Slack", domain: "slack.com" },
-  { name: "Linear", domain: "linear.app" },
-  { name: "Netflix", domain: "netflix.com" }
-];
 export default function ATSLandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] font-sans text-slate-900 dark:text-slate-100 pb-20 selection:bg-indigo-500/30">
@@ -60,57 +48,6 @@ export default function ATSLandingPage() {
                 View ATS Plans
               </a>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 🛡️ PREMIUM INFINITE SCROLL TRUST BANNER */}
-      <div className="border-y border-slate-200/60 dark:border-slate-800/50 bg-white/40 dark:bg-[#111625]/40 backdrop-blur-md py-12 mb-24 overflow-hidden relative">
-        {/* Custom CSS for Marquee Animation */}
-        <style>{`
-          @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-marquee {
-            animation: marquee 40s linear infinite;
-          }
-          .animate-marquee:hover {
-            animation-play-state: paused;
-          }
-        `}</style>
-
-        <div className="container mx-auto px-4 text-center mb-10">
-          <p className="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
-            Empowering Teams with True Borderless Curation Standards
-          </p>
-        </div>
-        
-        {/* Infinite Scroll Container */}
-        <div className="relative w-full max-w-7xl mx-auto flex items-center">
-          {/* Edge Gradients for Smooth Fade (Right & Left) */}
-          <div className="absolute inset-y-0 left-0 w-24 md:w-32 bg-gradient-to-r from-slate-50 dark:from-[#0B0F19] to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute inset-y-0 right-0 w-24 md:w-32 bg-gradient-to-l from-slate-50 dark:from-[#0B0F19] to-transparent z-10 pointer-events-none"></div>
-
-          {/* Scrolling Track */}
-          <div className="flex animate-marquee w-max items-center gap-12 md:gap-20 px-6">
-            {/* Array is mapped TWICE to create a seamless loop */}
-            {[...TRUSTED_COMPANIES, ...TRUSTED_COMPANIES].map((company, index) => (
-              <div key={index} className="flex items-center gap-3 group cursor-pointer">
-                {/* Logo Icon */}
-                <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl shadow-sm border border-slate-200/80 dark:border-slate-700/80 bg-white flex items-center justify-center p-1.5 group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
-                  <img 
-                    src={`https://img.logo.dev/${company.domain}?token=pk_aH9IPqwYQqW08DI-epK7yw&size=128&format=webp`} 
-                    alt={company.name} 
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                {/* Company Name */}
-                <span className="text-lg font-black text-slate-700 dark:text-slate-300 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  {company.name}
-                </span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -165,9 +102,7 @@ export default function ATSLandingPage() {
 </div>
           </div>
 
-          {/* 🚀 Feature 2: AI Scoring (Illustration Left, Text Right) */}
-          <div className="flex flex-col md:flex-row-reverse items-center gap-12 group">
-            {/* 🚀 Feature 2: AI Scoring (Illustration Left, Text Right) */}
+          {/* 🚀 Feature 2: AI Scoring (Video Left, Text Right) */}
           <div className="flex flex-col md:flex-row-reverse items-center gap-12 group">
             <div className="flex-1 space-y-6 md:pl-10">
               <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center shadow-sm">
@@ -205,24 +140,6 @@ export default function ATSLandingPage() {
   </video>
 
 </div>
-          </div>
-            {/* CSS Illustration */}
-            <div className="flex-1 w-full h-[350px] bg-gradient-to-tr from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.02]">
-              {/* Center Core */}
-              <div className="relative z-10 w-32 h-32 bg-white dark:bg-slate-900 rounded-full shadow-2xl border-4 border-emerald-100 dark:border-emerald-900/50 flex items-center justify-center z-20 group-hover:shadow-emerald-500/30 transition-all duration-700">
-                <Bot size={48} className="text-emerald-500 animate-pulse" />
-              </div>
-              {/* Orbital Rings */}
-              <div className="absolute w-64 h-64 border border-emerald-200 dark:border-emerald-800/50 rounded-full group-hover:rotate-180 transition-transform duration-[3s] ease-linear"></div>
-              <div className="absolute w-96 h-96 border border-dashed border-emerald-200 dark:border-emerald-800/30 rounded-full group-hover:-rotate-90 transition-transform duration-[4s] ease-linear"></div>
-              {/* Floating Badges */}
-              <div className="absolute top-1/4 left-8 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 font-black text-emerald-600 dark:text-emerald-400 transform group-hover:-translate-y-4 transition-transform duration-500">
-                98% Match
-              </div>
-              <div className="absolute bottom-1/4 right-8 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 font-bold text-slate-600 dark:text-slate-300 text-sm transform group-hover:translate-y-4 transition-transform duration-500 flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-emerald-500"/> React.js
-              </div>
-            </div>
           </div>
 
           {/* 🚀 Feature 3: Smart Location (Text Left, Illustration Right) */}

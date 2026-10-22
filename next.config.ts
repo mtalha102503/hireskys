@@ -31,6 +31,27 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // www.hireskys.com/ats ab ATS ki purani copy hai — ATS ka asal ghar
+  // ats.hireskys.com hai. Main domain ke /ats ko permanent (308)
+  // subdomain par bhej do. Host condition ki wajah se ye redirect
+  // sirf www/bare domain par lagega; ats host apna middleware
+  // behaviour rakhega, aur baqi site bilkul untouched rahegi.
+  async redirects() {
+    return [
+      {
+        source: '/ats',
+        has: [{ type: 'host', value: 'www.hireskys.com' }],
+        destination: 'https://ats.hireskys.com',
+        permanent: true,
+      },
+      {
+        source: '/ats',
+        has: [{ type: 'host', value: 'hireskys.com' }],
+        destination: 'https://ats.hireskys.com',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

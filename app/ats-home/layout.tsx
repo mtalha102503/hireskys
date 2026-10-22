@@ -57,6 +57,12 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  // Google Search Console — ats.hireskys.com URL-prefix property ki
+  // ownership verification (HTML tag method). Ye tag sirf ATS homepage
+  // par render hoga; verify hone ke baad bhi isay NAHI hatana.
+  verification: {
+    google: 'SHqh2mZWrYkUoFkmCMePGoZxliqlRYbphn0zRfzOTTM',
+  },
 };
 
 // SoftwareApplication schema — baghair kisi jhooti rating ke,

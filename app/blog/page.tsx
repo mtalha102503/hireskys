@@ -153,6 +153,15 @@ const BLOG_POSTS = [
   category: 'Career Advice',
   image: '/blog-og-image.png',
   },
+  {
+    slug: 'forward-deployed-engineer-jobs',
+    title: 'Forward Deployed Engineer (FDE) Jobs: What the Role Is, Salary & Live Openings (2026)',
+    excerpt: 'Forward deployed engineer is the breakout job title of the AI era. What FDEs actually do, what they earn (from 47 live US listings), the skills employers screen for, and the FDE jobs hiring right now.',
+    date: 'Oct 22, 2026',
+    author: 'Muhammad Talha',
+    category: 'Career Advice',
+    image: '/blog-og-image.png',
+  },
 ];
 
 export default function BlogIndex() {

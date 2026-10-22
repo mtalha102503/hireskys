@@ -151,7 +151,7 @@ const BLOG_POSTS = [
   date: 'Oct 22, 2026',
   author: 'Muhammad Talha',
   category: 'Career Advice',
-  image: '/blog-og-image.png',
+  image: '/blog-sap-abap-saudi-arabia.svg',
   },
   {
     slug: 'forward-deployed-engineer-jobs',
@@ -160,7 +160,7 @@ const BLOG_POSTS = [
     date: 'Oct 22, 2026',
     author: 'Muhammad Talha',
     category: 'Career Advice',
-    image: '/blog-og-image.png',
+    image: '/blog-forward-deployed-engineer.svg',
   },
 ];
 

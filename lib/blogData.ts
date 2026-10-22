@@ -4373,7 +4373,7 @@ export const BLOG_POSTS: BlogPost[] = [
     role: 'Founder, HireSkys',
     authorImage: '/founder.png',
     category: 'Career Advice',
-    image: '/blog-og-image.png',
+    image: '/blog-sap-abap-saudi-arabia.svg',
     toc: [
       { id: 'live-openings', title: 'Live SAP Jobs Open to Saudi Arabia (Hiring Now)' },
       { id: 'why-saudi', title: 'Why Saudi Arabia Is Hiring SAP ABAP Developers' },
@@ -4565,7 +4565,7 @@ export const BLOG_POSTS: BlogPost[] = [
     role: 'Founder, HireSkys',
     authorImage: '/founder.png',
     category: 'Career Advice',
-    image: '/blog-og-image.png',
+    image: '/blog-forward-deployed-engineer.svg',
     toc: [
       { id: 'live-openings', title: 'Live Forward Deployed Engineer Jobs (Hiring Now)' },
       { id: 'what-is-fde', title: 'What Is a Forward Deployed Engineer?' },

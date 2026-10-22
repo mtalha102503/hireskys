@@ -144,6 +144,15 @@ const BLOG_POSTS = [
   category: 'Career Advice',
   image: '/blog-remote-jobs-no-experience.jpg',
   },
+  {
+  slug: 'sap-abap-jobs-in-saudi-arabia',
+  title: 'SAP ABAP Jobs in Saudi Arabia: Live Openings, Salary & How to Apply (2026)',
+  excerpt: 'Real SAP ABAP jobs open to Saudi Arabia right now — including remote roles hiring today — plus verified SAR salary ranges, the exact skills and certification employers ask for, and how hiring works under Nitaqat.',
+  date: 'Oct 22, 2026',
+  author: 'Muhammad Talha',
+  category: 'Career Advice',
+  image: '/blog-og-image.png',
+  },
 ];
 
 export default function BlogIndex() {

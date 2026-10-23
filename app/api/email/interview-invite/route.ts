@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
+import { getAuthedUser, resolveWorkspace } from '@/lib/apiAuth';
 
 // Secure backend Supabase client
 const supabaseAdmin = createClient(
@@ -14,6 +15,16 @@ export async function POST(request: Request) {
 
     if (!candidateEmail || !employerId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // 🔐 SECURITY: caller ka session verify karo — service role RLS bypass
+    //    karta hai, is liye body ke employerId par andha bharosa nahi kar sakte.
+    const authedUser = await getAuthedUser(request);
+    if (!authedUser) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (!(await resolveWorkspace(authedUser.id, employerId))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // 1. Company ke details, employer ka email aur booking links fetch karo

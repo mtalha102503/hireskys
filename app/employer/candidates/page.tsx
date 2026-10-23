@@ -361,7 +361,7 @@ const getCountryCode = (countryName: string) => {
 
       const response = await fetch('/api/email/interview-invite', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
         body: JSON.stringify({
           candidateEmail: candidateData.email,
           candidateName: candidateName,
@@ -406,7 +406,7 @@ const getCountryCode = (countryName: string) => {
       // 3. 🎯 NAYA JADOO: Client-side DB update ki jagah apni API call karo
       const res = await fetch('/api/applications/update-status', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
         body: JSON.stringify({
           applicationId: applicationId,
           newStatus: newStatus,

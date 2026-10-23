@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer'; // 👈 Nodemailer import kiya
+import { getAuthedUser, resolveWorkspaceAdmin } from '@/lib/apiAuth';
 
 // Secure Admin Client
 const supabaseAdmin = createClient(
@@ -14,6 +15,16 @@ export async function POST(request: Request) {
 
     if (!email || !role || !employerId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // 🔐 SECURITY: session verify + sirf workspace owner ya admin team
+    //    member hi invite bhej sakta hai (service role RLS bypass karta hai).
+    const authedUser = await getAuthedUser(request);
+    if (!authedUser) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (!(await resolveWorkspaceAdmin(authedUser.id, employerId))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const cleanEmail = email.toLowerCase().trim();

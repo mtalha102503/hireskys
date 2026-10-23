@@ -66,9 +66,14 @@ export default function PipelineStages({ jobId, employerId }: Props) {
   }
 
   async function api(method: string, payload: Record<string, any>) {
+    // 🔐 API ab session token mangti hai — baghair is ke 401 milega
+    const { data: { session } } = await supabase.auth.getSession();
     const res = await fetch('/api/jobs/stages', {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
+      },
       body: JSON.stringify({ employerId, jobId, ...payload }),
     });
     const data = await res.json();

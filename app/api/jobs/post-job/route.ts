@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 // ❌ Purane client ko hata do ya use mat karo
 // import { supabase } from '@/lib/supabaseClient'; 
 import { createClient } from '@supabase/supabase-js';
+import { getAuthedUser } from '@/lib/apiAuth';
 
 export async function POST(req: Request) {
   try {
@@ -9,6 +10,16 @@ export async function POST(req: Request) {
 
     if (!employerId) {
       return NextResponse.json({ error: "User authentication missing!" }, { status: 400 });
+    }
+
+    // 🔐 SECURITY: session verify karo aur employerId caller ka apna hona
+    //    chahiye — job posting + credit deduction sirf owner kar sakta hai.
+    const authedUser = await getAuthedUser(req);
+    if (!authedUser) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (authedUser.id !== employerId) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // 🟢 VIP Fix: Admin Client banao jo RLS ko bypass kare

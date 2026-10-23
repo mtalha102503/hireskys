@@ -205,10 +205,16 @@ const formatLocation = (loc: string) => {
       // Temporary Slug
       const tempSlug = generateSlug(formData.title);
 
+      // 🔐 API ab session token mangti hai — baghair is ke 401 milega
+      const { data: { session } } = await supabase.auth.getSession();
+
       // 🚀 YAHAN API CALL JAYEGI
       const response = await fetch('/api/jobs/post-job', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {}),
+        },
         body: JSON.stringify({
           employerId: user.id, 
           companyName: company?.name || 'Confidential',

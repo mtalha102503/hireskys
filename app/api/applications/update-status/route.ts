@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
+import { getAuthedUser, resolveWorkspace } from '@/lib/apiAuth';
 
 // Secure backend Supabase client
 const supabaseAdmin = createClient(
@@ -16,20 +17,51 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // 1. Database mein candidate ka status update karo aur uska purana data nikalo
-    const { data: application, error: updateError } = await supabaseAdmin
+    // 🔐 SECURITY: caller ka session verify karo — service role RLS bypass
+    //    karta hai, is liye body ke employerId par andha bharosa nahi kar sakte.
+    const authedUser = await getAuthedUser(request);
+    if (!authedUser) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (!(await resolveWorkspace(authedUser.id, employerId))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // 1. Pehle application lao aur verify karo ke wo ISI workspace ki job ki
+    //    hai — warna aik workspace ka member doosri company ke candidate ko
+    //    bhi move kar sakta tha (cross-tenant check).
+    const { data: application, error: fetchError } = await supabaseAdmin
       .from('applications')
-      .update({ status: newStatus })
-      .eq('id', applicationId)
       .select('email, full_name, job_id')
+      .eq('id', applicationId)
       .single();
 
-    if (updateError || !application) {
+    if (fetchError || !application) {
+      return NextResponse.json({ error: "Application not found" }, { status: 404 });
+    }
+
+    const { data: ownerJob } = await supabaseAdmin
+      .from('jobs')
+      .select('employer_id')
+      .eq('id', application.job_id)
+      .single();
+
+    if (!ownerJob || ownerJob.employer_id !== employerId) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // 2. Database mein candidate ka status update karo
+    const { error: updateError } = await supabaseAdmin
+      .from('applications')
+      .update({ status: newStatus })
+      .eq('id', applicationId);
+
+    if (updateError) {
       console.error("Status Update Error:", updateError);
       return NextResponse.json({ error: "Failed to update status in database" }, { status: 500 });
     }
 
-    // 2. 🎯 Stage ki KIND nikalo (Phase 1 custom stages): rejection email
+    // 3. 🎯 Stage ki KIND nikalo (Phase 1 custom stages): rejection email
     //    ab naam par nahi, rejected-KIND wale stage par fire hoti hai —
     //    employer stage ka naam badal de, tab bhi email sahi chalegi.
     //    job_stages na mile to purana naam wala rule fallback hai.
@@ -47,7 +79,7 @@ export async function POST(request: Request) {
     }
     const isRejectedStage = newKind ? newKind === 'rejected' : newStatus === 'Rejected';
 
-    // 3. 🎯 ANTI-GHOSTING LOGIC: Agar naya stage rejected-KIND ka hai, toh auto-email bhejo
+    // 4. 🎯 ANTI-GHOSTING LOGIC: Agar naya stage rejected-KIND ka hai, toh auto-email bhejo
     if (isRejectedStage) {
       
       // Job ka Title fetch karo

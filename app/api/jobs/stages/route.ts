@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getAuthedUser, resolveWorkspace } from '@/lib/apiAuth';
 
 // ============================================================
 // /api/jobs/stages — CRUD for per-job pipeline stages (Phase 1)
-// All writes go through the service role. Every action verifies
-// the job belongs to the given employerId (same trust pattern as
-// /api/applications/update-status). applications.status stores
+// All writes go through the service role. Every action first verifies
+// the caller's session (lib/apiAuth) and workspace access, then that
+// the job belongs to the given employerId. applications.status stores
 // the stage NAME, so renames/deletes cascade to applications.
 // ============================================================
 
@@ -63,6 +64,13 @@ export async function GET(request: Request) {
     if (!jobId || !employerId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
+    const authedUser = await getAuthedUser(request);
+    if (!authedUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!(await resolveWorkspace(authedUser.id, employerId))) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
     const job = await getJob(jobId, employerId);
     if (!job) return NextResponse.json({ error: 'Job not found' }, { status: 404 });
     const stages = await getStages(jobId);
@@ -82,6 +90,13 @@ export async function POST(request: Request) {
     }
     if (!VALID_KINDS.includes(kind)) {
       return NextResponse.json({ error: 'Invalid stage type' }, { status: 400 });
+    }
+    const authedUser = await getAuthedUser(request);
+    if (!authedUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!(await resolveWorkspace(authedUser.id, employerId))) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
     const job = await getJob(Number(jobId), employerId);
     if (!job) return NextResponse.json({ error: 'Job not found' }, { status: 404 });
@@ -131,6 +146,14 @@ export async function PATCH(request: Request) {
     const { employerId, jobId } = body;
     if (!employerId || !jobId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+    // 🔐 SECURITY: session + workspace verify (service role RLS bypass karta hai)
+    const authedUser = await getAuthedUser(request);
+    if (!authedUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!(await resolveWorkspace(authedUser.id, employerId))) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
     const job = await getJob(Number(jobId), employerId);
     if (!job) return NextResponse.json({ error: 'Job not found' }, { status: 404 });
@@ -198,6 +221,13 @@ export async function DELETE(request: Request) {
     const { employerId, jobId, stageId, moveToStageId } = await request.json();
     if (!employerId || !jobId || !stageId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+    const authedUser = await getAuthedUser(request);
+    if (!authedUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!(await resolveWorkspace(authedUser.id, employerId))) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
     const job = await getJob(Number(jobId), employerId);
     if (!job) return NextResponse.json({ error: 'Job not found' }, { status: 404 });

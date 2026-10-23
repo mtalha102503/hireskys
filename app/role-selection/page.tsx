@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { ensureEmployerCompany } from '@/lib/account';
 import { Briefcase, UserCheck, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -55,6 +56,8 @@ export default function RoleSelection() {
 
       // 2. Role ke mutabiq sahi page par redirect karein 🎉
       if (role === 'employer') {
+        // Employer bante hi companies row pakki kar do (billing/posting ki bunyaad)
+        await ensureEmployerCompany(session.user);
         router.push('/employer/settings');
       } else {
         router.push('/complete-profile');

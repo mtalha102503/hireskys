@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { ensureEmployerCompany } from '@/lib/account';
 import { useRouter } from 'next/navigation';
 import { 
   CreditCard, Zap, CheckCircle2, Layers, Loader2, 
@@ -42,7 +43,7 @@ export default function BillingPage() {
         .from('companies')
         .select('free_credits, paid_credits, urgent_credits, plan_tier')
         .eq('employer_id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       if (data) {
@@ -65,13 +66,24 @@ export default function BillingPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) throw new Error("Please log in first");
 
+      // Pehle pakka karo ke company row hai hi — naya employer Settings
+      // save kiye baghair seedha Billing aa jaye to row khud ban jayegi;
+      // warna pehle yahan '.single()' wala 'Cannot coerce' error aata tha.
+      await ensureEmployerCompany(session.user);
+
       const { data: company, error: fetchError } = await supabase
         .from('companies')
-        .select('job_credits, has_used_trial')
+        .select('free_credits, has_used_trial')
         .eq('employer_id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (fetchError) throw fetchError;
+
+      if (!company) {
+        setPopup({ show: true, type: 'error', message: "Company profile is not ready yet. Please open Settings, save your company details once, then claim again." });
+        setClaimingTrial(false);
+        return;
+      }
 
       if (company?.has_used_trial) {
         // 🔴 Pehla Alert Replaced
@@ -81,7 +93,7 @@ export default function BillingPage() {
       }
 
       // 🛠️ YAHAN CHANGE KIYA HAI: + 5 ki jagah + 2 kar diya
-      const newFreeCredits = ((company as any)?.free_credits || 0) + 2;
+      const newFreeCredits = (company.free_credits || 0) + 2;
       
       const { error: updateError } = await supabase
         .from('companies')

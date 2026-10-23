@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { ensureEmployerCompany } from '@/lib/account';
 import { Loader2 } from 'lucide-react';
 
 export default function AuthCallbackPage() {
@@ -101,12 +102,18 @@ export default function AuthCallbackPage() {
               // Bilkul naya user seedha ATS se — role-selection ka chakkar nahi,
               // employer mark karke onboarding par bhejo
               await supabase.auth.updateUser({ data: { role: 'employer' } });
+              // Naye employer ki companies row foran bana do — billing aur
+              // job posting usi row par chalte hain, warna .single() errors
+              await ensureEmployerCompany(user);
               router.push('/employer/settings');
               return;
             }
             // Employer ho ya seeker — employer area par bhejo. Seeker ko wahan
             // EmployerGate wazeh choice dega (switch ya board par wapas) —
             // koi silent mixup nahi hoga.
+            if (userRole === 'employer') {
+              await ensureEmployerCompany(user);
+            }
             router.push('/employer/dashboard');
             return;
           }
@@ -122,6 +129,7 @@ export default function AuthCallbackPage() {
 
         // B. If Employer
         if (userRole === 'employer') {
+          await ensureEmployerCompany(user);
           // auth_next sirf employer area ke andar hi izzat payega
           if (authNext && authNext.startsWith('/employer')) {
             router.push(authNext);

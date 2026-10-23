@@ -10,7 +10,7 @@ export default function JobActions({ job, userId, isSavedInitial }: any) {
 
   // Save Logic
   const toggleSave = async () => {
-    if (!userId) { router.push('/login'); return; }
+    if (!userId) { localStorage.setItem('auth_next', window.location.pathname); router.push('/login'); return; }
     
     // Optimistic UI (Turant color change karo, background me save hoga)
     const newStatus = !saved;

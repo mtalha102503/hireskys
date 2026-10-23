@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { ArrowLeft, Loader2, Globe, ShieldCheck, Zap } from 'lucide-react';
@@ -12,6 +12,12 @@ const GoogleIcon = () => (
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // OAuth callback se aya hua error (maslan Google 500) yahan dikhao
+  useEffect(() => {
+    const err = new URLSearchParams(window.location.search).get('error');
+    if (err) setErrorMsg(err);
+  }, []);
 
   const handleGoogleLogin = async () => {
     try {

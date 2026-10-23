@@ -9,11 +9,57 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      // 🚨 OAuth ERROR: Google ne error bheja ho (500 page, consent cancel,
+      //    ya user ke screenshot wala Error 500) to khamosh /login ki bajaye
+      //    wajah ke saath wapas bhejo — login page use dikhayega.
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const oauthError = searchParams.get('error') || hashParams.get('error');
+      if (oauthError) {
+        const desc = searchParams.get('error_description') || hashParams.get('error_description')
+          || 'Google sign-in failed. Please try again.';
+        router.push(`/login?error=${encodeURIComponent(desc)}`);
+        return;
+      }
+
+      let { data: { session } } = await supabase.auth.getSession();
+
+      // ⏳ SESSION RACE: OAuth return par session kabhi kabhi chand second
+      //    der se establish hota hai. Agar URL OAuth-return jaisa hai (code/
+      //    state/access_token mojood) to fauri /login dhakay ki bajaye
+      //    onAuthStateChange ka ~4 second tak intezar karo.
+      if (!session) {
+        const looksLikeOAuthReturn = searchParams.has('code') || searchParams.has('state') || hashParams.has('access_token');
+        if (looksLikeOAuthReturn) {
+          session = await new Promise<any>((resolve) => {
+            let settled = false;
+            const { data: authSub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+              if (newSession && !settled) {
+                settled = true;
+                authSub.subscription.unsubscribe();
+                resolve(newSession);
+              }
+            });
+            setTimeout(() => {
+              if (!settled) {
+                settled = true;
+                authSub.subscription.unsubscribe();
+                resolve(null);
+              }
+            }, 4000);
+          });
+        }
+      }
 
       if (session) {
         const user = session.user;
         let userRole = user.user_metadata?.role;
+
+        // 🎯 RETURN URL: login se pehle user jahan tha (auth_next) — sirf
+        //    neeche wali role routing me istemal hoga; parhte hi hata do
+        //    taake agli login par purani manzil na lag jaye.
+        const authNext = localStorage.getItem('auth_next');
+        if (authNext) localStorage.removeItem('auth_next');
 
         // 🚨 NEW FIX: Auto-generated khali profiles ka catch
         if (!userRole) {
@@ -76,12 +122,23 @@ export default function AuthCallbackPage() {
 
         // B. If Employer
         if (userRole === 'employer') {
-          router.push('/employer/settings');
+          // auth_next sirf employer area ke andar hi izzat payega
+          if (authNext && authNext.startsWith('/employer')) {
+            router.push(authNext);
+          } else {
+            router.push('/employer/settings');
+          }
           return;
         }
 
         // C. If Seeker -> Unki completeness check karo
         if (userRole === 'seeker') {
+          // Login se pehle wali manzil (maslan kisi job ka page) — wapas wahin
+          if (authNext && authNext.startsWith('/')) {
+            router.push(authNext);
+            return;
+          }
+
           const { data: profile, error } = await supabase
             .from('profiles')
             .select('*')

@@ -17,6 +17,12 @@ export default function RoleSelection() {
       if (!session) {
         // Agar session nahi hai to wapis login par bhejo
         router.push('/login');
+      } else if (session.user.user_metadata?.role === 'employer') {
+        // Role pehle se set hai — picker dobara nahi, seedha employer area
+        router.push('/employer/dashboard');
+      } else if (session.user.user_metadata?.role === 'seeker') {
+        // Role pehle se set hai — picker dobara nahi, seedha board par
+        router.push('/');
       } else {
         setCheckingSession(false);
       }
@@ -42,6 +48,10 @@ export default function RoleSelection() {
       });
 
       if (error) throw error;
+
+      // 1.5 Session refresh karo taake nayi role foran har jagah nazar aye
+      //      (warna purani token ki wajah se pages purana role parhte hain)
+      await supabase.auth.refreshSession();
 
       // 2. Role ke mutabiq sahi page par redirect karein 🎉
       if (role === 'employer') {

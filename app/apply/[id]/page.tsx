@@ -87,6 +87,7 @@ export default function ApplyPage() {
     e.preventDefault();
     if (!currentUser) {
       alert("Please login to apply!");
+      localStorage.setItem('auth_next', window.location.pathname);
       router.push('/login');
       return;
     }

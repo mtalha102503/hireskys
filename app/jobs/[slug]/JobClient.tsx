@@ -22,6 +22,23 @@ import dynamic from 'next/dynamic';
 
 const MoneytizerHalfPage = dynamic(() => import('@/components/MoneytizerHalfPage'), { ssr: false });
 const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { ssr: false });
+// 📝 CATEGORY CONTEXT BLURBS (HireSkys original editorial, per category)
+const CATEGORY_BLURBS: Record<string, string> = {
+  "Development": "Remote development roles on HireSkys cover frontend, backend, full-stack, DevOps, and QA work. Employers here usually name their exact stack in the description — compare the required tools against your own experience before applying, and use the Skill Gap Analyzer below to spot what to learn next.",
+  "Mobile App": "Remote mobile roles on HireSkys cover native iOS and Android as well as cross-platform work with React Native and Flutter. Check whether the listing asks for store deployments or a specific framework, and compare it with your own shipped apps before applying.",
+  "AI & Machine Learning": "Remote AI and machine learning roles on HireSkys range from AI engineering and NLP to computer vision and prompt engineering. Listings usually name their frameworks and models — match them against your own hands-on work before applying.",
+  "Design & Creative": "Remote design roles on HireSkys cover UI/UX, graphic design, branding, and illustration. Most listings link a portfolio expectation — a small set of relevant pieces beats a large generic portfolio.",
+  "Video & Animation": "Remote video roles on HireSkys cover editing, motion graphics, 3D animation, and short-form content. Check the listed tools (Premiere Pro, After Effects, and similar) and the content format before applying.",
+  "Audio & Voice": "Remote audio roles on HireSkys cover voice-over, podcast editing, music production, and sound design. Listings usually describe the deliverable format — confirm it matches your setup before applying.",
+  "Writing & Translation": "Remote writing roles on HireSkys cover content writing, copywriting, technical writing, and translation. Most listings describe the niche and volume — check both against your own background before applying.",
+  "Marketing & Sales": "Remote marketing and sales roles on HireSkys cover SEO, paid ads, social media, email marketing, and lead generation. Listings usually name their channels and tools — compare them with your own results before applying.",
+  "Admin & Support": "Remote admin and support roles on HireSkys cover virtual assistance, data entry, executive assistance, research, and project coordination. Reliability and clear communication matter as much as tools in these roles.",
+  "Customer Service": "Remote customer service roles on HireSkys cover support, technical support, chat support, and community management. Check the listed hours, languages, and support tools before applying.",
+  "Finance & Accounting": "Remote finance and accounting roles on HireSkys range from bookkeeping and tax preparation to financial analysis and CFO-level work. Employers usually name their accounting software (QuickBooks, Xero, NetSuite) in the description — check it against your own toolkit before applying.",
+  "Legal & HR": "Remote legal and HR roles on HireSkys cover legal consulting, contract work, recruiting, and talent acquisition. Listings usually describe the jurisdiction or hiring volume — confirm both fit before applying.",
+  "Education & Coaching": "Remote education and coaching roles on HireSkys cover teaching, tutoring, course creation, and coaching. Check the subject, audience, and delivery format described in the listing before applying.",
+};
+
 // 🟢 1. STRING PARSER
 const parseComplexLocation = (locationString: string) => {
     if (!locationString) return [];
@@ -1190,6 +1207,14 @@ const handleApply = async () => {
                 <Briefcase className="text-indigo-500"/> Job Description
             </h2>
 
+            {/* 📝 CATEGORY CONTEXT (HireSkys original) */}
+            {job.category && (
+              <p className="mb-8 text-slate-600 dark:text-slate-400 leading-relaxed">
+                {CATEGORY_BLURBS[job.category] || `Remote ${job.category} roles on HireSkys span a wide range of skills and seniority levels. Browse similar openings below to compare employers, requirements, and work arrangements before you apply.`}
+              </p>
+            )}
+
+
             {/* 🚀 AI SKILL-GAP ANALYZER (Smart Routing: Logged-in vs Guest) */}
             <div className="mb-8">
               {(() => {
@@ -1233,6 +1258,19 @@ const handleApply = async () => {
         </div>
         <JobFeedback jobId={job.id} userId={user?.id} />
         <ReportJob jobId={job.id} />
+                {/* 📝 HOW APPLYING WORKS ON HIRESKYS */}
+                <div className="mt-12 border-t border-slate-200 dark:border-slate-800 pt-10">
+                    <h3 className="text-xl md:text-2xl font-black mb-6 text-slate-900 dark:text-white flex items-center gap-2">
+                        <Briefcase size={24} className="text-indigo-500" /> How applying works on HireSkys
+                    </h3>
+                    <ol className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                        <li className="flex gap-3"><span className="font-black text-indigo-500">1.</span><span><strong className="text-slate-900 dark:text-white">Click Apply.</strong> You go to the application — the employer&apos;s own page or form, or the HireSkys apply flow — and submit your profile as the employer asks.</span></li>
+                        <li className="flex gap-3"><span className="font-black text-indigo-500">2.</span><span><strong className="text-slate-900 dark:text-white">The employer reviews.</strong> Shortlisting is done by the employer, not by HireSkys, so the timeline and next steps come from them.</span></li>
+                        <li className="flex gap-3"><span className="font-black text-indigo-500">3.</span><span><strong className="text-slate-900 dark:text-white">Hear back directly.</strong> If shortlisted, the employer contacts you directly. Applying through HireSkys is free for jobseekers — never pay for a job application.</span></li>
+                    </ol>
+                </div>
+
+
                 
                 {/* 🌟 SECTION 1: SIMILAR OPPORTUNITIES (2x2 Grid) */}
                 {relatedJobs.length > 0 && (
@@ -1491,7 +1529,7 @@ const handleApply = async () => {
             
             {/* Description */}
             <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3">
-                {companyDetails?.description || `See all active remote openings and hiring details for ${job.company}.`}
+                {companyDetails?.description || (companyJobs.length > 0 ? `${companyDetails?.name || job.company || job.source} currently lists ${companyJobs.length} active remote opening${companyJobs.length === 1 ? '' : 's'} on HireSkys — see them all in "More Openings" above.` : `Explore remote openings from ${companyDetails?.name || job.company || job.source} on HireSkys.`)}
             </p>
         </div>
     )}

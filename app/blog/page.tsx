@@ -162,6 +162,15 @@ const BLOG_POSTS = [
     category: 'Career Advice',
     image: '/blog-forward-deployed-engineer.svg',
   },
+  {
+    slug: 'india-tech-hiring-2026-data-engineering-remote-reality',
+    title: 'India Tech Hiring 2026: 12 Senior Roles for Every 1 Entry Job, Data Engineering Doubles — What It Means for Remote Seekers',
+    excerpt: 'A new report on 18,752 India tech postings shows a senior-heavy market, a data-engineering surge, and remote work at just 0.8%. Here is what remote job seekers should actually do about it, with live remote data-engineer roles on HireSkys.',
+    date: 'Oct 28, 2026',
+    author: 'Muhammad Talha',
+    category: 'Career Advice',
+    image: '/blog-india-tech-hiring-2026.svg',
+  },
 ];
 
 export default function BlogIndex() {

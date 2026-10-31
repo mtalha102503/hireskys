@@ -180,6 +180,15 @@ const BLOG_POSTS = [
     category: 'Career Advice',
     image: '/blog-remote-sales-marketing-jobs.svg',
   },
+  {
+    slug: 'remote-customer-support-jobs',
+    title: 'Remote Customer Support Jobs: Live Openings, Top Roles & Skills (2026)',
+    excerpt: 'Remote customer support jobs are one of the most open doors into remote work — 1,226 live Customer Service openings on HireSkys. Here is what the live data actually shows: the roles hiring now, the tools employers ask for, and the honest truth about experience and pay.',
+    date: 'Oct 31, 2026',
+    author: 'Muhammad Talha',
+    category: 'Career Advice',
+    image: '/blog-remote-customer-support-jobs.svg',
+  },
 ];
 
 export default function BlogIndex() {

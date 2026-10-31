@@ -9,6 +9,7 @@ import NextTopLoader from 'nextjs-toploader';
 import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
 import MoneytizerStickyFooter from "@/components/MoneytizerStickyFooter";
+import MoneytizerSkyrail from "@/components/MoneytizerSkyrail";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import PlatformFeedback from '@/components/PlatformFeedback';
@@ -362,6 +363,9 @@ export default function RootLayout({
           <ConditionalChat />
           <div className="chrome-main">
             <MoneytizerStickyFooter/>
+          </div>
+          <div className="chrome-main">
+            <MoneytizerSkyrail />
           </div>
           <div className="chrome-main">
             <PlatformFeedback />

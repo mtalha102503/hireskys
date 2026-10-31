@@ -178,7 +178,7 @@ const BLOG_POSTS = [
     date: 'Oct 31, 2026',
     author: 'Muhammad Talha',
     category: 'Career Advice',
-    image: '/blog-og-image.jpg',
+    image: '/blog-remote-sales-marketing-jobs.svg',
   },
 ];
 

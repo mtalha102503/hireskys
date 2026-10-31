@@ -4937,13 +4937,16 @@ export const BLOG_POSTS: BlogPost[] = [
     role: 'Founder, HireSkys',
     authorImage: '/founder.png',
     category: 'Career Advice',
-    image: '/blog-og-image.jpg',
+    image: '/blog-remote-sales-marketing-jobs.svg',
     toc: [
       { id: 'how-big', title: 'How Big Is This Category?' },
       { id: 'top-roles', title: 'The Roles Hiring Right Now' },
+      { id: 'role-deep-dive', title: 'Role by Role: What Each Job Actually Is' },
       { id: 'top-skills', title: 'The Skills Employers Actually Ask For' },
+      { id: 'skills-in-detail', title: 'The Skills in Detail: What Employers Mean' },
       { id: 'job-types', title: 'Full-Time vs Contract' },
       { id: 'experience', title: 'The Experience Reality (Read This First)' },
+      { id: 'beginner-path', title: 'The Beginner Path: How to Break In' },
       { id: 'locations', title: 'Where the Jobs Are' },
       { id: 'pay', title: 'Pay: What the Listings Actually Disclose' },
       { id: 'how-to-apply', title: 'How to Apply: Step by Step' },
@@ -5022,7 +5025,7 @@ export const BLOG_POSTS: BlogPost[] = [
 
 <h2 id="pay" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Pay: What the Listings Actually Disclose</h2>
 <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
-  Only <strong>1,210 of 3,313 listings (36.5%)</strong> state a dollar amount at all, and the formats do not line up: base salaries, OTE (on-target earnings), base-plus-commission, monthly rates and even non-USD currencies all appear. That is why this guide does not publish an average salary for the category — averaging those together would be a made-up number. What the listings do show, as examples: base ranges like $65,000–$75,000 and $138,000–$156,000 USD, OTE packages like $140,000–$150,000 and $275,000–$350,000/year OTE plus equity, and commission-led roles like $55,000 plus commission. In sales especially, treat the OTE figure as the honest headline and ask what share of reps actually hit it.
+  Only <strong>1,210 of 3,313 listings (36.5%)</strong> state a dollar amount at all, and the formats do not line up: base salaries, OTE (on-target earnings), base-plus-commission, monthly rates and even non-USD currencies all appear. That is why this guide does not publish an average salary for the category — averaging those together would be a made-up number. What the listings do show, as examples: base ranges like $65,000–$75,000 and $138,000–$156,000 USD, OTE packages like $140,000–$150,000 and $275,000–$350,000/year OTE plus equity, and commission-led roles like $55,000 plus commission. In sales especially, treat the OTE figure as the honest headline and ask what share of reps actually hit it. The format mix itself is part of the story: the same sample shows a monthly role at $2,000+ USD per month, a Canadian range at $70,000 — $95,000 CAD, and many listings that simply say 'Not Disclosed' — so two listings with very different-looking pay lines can be the same kind of job.
 </p>
 
 <h2 id="how-to-apply" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">How to Apply: Step by Step</h2>
@@ -5032,7 +5035,50 @@ export const BLOG_POSTS: BlogPost[] = [
   <li>Check the job type and location label before applying: 90.9% here is full-time, but the location label decides time-zone fit and any hiring-region limits.</li>
   <li>For sales roles, read the pay line carefully: base vs OTE vs commission changes the job completely. If the split is not stated, ask before the final round, not after the offer.</li>
   <li>Apply through the listing's own apply flow on HireSkys, and use the Save Jobs feature to track the roles you have applied to.</li>
+  <li>Learn the tools before you need them: a free HubSpot or Salesforce learning tier plus one documented project removes the most common rejection reason for SDR and BDR applicants.</li>
+  <li>Prepare one proof story per skill you claim — a lead-generation campaign, an SEO win, an account you grew. Numbers beat adjectives in every interview in this category.</li>
 </ol>
+
+<h2 id="role-deep-dive" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Role by Role: What Each Job Actually Is</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Titles blur together, so here is what each top role usually means in practice — and the proof that gets you shortlisted for it. The listing counts are live HireSkys data; the role descriptions are what employers generally expect from these titles.
+</p>
+<table class="w-full text-left border-collapse my-8">
+  <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Role</th><th class="py-3 pr-4 font-bold">Listings</th><th class="py-3 pr-4 font-bold">What it actually is</th><th class="py-3 font-bold">Proof that gets you shortlisted</th></tr></thead>
+  <tbody>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Enterprise Account Executive</td><td class="py-3 pr-4">57</td><td class="py-3 pr-4">Closes large B2B deals with long cycles and several stakeholders</td><td class="py-3">Closed-won revenue, deal size, win rate</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Account Executive</td><td class="py-3 pr-4">45</td><td class="py-3 pr-4">Owns the full sales cycle for mid-market accounts</td><td class="py-3">Quota attainment, pipeline you built yourself</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Sales Development Representative</td><td class="py-3 pr-4">28</td><td class="py-3 pr-4">Outbound prospecting — books meetings for account executives</td><td class="py-3">Meetings booked, reply rates, sequencing-tool fluency</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Business Development Representative</td><td class="py-3 pr-4">25</td><td class="py-3 pr-4">New-business pipeline with heavier qualification than an SDR</td><td class="py-3">Qualified pipeline, discovery calls run</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Product Marketing Manager</td><td class="py-3 pr-4">19</td><td class="py-3 pr-4">Positioning, messaging, launches and sales enablement</td><td class="py-3">Launch examples, positioning docs, win-rate impact</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Social Media Manager</td><td class="py-3 pr-4">17</td><td class="py-3 pr-4">Content, community and paid social for a brand</td><td class="py-3">Account growth numbers, engagement, ad results</td></tr>
+  </tbody>
+</table>
+
+<h2 id="skills-in-detail" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Skills in Detail: What Employers Mean</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  <strong>Lead Generation (1,898 listings)</strong> means finding and qualifying prospects before anyone tries to close them — list building, outreach, and booking the first conversation. Prove it with lists you built and meetings you booked, not with the phrase "good at lead gen" on your resume.
+</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  <strong>SEO (690)</strong> and <strong>Social Media (655)</strong> are the two marketing skills with real volume here. For SEO, employers want rankings and traffic you moved; for social, accounts you grew and content that performed. Screenshots of analytics beat certificates for both.
+</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  <strong>Cold Calling (476)</strong> is not dead — nearly one in seven listings in this category still asks for it, usually alongside email and social outreach rather than instead of them. What gets tested is objection handling and connect rates, so prepare two or three real call stories for interviews.
+</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  <strong>CRM fluency (CRM 278, Salesforce 277, HubSpot 199)</strong> is the quiet requirement underneath the sales roles: pipeline hygiene, follow-up discipline and reporting. Both Salesforce and HubSpot offer free learning tiers, so "no CRM experience" is fixable in weeks, not months — and worth fixing before you apply, since it appears on more listings than any single marketing tool.
+</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  <strong>Google Ads (238)</strong> and <strong>Email Marketing (284)</strong> round out the paid and lifecycle side: employers want return on ad spend or cost per lead for ads, and list growth or campaign revenue for email. One documented campaign with real numbers outweighs a long skills list.
+</p>
+
+<h2 id="beginner-path" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Beginner Path: How to Break In</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  With only 142 entry-level listings against 1,879 mid-level and 1,244 senior ones, beginners need a plan, not just applications. The realistic door is SDR or BDR work: those roles are widely treated as the training ground for account-executive roles, and they hire for communication and coachability more than a closing record.
+</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Without experience, manufacture proof before you apply: run two or three small lead-generation projects (even unpaid, for a real business), complete the free learning tiers for HubSpot or Salesforce, and document every number — prospects contacted, replies earned, meetings booked. Then apply to SDR and BDR roles first and say plainly in your application what you did and what it produced. Enthusiasm without numbers is the application this category rejects most.
+</p>
 
 <h2 id="faq" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
 <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Is Marketing & Sales really the biggest remote category on HireSkys?</strong><br/>Yes — 3,313 live listings, 22.1% of all active listings on the site, ahead of every other category.</p>
@@ -5041,6 +5087,10 @@ export const BLOG_POSTS: BlogPost[] = [
 <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Which skill should I learn first?</strong><br/>Lead generation, backed by CRM fluency (Salesforce or HubSpot). Those two tags appear on more listings than any marketing-specific skill in this category.</p>
 <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Why does this guide not give an average salary?</strong><br/>Because only 36.5% of listings state a dollar amount, and they mix base, OTE, commission, monthly and non-USD figures. An average across those would be misleading, so the guide shows the formats and example ranges instead.</p>
 <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Where do I browse these jobs?</strong><br/>On the <a href="/category/marketing-sales" class="text-indigo-600 font-semibold hover:underline">Marketing & Sales category page</a> — it always shows the current live listings, while this guide's counts are a snapshot from October 31, 2026.</p>
+
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Is cold calling dead?</strong><br/>No — 476 live listings in this category still carry the Cold Calling tag, usually alongside email and social outreach. It is a smaller piece of the job than it used to be, but it is still a tested skill.</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Which tools should I learn first?</strong><br/>Salesforce (277 listings), HubSpot (199) and CRM work generally (278). Both platforms have free learning tiers, and CRM fluency appears on more listings than any single marketing tool.</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Sales or marketing — which path should I pick?</strong><br/>Pick by the proof you already have. If you can show outreach, meetings or closed deals, sales has the volume and the OTE upside. If you can show content, SEO or social growth, marketing roles fit better. Both live in this same category, so switching lanes later does not mean starting over.</p>
 
 <div class="my-12 p-8 rounded-2xl bg-indigo-600 text-center">
   <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Browse Live Marketing & Sales Jobs</h3>

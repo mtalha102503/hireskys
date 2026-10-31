@@ -171,6 +171,15 @@ const BLOG_POSTS = [
     category: 'Career Advice',
     image: '/blog-india-tech-hiring-2026.svg',
   },
+  {
+    slug: 'remote-sales-marketing-jobs',
+    title: 'Remote Sales & Marketing Jobs: Live Openings, Top Roles & Skills (2026)',
+    excerpt: 'Remote sales jobs lead HireSkys\' biggest category — 3,313 live Marketing & Sales openings. Here is what the live data actually shows: the roles hiring now, the skills employers ask for, and the honest truth about experience and pay.',
+    date: 'Oct 31, 2026',
+    author: 'Muhammad Talha',
+    category: 'Career Advice',
+    image: '/blog-og-image.jpg',
+  },
 ];
 
 export default function BlogIndex() {

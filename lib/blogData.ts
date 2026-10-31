@@ -4928,4 +4928,125 @@ export const BLOG_POSTS: BlogPost[] = [
       { id: 'sources', title: 'Sources and scope' },
     ],
   },
+  {
+    slug: 'remote-sales-marketing-jobs',
+    title: 'Remote Sales & Marketing Jobs: Live Openings, Top Roles & Skills (2026)',
+    excerpt: 'Remote sales jobs lead HireSkys\' biggest category — 3,313 live Marketing & Sales openings. Here is what the live data actually shows: the roles hiring now, the skills employers ask for, and the honest truth about experience and pay.',
+    date: 'Oct 31, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png',
+    category: 'Career Advice',
+    image: '/blog-og-image.jpg',
+    toc: [
+      { id: 'how-big', title: 'How Big Is This Category?' },
+      { id: 'top-roles', title: 'The Roles Hiring Right Now' },
+      { id: 'top-skills', title: 'The Skills Employers Actually Ask For' },
+      { id: 'job-types', title: 'Full-Time vs Contract' },
+      { id: 'experience', title: 'The Experience Reality (Read This First)' },
+      { id: 'locations', title: 'Where the Jobs Are' },
+      { id: 'pay', title: 'Pay: What the Listings Actually Disclose' },
+      { id: 'how-to-apply', title: 'How to Apply: Step by Step' },
+      { id: 'faq', title: 'Frequently Asked Questions' },
+    ],
+    content: `
+<p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+  If you are hunting for a remote sales or marketing job, here is the honest picture: Marketing & Sales is the single biggest remote category on HireSkys — <strong>3,313 live openings</strong>, more than one in five active listings on the whole site. But the data also corrects a common assumption: this is not mainly an entry-level market. Read the numbers before you apply.
+</p>
+
+<h2 id="how-big" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">How Big Is This Category?</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Out of 14,998 active remote listings on HireSkys, 3,313 sit in Marketing & Sales — <strong>22.1% of everything live on the site</strong>. No other category is larger. The next biggest, Admin & Support, has 1,646. So if your skills are in marketing or sales, this is where the deepest pool of remote work is right now.
+</p>
+
+<h2 id="top-roles" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Roles Hiring Right Now</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Sales roles dominate the top of the list. These are the most repeated exact job titles among live Marketing & Sales listings:
+</p>
+<table class="w-full text-left border-collapse my-8">
+  <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Role</th><th class="py-3 font-bold">Live listings</th></tr></thead>
+  <tbody>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Enterprise Account Executive</td><td class="py-3">57</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Account Executive</td><td class="py-3">45</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Sales Development Representative</td><td class="py-3">28</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Business Development Representative</td><td class="py-3">25</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Business Development Manager</td><td class="py-3">24</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Product Marketing Manager</td><td class="py-3">19</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Social Media Manager</td><td class="py-3">17</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Ads Creative Strategist</td><td class="py-3">17</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Strategic Account Executive</td><td class="py-3">16</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Sales Development Representative (SDR)</td><td class="py-3">15</td></tr>
+  </tbody>
+</table>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  The pattern is clear: account executives and sales/business development representatives are the volume roles. Pure marketing titles (Product Marketing Manager, Social Media Manager, Ads Creative Strategist) hire steadily, but in smaller numbers than the sales engine around them.
+</p>
+
+<h2 id="top-skills" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Skills Employers Actually Ask For</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Job titles tell you what companies call the role. Tags tell you what they actually want you to do. Across the 3,313 listings, these tags appear most:
+</p>
+<table class="w-full text-left border-collapse my-8">
+  <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Skill / tag</th><th class="py-3 font-bold">Listings carrying it</th></tr></thead>
+  <tbody>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Sales Representative</td><td class="py-3">1,983</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Lead Generation</td><td class="py-3">1,898</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">SEO</td><td class="py-3">690</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Social Media Manager</td><td class="py-3">655</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Cold Calling</td><td class="py-3">476</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Enterprise Sales</td><td class="py-3">291</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Email Marketing</td><td class="py-3">284</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">CRM</td><td class="py-3">278</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Salesforce</td><td class="py-3">277</td></tr>
+    <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Google Ads</td><td class="py-3">238</td></tr>
+  </tbody>
+</table>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Two skills stand far above the rest: <strong>Lead Generation (1,898 listings)</strong> and the Sales Representative tag (1,983). If you can show real pipeline — leads found, meetings booked, deals supported — that is the single most portable proof in this category. After that, the practical stack is SEO, social media, cold calling, and CRM fluency (Salesforce and HubSpot both appear repeatedly). One honest note: tags overlap, so these counts do not add up to the category total — a single listing can ask for lead generation, CRM and Salesforce at once.
+</p>
+
+<h2 id="job-types" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Full-Time vs Contract</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  This category leans much harder toward full-time work than the site as a whole: <strong>3,010 of 3,313 listings (90.9%) are full-time</strong>, against 80.9% full-time site-wide. Contract roles are 192, freelance 39, part-time 38. If you want a stable remote marketing or sales job rather than gig work, this category is where that stability concentrates.
+</p>
+
+<h2 id="experience" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Experience Reality (Read This First)</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Here is the part most roundups skip: <strong>Mid-Level (1,879) and Senior-Level (1,244) together make up 94.3% of live listings</strong>. Entry-Level is just 142 listings (4.3%), and Lead/Manager is 43. So a beginner should not expect this category to be an easy front door — the volume is in roles that assume you have already done the work. That does not mean beginners are locked out: SDR and BDR roles are the usual entry path, and the 142 entry-level listings are real. It means your application should prove experience (even freelance or project experience) rather than only enthusiasm.
+</p>
+
+<h2 id="locations" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Where the Jobs Are</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Almost half the category hires for the United States: <strong>1,595 listings (48.1%) are Remote (United States)</strong>. The next markets are the United Kingdom (130), Philippines (111), South Africa (72), Canada (68), India (65) and Germany (58). Note that these are the location labels employers put on their own listings — "Remote (United States)" usually means US-based hiring, not necessarily a US work-permit requirement; always check the individual listing.
+</p>
+
+<h2 id="pay" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Pay: What the Listings Actually Disclose</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+  Only <strong>1,210 of 3,313 listings (36.5%)</strong> state a dollar amount at all, and the formats do not line up: base salaries, OTE (on-target earnings), base-plus-commission, monthly rates and even non-USD currencies all appear. That is why this guide does not publish an average salary for the category — averaging those together would be a made-up number. What the listings do show, as examples: base ranges like $65,000–$75,000 and $138,000–$156,000 USD, OTE packages like $140,000–$150,000 and $275,000–$350,000/year OTE plus equity, and commission-led roles like $55,000 plus commission. In sales especially, treat the OTE figure as the honest headline and ask what share of reps actually hit it.
+</p>
+
+<h2 id="how-to-apply" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">How to Apply: Step by Step</h2>
+<ol class="list-decimal space-y-3 my-8 pl-6 text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+  <li>Open the <a href="/category/marketing-sales" class="text-indigo-600 font-semibold hover:underline">Marketing & Sales category on HireSkys</a> and filter by the role you actually want — SDR/BDR if you are early-career, Account Executive or Product Marketing if you have a track record.</li>
+  <li>Match the listing's tags, not just its title. If it asks for Lead Generation and Salesforce, your resume should show both — with numbers (leads, meetings, pipeline) wherever you have them.</li>
+  <li>Check the job type and location label before applying: 90.9% here is full-time, but the location label decides time-zone fit and any hiring-region limits.</li>
+  <li>For sales roles, read the pay line carefully: base vs OTE vs commission changes the job completely. If the split is not stated, ask before the final round, not after the offer.</li>
+  <li>Apply through the listing's own apply flow on HireSkys, and use the Save Jobs feature to track the roles you have applied to.</li>
+</ol>
+
+<h2 id="faq" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Is Marketing & Sales really the biggest remote category on HireSkys?</strong><br/>Yes — 3,313 live listings, 22.1% of all active listings on the site, ahead of every other category.</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Are these jobs mostly full-time?</strong><br/>Yes — 90.9% are full-time, a higher share than the site-wide 80.9%. Contract, freelance and part-time roles exist but are the minority here.</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Can a beginner get in?</strong><br/>It is harder than the headline count suggests: only 4.3% of listings are entry-level. SDR and BDR roles are the realistic entry path — apply there, and show any real outreach or lead-generation work you have done.</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Which skill should I learn first?</strong><br/>Lead generation, backed by CRM fluency (Salesforce or HubSpot). Those two tags appear on more listings than any marketing-specific skill in this category.</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Why does this guide not give an average salary?</strong><br/>Because only 36.5% of listings state a dollar amount, and they mix base, OTE, commission, monthly and non-USD figures. An average across those would be misleading, so the guide shows the formats and example ranges instead.</p>
+<p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Where do I browse these jobs?</strong><br/>On the <a href="/category/marketing-sales" class="text-indigo-600 font-semibold hover:underline">Marketing & Sales category page</a> — it always shows the current live listings, while this guide's counts are a snapshot from October 31, 2026.</p>
+
+<div class="my-12 p-8 rounded-2xl bg-indigo-600 text-center">
+  <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Browse Live Marketing & Sales Jobs</h3>
+  <p class="text-indigo-100 mb-8 text-lg font-medium max-w-2xl mx-auto">3,313 live openings at last count — filter by role, skill and location, and apply directly.</p>
+  <a href="/category/marketing-sales" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-indigo-700 font-black rounded-xl transition-all shadow-lg">Browse the Category</a>
+</div>
+    `
+  },
 ];

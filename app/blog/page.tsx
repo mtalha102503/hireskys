@@ -198,6 +198,15 @@ const BLOG_POSTS = [
   category: 'Launch Announcement',
   image: '/blog/fedtalentusa-launch.svg',
   },
+  {
+    slug: 'remote-administrative-assistant-jobs',
+    title: 'Remote Administrative Assistant Jobs: Data Report 2026',
+    excerpt: '1,645 live Admin & Support listings analyzed: the roles, the skills employers actually ask for, pay bands by layer, and how to land a remote administrative assistant job in 2026.',
+    date: 'Nov 3, 2026',
+    author: 'Muhammad Talha',
+    category: 'Career Advice',
+    image: '/blog-remote-administrative-assistant-jobs.svg',
+  },
 ];
 
 export default function BlogIndex() {

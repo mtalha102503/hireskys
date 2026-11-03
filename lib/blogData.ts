@@ -5366,4 +5366,217 @@ export const BLOG_POSTS: BlogPost[] = [
       </div>
     `,
   },
+  {
+    slug: 'remote-administrative-assistant-jobs',
+    title: 'Remote Administrative Assistant Jobs: Data Report 2026',
+    excerpt: '1,645 live Admin & Support listings analyzed: the roles, the skills employers actually ask for, pay bands by layer, and how to land a remote administrative assistant job in 2026.',
+    date: 'Nov 3, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png',
+    category: 'Career Advice',
+    image: '/blog-remote-administrative-assistant-jobs.svg',
+    toc: [
+      { id: 'headline-numbers', title: 'The headline numbers' },
+      { id: 'what-it-covers', title: 'What Remote Administrative Assistant Actually Covers' },
+      { id: 'skills', title: 'The skills employers actually ask for' },
+      { id: 'pay', title: 'Pay: three layers, no fake average' },
+      { id: 'locations', title: 'Where the jobs are' },
+      { id: 'how-to-become', title: 'How to become a remote administrative assistant' },
+      { id: 'no-experience', title: 'The no-experience path, and the bait to avoid' },
+      { id: 'career-ladder', title: 'The career ladder' },
+      { id: 'live-jobs', title: 'Live jobs: currently open on HireSkys' },
+      { id: 'faq', title: 'Frequently Asked Questions' },
+      { id: 'methodology', title: 'Methodology and sources' },
+    ],
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Everyone searching for remote administrative assistant jobs hits the same wall: page after page of job boards. Listings, but no answers. What does the job actually pay? Which skills get you hired? Can you get in with no experience? And which postings are even real?
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        This guide answers those questions with data, not guesses. We analyzed <strong>1,645 active Admin &amp; Support listings</strong> on HireSkys, checked what employers actually ask for in their tags, and compared pay across employee, freelance, and offshore layers. Every listing linked here was live and loading at the time of writing.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        One honest note up front, because it shapes everything below: on HireSkys, "Admin &amp; Support" is a family, not a single job title. Pure administrative-assistant titles are only part of it. The rest is coordinators, operations staff, and project managers doing admin-adjacent work. This guide covers the whole family and labels each part clearly, so you never mistake a category count for a single-role count.
+      </p>
+
+      <h2 id="headline-numbers" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The headline numbers</h2>
+      <table class="w-full text-left border-collapse my-8">
+        <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Fact</th><th class="py-3 font-bold">Number</th></tr></thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Active Admin &amp; Support listings on HireSkys</td><td class="py-3">1,645</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Listings that state pay openly</td><td class="py-3">855 (52.0%)</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Listings in the United States</td><td class="py-3">837 (50.9%)</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Next biggest hiring location</td><td class="py-3">Philippines (235)</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Focus keyword monthly volume (US)</td><td class="py-3">6,600</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Focus keyword difficulty</td><td class="py-3">KD 19%</td></tr>
+        </tbody>
+      </table>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The pay-transparency figure matters. In our earlier HireSkys guides, only about a third of listings stated pay. Here, more than half do, which means the pay bands below rest on a much stronger base. Even so, we do not publish one blended "average admin salary" — listings mix hourly, annual, monthly, and OTE figures across currencies, and averaging those together would be a fake number. You get stated ranges instead.
+      </p>
+
+      <h2 id="what-it-covers" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">What "remote administrative assistant" actually covers</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Job seekers use one phrase for at least six different jobs. Here is how they differ, and how many title-matched listings HireSkys has for each:
+      </p>
+      <table class="w-full text-left border-collapse my-8">
+        <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Role</th><th class="py-3 pr-4 font-bold">What it actually is</th><th class="py-3 font-bold">Title-matched listings</th></tr></thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Administrative Assistant</td><td class="py-3 pr-4">General admin: inbox, scheduling, documents, data entry</td><td class="py-3">27</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Executive Assistant</td><td class="py-3 pr-4">Dedicated support to one or more executives: calendars, travel, confidential work</td><td class="py-3">72</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Virtual Assistant (VA)</td><td class="py-3 pr-4">Usually freelance or agency-based; serves clients remotely, often several at once</td><td class="py-3">33</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Office Administrator / Manager</td><td class="py-3 pr-4">Runs office operations, sometimes across a team</td><td class="py-3">7</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Data Entry Specialist</td><td class="py-3 pr-4">Input, cleanup, and maintenance of records and spreadsheets</td><td class="py-3">6</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Coordinator</td><td class="py-3 pr-4">Owns a process end to end: onboarding, projects, partnerships, programs</td><td class="py-3">169</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Project Manager</td><td class="py-3 pr-4">Runs projects and cross-functional work (the admin ladder's next rung)</td><td class="py-3">96</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Operations roles</td><td class="py-3 pr-4">Business operations, account management, support operations</td><td class="py-3">287</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Other titles in the category</td><td class="py-3 pr-4">Everything from IT specialists to case managers</td><td class="py-3">948</td></tr>
+        </tbody>
+      </table>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Read that table carefully. The small numbers for "Administrative Assistant" (27) do not mean only 27 admin jobs exist. Many admin jobs carry titles like "Coordinator," "Operations Associate," or a company-specific title. The honest way to say it: <strong>1,645 listings sit in the Admin &amp; Support family, and roughly 145 carry a classic admin-assistant-style title.</strong> The rest of the guide treats the family as a whole, because that is how employers actually hire.
+      </p>
+
+      <h2 id="skills" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The skills employers actually ask for</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Instead of guessing which skills matter, we counted the tags employers put on their own listings. These are the top 15 across all 1,645 active listings:
+      </p>
+      <table class="w-full text-left border-collapse my-8">
+        <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Skill / tag</th><th class="py-3 font-bold">Listings carrying it</th></tr></thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Project Management</td><td class="py-3">996</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Virtual Assistant</td><td class="py-3">487</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Spreadsheets (Excel / Google Sheets)</td><td class="py-3">382</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Research</td><td class="py-3">356</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Data Entry</td><td class="py-3">317</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Customer Support</td><td class="py-3">136</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Remote Work</td><td class="py-3">135</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Executive Assistant</td><td class="py-3">98</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Salesforce</td><td class="py-3">88</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Google Workspace</td><td class="py-3">65</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Process Improvement</td><td class="py-3">64</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Customer Service</td><td class="py-3">62</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Microsoft Office</td><td class="py-3">61</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Customer Success</td><td class="py-3">55</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Transcription</td><td class="py-3">46</td></tr>
+        </tbody>
+      </table>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Three things jump out. First, <strong>Project Management appears on 60% of listings</strong> — modern admin work is project coordination work, and the assistant who can run a tracker, chase deadlines, and report status beats the assistant who only answers email. Second, spreadsheets and research outrank every other hard skill: Excel/Google Sheets fluency is the single most bankable admin skill. Third, Salesforce (88) is the standout platform skill — admin roles increasingly touch the CRM, and that is a learnable edge for a beginner.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        The tools that recur across real job descriptions: Microsoft Office and Google Workspace as the baseline; Slack, Zoom, and Microsoft Teams for communication; Asana, Trello, and Smartsheet for task tracking; Calendly for scheduling; Salesforce or HubSpot where the role touches customers. You do not need all of them. You need the baseline cold, plus one tracker and one CRM named on your resume.
+      </p>
+
+      <h2 id="pay" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Pay: three layers, no fake average</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Admin pay is not one number. It is three different markets, and which one you are in changes your rate by multiples.
+      </p>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">Layer 1: US employee roles</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Glassdoor's remote administrative assistant data (November 2026, 55 salaries submitted) puts the average at <strong>$64,756 per year, about $31 per hour</strong>, with the typical range running <strong>$52,728 to $79,800</strong> and top earners near $96,147. The US Bureau of Labor Statistics puts the national median for secretaries and administrative assistants at <strong>$23.23 per hour</strong> (May 2025 data) — lower, because it covers all settings including on-site roles, not just remote ones. Treat $23–$31 per hour as the realistic US employee band for remote admin work, with senior executive-assistant roles going well beyond it (one live senior EA posting we saw listed $95,000–$161,000).
+      </p>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">Layer 2: Freelance virtual assistants</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Freelance VAs set their own rates, and the spread is wide. New VAs on freelance marketplaces typically start at <strong>$10–$20 per hour</strong> and reach <strong>$30–$50 or more</strong> once they hold a specialty such as bookkeeping, executive support, or social media management. US-based managed VA services charge clients <strong>$36–$65 per hour</strong> (median $39, from a 40-price-point survey in October 2026) — that is the client price, not what the VA keeps, but it shows what US buyers will pay for managed quality.
+      </p>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">Layer 3: Offshore and managed-remote rates</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Managed remote VA services run <strong>$9–$17 per hour</strong> (median $11.53). Direct offshore hiring is cheaper still: <strong>$4–$10 per hour</strong> for a direct hire, <strong>$7–$12</strong> in the Philippines, <strong>$10–$18</strong> in Latin America. This layer explains the Philippines' 235 listings on HireSkys — it is the world's VA hiring hub, and its rates anchor the bottom of the market. If you are competing from a high-wage country, your edge is not price; it is timezone overlap, native English, and senior judgment.
+      </p>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">What HireSkys listings themselves state</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        A sample of currently live listings shows the same spread in the wild: a Virtual Assistant / Project Manager role at <strong>$22 per hour plus bonus opportunities up to $10,000 a year</strong>; an Account Manager at <strong>$60,000–$80,000 OTE</strong>; a Contract IT Specialist at <strong>$46–$54 per hour</strong>; an Executive Assistant at up to <strong>AUD 1,500 per month</strong>. Many listings still say "Not Disclosed" — 48% of them — so always read the listing itself before assuming a band.
+      </p>
+      <h3 class="text-2xl font-bold mt-10 mb-4 text-slate-900 dark:text-white">Data entry, the special case</h3>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Data entry deserves its own line because it is the most searched admin sub-role and the most bait-prone. ZipRecruiter's November 2026 data puts remote data entry around <strong>$19.47 per hour on average</strong>, with most workers between <strong>$16.35 and $21.88</strong>. If a posting promises far more than that for simple typing with no experience, treat it as a warning sign — see the bait section below.
+      </p>
+
+      <h2 id="locations" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Where the jobs are</h2>
+      <table class="w-full text-left border-collapse my-8">
+        <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Location</th><th class="py-3 font-bold">Active listings</th></tr></thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">United States</td><td class="py-3">837</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Philippines</td><td class="py-3">235</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">United Kingdom</td><td class="py-3">50</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">India</td><td class="py-3">40</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Canada</td><td class="py-3">27</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Global / anywhere</td><td class="py-3">17</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Australia</td><td class="py-3">6</td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Other / multi-location</td><td class="py-3">433</td></tr>
+        </tbody>
+      </table>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Just over half the inventory is US-based, which fits a US job seeker. The Philippines' share is the offshore VA market. The UK, India, and Canada add a smaller English-speaking layer. Two practical consequences: first, if a posting says "Remote (United States)" it usually means US residency or US working hours are required — read the location line, not just the word "remote." Second, timezone overlap is a real hiring filter; several listings explicitly ask for US business hours even when the role itself could be done from anywhere.
+      </p>
+
+      <h2 id="how-to-become" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">How to become a remote administrative assistant</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        There is no single mandatory degree. Real listings ask for a high school diploma at minimum; many prefer an associate or bachelor's degree in business administration or communications, but experience and tools beat credentials in this field. Here is the path that matches what employers actually list:
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>1. Lock the baseline tools.</strong> Microsoft Word, Excel, and Outlook, or Google Docs, Sheets, and Gmail — plus a shared calendar you can run blindfolded. If you cannot build a clean spreadsheet, sort and filter it, and share it with the right permissions, fix that first. It is the skill behind the 382 spreadsheet tags.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>2. Add one tracker and one communication stack.</strong> Asana or Trello for tasks, Slack and Zoom for team communication. In interviews, show outcomes, not tool names: "I set up a Calendly flow that cut scheduling back-and-forth" beats "I know Calendly."</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>3. Build a three-piece portfolio.</strong> A sample appointment schedule, a cleaned-up spreadsheet, and a mock professional email or meeting summary. Beginners with no work history get hired on proof of work, and these three pieces are cheap to make and directly relevant.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>4. Consider one certification, not five.</strong> The two that recur in real guides and listings are the Certified Administrative Professional (CAP) and the Microsoft Office Specialist (MOS) certification. Either one signals structured competence; neither is required to start. Skip any course that promises a job — no certificate does that.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>5. Apply where the jobs are, and prep for the interview.</strong> Remote admin interviews probe autonomy: STAR stories about calendar conflicts, inbox triage, a problem you solved without being asked, and a tool you adopted fast. Prepare six such stories and you will outperform most applicants. Senior executive-assistant roles typically want 3+ years supporting senior executives, experience juggling several executives at once, and demonstrated discretion with confidential work.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>6. Learn AI tools as a multiplier.</strong> Freelance guides increasingly note that AI fluency — ChatGPT, Zapier, Make — is becoming a differentiator for VAs, and one hiring report found demand for virtual admin assistant skills rising 3% in a month and 18% among small businesses. AI does not replace the assistant; it makes one assistant able to carry more clients.</p>
+
+      <h2 id="no-experience" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The no-experience path — and the bait to avoid</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Can you start with no experience? Yes, genuinely. Live postings prove it: a logistics firm's remote administrative assistant at <strong>$22–$28 per hour</strong> with no experience required and training provided; a freelance marketplace posting at <strong>$25–$58 per hour</strong> for an entry-level, contract-to-hire admin role with training provided. Entry-level admin is one of the few remote fields where "training provided" appears on real listings.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        But the same search results carry a trap, and this guide would be incomplete without naming it. Right now, a cluster of near-identical postings advertises <strong>"$35 per hour"</strong> for "live chat assistant" or "entry-level administrative assistant" roles: vague employer names, a device and internet connection as the only requirements, "5+ hours a week," "no experience needed," "immediate start." Several appeared within days of each other in late October and early November 2026. The pattern — one round rate everywhere, no company of record, chat work dressed up as admin work — is a classic lead-generation template, not a hiring process.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>How to tell real from bait:</strong><br/>Real listings name a company, a role, and a process. Bait listings name a rate.<br/>Real employers never charge onboarding, training, or equipment fees. Any fee is an instant disqualifier.<br/>Real entry-level pay clusters around $17–$28 per hour in current data. A flat $35 for unskilled chat work, repeated across unrelated sites, does not match the market.<br/>Check the company before you apply. A real careers page, a real domain, and a real application process beat any posting's promises.</p>
+
+      <h2 id="career-ladder" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The career ladder</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Admin work has a real ladder, and the listings show it: <strong>Administrative Assistant → Senior Administrative Assistant / Executive Assistant → Coordinator → Operations / Project Manager.</strong> Each step trades routine task execution for ownership: from managing one inbox, to managing several executives, to owning a process, to running projects and teams. Pay follows ownership — entry admin work clusters near $19–$28 per hour, while senior EA and operations roles reach $60,000–$160,000 depending on scope and employer. The fastest accelerant we found in the data is project-management competence: with 996 listings carrying that tag, the assistant who can run projects is the assistant who gets promoted out of routine admin.
+      </p>
+
+      <h2 id="live-jobs" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Live jobs: currently open on HireSkys</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Every link below was checked and loading at the time of writing. Listings change daily — if one has closed, search the same title on HireSkys for the current equivalent.
+      </p>
+      <table class="w-full text-left border-collapse my-8">
+        <thead><tr class="border-b-2 border-slate-200 dark:border-slate-700"><th class="py-3 pr-4 font-bold">Role</th><th class="py-3 pr-4 font-bold">Location</th><th class="py-3 pr-4 font-bold">Stated pay</th><th class="py-3 font-bold">Link</th></tr></thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Virtual Assistant / Project Manager</td><td class="py-3 pr-4">Remote (United States)</td><td class="py-3 pr-4">$22/hour, bonus up to $10k/year</td><td class="py-3"><a href="https://www.hireskys.com/jobs/virtual-assistant-project-manager-21350" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Executive Assistant</td><td class="py-3 pr-4">Remote (Philippines)</td><td class="py-3 pr-4">Up to AUD 1,500/month</td><td class="py-3"><a href="https://www.hireskys.com/jobs/executive-assistant-26811" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Account Manager</td><td class="py-3 pr-4">Remote (United States)</td><td class="py-3 pr-4">$60,000–80,000 OTE</td><td class="py-3"><a href="https://www.hireskys.com/jobs/account-manager-28216" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Contract IT Specialist</td><td class="py-3 pr-4">Remote (United States)</td><td class="py-3 pr-4">$46–54/hr USD</td><td class="py-3"><a href="https://www.hireskys.com/jobs/contract-it-specialist-28213" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">PMO Coordinator</td><td class="py-3 pr-4">Remote (Mexico)</td><td class="py-3 pr-4">Not Disclosed</td><td class="py-3"><a href="https://www.hireskys.com/jobs/pmo-coordinator-21994" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Project Manager (AI &amp; Automation Focus)</td><td class="py-3 pr-4">Remote (United Kingdom)</td><td class="py-3 pr-4">Not Disclosed</td><td class="py-3"><a href="https://www.hireskys.com/jobs/project-manager-ai-automation-focus-remote-33762" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Flooring Takeoff Estimator / Administrative Assistant</td><td class="py-3 pr-4">Remote (South Africa)</td><td class="py-3 pr-4">Not Disclosed</td><td class="py-3"><a href="https://www.hireskys.com/jobs/flooring-takeoff-estimator-administrative-assistant-27798" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Recruiter / Office Manager (Customer &amp; Sales Support)</td><td class="py-3 pr-4">Remote (South Africa)</td><td class="py-3 pr-4">Not Disclosed</td><td class="py-3"><a href="https://www.hireskys.com/jobs/recruiter-office-manager-customer-sales-support-20965" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Accounts Payable Analyst (Data Entry &amp; Payment File Specialist)</td><td class="py-3 pr-4">Remote (Philippines)</td><td class="py-3 pr-4">Not Disclosed</td><td class="py-3"><a href="https://www.hireskys.com/jobs/accounts-payable-analyst-data-entry-payment-file-specialist-27890" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3 pr-4">Principal, Business Operations</td><td class="py-3 pr-4">Remote (United States)</td><td class="py-3 pr-4">Not Disclosed</td><td class="py-3"><a href="https://www.hireskys.com/jobs/principal-business-operations-28990" class="text-indigo-600 font-semibold hover:underline">View job</a></td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="faq" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>What does a remote administrative assistant actually do day to day?</strong><br/>Inbox triage, calendar and meeting management, travel booking, document preparation, data entry, and keeping records straight — all through digital tools. The mix varies by employer: an EA leans toward executive calendars and confidential work, a VA leans toward serving several clients, and a coordinator leans toward owning a process.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Do I need a degree to become a remote administrative assistant?</strong><br/>No. Most listings ask for a high school diploma at minimum; a degree in business administration or communications helps but is not the filter. Tools, a small portfolio, and proof you can work independently matter more.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>How much can a remote administrative assistant earn?</strong><br/>US employee roles average around $31 per hour on Glassdoor's remote data (typical range $52,728–$79,800 a year), while the BLS national median is $23.23 per hour. Freelance VAs start near $10–$20 per hour and reach $30–$50+ with a specialty. Offshore rates run $4–$17 depending on model. Your layer matters more than any single average.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>What is the difference between an administrative assistant, an executive assistant, and a virtual assistant?</strong><br/>An administrative assistant supports a team or office generally. An executive assistant supports specific executives, handles confidential work, and earns more. A virtual assistant is usually freelance or agency-based, serves clients remotely, and often juggles several clients at once.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Can I get a remote administrative assistant job with no experience?</strong><br/>Yes. Real listings with "no experience required, training provided" exist right now, paying roughly $22–$28 per hour. Build the three-piece portfolio (schedule, spreadsheet, sample email) and apply to those — and avoid the $35-per-hour chat-assistant bait described above.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Which skills should I learn first?</strong><br/>Spreadsheets (Excel/Google Sheets), a shared calendar, one task tracker (Asana or Trello), and professional written communication. Then add Salesforce if you want the standout platform skill, and AI tools (ChatGPT, Zapier) as a multiplier.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Are certifications worth it?</strong><br/>The Certified Administrative Professional (CAP) and Microsoft Office Specialist (MOS) certifications are the two that recur in real hiring guidance. They help, especially for beginners, but neither is required — and no course guarantees a job.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Where do I find legitimate remote admin jobs?</strong><br/>On the <a href="/category/admin-support" class="text-indigo-600 font-semibold hover:underline">Admin &amp; Support category page</a> — it always shows the current live listings, while this guide's counts are a snapshot from November 3, 2026. Verify the employer — real company, real domain, real application process — before sharing personal details or paying anything. Never pay a fee to apply.</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Is "remote" always anywhere in the world?</strong><br/>No. Many listings say "Remote (United States)" and require US residency or US business hours. Read the location line and the description, not just the word "remote."</p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>Full-time job or freelance VA — which is better?</strong><br/>A full-time role gives steady pay and benefits; freelance VA work gives flexibility and a higher hourly ceiling with a specialty, but you cover your own taxes, fees, and downtime. Beginners usually do better starting employed, then freelancing once they have clients and a track record.</p>
+
+      <h2 id="methodology" class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Methodology and sources</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6"><strong>About the numbers.</strong> All counts in this guide come from HireSkys' own live job database, pulled on November 3, 2026: 1,645 active Admin &amp; Support listings. Role counts are title-keyword buckets, so they undercount admin work hiding under other titles — that is why the category total and the title counts are reported separately. Tags overlap, so tag shares do not add up to 100%. Salary figures are not averaged, for the reason given above. External pay figures are cited to Glassdoor (November 2026), the US Bureau of Labor Statistics (May 2025), ZipRecruiter (November 2026), and an October 2026 VA pricing survey. Listings change daily; counts are a snapshot, not a permanent total.</p>
+
+      <div class="my-12 p-8 rounded-2xl bg-indigo-600 text-center">
+        <h3 class="text-2xl md:text-3xl font-black text-white mb-4">Browse Live Admin &amp; Support Jobs</h3>
+        <p class="text-indigo-100 mb-8 text-lg font-medium max-w-2xl mx-auto">1,645 live openings at last count — filter by role, skill and location, and apply directly.</p>
+        <a href="/category/admin-support" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-indigo-700 font-black rounded-xl transition-all shadow-lg">Browse the Category</a>
+      </div>
+    `,
+  },
 ];

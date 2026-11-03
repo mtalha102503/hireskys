@@ -5278,4 +5278,92 @@ export const BLOG_POSTS: BlogPost[] = [
 </div>
     `
   },
+  {
+    slug: 'introducing-fedtalentusa-federal-contractor-database',
+    title: 'Introducing FedTalentUSA: The Federal Contractor Database We Always Wished Existed',
+    excerpt: 'We just launched FedTalentUSA — a free database of the top 1,000 federal contractors with real FY2025 award data, a contractor finder, and a company NAICS lookup. Here is why we built it and how it helps you.',
+    date: 'Nov 3, 2026',
+    author: 'Muhammad Talha',
+    role: 'Founder, HireSkys',
+    authorImage: '/founder.png',
+    category: 'Launch Announcement',
+    image: '/blog/fedtalentusa-launch.svg',
+    content: `
+      <p class="lead text-2xl font-medium text-slate-600 dark:text-slate-300 mb-8">
+        Every year, the United States federal government awards hundreds of billions of dollars in contracts — but almost nobody outside Washington can tell you which companies actually win that work, how much they win, or where the work happens. Today, we are fixing that.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        We are thrilled to announce the launch of <a href="https://fedtalentusa.com" class="text-blue-600 font-bold hover:underline">FedTalentUSA</a> — a free, data-driven federal contractor database built by the HireSkys team. It is a brand-new standalone platform dedicated to one mission: <strong>bringing total transparency to federal contracting</strong>.
+      </p>
+      <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 my-10">
+        <img src="/blog/fedtalentusa-launch.svg" alt="FedTalentUSA launch announcement" class="w-full h-auto" width="1200" height="630" />
+      </div>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">The Problem: Federal Spending Is a Black Box</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Here is what federal contracting looks like from the outside. You hear that some company "won a big government contract," but nobody can tell you <em>which</em> companies win the most work, <em>how much</em> they actually receive, <em>which agencies</em> buy from them, or <em>what industries</em> the money flows into. The official data exists — USAspending.gov publishes every federal award — but it lives in massive raw files that no normal person can read.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        That opacity hurts job seekers most of all. The companies winning the largest federal contracts are also among the largest employers in the country — they hire engineers, analysts, healthcare workers, project managers, and support staff by the thousands, including for remote roles. But if you cannot see who is winning work, you cannot target the employers who are actually growing. You end up applying blind, while the hiring map sits hidden in government spreadsheets.
+      </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">What FedTalentUSA Gives You</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        FedTalentUSA ranks the top 1,000 federal contractors by real FY2025 award totals — $554.25 billion in prime contract obligations, pulled from USAspending.gov and presented so anyone can read it. No paywall, no signup, no consultant-speak.
+      </p>
+      <div class="grid md:grid-cols-2 gap-6 my-8">
+        <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+          <h3 class="font-black text-xl text-blue-900 dark:text-blue-300 mb-3">Top 1,000 Federal Contractors</h3>
+          <p class="text-blue-800/80 dark:text-blue-200/80">Searchable database with real FY2025 award totals, agency splits, state splits, and NAICS industry splits — the largest contractors, ranked by actual data.</p>
+        </div>
+        <div class="p-6 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 dark:border-emerald-800/50">
+          <h3 class="font-black text-xl text-emerald-900 dark:text-emerald-300 mb-3">Contractor Finder</h3>
+          <p class="text-emerald-800/80 dark:text-emerald-200/80">Filter the top 1,000 by state, agency, NAICS code, PSC code, or set-aside status — then open any company for its full profile with yearly trend, splits, and awards.</p>
+        </div>
+        <div class="p-6 bg-violet-50 dark:bg-violet-900/10 rounded-2xl border border-violet-100 dark:border-violet-800/50">
+          <h3 class="font-black text-xl text-violet-900 dark:text-violet-300 mb-3">Company NAICS Lookup</h3>
+          <p class="text-violet-800/80 dark:text-violet-200/80">Type a company name and see the NAICS codes on its FY2025 federal awards, ranked by dollars, with its top buying agencies.</p>
+        </div>
+        <div class="p-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-800/50">
+          <h3 class="font-black text-xl text-amber-900 dark:text-amber-300 mb-3">Real Data, Honestly Labelled</h3>
+          <p class="text-amber-800/80 dark:text-amber-200/80">Every figure is a prime contract obligation from USAspending.gov. Award NAICS codes are labelled as award codes — never dressed up as a company's registered SAM code.</p>
+        </div>
+      </div>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Why This Matters If You Are Looking for Work</h2>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Follow the money, and you find the hiring. The contractors at the top of this database — names like Lockheed Martin, Boeing, UnitedHealth Group, Electric Boat, TriWest Healthcare Alliance, and McKesson — win billions in federal work every year, and that work turns into jobs across engineering, IT, healthcare, logistics, and professional services. Use the names above as your search terms on HireSkys when you are hunting for remote roles at employers that are actually growing.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        Here is a practical way to use it: pick an industry or a state you want to work in, filter the Contractor Finder, and note which companies are winning work there. Then search those company names on HireSkys. You are no longer guessing which employers are growing — you are looking at their actual federal revenue.
+      </p>
+      <p class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+        One honest note: FedTalentUSA itself is not a job board. It lists contractors and their federal awards, not open positions. The jobs live here on HireSkys — FedTalentUSA tells you where the work (and therefore the hiring) is.
+      </p>
+
+      <h2 class="text-3xl font-bold mt-12 mb-6 text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+      <div class="space-y-6 my-8">
+        <div>
+          <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-2">Is FedTalentUSA free?</h3>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Yes — completely free, no signup. Like VisaTalentUSA before it, it is a HireSkys company project built on public government data.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-2">Where does the data come from?</h3>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed">USAspending.gov, the official source for U.S. federal spending. Totals are prime contract obligations for FY2025 (October 1, 2024 – September 30, 2025), the latest complete fiscal year.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-2">Does it list jobs?</h3>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed">No. FedTalentUSA lists contractors and their awards. For actual remote openings at these companies, search HireSkys.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-2">Why only the top 1,000?</h3>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed">Because depth beats a phone book. The top 1,000 contractors account for most federal contract dollars, and each one gets a full profile — yearly trend, agency and industry splits, and awards — instead of a one-line listing.</p>
+        </div>
+      </div>
+
+      <div class="text-center my-12">
+        <a href="https://fedtalentusa.com" class="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-blue-50 text-blue-700 font-black rounded-xl transition-all shadow-lg">Visit FedTalentUSA</a>
+      </div>
+    `,
+  },
 ];

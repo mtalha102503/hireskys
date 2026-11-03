@@ -189,6 +189,15 @@ const BLOG_POSTS = [
     category: 'Career Advice',
     image: '/blog-remote-customer-support-jobs.svg',
   },
+  {
+  slug: 'introducing-fedtalentusa-federal-contractor-database',
+  title: 'Introducing FedTalentUSA: The Federal Contractor Database We Always Wished Existed',
+  excerpt: 'We just launched FedTalentUSA — a free database of the top 1,000 federal contractors with real FY2025 award data, a contractor finder, and a company NAICS lookup. Here is why we built it and how it helps you.',
+  date: 'Nov 3, 2026',
+  author: 'Muhammad Talha',
+  category: 'Launch Announcement',
+  image: '/blog/fedtalentusa-launch.svg',
+  },
 ];
 
 export default function BlogIndex() {

@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { loadMoneytizerAd } from "./moneytizer-loader";
+import { loadAdsterraAd } from "./adsterra-loader";
 
 export default function MoneytizerMegabanner() {
   const adRef = useRef<HTMLDivElement>(null);
 
-  // INSTANT LOAD (user directive 2026-10-20): no lazy gate — load on mount so
-  // the ad request starts immediately with the page.
+  // Adsterra test (2026-11-10): Megabanner now serves Adsterra 728x90
+  // (key 8c981f99e2fdcb758347a9099c888033) instead of Moneytizer 141745-1.
+  // Filename kept as-is so the test reverts by restoring this file.
   useEffect(() => {
-    // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
-    loadMoneytizerAd(adRef.current, 1, 1); // type=1, formatId=1 for Megabanner
+    loadAdsterraAd(adRef.current, "8c981f99e2fdcb758347a9099c888033", 728, 90);
   }, []);
 
   return (
@@ -19,7 +19,7 @@ export default function MoneytizerMegabanner() {
       </span>
       {/* 🚨 CLS FIX: Responsive minimum heights for Megabanner */}
       <div 
-        id="141745-1" 
+        id="adsterra-mega-728x90" 
         ref={adRef} 
         className="min-h-[50px] md:min-h-[90px] w-full flex items-center justify-center overflow-hidden"
       ></div>

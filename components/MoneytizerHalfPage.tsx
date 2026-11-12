@@ -1,15 +1,14 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { loadAdsterraAd } from "./adsterra-loader";
+import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerHalfPage() {
   const adRef = useRef<HTMLDivElement>(null);
 
-  // Adsterra test (2026-11-10): job-page sidebar now serves Adsterra 160x600
-  // (key dabc649e722abaea1a097b00e3945a97) instead of Moneytizer 141745-3.
-  // The 300x600 box stays — the 160-wide iframe sits centered inside it.
+  // INSTANT LOAD (user directive 2026-10-20): no lazy gate — load on mount.
   useEffect(() => {
-    loadAdsterraAd(adRef.current, "dabc649e722abaea1a097b00e3945a97", 160, 600);
+    // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
+    loadMoneytizerAd(adRef.current, 3, 3); // type=3, formatId=3 for Half Page
   }, []);
 
   return (
@@ -19,7 +18,7 @@ export default function MoneytizerHalfPage() {
       </span>
       {/* 🚨 CLS FIX: Half Page ad aam tor par 300x600 ki hoti hai */}
       <div 
-        id="adsterra-sidebar-160x600" 
+        id="141745-3" 
         ref={adRef} 
         className="w-[300px] h-[600px] flex items-center justify-center bg-slate-100/50 dark:bg-slate-800/20 rounded-xl overflow-hidden"
       ></div>

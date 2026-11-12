@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { loadAdsterraAd } from "./adsterra-loader";
+import { loadMoneytizerAd } from "./moneytizer-loader";
 
 export default function MoneytizerStickyFooter() {
   const adRef = useRef<HTMLDivElement>(null);
@@ -12,13 +12,13 @@ export default function MoneytizerStickyFooter() {
   const pathname = usePathname();
   const isJobPage = pathname?.includes("/jobs/");
 
-  // Adsterra test (2026-11-10): sticky footer now serves Adsterra 728x90
-  // (same key as Megabanner: 8c981f99e2fdcb758347a9099c888033) instead of
-  // Moneytizer 141745-28. Close button + positioning logic unchanged.
+  // INSTANT LOAD (user directive 2026-10-20): purana idle/1.5s delay gate
+  // khatam — ad page khulte hi load hoga, koi intezaar nahi.
   useEffect(() => {
     if (!isVisible) return;
 
-    loadAdsterraAd(adRef.current, "8c981f99e2fdcb758347a9099c888033", 728, 90);
+    // Shared loader: gen.js is fetched only once per page; requestform.js per slot.
+    loadMoneytizerAd(adRef.current, 28, 28);
   }, [isVisible]);
 
   if (!isVisible) return null;
@@ -51,7 +51,7 @@ export default function MoneytizerStickyFooter() {
         </button>
 
         {/* AD CONTAINER */}
-        <div id="adsterra-sticky-728x90" ref={adRef} className="w-full h-full flex items-center justify-center"></div>
+        <div id="141745-28" ref={adRef} className="w-full h-full flex items-center justify-center"></div>
       </div>
     </div>
   );

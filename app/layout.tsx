@@ -7,8 +7,7 @@ import Footer from "@/components/Footer";
 import AtsFooter from "@/components/AtsFooter";
 import NextTopLoader from 'nextjs-toploader';
 import ConsentBanner from "@/components/ConsentBanner";
-import MoneytizerStickyFooter from "@/components/MoneytizerStickyFooter";
-import MoneytizerSkyrail from "@/components/MoneytizerSkyrail";
+import AdsKeeperMobileSticky from "@/components/AdsKeeperMobileSticky";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import PlatformFeedback from '@/components/PlatformFeedback';
@@ -144,14 +143,15 @@ export default function RootLayout({
             __html: `if(window.location.hostname==='ats.hireskys.com'){document.documentElement.classList.add('ats-host')}`,
           }}
         />
-        {/* ⚡ AD SPEED: Moneytizer ad server se pehle hi connection tayyar rakho,
-            taake ad scripts bina DNS/connection delay ke foran load hon */}
         {/* Jost font via Google Fonts <link> (next/font hata diya — bundle slim) */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        <link rel="preconnect" href="https://ads.themoneytizer.com" />
-        <link rel="dns-prefetch" href="https://ads.themoneytizer.com" />
+        {/* AdsKeeper (MGID) site script — once per page, in HEAD (site 1111804).
+            Preconnect so the ad script starts without DNS/connection delay. */}
+        <link rel="preconnect" href="https://jsc.adskeeper.com" />
+        <link rel="dns-prefetch" href="https://jsc.adskeeper.com" />
+        <script src="https://jsc.adskeeper.com/site/1111804.js" async></script>
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
@@ -362,10 +362,7 @@ export default function RootLayout({
           <ConsentBanner />
           <ConditionalChat />
           <div className="chrome-main">
-            <MoneytizerStickyFooter/>
-          </div>
-          <div className="chrome-main">
-            <MoneytizerSkyrail />
+            <AdsKeeperMobileSticky />
           </div>
           <div className="chrome-main">
             <PlatformFeedback />

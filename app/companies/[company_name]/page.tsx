@@ -14,7 +14,7 @@ import {
   ExternalLink, DollarSign, Share2
 } from 'lucide-react';
 // ✅ ISKO BAQI IMPORTS KE SATH UPAR LAGA DO
-import MoneytizerMegabanner from '@/components/MoneytizerMegabanner';
+import AdsKeeperBanner from '@/components/AdsKeeperBanner';
 // 👇 FIX: Faster Page Load (Server Response Time improve karega)
 export const revalidate = 3600; 
 
@@ -364,7 +364,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
 
       {/* 🌟 DYNAMIC CONTENT AREA (SEO HACK APPLIED) */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        <MoneytizerMegabanner />
+        <AdsKeeperBanner />
         {/* TAB 1: OVERVIEW */}
 <div className={currentTab === 'overview' ? 'block animate-in fade-in duration-500' : 'hidden'}>
   <div className="bg-white dark:bg-[#131b2b] rounded-3xl p-8 border border-gray-200 dark:border-gray-800 shadow-sm max-w-4xl">

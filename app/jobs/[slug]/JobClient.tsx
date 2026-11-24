@@ -20,8 +20,8 @@ import {
 // Baqi saaray upar wale imports idhar hain...
 import dynamic from 'next/dynamic';
 
-const AdsKeeperSidebar = dynamic(() => import('@/components/AdsKeeperSidebar'), { ssr: false });
-const AdsKeeperBanner = dynamic(() => import('@/components/AdsKeeperBanner'), { ssr: false });
+const MoneytizerHalfPage = dynamic(() => import('@/components/MoneytizerHalfPage'), { ssr: false });
+const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { ssr: false });
 // 📝 CATEGORY CONTEXT BLURBS (HireSkys original editorial, per category)
 const CATEGORY_BLURBS: Record<string, string> = {
   "Development": "Remote development roles on HireSkys cover frontend, backend, full-stack, DevOps, and QA work. Employers here usually name their exact stack in the description — compare the required tools against your own experience before applying, and use the Skill Gap Analyzer below to spot what to learn next.",
@@ -1181,7 +1181,7 @@ const handleApply = async () => {
       <div className="container mx-auto max-w-5xl px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div className="lg:col-span-2 space-y-8">
         <div className="mb-6 w-full flex justify-center">
-      <AdsKeeperBanner />
+      <MoneytizerMegabanner />
     </div>
         {(job.company || companyDetails?.name) && (
           <a
@@ -1553,7 +1553,7 @@ const handleApply = async () => {
 
     {/* 🚀 2. STICKY CLASSES KO YAHAN HALF-PAGE AD WALE WRAPPER PAR SHIFT KAR DIYA */}
     <div className="hidden lg:block lg:sticky lg:top-24 self-start">
-        <AdsKeeperSidebar />
+        <MoneytizerHalfPage />
     </div>
 
 </div>

@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import { createSlug } from '@/lib/utils';
 import CategorySection from "@/components/CategorySection";
-import AdsKeeperInArticle from "@/components/AdsKeeperInArticle";
+import InFeedAd from "@/components/InFeedAd";
 import { typesenseSearchClient } from '@/lib/typesenseClient';
 import { CATEGORIES } from '@/lib/categories'; 
 import { countryMap, COUNTRIES } from '@/lib/country';
@@ -53,7 +53,7 @@ const safeStorage = {
     }
   }
 };
-const AdsKeeperBanner = dynamic(() => import('@/components/AdsKeeperBanner'), { 
+const MoneytizerMegabanner = dynamic(() => import('@/components/MoneytizerMegabanner'), { 
   ssr: false 
 });
   // Baqi states wese hi rahengi...
@@ -1903,7 +1903,7 @@ return (
                 </div>
             </div>
         )}
-<AdsKeeperBanner />
+<MoneytizerMegabanner />
 {/* 🎛️ THE ULTIMATE CONTROL BAR (Filters + Sort + Count) */}
 <div ref={dropdownRef} className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 relative z-30">
     
@@ -2541,7 +2541,7 @@ return (
                               
                               {/* Actual Ad Component */}
                               <div className="flex items-center justify-center min-h-[250px] min-w-[300px] overflow-hidden rounded-xl">
-                                  <AdsKeeperInArticle />
+                                  <InFeedAd />
                               </div>
                           </div>
                       </div>

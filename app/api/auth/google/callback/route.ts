@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
 import { createClient } from '@supabase/supabase-js';
 
 // Backend ke liye secure Supabase Admin Client
@@ -19,21 +18,28 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL('/employer/settings?error=AuthFailed', request.url));
     }
 
-    // Google Client Setup
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URI
-    );
-
-    // 1. Secret Code ko de kar Tokens nikalna
-    const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens);
+    // 1. Secret Code ko de kar Tokens nikalna (plain fetch — googleapis nahi)
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID!,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
+        grant_type: 'authorization_code',
+      }),
+    });
+    if (!tokenRes.ok) throw new Error(`Token exchange failed: ${tokenRes.status}`);
+    const tokens = await tokenRes.json();
 
     // 2. User ka email nikalna (Taake Settings page par dikha sakein)
-    const oauth2 = google.oauth2({ auth: oauth2Client, version: 'v2' });
-    const userInfo = await oauth2.userinfo.get();
-    const userEmail = userInfo.data.email;
+    const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
+    });
+    if (!userRes.ok) throw new Error(`Userinfo fetch failed: ${userRes.status}`);
+    const userInfo = await userRes.json();
+    const userEmail = userInfo.email;
 
     // 3. Purana connection delete kar ke naya save karna (To avoid duplicates)
     await supabaseAdmin
@@ -49,7 +55,7 @@ export async function GET(request: Request) {
         email: userEmail,
         access_token: tokens.access_token,
         refresh_token: tokens.refresh_token || null, // Refresh token sirf 1st time milta hai
-        expires_at: new Date(tokens.expiry_date!).toISOString(),
+        expires_at: new Date(Date.now() + (tokens.expires_in || 3600) * 1000).toISOString(),
       });
 
     if (dbError) throw dbError;

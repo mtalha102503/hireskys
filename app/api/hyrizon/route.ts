@@ -1,8 +1,7 @@
-import { Groq } from 'groq-sdk';
+import { groqChat } from '@/lib/groq';
 import { NextResponse } from 'next/server';
 
-// 1. Groq Setup
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// 1. Groq Setup — plain fetch, no SDK (key call site par pass hoti hai)
 
 // 2. Helper: Random Key Picker (Round Robin)
 const getRandomKey = () => {
@@ -102,7 +101,8 @@ export async function POST(req: Request) {
       5. **No Hallucinations:** If you don't know and search failed, admit it honestly.
     `;
 
-    const completion = await groq.chat.completions.create({
+    const answer = await groqChat({
+      apiKey: process.env.GROQ_API_KEY!,
       messages: [{ role: 'user', content: systemPrompt }],
       model: 'meta-llama/llama-4-scout-17b-16e-instruct',
       temperature: 0.5,
@@ -110,7 +110,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ 
-      answer: completion.choices[0].message.content,
+      answer,
       sources: searchSources 
     });
 

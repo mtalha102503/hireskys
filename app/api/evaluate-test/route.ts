@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { geminiGenerate } from '@/lib/gemini';
 import { createClient } from '@supabase/supabase-js';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 export async function POST(req: Request) {
@@ -49,15 +48,14 @@ export async function POST(req: Request) {
 
     // --- LEVEL 3: HARD (Practical) ---
     else if (stage === 'hard') {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
         const prompt = `
             Task: ${testData.practical.description}
             User Response: ${userResponse}
             Rate this on a scale of 0 to 4 based on accuracy and quality. 
             Return ONLY the number.
         `;
-        const result = await model.generateContent(prompt);
-        const addedPoints = parseInt(result.response.text().replace(/[^0-9]/g, '')) || 0;
+        const text = await geminiGenerate({ apiKey: process.env.GEMINI_API_KEY!, model: "gemini-2.5-flash", prompt });
+        const addedPoints = parseInt(text.replace(/[^0-9]/g, '')) || 0;
         
         // Base score 6 + points earned (0-4) = Final Score (6-10)
         newScore = 6 + addedPoints;

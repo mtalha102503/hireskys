@@ -1,63 +1,32 @@
 "use client";
-import { useRef, useState } from 'react';
-import { toPng } from 'html-to-image';
-import jsPDF from 'jspdf';
-import { Download, Award, Loader2, CheckCircle } from 'lucide-react';
+// Certificate download ab browser print se hota hai (window.print -> Save as PDF).
+// jspdf + html-to-image hata diye — bundle slim. Print ke liye neeche wale
+// A4 templates use hote hain; screen par sirf preview dikhta hai.
+import { Download, Award, CheckCircle } from 'lucide-react';
 
 export default function Certificate({ userName, skill, date }: { userName: string, skill: string, date: string }) {
-  const previewRef = useRef<HTMLDivElement>(null);
-  const pdfPage1Ref = useRef<HTMLDivElement>(null);
-  const pdfPage2Ref = useRef<HTMLDivElement>(null);
-  
-  const [isGenerating, setIsGenerating] = useState(false);
-
   // Ensure Date is never empty
   const displayDate = date || new Date().toLocaleDateString();
 
-  const generatePDF = async () => {
-    setIsGenerating(true);
-
-    try {
-      const doc = new jsPDF('p', 'pt', 'a4');
-      
-      // --- PAGE 1: CERTIFICATE ---
-      if (pdfPage1Ref.current) {
-        const imgData1 = await toPng(pdfPage1Ref.current, { 
-            quality: 1.0, 
-            pixelRatio: 2, 
-            cacheBust: true,
-        });
-        doc.addImage(imgData1, 'PNG', 0, 0, 595.28, 841.89);
-      }
-
-      // --- PAGE 2: DETAILS ---
-      doc.addPage();
-      if (pdfPage2Ref.current) {
-        const imgData2 = await toPng(pdfPage2Ref.current, {
-            quality: 1.0,
-            pixelRatio: 2,
-            cacheBust: true,
-        });
-        doc.addImage(imgData2, 'PNG', 0, 0, 595.28, 841.89);
-      }
-
-      doc.save(`HireSkys-Certificate-${skill.replace(/\s+/g, '_')}.pdf`);
-    } catch (err) {
-      console.error("PDF Error:", err);
-      alert("Failed to generate PDF. Please try again.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
   return (
     <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4">
-      
+      {/* Print CSS: print mein sirf A4 certificate pages dikhen, baaki sab chhup jaye */}
+      <style>{`
+        @media print {
+          body * { visibility: hidden !important; }
+          .certificate-print-area, .certificate-print-area * { visibility: visible !important; }
+          .certificate-print-area { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; }
+          .certificate-print-area > div { page-break-after: always; }
+          .certificate-print-area > div:last-child { page-break-after: auto; }
+        }
+        @page { size: A4; margin: 0; }
+        @media screen { .certificate-print-area { display: none; } }
+      `}</style>
+
       {/* =======================
           1. VISUAL PREVIEW (Screen)
       ======================== */}
-      <div 
-        ref={previewRef}
+      <div
         className="w-full relative aspect-[1.414/1] bg-white shadow-2xl rounded-lg overflow-hidden border-4 border-slate-200"
         style={{ containerType: 'inline-size' }} 
       >
@@ -114,14 +83,13 @@ export default function Certificate({ userName, skill, date }: { userName: strin
 
 
       {/* =======================
-          2. HIDDEN PDF TEMPLATES (Fixed A4 Size)
-          🛑 FIX: Changed position to 'fixed' and added overflow hidden 
-          so it doesn't take up scroll space.
+          2. PRINT-ONLY A4 PAGES (window.print -> Save as PDF)
+          Screen par hidden, print mein 2 pages.
       ======================== */}
-      <div style={{ position: 'fixed', top: '-9999px', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}>
-        
+      <div className="certificate-print-area" aria-hidden="true">
+
         {/* --- PDF PAGE 1 --- */}
-        <div ref={pdfPage1Ref} style={{ width: '794px', height: '1123px', backgroundColor: 'white', padding: '40px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
+        <div style={{ width: '794px', height: '1123px', backgroundColor: 'white', padding: '40px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
             <div style={{ width: '100%', height: '100%', border: '10px double #D4AF37', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: "'Times New Roman', serif", position: 'relative' }}>
                 
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.05 }}>
@@ -177,7 +145,7 @@ export default function Certificate({ userName, skill, date }: { userName: strin
         </div>
 
         {/* --- PDF PAGE 2: DETAILS --- */}
-        <div ref={pdfPage2Ref} style={{ width: '794px', height: '1123px', backgroundColor: '#0B0F19', color: 'white', padding: '60px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', fontFamily: 'sans-serif' }}>
+        <div style={{ width: '794px', height: '1123px', backgroundColor: '#0B0F19', color: 'white', padding: '60px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', fontFamily: 'sans-serif' }}>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '50px', borderBottom: '1px solid #1e293b', paddingBottom: '30px' }}>
                 <img src="/logo.png" style={{ height: '60px' }} />
@@ -236,17 +204,12 @@ export default function Certificate({ userName, skill, date }: { userName: strin
         </div>
       </div>
 
-      {/* DOWNLOAD BUTTON */}
-      <button 
-        onClick={generatePDF}
-        disabled={isGenerating}
-        className="mt-8 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow-lg transition-all active:scale-95 flex items-center gap-3 disabled:opacity-70"
+      {/* PRINT BUTTON — browser ke Print dialog se "Save as PDF" chuno */}
+      <button
+        onClick={() => window.print()}
+        className="mt-8 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full shadow-lg transition-all active:scale-95 flex items-center gap-3 print:hidden"
       >
-        {isGenerating ? (
-            <><Loader2 size={20} className="animate-spin"/> Generating PDF...</>
-        ) : (
-            <><Download size={20} /> Download PDF (2 Pages)</>
-        )}
+        <Download size={20} /> Print / Save as PDF (2 Pages)
       </button>
 
     </div>

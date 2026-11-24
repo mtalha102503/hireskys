@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import nodemailer from 'nodemailer'; // 👈 Nodemailer import kiya
+import { sendBrevoEmail } from '@/lib/brevo';
 import { getAuthedUser, resolveWorkspaceAdmin } from '@/lib/apiAuth';
 
 // Secure Admin Client
@@ -71,15 +71,6 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hireskys.com';
     const inviteLink = `${baseUrl}/accept-invite?token=${newInvite.id}`;
 
-    // 5. 🟢 Nodemailer SMTP Transporter Setup
-   const transporter = nodemailer.createTransport({
-      host: 'smtp-relay.brevo.com', // 👈 Direct hardcode kar diya
-      port: 587,                    // 👈 Direct hardcode kar diya
-      auth: {
-        user: process.env.EMAIL_USER, // 👈 Yeh .env se aayega
-        pass: process.env.EMAIL_PASS, // 👈 Yeh .env se aayega
-      },
-    });
 
     // 6. ✨ Premium Team Invitation HTML Template
     const emailHtml = `
@@ -119,9 +110,10 @@ export async function POST(request: Request) {
       </div>
     `;
 
-    // 7. 🚀 Shoot the Email!
-    await transporter.sendMail({
-      from: `"HireSkys Team" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+    // 7. 🚀 Shoot the Email via Brevo HTTP API!
+    await sendBrevoEmail({
+      fromName: 'HireSkys Team',
+      fromEmail: process.env.EMAIL_FROM || process.env.EMAIL_USER || 'contact@hireskys.com',
       to: cleanEmail,
       subject: `Join ${companyName} on HireSkys ATS 👥`,
       html: emailHtml,

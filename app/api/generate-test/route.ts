@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { geminiGenerate } from '@/lib/gemini';
 import { getCategoryBySkill } from '@/lib/categories';
 
 export async function POST(req: Request) {
@@ -9,14 +9,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "API Key Missing" }, { status: 500 });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
     const { skill, stage } = await req.json();
     const category = getCategoryBySkill(skill);
 
-    // ✅ FIX 1: Use 1.5-Flash (Best for speed/stability)
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash", 
-    });
+    // ✅ FIX 1: Use 1.5-Flash (Best for speed/stability) — model name neeche call mein
 
     // ✅ FIX 2: Strict JSON Prompt (Schema hata diya taake errors kam hon)
     const jsonStructure = `
@@ -51,8 +47,7 @@ export async function POST(req: Request) {
         prompt = `Generate 1 Hard Practical Challenge for ${skill}. ${instruction}. ${jsonStructure}`;
     }
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const text = await geminiGenerate({ apiKey, model: "gemini-2.5-flash", prompt });
     
     // ✅ FIX 3: THE CLEANER (Ye hai wo jaadu)
     // Agar AI ne ```json laga diya to ye usay hata dega

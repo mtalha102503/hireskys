@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
-import nodemailer from 'nodemailer';
+import { sendBrevoEmail } from '@/lib/brevo';
 import { createSlug } from '@/lib/utils'; 
 
 // --- CONFIGURATION ---
 const INSTANCE_ID = process.env.INSTANCE_ID;
 const TOKEN = process.env.TOKEN;
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASS = process.env.EMAIL_PASS;
 
 const VALID_COUNTRIES = [
     // Priority / Original List
@@ -104,15 +102,6 @@ const VALID_COUNTRIES = [
     // Z
     "zambia", "zimbabwe"
 ];
-const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 587,
-    secure: false, 
-    auth: {
-        user: EMAIL_USER,
-        pass: EMAIL_PASS
-    }
-});
 
 // --- HELPERS ---
 function createJobLink(title: string, id: any) {
@@ -273,7 +262,13 @@ ${username}`;
             </html>
             `
         };
-        await transporter.sendMail(mailOptions);
+        await sendBrevoEmail({
+            fromName: 'HireSkys Job Alerts',
+            fromEmail: 'jobalerts@hireskys.com',
+            to: mailOptions.to,
+            subject: mailOptions.subject,
+            html: mailOptions.html,
+        });
         console.log("✅ Rich Email Sent!");
     } catch (error: any) {
         console.error("❌ Email Error:", error.message);
@@ -334,7 +329,13 @@ ${guestName || 'Professional'}`;
             </html>
             `
         };
-        await transporter.sendMail(mailOptions);
+        await sendBrevoEmail({
+            fromName: 'HireSkys Job Alerts',
+            fromEmail: 'jobalerts@hireskys.com',
+            to: mailOptions.to,
+            subject: mailOptions.subject,
+            html: mailOptions.html,
+        });
         console.log(`✅ Guest Email Sent to ${to}!`);
     } catch (error: any) {
         console.error("❌ Guest Email Error:", error.message);

@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+// Lightweight shim — framer-motion ke ~100KB ke baghair, koi visual toot-phoot nahi
+const motion: any = { div: (props: any) => { const { initial, animate, exit, transition, layout, ...rest } = props; return <div {...rest} />; } };
+const AnimatePresence = (props: any) => <>{props.children}</>;
 import { User, DollarSign, Briefcase, Star, Zap, Award, ArrowRight, Camera, Upload } from 'lucide-react';
 import Image from 'next/image';
 
@@ -44,10 +46,7 @@ useEffect(() => {
   ];
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: 20 }} 
-      animate={{ opacity: 1, x: 0 }} 
-      exit={{ opacity: 0, x: -20 }}
+    <div
       className="bg-white dark:bg-[#151b2d] rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-xl"
     >
       <div className="mb-8 text-center md:text-left">
@@ -168,6 +167,6 @@ useEffect(() => {
         </button>
       </div>
 
-    </motion.div>
+    </div>
   );
 }

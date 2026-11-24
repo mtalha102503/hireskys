@@ -2,7 +2,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+// Lightweight shim — framer-motion ke ~100KB ke baghair, koi visual toot-phoot nahi
+const motion: any = { div: (props: any) => { const { initial, animate, exit, transition, layout, ...rest } = props; return <div {...rest} />; } };
+const AnimatePresence = (props: any) => <>{props.children}</>;
 // 👇 1. Yahan Loader2 import kiya hai
 import { Check, LogOut, Sparkles, Loader2 } from 'lucide-react'; 
 import Link from 'next/link';
@@ -184,9 +186,7 @@ export default function OnboardingPage() {
       <main className="w-full flex-1 flex flex-col items-center py-12 px-4 md:px-6 max-w-5xl">
         
         {/* Dynamic Header Text */}
-        <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+        <div
             key={currentStep}
             className="text-center mb-10 space-y-2"
         >
@@ -196,19 +196,17 @@ export default function OnboardingPage() {
             <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base max-w-md mx-auto">
                 {headerInfo.sub}
             </p>
-        </motion.div>
+        </div>
 
         {/* Progress Bar */}
         <div className="w-full max-w-3xl mb-12">
           <div className="flex items-center justify-between relative px-2">
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1.5 bg-slate-200 dark:bg-slate-800 -z-10 rounded-full mx-2"></div>
             
-            <motion.div 
-              className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)] mx-2"
-              initial={{ width: 0 }}
-              animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            ></motion.div>
+            <div
+              className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)] mx-2 transition-all duration-500 ease-in-out"
+              style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+            ></div>
 
             {[
               { id: 1, label: 'Basics', completed: true },
@@ -217,17 +215,12 @@ export default function OnboardingPage() {
               { id: 4, label: 'History', completed: false }
             ].map((step) => (
               <div key={step.id} className="flex flex-col items-center gap-3 relative group cursor-default">
-                <motion.div 
-                    initial={false}
-                    animate={{ 
-                        scale: currentStep === step.id ? 1.15 : 1,
-                        backgroundColor: (step.completed || step.id === 1) ? '#10B981' : currentStep === step.id ? '#4F46E5' : 'var(--bg-inactive)'
-                    }}
+                <div
                     className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold border-4 transition-colors duration-300 z-10 text-sm md:text-base relative
                     ${(step.completed || step.id === 1) 
-                        ? 'border-green-500 text-white shadow-lg shadow-green-500/20' 
+                        ? 'border-green-500 bg-green-500 text-white shadow-lg shadow-green-500/20' 
                         : currentStep === step.id 
-                          ? 'border-indigo-600 text-white shadow-lg shadow-indigo-600/30 ring-4 ring-indigo-100 dark:ring-indigo-900/30'
+                          ? 'border-indigo-600 bg-indigo-600 scale-[1.15] text-white shadow-lg shadow-indigo-600/30 ring-4 ring-indigo-100 dark:ring-indigo-900/30'
                           : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400'
                     }`}
                 >
@@ -236,8 +229,8 @@ export default function OnboardingPage() {
                   {currentStep === step.id && (
                     <span className="absolute inset-0 rounded-full animate-ping bg-indigo-500 opacity-20"></span>
                   )}
-                </motion.div>
-                
+                </div>
+
                 <span className={`text-[10px] md:text-xs font-bold tracking-wider uppercase transition-colors duration-300 ${currentStep >= step.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`}>
                   {step.label}
                 </span>
@@ -247,17 +240,12 @@ export default function OnboardingPage() {
         </div>
 
         <div className="w-full max-w-3xl relative">
-            <motion.div 
-                layout
+            <div
                 className="relative w-full"
             >
                 <AnimatePresence mode='wait'>
-                    <motion.div
+                    <div
                         key={currentStep}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
                         className="relative z-10"
                     >
                         {currentStep === 2 && (
@@ -269,9 +257,9 @@ export default function OnboardingPage() {
                         {currentStep === 4 && (
                             <StepFourHistory key="step4" data={formData} update={setFormData} onSubmit={handleSubmitProfile} onBack={prevStep} loading={isSubmitting} />
                         )}
-                    </motion.div>
+                    </div>
                 </AnimatePresence>
-            </motion.div>
+            </div>
         </div>
 
       </main>

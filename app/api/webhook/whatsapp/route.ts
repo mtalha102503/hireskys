@@ -1,16 +1,10 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
-import { GoogleGenerativeAI } from "@google/generative-ai"; 
+import { geminiGenerate } from "@/lib/gemini";
 
-// ✅ Gemini Configuration (Optimized for Logic)
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash", // 2.5 abhi unstable ho skta hai, 1.5-flash production ready hai
-    generationConfig: {
-        temperature: 0.3, // Low temp = More logical/strict, Less creative
-        maxOutputTokens: 500,
-    }
-});
+// ✅ Gemini Configuration (Optimized for Logic) — plain REST, no SDK
+// model: gemini-1.5-flash (2.5 abhi unstable ho skta hai, 1.5-flash production ready hai)
+// temperature 0.3 (low = more logical/strict), maxOutputTokens 500
 
 // UltraMsg Config
 const INSTANCE_ID = "instance157066";
@@ -112,9 +106,13 @@ export async function POST(request: Request) {
             `;
 
             // 4️⃣ Ask Gemini
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            const analysis = response.text();
+            const analysis = await geminiGenerate({
+              apiKey: process.env.GEMINI_API_KEY || "",
+              model: "gemini-1.5-flash",
+              prompt,
+              temperature: 0.3,
+              maxOutputTokens: 500,
+            });
 
             // 5️⃣ Send Result
             const finalMsg = `🤖 *HireSkys Professional Analysis*

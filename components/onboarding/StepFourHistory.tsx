@@ -1,5 +1,7 @@
 "use client";
-import { motion } from 'framer-motion';
+// Lightweight shim — framer-motion ke ~100KB ke baghair, koi visual toot-phoot nahi
+const motion: any = { div: (props: any) => { const { initial, animate, exit, transition, layout, ...rest } = props; return <div {...rest} />; } };
+const AnimatePresence = (props: any) => <>{props.children}</>;
 import { GraduationCap, Briefcase, Plus, Trash2, Globe, Linkedin, CheckCircle, ArrowLeft } from 'lucide-react';
 
 interface StepProps {
@@ -46,10 +48,7 @@ export default function StepFourHistory({ data, update, onSubmit, onBack, loadin
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: 20 }} 
-      animate={{ opacity: 1, x: 0 }} 
-      exit={{ opacity: 0, x: -20 }}
+    <div
       className="bg-white dark:bg-[#151b2d] rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-xl"
     >
       <div className="mb-8">
@@ -154,6 +153,6 @@ export default function StepFourHistory({ data, update, onSubmit, onBack, loadin
           {!loading && <CheckCircle size={20} />}
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }

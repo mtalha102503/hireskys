@@ -1,12 +1,10 @@
-import { Groq } from 'groq-sdk';
+import { groqChat } from '@/lib/groq';
 import { NextResponse } from 'next/server';
 
 // Check API Key
 if (!process.env.GROQ_API_KEY) {
   console.error("🚨 ERROR: GROQ_API_KEY is missing");
 }
-
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -61,14 +59,15 @@ export async function POST(req: Request) {
       ${jobDescription ? jobDescription.slice(0, 4000) : "No description provided."}
     `;
 
-    // 3. Call Groq
-    const completion = await groq.chat.completions.create({
+    // 3. Call Groq (plain fetch)
+    const analysis = await groqChat({
+      apiKey: process.env.GROQ_API_KEY!,
       messages: [{ role: 'user', content: systemPrompt }],
       model: 'meta-llama/llama-4-scout-17b-16e-instruct',
       temperature: 0.5,
     });
 
-    return NextResponse.json({ analysis: completion.choices[0].message.content });
+    return NextResponse.json({ analysis });
 
   } catch (error: any) {
     console.error("❌ Critical AI Error:", error);

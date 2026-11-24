@@ -1,6 +1,44 @@
 import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
-import { createSlug } from '@/lib/utils'; 
+import { createSlug } from '@/lib/utils';
+import { createSign } from 'node:crypto';
+
+// --- Google service-account JWT (googleapis ki jagah, plain fetch) ---
+function base64url(input: Buffer | string): string {
+  return Buffer.from(input)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+async function getGoogleAccessToken(clientEmail: string, privateKey: string): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  const header = base64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+  const claim = base64url(JSON.stringify({
+    iss: clientEmail,
+    scope: 'https://www.googleapis.com/auth/indexing',
+    aud: 'https://oauth2.googleapis.com/token',
+    exp: now + 3600,
+    iat: now,
+  }));
+  const unsigned = `${header}.${claim}`;
+  const signer = createSign('RSA-SHA256');
+  signer.update(unsigned);
+  const signature = base64url(signer.sign(privateKey));
+  const jwt = `${unsigned}.${signature}`;
+
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt,
+    }),
+  });
+  if (!res.ok) throw new Error(`Google token exchange failed: ${res.status}`);
+  const data = await res.json();
+  return data.access_token as string;
+}
 
 export async function POST(request: Request) {
   try {
@@ -34,13 +72,7 @@ export async function POST(request: Request) {
     // String wale \n ko actual newlines mein convert karo (OpenSSL ke liye)
     const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
 
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: clientEmail,
-        private_key: formattedPrivateKey,
-      },
-      scopes: ['https://www.googleapis.com/auth/indexing'],
-    });
+    const accessToken = await getGoogleAccessToken(clientEmail, formattedPrivateKey);
 
     // 🔗 URL Banao
     const slug = createSlug(record.title, record.id);
@@ -48,15 +80,19 @@ export async function POST(request: Request) {
 
     console.log(`🚀 Indexing Job: ${jobUrl}`);
 
-    // 📡 Google Indexing API Call
-    const indexing = google.indexing({ version: 'v3', auth });
-    
-    await indexing.urlNotifications.publish({
-      requestBody: {
-        url: jobUrl,
-        type: 'URL_UPDATED'
-      }
+    // 📡 Google Indexing API Call (plain fetch)
+    const indexRes = await fetch('https://indexing.googleapis.com/v3/urlNotifications:publish', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ url: jobUrl, type: 'URL_UPDATED' }),
     });
+    if (!indexRes.ok) {
+      const text = await indexRes.text();
+      throw new Error(`Indexing API ${indexRes.status}: ${text.slice(0, 200)}`);
+    }
 
     console.log(`✅ Success: ${record.title} sent to Google!`);
 

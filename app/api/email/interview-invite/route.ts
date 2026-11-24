@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import nodemailer from 'nodemailer';
+import { sendBrevoEmail } from '@/lib/brevo';
 import { getAuthedUser, resolveWorkspace } from '@/lib/apiAuth';
 
 // Secure backend Supabase client
@@ -44,15 +44,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Please add a booking link (Calendly, etc.) in your Integrations Settings first." }, { status: 400 });
     }
 
-    // 2. 🟢 THE REAL MAGIC: Hireskys Official Brevo Transporter
-    const transporter = nodemailer.createTransport({
-      host: 'smtp-relay.brevo.com',
-      port: 587,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // 2. 🟢 Brevo HTTP API se bhejenge (nodemailer hata diya)
 
     // 3. Custom Message Formatting
     const defaultTemplate = `Hi {{candidate_name}},\n\nCongratulations! We would like to invite you for an interview for the {{job_title}} position at {{company_name}}.\n\nPlease select a date and time that works best for you using our scheduling link below:\n\nLooking forward to speaking with you!`;
@@ -88,24 +80,16 @@ export async function POST(request: Request) {
       </div>
     `;
 
-   // 5. 🚀 Shoot the Email via Brevo (Strict Promise for Vercel)
-    await new Promise((resolve, reject) => {
-      transporter.sendMail({
-        from: `"${companyName} (via HireSkys)" <contact@hireskys.com>`, // 👈 Direct hardcode kar diya
-        replyTo: company.email, // 🟢 JADOO: Candidate reply karega toh seedha employer ko jayega!
-        to: candidateEmail,
-        subject: `Interview Invitation: ${jobTitle} at ${companyName}`,
-        html: emailHtml,
-      }, (err, info) => {
-        if (err) {
-          console.error("Brevo Send Error:", err);
-          reject(err);
-        } else {
-          console.log("Brevo Send Success:", info.response);
-          resolve(info);
-        }
-      });
+   // 5. 🚀 Shoot the Email via Brevo HTTP API
+    await sendBrevoEmail({
+      fromName: `${companyName} (via HireSkys)`,
+      fromEmail: 'contact@hireskys.com', // 👈 Direct hardcode kar diya
+      replyTo: company.email, // 🟢 JADOO: Candidate reply karega toh seedha employer ko jayega!
+      to: candidateEmail,
+      subject: `Interview Invitation: ${jobTitle} at ${companyName}`,
+      html: emailHtml,
     });
+    console.log("Brevo Send Success");
 
     return NextResponse.json({ success: true, message: "Interview email sent successfully!" });
 

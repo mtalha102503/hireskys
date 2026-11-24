@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
 
 export async function GET(request: Request) {
   try {
@@ -11,27 +10,25 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URI
-    );
-
-    const scopes = [
-      'https://www.googleapis.com/auth/calendar.events', 
-      'https://www.googleapis.com/auth/userinfo.email',
-      'https://mail.google.com/'  
-    ];
-
-    const authUrl = oauth2Client.generateAuthUrl({
-      access_type: 'offline', 
-      prompt: 'consent',      
-      scope: scopes,
-      state: userId // 🟢 VIP JADOO: Employer ID yahan save kar di taake Google wapas kare
+    // googleapis hata diya — auth URL haath se banate hain (plain OAuth2 URL)
+    const params = new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID!,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
+      response_type: 'code',
+      scope: [
+        'https://www.googleapis.com/auth/calendar.events',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://mail.google.com/',
+      ].join(' '),
+      access_type: 'offline',
+      prompt: 'consent',
+      state: userId, // 🟢 VIP JADOO: Employer ID yahan save kar di taake Google wapas kare
     });
 
-    return NextResponse.redirect(authUrl);
-    
+    return NextResponse.redirect(
+      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString().replace(/\+/g, '%20')}`
+    );
+
   } catch (error: any) {
     console.error("Google Auth Error:", error);
     return NextResponse.json({ error: "Failed to generate Google Login URL" }, { status: 500 });

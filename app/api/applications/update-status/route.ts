@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import nodemailer from 'nodemailer';
+import { sendBrevoEmail } from '@/lib/brevo';
 import { getAuthedUser, resolveWorkspace } from '@/lib/apiAuth';
 
 // Secure backend Supabase client
@@ -97,15 +97,7 @@ export async function POST(request: Request) {
         .single();
 
       if (company) {
-        // Brevo SMTP setup
-        const transporter = nodemailer.createTransport({
-          host: 'smtp-relay.brevo.com',
-          port: 587,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
+        // Brevo HTTP API se bhejenge (nodemailer hata diya)
 
         // Agar settings mein template khali hai toh yeh default text chalega
         const defaultTemplate = `Hi {{full_name}},\n\nThank you for applying for the {{job_title}} position at {{company_name}}.\n\nWe appreciate the time you took to share your background with us. While your profile has a lot of merit, we have decided to move forward with other candidates whose experience closely matches our current needs.\n\nWe wish you the best of luck in your job search!`;
@@ -134,24 +126,16 @@ export async function POST(request: Request) {
           </div>
         `;
 
-        // Vercel strict promise wrapper taake mail freeze na ho live server par
-        await new Promise((resolve, reject) => {
-          transporter.sendMail({
-            from: `"${company.name} (via HireSkys)" <contact@hireskys.com>`,
-            replyTo: company.email, // Candidate reply karega toh seedha employer ke pass jayega
-            to: application.email,
-            subject: `Update regarding your application at ${company.name}`,
-            html: emailHtml,
-          }, (err, info) => {
-            if (err) {
-              console.error("Rejection Email Failed:", err);
-              reject(err);
-            } else {
-              console.log("Rejection Email Sent perfectly via Brevo:", info.response);
-              resolve(info);
-            }
-          });
+        // Brevo HTTP API se bhejo (SMTP relay ki jagah)
+        await sendBrevoEmail({
+          fromName: `${company.name} (via HireSkys)`,
+          fromEmail: 'contact@hireskys.com',
+          replyTo: company.email, // Candidate reply karega toh seedha employer ke pass jayega
+          to: application.email,
+          subject: `Update regarding your application at ${company.name}`,
+          html: emailHtml,
         });
+        console.log("Rejection Email Sent perfectly via Brevo");
       }
     }
 

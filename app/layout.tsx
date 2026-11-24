@@ -6,16 +6,12 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/Footer";
 import AtsFooter from "@/components/AtsFooter";
 import NextTopLoader from 'nextjs-toploader';
-import { Jost } from "next/font/google";
 import ConsentBanner from "@/components/ConsentBanner";
 import MoneytizerStickyFooter from "@/components/MoneytizerStickyFooter";
 import MoneytizerSkyrail from "@/components/MoneytizerSkyrail";
 import GoogleOneTap from "@/components/GoogleOneTap";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import PlatformFeedback from '@/components/PlatformFeedback';
-
-// 🌟 FONT OPTIMIZATION
-const jost = Jost({ subsets: ["latin"] });
 
 // 🎨 VIEWPORT SETTINGS
 export const viewport: Viewport = {
@@ -150,6 +146,10 @@ export default function RootLayout({
         />
         {/* ⚡ AD SPEED: Moneytizer ad server se pehle hi connection tayyar rakho,
             taake ad scripts bina DNS/connection delay ke foran load hon */}
+        {/* Jost font via Google Fonts <link> (next/font hata diya — bundle slim) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link rel="preconnect" href="https://ads.themoneytizer.com" />
         <link rel="dns-prefetch" href="https://ads.themoneytizer.com" />
         <Script id="microsoft-clarity" strategy="afterInteractive">
@@ -329,7 +329,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`${jost.className} min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white`}>
+      <body className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

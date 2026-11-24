@@ -77,8 +77,8 @@ export async function GET(
         
         const jobUrl = `${SITE_URL}/jobs/${createSlug(safeTitle, job.id)}`;
         
-        // Perfectly Encoded OG Image Link
-        const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(safeTitle)}&amp;company=${encodeURIComponent(safeCompany)}`;
+        // Static OG image (dynamic /api/og route removed for Cloudflare bundle size)
+        const ogImageUrl = `${SITE_URL}/og-main.png`;
         
         xml += `
         <item>
